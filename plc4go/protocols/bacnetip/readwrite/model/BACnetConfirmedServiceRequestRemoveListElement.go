@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestRemoveListElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -49,6 +50,8 @@ type BACnetConfirmedServiceRequestRemoveListElement interface {
 	GetListOfElements() BACnetConstructedData
 	// IsBACnetConfirmedServiceRequestRemoveListElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestRemoveListElement()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestRemoveListElementBuilder
+	CreateBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedServiceRequestRemoveListElementBuilder
 }
 
 // _BACnetConfirmedServiceRequestRemoveListElement is the data-structure of this message
@@ -62,6 +65,209 @@ type _BACnetConfirmedServiceRequestRemoveListElement struct {
 
 var _ BACnetConfirmedServiceRequestRemoveListElement = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRemoveListElement)(nil)
+
+// NewBACnetConfirmedServiceRequestRemoveListElement factory function for _BACnetConfirmedServiceRequestRemoveListElement
+func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRemoveListElement {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestRemoveListElement{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+		PropertyIdentifier:                    propertyIdentifier,
+		ArrayIndex:                            arrayIndex,
+		ListOfElements:                        listOfElements,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestRemoveListElementBuilder is a builder for BACnetConfirmedServiceRequestRemoveListElement
+type BACnetConfirmedServiceRequestRemoveListElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithListOfElements adds ListOfElements (property field)
+	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
+	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder
+	// Build builds the BACnetConfirmedServiceRequestRemoveListElement or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestRemoveListElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestRemoveListElement
+}
+
+// NewBACnetConfirmedServiceRequestRemoveListElementBuilder() creates a BACnetConfirmedServiceRequestRemoveListElementBuilder
+func NewBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	return &_BACnetConfirmedServiceRequestRemoveListElementBuilder{_BACnetConfirmedServiceRequestRemoveListElement: new(_BACnetConfirmedServiceRequestRemoveListElement)}
+}
+
+type _BACnetConfirmedServiceRequestRemoveListElementBuilder struct {
+	*_BACnetConfirmedServiceRequestRemoveListElement
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestRemoveListElementBuilder) = (*_BACnetConfirmedServiceRequestRemoveListElementBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	b.ListOfElements = listOfElements
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) WithOptionalListOfElementsBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	builder := builderSupplier(b.ListOfElements.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ListOfElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Build() (BACnetConfirmedServiceRequestRemoveListElement, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestRemoveListElement.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) MustBuild() BACnetConfirmedServiceRequestRemoveListElement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestRemoveListElementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestRemoveListElementBuilder().(*_BACnetConfirmedServiceRequestRemoveListElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestRemoveListElementBuilder creates a BACnetConfirmedServiceRequestRemoveListElementBuilder
+func (b *_BACnetConfirmedServiceRequestRemoveListElement) CreateBACnetConfirmedServiceRequestRemoveListElementBuilder() BACnetConfirmedServiceRequestRemoveListElementBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestRemoveListElementBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestRemoveListElementBuilder{_BACnetConfirmedServiceRequestRemoveListElement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +312,6 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) GetListOfElements() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestRemoveListElement factory function for _BACnetConfirmedServiceRequestRemoveListElement
-func NewBACnetConfirmedServiceRequestRemoveListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRemoveListElement {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestRemoveListElement must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestRemoveListElement{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ObjectIdentifier:                      objectIdentifier,
-		PropertyIdentifier:                    propertyIdentifier,
-		ArrayIndex:                            arrayIndex,
-		ListOfElements:                        listOfElements,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestRemoveListElement(structType any) BACnetConfirmedServiceRequestRemoveListElement {
@@ -262,13 +449,36 @@ func (m *_BACnetConfirmedServiceRequestRemoveListElement) SerializeWithWriteBuff
 func (m *_BACnetConfirmedServiceRequestRemoveListElement) IsBACnetConfirmedServiceRequestRemoveListElement() {
 }
 
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestRemoveListElement) deepCopy() *_BACnetConfirmedServiceRequestRemoveListElement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestRemoveListElementCopy := &_BACnetConfirmedServiceRequestRemoveListElement{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfElements.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestRemoveListElementCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestRemoveListElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

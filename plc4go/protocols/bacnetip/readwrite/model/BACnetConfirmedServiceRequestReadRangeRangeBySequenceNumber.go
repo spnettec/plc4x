@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequestReadRangeRange
 	// GetReferenceSequenceNumber returns ReferenceSequenceNumber (property field)
 	GetReferenceSequenceNumber() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber interface {
 	GetCount() BACnetApplicationTagSignedInteger
 	// IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	CreateBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
 }
 
 // _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber is the data-structure of this message
@@ -56,6 +59,163 @@ type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber struct {
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
 var _ BACnetConfirmedServiceRequestReadRangeRangeRequirements = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)(nil)
+
+// NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber factory function for _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+	if referenceSequenceNumber == nil {
+		panic("referenceSequenceNumber of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
+	}
+	if count == nil {
+		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
+		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
+		ReferenceSequenceNumber:                             referenceSequenceNumber,
+		Count:                                               count,
+	}
+	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder is a builder for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// WithReferenceSequenceNumber adds ReferenceSequenceNumber (property field)
+	WithReferenceSequenceNumber(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// WithReferenceSequenceNumberBuilder adds ReferenceSequenceNumber (property field) which is build by the builder
+	WithReferenceSequenceNumberBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// WithCount adds Count (property field)
+	WithCount(BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// WithCountBuilder adds Count (property field) which is build by the builder
+	WithCountBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	// Build builds the BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+}
+
+// NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder() creates a BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	return &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder{_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber: new(_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber)}
+}
+
+type _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder struct {
+	*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
+
+	parentBuilder *_BACnetConfirmedServiceRequestReadRangeRangeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) = (*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) setParent(contract BACnetConfirmedServiceRequestReadRangeRangeContract) {
+	b.BACnetConfirmedServiceRequestReadRangeRangeContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithMandatoryFields(referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	return b.WithReferenceSequenceNumber(referenceSequenceNumber).WithCount(count)
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithReferenceSequenceNumber(referenceSequenceNumber BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	b.ReferenceSequenceNumber = referenceSequenceNumber
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithReferenceSequenceNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	builder := builderSupplier(b.ReferenceSequenceNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.ReferenceSequenceNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithCount(count BACnetApplicationTagSignedInteger) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	b.Count = count
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) WithCountBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	builder := builderSupplier(b.Count.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.Count, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Build() (BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber, error) {
+	if b.ReferenceSequenceNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceSequenceNumber' not set"))
+	}
+	if b.Count == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'count' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) MustBuild() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) buildForBACnetConfirmedServiceRequestReadRangeRange() (BACnetConfirmedServiceRequestReadRangeRange, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) CreateBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder() BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder{_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +248,6 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) GetCount(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber factory function for _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-func NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(referenceSequenceNumber BACnetApplicationTagUnsignedInteger, count BACnetApplicationTagSignedInteger, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
-	if referenceSequenceNumber == nil {
-		panic("referenceSequenceNumber of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
-	}
-	if count == nil {
-		panic("count of type BACnetApplicationTagSignedInteger for BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
-		BACnetConfirmedServiceRequestReadRangeRangeContract: NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader, openingTag, closingTag),
-		ReferenceSequenceNumber:                             referenceSequenceNumber,
-		Count:                                               count,
-	}
-	_result.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber(structType any) BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
@@ -204,13 +347,34 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) Serialize
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) IsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() {
 }
 
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy := &_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{
+		m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange).deepCopy(),
+		m.ReferenceSequenceNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.Count.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestReadRangeRangeContract.(*_BACnetConfirmedServiceRequestReadRangeRange)._SubType = m
+	return _BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

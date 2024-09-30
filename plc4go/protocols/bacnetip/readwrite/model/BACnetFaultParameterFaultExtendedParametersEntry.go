@@ -40,8 +40,11 @@ type BACnetFaultParameterFaultExtendedParametersEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetFaultParameterFaultExtendedParametersEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntry()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryBuilder() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 }
 
 // BACnetFaultParameterFaultExtendedParametersEntryContract provides a set of functions which can be overwritten by a sub struct
@@ -54,6 +57,8 @@ type BACnetFaultParameterFaultExtendedParametersEntryContract interface {
 	GetPeekedIsContextTag() bool
 	// IsBACnetFaultParameterFaultExtendedParametersEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultExtendedParametersEntry()
+	// CreateBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	CreateBACnetFaultParameterFaultExtendedParametersEntryBuilder() BACnetFaultParameterFaultExtendedParametersEntryBuilder
 }
 
 // BACnetFaultParameterFaultExtendedParametersEntryRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +78,439 @@ type _BACnetFaultParameterFaultExtendedParametersEntry struct {
 }
 
 var _ BACnetFaultParameterFaultExtendedParametersEntryContract = (*_BACnetFaultParameterFaultExtendedParametersEntry)(nil)
+
+// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
+func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultExtendedParametersEntryBuilder is a builder for BACnetFaultParameterFaultExtendedParametersEntry
+type BACnetFaultParameterFaultExtendedParametersEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	// AsBACnetFaultParameterFaultExtendedParametersEntryNull converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryNull() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryReal converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryReal() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryBoolean converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryInteger converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryInteger() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryDouble converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryDouble() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryOctetString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryBitString converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryBitString() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryDate converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryDate() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryTime converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryTime() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// AsBACnetFaultParameterFaultExtendedParametersEntryReference converts this build to a subType of BACnetFaultParameterFaultExtendedParametersEntry. It is always possible to return to current builder using Done()
+	AsBACnetFaultParameterFaultExtendedParametersEntryReference() interface {
+		BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntry or returns an error if something is wrong
+	PartialBuild() (BACnetFaultParameterFaultExtendedParametersEntryContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetFaultParameterFaultExtendedParametersEntryContract
+	// Build builds the BACnetFaultParameterFaultExtendedParametersEntry or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultExtendedParametersEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultExtendedParametersEntry
+}
+
+// NewBACnetFaultParameterFaultExtendedParametersEntryBuilder() creates a BACnetFaultParameterFaultExtendedParametersEntryBuilder
+func NewBACnetFaultParameterFaultExtendedParametersEntryBuilder() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBuilder{_BACnetFaultParameterFaultExtendedParametersEntry: new(_BACnetFaultParameterFaultExtendedParametersEntry)}
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetFaultParameterFaultExtendedParametersEntryContract)
+	buildForBACnetFaultParameterFaultExtendedParametersEntry() (BACnetFaultParameterFaultExtendedParametersEntry, error)
+}
+
+type _BACnetFaultParameterFaultExtendedParametersEntryBuilder struct {
+	*_BACnetFaultParameterFaultExtendedParametersEntry
+
+	childBuilder _BACnetFaultParameterFaultExtendedParametersEntryChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultExtendedParametersEntryBuilder) = (*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)(nil)
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) PartialBuild() (BACnetFaultParameterFaultExtendedParametersEntryContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultParameterFaultExtendedParametersEntry.deepCopy(), nil
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) PartialMustBuild() BACnetFaultParameterFaultExtendedParametersEntryContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryNull() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryNullBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryNullBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReal() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryRealBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryRealBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryRealBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryUnsigned() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryUnsignedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBoolean() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryInteger() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryIntegerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDouble() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryDoubleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryOctetString() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryOctetStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryCharacterString() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryBitString() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBitStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryEnumerated() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryEnumeratedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryDate() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryDateBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryDateBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryTime() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryTimeBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryObjectidentifier() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) AsBACnetFaultParameterFaultExtendedParametersEntryReference() interface {
+	BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+	Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder
+		Done() BACnetFaultParameterFaultExtendedParametersEntryBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryReferenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) Build() (BACnetFaultParameterFaultExtendedParametersEntry, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetFaultParameterFaultExtendedParametersEntry()
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) MustBuild() BACnetFaultParameterFaultExtendedParametersEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetFaultParameterFaultExtendedParametersEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultExtendedParametersEntryBuilder().(*_BACnetFaultParameterFaultExtendedParametersEntryBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetFaultParameterFaultExtendedParametersEntryChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetFaultParameterFaultExtendedParametersEntryBuilder creates a BACnetFaultParameterFaultExtendedParametersEntryBuilder
+func (b *_BACnetFaultParameterFaultExtendedParametersEntry) CreateBACnetFaultParameterFaultExtendedParametersEntryBuilder() BACnetFaultParameterFaultExtendedParametersEntryBuilder {
+	if b == nil {
+		return NewBACnetFaultParameterFaultExtendedParametersEntryBuilder()
+	}
+	return &_BACnetFaultParameterFaultExtendedParametersEntryBuilder{_BACnetFaultParameterFaultExtendedParametersEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +548,6 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) GetPeekedIsContextT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultExtendedParametersEntry factory function for _BACnetFaultParameterFaultExtendedParametersEntry
-func NewBACnetFaultParameterFaultExtendedParametersEntry(peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultExtendedParametersEntry {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetFaultParameterFaultExtendedParametersEntry must not be nil")
-	}
-	return &_BACnetFaultParameterFaultExtendedParametersEntry{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultExtendedParametersEntry(structType any) BACnetFaultParameterFaultExtendedParametersEntry {
@@ -159,7 +589,7 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBufferProducer[T B
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -169,7 +599,12 @@ func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer[T BACnetFau
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetFaultParameterFaultExtendedParametersEntry BACnetFaultParameterFaultExtendedParametersEntry, err error) {
@@ -208,59 +643,59 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) parse(ctx context.Co
 	var _child BACnetFaultParameterFaultExtendedParametersEntry
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryNull
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryNull for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryReal
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryReal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryReal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryReal for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryUnsigned
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryUnsigned{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryUnsigned).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryUnsigned for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBoolean
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryBoolean{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryBoolean).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryBoolean for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryInteger
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryInteger{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryInteger).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryInteger for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDouble
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryDouble{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryDouble).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryDouble for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryOctetString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryOctetString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryOctetString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryOctetString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryCharacterString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryCharacterString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryBitString
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryBitString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryBitString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryBitString for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryEnumerated
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryEnumerated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryEnumerated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryEnumerated for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryDate
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryDate for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryTime
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryTime for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetFaultParameterFaultExtendedParametersEntryReference
-		if _child, err = (&_BACnetFaultParameterFaultExtendedParametersEntryReference{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetFaultParameterFaultExtendedParametersEntryReference).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetFaultParameterFaultExtendedParametersEntryReference for type-switch of BACnetFaultParameterFaultExtendedParametersEntry")
 		}
 	default:
@@ -310,4 +745,19 @@ func (pm *_BACnetFaultParameterFaultExtendedParametersEntry) serializeParent(ctx
 }
 
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) IsBACnetFaultParameterFaultExtendedParametersEntry() {
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) deepCopy() *_BACnetFaultParameterFaultExtendedParametersEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultExtendedParametersEntryCopy := &_BACnetFaultParameterFaultExtendedParametersEntry{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetFaultParameterFaultExtendedParametersEntryCopy
 }

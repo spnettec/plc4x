@@ -36,9 +36,12 @@ type AdsInvalidResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// IsAdsInvalidResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsInvalidResponse()
+	// CreateBuilder creates a AdsInvalidResponseBuilder
+	CreateAdsInvalidResponseBuilder() AdsInvalidResponseBuilder
 }
 
 // _AdsInvalidResponse is the data-structure of this message
@@ -48,6 +51,99 @@ type _AdsInvalidResponse struct {
 
 var _ AdsInvalidResponse = (*_AdsInvalidResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsInvalidResponse)(nil)
+
+// NewAdsInvalidResponse factory function for _AdsInvalidResponse
+func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
+	_result := &_AdsInvalidResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsInvalidResponseBuilder is a builder for AdsInvalidResponse
+type AdsInvalidResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsInvalidResponseBuilder
+	// Build builds the AdsInvalidResponse or returns an error if something is wrong
+	Build() (AdsInvalidResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsInvalidResponse
+}
+
+// NewAdsInvalidResponseBuilder() creates a AdsInvalidResponseBuilder
+func NewAdsInvalidResponseBuilder() AdsInvalidResponseBuilder {
+	return &_AdsInvalidResponseBuilder{_AdsInvalidResponse: new(_AdsInvalidResponse)}
+}
+
+type _AdsInvalidResponseBuilder struct {
+	*_AdsInvalidResponse
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsInvalidResponseBuilder) = (*_AdsInvalidResponseBuilder)(nil)
+
+func (b *_AdsInvalidResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsInvalidResponseBuilder) WithMandatoryFields() AdsInvalidResponseBuilder {
+	return b
+}
+
+func (b *_AdsInvalidResponseBuilder) Build() (AdsInvalidResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsInvalidResponse.deepCopy(), nil
+}
+
+func (b *_AdsInvalidResponseBuilder) MustBuild() AdsInvalidResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsInvalidResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsInvalidResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsInvalidResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsInvalidResponseBuilder().(*_AdsInvalidResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsInvalidResponseBuilder creates a AdsInvalidResponseBuilder
+func (b *_AdsInvalidResponse) CreateAdsInvalidResponseBuilder() AdsInvalidResponseBuilder {
+	if b == nil {
+		return NewAdsInvalidResponseBuilder()
+	}
+	return &_AdsInvalidResponseBuilder{_AdsInvalidResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_AdsInvalidResponse) GetResponse() bool {
 
 func (m *_AdsInvalidResponse) GetParent() AmsPacketContract {
 	return m.AmsPacketContract
-}
-
-// NewAdsInvalidResponse factory function for _AdsInvalidResponse
-func NewAdsInvalidResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsInvalidResponse {
-	_result := &_AdsInvalidResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,13 +238,32 @@ func (m *_AdsInvalidResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_AdsInvalidResponse) IsAdsInvalidResponse() {}
 
+func (m *_AdsInvalidResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsInvalidResponse) deepCopy() *_AdsInvalidResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsInvalidResponseCopy := &_AdsInvalidResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsInvalidResponseCopy
+}
+
 func (m *_AdsInvalidResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

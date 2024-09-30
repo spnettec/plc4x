@@ -38,6 +38,7 @@ type BrowseRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type BrowseRequest interface {
 	GetNodesToBrowse() []ExtensionObjectDefinition
 	// IsBrowseRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseRequest()
+	// CreateBuilder creates a BrowseRequestBuilder
+	CreateBrowseRequestBuilder() BrowseRequestBuilder
 }
 
 // _BrowseRequest is the data-structure of this message
@@ -65,6 +68,187 @@ type _BrowseRequest struct {
 
 var _ BrowseRequest = (*_BrowseRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseRequest)(nil)
+
+// NewBrowseRequest factory function for _BrowseRequest
+func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
+	}
+	_result := &_BrowseRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		View:                              view,
+		RequestedMaxReferencesPerNode:     requestedMaxReferencesPerNode,
+		NoOfNodesToBrowse:                 noOfNodesToBrowse,
+		NodesToBrowse:                     nodesToBrowse,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowseRequestBuilder is a builder for BrowseRequest
+type BrowseRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) BrowseRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) BrowseRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder
+	// WithView adds View (property field)
+	WithView(ExtensionObjectDefinition) BrowseRequestBuilder
+	// WithViewBuilder adds View (property field) which is build by the builder
+	WithViewBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder
+	// WithRequestedMaxReferencesPerNode adds RequestedMaxReferencesPerNode (property field)
+	WithRequestedMaxReferencesPerNode(uint32) BrowseRequestBuilder
+	// WithNoOfNodesToBrowse adds NoOfNodesToBrowse (property field)
+	WithNoOfNodesToBrowse(int32) BrowseRequestBuilder
+	// WithNodesToBrowse adds NodesToBrowse (property field)
+	WithNodesToBrowse(...ExtensionObjectDefinition) BrowseRequestBuilder
+	// Build builds the BrowseRequest or returns an error if something is wrong
+	Build() (BrowseRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowseRequest
+}
+
+// NewBrowseRequestBuilder() creates a BrowseRequestBuilder
+func NewBrowseRequestBuilder() BrowseRequestBuilder {
+	return &_BrowseRequestBuilder{_BrowseRequest: new(_BrowseRequest)}
+}
+
+type _BrowseRequestBuilder struct {
+	*_BrowseRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrowseRequestBuilder) = (*_BrowseRequestBuilder)(nil)
+
+func (b *_BrowseRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrowseRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) BrowseRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithView(view).WithRequestedMaxReferencesPerNode(requestedMaxReferencesPerNode).WithNoOfNodesToBrowse(noOfNodesToBrowse).WithNodesToBrowse(nodesToBrowse...)
+}
+
+func (b *_BrowseRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) BrowseRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithView(view ExtensionObjectDefinition) BrowseRequestBuilder {
+	b.View = view
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithViewBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) BrowseRequestBuilder {
+	builder := builderSupplier(b.View.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.View, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithRequestedMaxReferencesPerNode(requestedMaxReferencesPerNode uint32) BrowseRequestBuilder {
+	b.RequestedMaxReferencesPerNode = requestedMaxReferencesPerNode
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithNoOfNodesToBrowse(noOfNodesToBrowse int32) BrowseRequestBuilder {
+	b.NoOfNodesToBrowse = noOfNodesToBrowse
+	return b
+}
+
+func (b *_BrowseRequestBuilder) WithNodesToBrowse(nodesToBrowse ...ExtensionObjectDefinition) BrowseRequestBuilder {
+	b.NodesToBrowse = nodesToBrowse
+	return b
+}
+
+func (b *_BrowseRequestBuilder) Build() (BrowseRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.View == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'view' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrowseRequest.deepCopy(), nil
+}
+
+func (b *_BrowseRequestBuilder) MustBuild() BrowseRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseRequestBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseRequestBuilder().(*_BrowseRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrowseRequestBuilder creates a BrowseRequestBuilder
+func (b *_BrowseRequest) CreateBrowseRequestBuilder() BrowseRequestBuilder {
+	if b == nil {
+		return NewBrowseRequestBuilder()
+	}
+	return &_BrowseRequestBuilder{_BrowseRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +297,6 @@ func (m *_BrowseRequest) GetNodesToBrowse() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseRequest factory function for _BrowseRequest
-func NewBrowseRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, requestedMaxReferencesPerNode uint32, noOfNodesToBrowse int32, nodesToBrowse []ExtensionObjectDefinition) *_BrowseRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for BrowseRequest must not be nil")
-	}
-	if view == nil {
-		panic("view of type ExtensionObjectDefinition for BrowseRequest must not be nil")
-	}
-	_result := &_BrowseRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		View:                              view,
-		RequestedMaxReferencesPerNode:     requestedMaxReferencesPerNode,
-		NoOfNodesToBrowse:                 noOfNodesToBrowse,
-		NodesToBrowse:                     nodesToBrowse,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseRequest(structType any) BrowseRequest {
@@ -277,13 +441,37 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_BrowseRequest) IsBrowseRequest() {}
 
+func (m *_BrowseRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseRequest) deepCopy() *_BrowseRequest {
+	if m == nil {
+		return nil
+	}
+	_BrowseRequestCopy := &_BrowseRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestedMaxReferencesPerNode,
+		m.NoOfNodesToBrowse,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToBrowse),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseRequestCopy
+}
+
 func (m *_BrowseRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

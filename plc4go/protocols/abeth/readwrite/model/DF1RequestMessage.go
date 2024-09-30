@@ -40,8 +40,11 @@ type DF1RequestMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
+	// CreateBuilder creates a DF1RequestMessageBuilder
+	CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder
 }
 
 // DF1RequestMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type DF1RequestMessageContract interface {
 	GetTransactionCounter() uint16
 	// IsDF1RequestMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1RequestMessage()
+	// CreateBuilder creates a DF1RequestMessageBuilder
+	CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder
 }
 
 // DF1RequestMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +83,163 @@ type _DF1RequestMessage struct {
 }
 
 var _ DF1RequestMessageContract = (*_DF1RequestMessage)(nil)
+
+// NewDF1RequestMessage factory function for _DF1RequestMessage
+func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1RequestMessage {
+	return &_DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1RequestMessageBuilder is a builder for DF1RequestMessage
+type DF1RequestMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(uint8) DF1RequestMessageBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(uint8) DF1RequestMessageBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) DF1RequestMessageBuilder
+	// WithTransactionCounter adds TransactionCounter (property field)
+	WithTransactionCounter(uint16) DF1RequestMessageBuilder
+	// AsDF1CommandRequestMessage converts this build to a subType of DF1RequestMessage. It is always possible to return to current builder using Done()
+	AsDF1CommandRequestMessage() interface {
+		DF1CommandRequestMessageBuilder
+		Done() DF1RequestMessageBuilder
+	}
+	// Build builds the DF1RequestMessage or returns an error if something is wrong
+	PartialBuild() (DF1RequestMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() DF1RequestMessageContract
+	// Build builds the DF1RequestMessage or returns an error if something is wrong
+	Build() (DF1RequestMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1RequestMessage
+}
+
+// NewDF1RequestMessageBuilder() creates a DF1RequestMessageBuilder
+func NewDF1RequestMessageBuilder() DF1RequestMessageBuilder {
+	return &_DF1RequestMessageBuilder{_DF1RequestMessage: new(_DF1RequestMessage)}
+}
+
+type _DF1RequestMessageChildBuilder interface {
+	utils.Copyable
+	setParent(DF1RequestMessageContract)
+	buildForDF1RequestMessage() (DF1RequestMessage, error)
+}
+
+type _DF1RequestMessageBuilder struct {
+	*_DF1RequestMessage
+
+	childBuilder _DF1RequestMessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1RequestMessageBuilder) = (*_DF1RequestMessageBuilder)(nil)
+
+func (b *_DF1RequestMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1RequestMessageBuilder {
+	return b.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
+}
+
+func (b *_DF1RequestMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1RequestMessageBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
+}
+
+func (b *_DF1RequestMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1RequestMessageBuilder {
+	b.SourceAddress = sourceAddress
+	return b
+}
+
+func (b *_DF1RequestMessageBuilder) WithStatus(status uint8) DF1RequestMessageBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_DF1RequestMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1RequestMessageBuilder {
+	b.TransactionCounter = transactionCounter
+	return b
+}
+
+func (b *_DF1RequestMessageBuilder) PartialBuild() (DF1RequestMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1RequestMessage.deepCopy(), nil
+}
+
+func (b *_DF1RequestMessageBuilder) PartialMustBuild() DF1RequestMessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1RequestMessageBuilder) AsDF1CommandRequestMessage() interface {
+	DF1CommandRequestMessageBuilder
+	Done() DF1RequestMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1CommandRequestMessageBuilder
+		Done() DF1RequestMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1CommandRequestMessageBuilder().(*_DF1CommandRequestMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1RequestMessageBuilder) Build() (DF1RequestMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1RequestMessage()
+}
+
+func (b *_DF1RequestMessageBuilder) MustBuild() DF1RequestMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1RequestMessageBuilder) DeepCopy() any {
+	_copy := b.CreateDF1RequestMessageBuilder().(*_DF1RequestMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1RequestMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1RequestMessageBuilder creates a DF1RequestMessageBuilder
+func (b *_DF1RequestMessage) CreateDF1RequestMessageBuilder() DF1RequestMessageBuilder {
+	if b == nil {
+		return NewDF1RequestMessageBuilder()
+	}
+	return &_DF1RequestMessageBuilder{_DF1RequestMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,11 +266,6 @@ func (m *_DF1RequestMessage) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1RequestMessage factory function for _DF1RequestMessage
-func NewDF1RequestMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) *_DF1RequestMessage {
-	return &_DF1RequestMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1RequestMessage(structType any) DF1RequestMessage {
@@ -163,7 +320,7 @@ func DF1RequestMessageParseWithBufferProducer[T DF1RequestMessage]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -173,7 +330,12 @@ func DF1RequestMessageParseWithBuffer[T DF1RequestMessage](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1RequestMessage DF1RequestMessage, err error) {
@@ -224,7 +386,7 @@ func (m *_DF1RequestMessage) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child DF1RequestMessage
 	switch {
 	case commandCode == 0x0F: // DF1CommandRequestMessage
-		if _child, err = (&_DF1CommandRequestMessage{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1CommandRequestMessage).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandRequestMessage for type-switch of DF1RequestMessage")
 		}
 	default:
@@ -286,3 +448,22 @@ func (pm *_DF1RequestMessage) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_DF1RequestMessage) IsDF1RequestMessage() {}
+
+func (m *_DF1RequestMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1RequestMessage) deepCopy() *_DF1RequestMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1RequestMessageCopy := &_DF1RequestMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.reservedField0,
+	}
+	return _DF1RequestMessageCopy
+}

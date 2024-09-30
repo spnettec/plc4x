@@ -40,8 +40,11 @@ type MeasurementData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementData()
+	// CreateBuilder creates a MeasurementDataBuilder
+	CreateMeasurementDataBuilder() MeasurementDataBuilder
 }
 
 // MeasurementDataContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type MeasurementDataContract interface {
 	GetCommandType() MeasurementCommandType
 	// IsMeasurementData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeasurementData()
+	// CreateBuilder creates a MeasurementDataBuilder
+	CreateMeasurementDataBuilder() MeasurementDataBuilder
 }
 
 // MeasurementDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,142 @@ type _MeasurementData struct {
 }
 
 var _ MeasurementDataContract = (*_MeasurementData)(nil)
+
+// NewMeasurementData factory function for _MeasurementData
+func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
+	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeasurementDataBuilder is a builder for MeasurementData
+type MeasurementDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(MeasurementCommandTypeContainer) MeasurementDataBuilder
+	// AsMeasurementDataChannelMeasurementData converts this build to a subType of MeasurementData. It is always possible to return to current builder using Done()
+	AsMeasurementDataChannelMeasurementData() interface {
+		MeasurementDataChannelMeasurementDataBuilder
+		Done() MeasurementDataBuilder
+	}
+	// Build builds the MeasurementData or returns an error if something is wrong
+	PartialBuild() (MeasurementDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() MeasurementDataContract
+	// Build builds the MeasurementData or returns an error if something is wrong
+	Build() (MeasurementData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeasurementData
+}
+
+// NewMeasurementDataBuilder() creates a MeasurementDataBuilder
+func NewMeasurementDataBuilder() MeasurementDataBuilder {
+	return &_MeasurementDataBuilder{_MeasurementData: new(_MeasurementData)}
+}
+
+type _MeasurementDataChildBuilder interface {
+	utils.Copyable
+	setParent(MeasurementDataContract)
+	buildForMeasurementData() (MeasurementData, error)
+}
+
+type _MeasurementDataBuilder struct {
+	*_MeasurementData
+
+	childBuilder _MeasurementDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MeasurementDataBuilder) = (*_MeasurementDataBuilder)(nil)
+
+func (b *_MeasurementDataBuilder) WithMandatoryFields(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
+}
+
+func (b *_MeasurementDataBuilder) WithCommandTypeContainer(commandTypeContainer MeasurementCommandTypeContainer) MeasurementDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_MeasurementDataBuilder) PartialBuild() (MeasurementDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MeasurementData.deepCopy(), nil
+}
+
+func (b *_MeasurementDataBuilder) PartialMustBuild() MeasurementDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MeasurementDataBuilder) AsMeasurementDataChannelMeasurementData() interface {
+	MeasurementDataChannelMeasurementDataBuilder
+	Done() MeasurementDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MeasurementDataChannelMeasurementDataBuilder
+		Done() MeasurementDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMeasurementDataChannelMeasurementDataBuilder().(*_MeasurementDataChannelMeasurementDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MeasurementDataBuilder) Build() (MeasurementData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForMeasurementData()
+}
+
+func (b *_MeasurementDataBuilder) MustBuild() MeasurementData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MeasurementDataBuilder) DeepCopy() any {
+	_copy := b.CreateMeasurementDataBuilder().(*_MeasurementDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_MeasurementDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMeasurementDataBuilder creates a MeasurementDataBuilder
+func (b *_MeasurementData) CreateMeasurementDataBuilder() MeasurementDataBuilder {
+	if b == nil {
+		return NewMeasurementDataBuilder()
+	}
+	return &_MeasurementDataBuilder{_MeasurementData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +240,6 @@ func (pm *_MeasurementData) GetCommandType() MeasurementCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeasurementData factory function for _MeasurementData
-func NewMeasurementData(commandTypeContainer MeasurementCommandTypeContainer) *_MeasurementData {
-	return &_MeasurementData{CommandTypeContainer: commandTypeContainer}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeasurementData(structType any) MeasurementData {
@@ -146,7 +282,7 @@ func MeasurementDataParseWithBufferProducer[T MeasurementData]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +292,12 @@ func MeasurementDataParseWithBuffer[T MeasurementData](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_MeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__measurementData MeasurementData, err error) {
@@ -189,7 +330,7 @@ func (m *_MeasurementData) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child MeasurementData
 	switch {
 	case commandType == MeasurementCommandType_MEASUREMENT_EVENT: // MeasurementDataChannelMeasurementData
-		if _child, err = (&_MeasurementDataChannelMeasurementData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MeasurementDataChannelMeasurementData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MeasurementDataChannelMeasurementData for type-switch of MeasurementData")
 		}
 	default:
@@ -237,3 +378,18 @@ func (pm *_MeasurementData) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_MeasurementData) IsMeasurementData() {}
+
+func (m *_MeasurementData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeasurementData) deepCopy() *_MeasurementData {
+	if m == nil {
+		return nil
+	}
+	_MeasurementDataCopy := &_MeasurementData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+	}
+	return _MeasurementDataCopy
+}

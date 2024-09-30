@@ -38,6 +38,7 @@ type RationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() int32
@@ -45,6 +46,8 @@ type RationalNumber interface {
 	GetDenominator() uint32
 	// IsRationalNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRationalNumber()
+	// CreateBuilder creates a RationalNumberBuilder
+	CreateRationalNumberBuilder() RationalNumberBuilder
 }
 
 // _RationalNumber is the data-structure of this message
@@ -56,6 +59,115 @@ type _RationalNumber struct {
 
 var _ RationalNumber = (*_RationalNumber)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RationalNumber)(nil)
+
+// NewRationalNumber factory function for _RationalNumber
+func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
+	_result := &_RationalNumber{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RationalNumberBuilder is a builder for RationalNumber
+type RationalNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder
+	// WithNumerator adds Numerator (property field)
+	WithNumerator(int32) RationalNumberBuilder
+	// WithDenominator adds Denominator (property field)
+	WithDenominator(uint32) RationalNumberBuilder
+	// Build builds the RationalNumber or returns an error if something is wrong
+	Build() (RationalNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RationalNumber
+}
+
+// NewRationalNumberBuilder() creates a RationalNumberBuilder
+func NewRationalNumberBuilder() RationalNumberBuilder {
+	return &_RationalNumberBuilder{_RationalNumber: new(_RationalNumber)}
+}
+
+type _RationalNumberBuilder struct {
+	*_RationalNumber
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RationalNumberBuilder) = (*_RationalNumberBuilder)(nil)
+
+func (b *_RationalNumberBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_RationalNumberBuilder) WithMandatoryFields(numerator int32, denominator uint32) RationalNumberBuilder {
+	return b.WithNumerator(numerator).WithDenominator(denominator)
+}
+
+func (b *_RationalNumberBuilder) WithNumerator(numerator int32) RationalNumberBuilder {
+	b.Numerator = numerator
+	return b
+}
+
+func (b *_RationalNumberBuilder) WithDenominator(denominator uint32) RationalNumberBuilder {
+	b.Denominator = denominator
+	return b
+}
+
+func (b *_RationalNumberBuilder) Build() (RationalNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RationalNumber.deepCopy(), nil
+}
+
+func (b *_RationalNumberBuilder) MustBuild() RationalNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RationalNumberBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RationalNumberBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RationalNumberBuilder) DeepCopy() any {
+	_copy := b.CreateRationalNumberBuilder().(*_RationalNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRationalNumberBuilder creates a RationalNumberBuilder
+func (b *_RationalNumber) CreateRationalNumberBuilder() RationalNumberBuilder {
+	if b == nil {
+		return NewRationalNumberBuilder()
+	}
+	return &_RationalNumberBuilder{_RationalNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_RationalNumber) GetDenominator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRationalNumber factory function for _RationalNumber
-func NewRationalNumber(numerator int32, denominator uint32) *_RationalNumber {
-	_result := &_RationalNumber{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Numerator:                         numerator,
-		Denominator:                       denominator,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRationalNumber(structType any) RationalNumber {
@@ -201,13 +302,34 @@ func (m *_RationalNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_RationalNumber) IsRationalNumber() {}
 
+func (m *_RationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RationalNumber) deepCopy() *_RationalNumber {
+	if m == nil {
+		return nil
+	}
+	_RationalNumberCopy := &_RationalNumber{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RationalNumberCopy
+}
+
 func (m *_RationalNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

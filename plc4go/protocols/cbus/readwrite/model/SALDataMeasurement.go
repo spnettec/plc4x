@@ -38,11 +38,14 @@ type SALDataMeasurement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetMeasurementData returns MeasurementData (property field)
 	GetMeasurementData() MeasurementData
 	// IsSALDataMeasurement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataMeasurement()
+	// CreateBuilder creates a SALDataMeasurementBuilder
+	CreateSALDataMeasurementBuilder() SALDataMeasurementBuilder
 }
 
 // _SALDataMeasurement is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataMeasurement struct {
 
 var _ SALDataMeasurement = (*_SALDataMeasurement)(nil)
 var _ SALDataRequirements = (*_SALDataMeasurement)(nil)
+
+// NewSALDataMeasurement factory function for _SALDataMeasurement
+func NewSALDataMeasurement(salData SALData, measurementData MeasurementData) *_SALDataMeasurement {
+	if measurementData == nil {
+		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
+	}
+	_result := &_SALDataMeasurement{
+		SALDataContract: NewSALData(salData),
+		MeasurementData: measurementData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataMeasurementBuilder is a builder for SALDataMeasurement
+type SALDataMeasurementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(measurementData MeasurementData) SALDataMeasurementBuilder
+	// WithMeasurementData adds MeasurementData (property field)
+	WithMeasurementData(MeasurementData) SALDataMeasurementBuilder
+	// WithMeasurementDataBuilder adds MeasurementData (property field) which is build by the builder
+	WithMeasurementDataBuilder(func(MeasurementDataBuilder) MeasurementDataBuilder) SALDataMeasurementBuilder
+	// Build builds the SALDataMeasurement or returns an error if something is wrong
+	Build() (SALDataMeasurement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataMeasurement
+}
+
+// NewSALDataMeasurementBuilder() creates a SALDataMeasurementBuilder
+func NewSALDataMeasurementBuilder() SALDataMeasurementBuilder {
+	return &_SALDataMeasurementBuilder{_SALDataMeasurement: new(_SALDataMeasurement)}
+}
+
+type _SALDataMeasurementBuilder struct {
+	*_SALDataMeasurement
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataMeasurementBuilder) = (*_SALDataMeasurementBuilder)(nil)
+
+func (b *_SALDataMeasurementBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataMeasurementBuilder) WithMandatoryFields(measurementData MeasurementData) SALDataMeasurementBuilder {
+	return b.WithMeasurementData(measurementData)
+}
+
+func (b *_SALDataMeasurementBuilder) WithMeasurementData(measurementData MeasurementData) SALDataMeasurementBuilder {
+	b.MeasurementData = measurementData
+	return b
+}
+
+func (b *_SALDataMeasurementBuilder) WithMeasurementDataBuilder(builderSupplier func(MeasurementDataBuilder) MeasurementDataBuilder) SALDataMeasurementBuilder {
+	builder := builderSupplier(b.MeasurementData.CreateMeasurementDataBuilder())
+	var err error
+	b.MeasurementData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "MeasurementDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataMeasurementBuilder) Build() (SALDataMeasurement, error) {
+	if b.MeasurementData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'measurementData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataMeasurement.deepCopy(), nil
+}
+
+func (b *_SALDataMeasurementBuilder) MustBuild() SALDataMeasurement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataMeasurementBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataMeasurementBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataMeasurementBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataMeasurementBuilder().(*_SALDataMeasurementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataMeasurementBuilder creates a SALDataMeasurementBuilder
+func (b *_SALDataMeasurement) CreateSALDataMeasurementBuilder() SALDataMeasurementBuilder {
+	if b == nil {
+		return NewSALDataMeasurementBuilder()
+	}
+	return &_SALDataMeasurementBuilder{_SALDataMeasurement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataMeasurement) GetMeasurementData() MeasurementData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataMeasurement factory function for _SALDataMeasurement
-func NewSALDataMeasurement(measurementData MeasurementData, salData SALData) *_SALDataMeasurement {
-	if measurementData == nil {
-		panic("measurementData of type MeasurementData for SALDataMeasurement must not be nil")
-	}
-	_result := &_SALDataMeasurement{
-		SALDataContract: NewSALData(salData),
-		MeasurementData: measurementData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataMeasurement(structType any) SALDataMeasurement {
@@ -183,13 +298,33 @@ func (m *_SALDataMeasurement) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_SALDataMeasurement) IsSALDataMeasurement() {}
 
+func (m *_SALDataMeasurement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataMeasurement) deepCopy() *_SALDataMeasurement {
+	if m == nil {
+		return nil
+	}
+	_SALDataMeasurementCopy := &_SALDataMeasurement{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.MeasurementData.DeepCopy().(MeasurementData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataMeasurementCopy
+}
+
 func (m *_SALDataMeasurement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -86,12 +86,12 @@ type StateMachineRequirements interface {
 type stateMachine struct {
 	requirements StateMachineRequirements `ignore:"true"`
 
-	interceptor    StateInterceptor
+	interceptor    StateInterceptor `asPtr:"true"`
 	stateDecorator func(state State) State
 
 	states                 []State
 	name                   string
-	machineGroup           *StateMachineGroup
+	machineGroup           *StateMachineGroup `asPtr:"true"`
 	stateSubStruct         any
 	startState             State
 	unexpectedReceiveState State
@@ -109,6 +109,8 @@ type stateMachine struct {
 	currentState           State
 	transactionLog         []TransactionLogEntry
 
+	_leafName string
+
 	log zerolog.Logger
 }
 
@@ -124,15 +126,14 @@ func (t TransactionLogEntry) String() string {
 var _ StateMachineContract = (*stateMachine)(nil)
 
 // NewStateMachine creates a new state machine. Make sure to call the init function (Init must be called after a new (can't be done in constructor as initialization is then not yet finished))
-func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequirements, opts ...func(machine *stateMachine)) (sm StateMachineContract, init func()) {
+func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequirements, options ...Option) (sm StateMachineContract, init func()) {
 	s := &stateMachine{
 		requirements: requirements,
 
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(s)
-	}
+	ApplyAppliers(options, s)
+	s._leafName = ExtractLeafName(options, StructName())
 	if _debug != nil {
 		_debug("__init__(%s)", s.name)
 	}
@@ -171,55 +172,41 @@ func NewStateMachine(localLog zerolog.Logger, requirements StateMachineRequireme
 
 		s.transitionQueue = make(chan PDU, 100)
 
-		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, NoArgs, NoKWArgs(), nil)
+		s.stateTimeoutTask = NewTimeoutTask(s.StateTimeout, NoArgs, NoKWArgs())
 
 		if s.timeout != 0 {
 			s.timeoutState = s.NewState("state machine timeout").Fail("")
-			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, NoArgs, NoKWArgs(), s.stateMachineTimeout)
+			s.timeoutTask = NewTimeoutTask(s.StateMachineTimeout, NoArgs, NoKWArgs(), WithTaskTime(*s.stateMachineTimeout))
 		}
 	}
 }
 
-func WithStateMachineName(name string) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.name = name
-	}
+func WithStateMachineName(name string) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.name = name })
 }
 
-func WithStateMachineStateInterceptor(interceptor StateInterceptor) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.interceptor = interceptor
-	}
+func WithStateMachineStateInterceptor(interceptor StateInterceptor) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.interceptor = interceptor })
 }
 
-func WithStateMachineTimeout(timeout time.Duration) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.timeout = timeout
-	}
+func WithStateMachineTimeout(timeout time.Duration) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.timeout = timeout })
 }
 
-func WithStateMachineStartState(startState State) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.startState = startState
-	}
+func WithStateMachineStartState(startState State) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.startState = startState })
 }
 
-func WithStateMachineUnexpectedReceiveState(unexpectedReceiveState State) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.unexpectedReceiveState = unexpectedReceiveState
-	}
+func WithStateMachineUnexpectedReceiveState(unexpectedReceiveState State) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.unexpectedReceiveState = unexpectedReceiveState })
 }
 
-func WithStateMachineMachineGroup(machineGroup *StateMachineGroup) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.machineGroup = machineGroup
-	}
+func WithStateMachineMachineGroup(machineGroup *StateMachineGroup) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.machineGroup = machineGroup })
 }
 
-func WithStateMachineStateDecorator(stateDecorator func(state State) State) func(stateMachine *stateMachine) {
-	return func(stateMachine *stateMachine) {
-		stateMachine.stateDecorator = stateDecorator
-	}
+func WithStateMachineStateDecorator(stateDecorator func(state State) State) GenericApplier[*stateMachine] {
+	return WrapGenericApplier(func(stateMachine *stateMachine) { stateMachine.stateDecorator = stateDecorator })
 }
 
 func (s *stateMachine) getStateTimeoutTask() *TimeoutTask {
@@ -841,26 +828,6 @@ func (s *stateMachine) IsFailState() bool {
 	return *s.isFailState
 }
 
-func (s *stateMachine) AlternateString() (string, bool) {
-	var stateText = ""
-	if s.currentState == nil {
-		stateText = "not started"
-	} else if s.isSuccessState != nil && *s.isSuccessState {
-		stateText = "success"
-	} else if s.isFailState != nil && *s.isFailState {
-		stateText = "fail"
-	} else if !s.running {
-		stateText = "idle"
-	} else {
-		stateText = "in"
-	}
-	if s.currentState != nil {
-		stateText += " " + s.currentState.String()
-	}
-
-	return fmt.Sprintf("<%s(%s) %s at %p>", TypeName(s.requirements), s.name, stateText, s), true
-}
-
 func (s *stateMachine) Format(state fmt.State, verb rune) {
 	switch verb {
 	case 's', 'v':
@@ -869,4 +836,27 @@ func (s *stateMachine) Format(state fmt.State, verb rune) {
 		alternateString, _ := s.AlternateString()
 		_, _ = state.Write([]byte(alternateString))
 	}
+}
+
+func (s *stateMachine) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		var stateText = ""
+		if s.currentState == nil {
+			stateText = "not started"
+		} else if s.isSuccessState != nil && *s.isSuccessState {
+			stateText = "success"
+		} else if s.isFailState != nil && *s.isFailState {
+			stateText = "fail"
+		} else if !s.running {
+			stateText = "idle"
+		} else {
+			stateText = "in"
+		}
+		if s.currentState != nil {
+			stateText += " " + s.currentState.String()
+		}
+
+		return fmt.Sprintf("<%s(%s) %s at %p>", s._leafName, s.name, stateText, s), true
+	}
+	return "", false
 }

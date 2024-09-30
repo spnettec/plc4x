@@ -38,6 +38,7 @@ type BACnetSpecialEventListOfTimeValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfTimeValues returns ListOfTimeValues (property field)
@@ -46,6 +47,8 @@ type BACnetSpecialEventListOfTimeValues interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetSpecialEventListOfTimeValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSpecialEventListOfTimeValues()
+	// CreateBuilder creates a BACnetSpecialEventListOfTimeValuesBuilder
+	CreateBACnetSpecialEventListOfTimeValuesBuilder() BACnetSpecialEventListOfTimeValuesBuilder
 }
 
 // _BACnetSpecialEventListOfTimeValues is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetSpecialEventListOfTimeValues struct {
 }
 
 var _ BACnetSpecialEventListOfTimeValues = (*_BACnetSpecialEventListOfTimeValues)(nil)
+
+// NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
+func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
+	}
+	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSpecialEventListOfTimeValuesBuilder is a builder for BACnetSpecialEventListOfTimeValues
+type BACnetSpecialEventListOfTimeValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithListOfTimeValues adds ListOfTimeValues (property field)
+	WithListOfTimeValues(...BACnetTimeValue) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetSpecialEventListOfTimeValuesBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSpecialEventListOfTimeValuesBuilder
+	// Build builds the BACnetSpecialEventListOfTimeValues or returns an error if something is wrong
+	Build() (BACnetSpecialEventListOfTimeValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSpecialEventListOfTimeValues
+}
+
+// NewBACnetSpecialEventListOfTimeValuesBuilder() creates a BACnetSpecialEventListOfTimeValuesBuilder
+func NewBACnetSpecialEventListOfTimeValuesBuilder() BACnetSpecialEventListOfTimeValuesBuilder {
+	return &_BACnetSpecialEventListOfTimeValuesBuilder{_BACnetSpecialEventListOfTimeValues: new(_BACnetSpecialEventListOfTimeValues)}
+}
+
+type _BACnetSpecialEventListOfTimeValuesBuilder struct {
+	*_BACnetSpecialEventListOfTimeValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSpecialEventListOfTimeValuesBuilder) = (*_BACnetSpecialEventListOfTimeValuesBuilder)(nil)
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag) BACnetSpecialEventListOfTimeValuesBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfTimeValues(listOfTimeValues...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetSpecialEventListOfTimeValuesBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSpecialEventListOfTimeValuesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithListOfTimeValues(listOfTimeValues ...BACnetTimeValue) BACnetSpecialEventListOfTimeValuesBuilder {
+	b.ListOfTimeValues = listOfTimeValues
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetSpecialEventListOfTimeValuesBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSpecialEventListOfTimeValuesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) Build() (BACnetSpecialEventListOfTimeValues, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSpecialEventListOfTimeValues.deepCopy(), nil
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) MustBuild() BACnetSpecialEventListOfTimeValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSpecialEventListOfTimeValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSpecialEventListOfTimeValuesBuilder().(*_BACnetSpecialEventListOfTimeValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSpecialEventListOfTimeValuesBuilder creates a BACnetSpecialEventListOfTimeValuesBuilder
+func (b *_BACnetSpecialEventListOfTimeValues) CreateBACnetSpecialEventListOfTimeValuesBuilder() BACnetSpecialEventListOfTimeValuesBuilder {
+	if b == nil {
+		return NewBACnetSpecialEventListOfTimeValuesBuilder()
+	}
+	return &_BACnetSpecialEventListOfTimeValuesBuilder{_BACnetSpecialEventListOfTimeValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSpecialEventListOfTimeValues factory function for _BACnetSpecialEventListOfTimeValues
-func NewBACnetSpecialEventListOfTimeValues(openingTag BACnetOpeningTag, listOfTimeValues []BACnetTimeValue, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSpecialEventListOfTimeValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetSpecialEventListOfTimeValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetSpecialEventListOfTimeValues must not be nil")
-	}
-	return &_BACnetSpecialEventListOfTimeValues{OpeningTag: openingTag, ListOfTimeValues: listOfTimeValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSpecialEventListOfTimeValues(structType any) BACnetSpecialEventListOfTimeValues {
@@ -146,7 +281,7 @@ func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSpecialEventListOfTimeValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetSpecialEventListOfTimeValues BACnetSpecialEventListOfTimeValues, err error) {
@@ -230,13 +365,34 @@ func (m *_BACnetSpecialEventListOfTimeValues) GetTagNumber() uint8 {
 
 func (m *_BACnetSpecialEventListOfTimeValues) IsBACnetSpecialEventListOfTimeValues() {}
 
+func (m *_BACnetSpecialEventListOfTimeValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSpecialEventListOfTimeValues) deepCopy() *_BACnetSpecialEventListOfTimeValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetSpecialEventListOfTimeValuesCopy := &_BACnetSpecialEventListOfTimeValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.ListOfTimeValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSpecialEventListOfTimeValuesCopy
+}
+
 func (m *_BACnetSpecialEventListOfTimeValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

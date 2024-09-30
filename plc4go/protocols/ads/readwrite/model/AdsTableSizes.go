@@ -40,6 +40,7 @@ type AdsTableSizes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSymbolCount returns SymbolCount (property field)
 	GetSymbolCount() uint32
 	// GetSymbolLength returns SymbolLength (property field)
@@ -54,6 +55,8 @@ type AdsTableSizes interface {
 	GetExtraLength() uint32
 	// IsAdsTableSizes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsTableSizes()
+	// CreateBuilder creates a AdsTableSizesBuilder
+	CreateAdsTableSizesBuilder() AdsTableSizesBuilder
 }
 
 // _AdsTableSizes is the data-structure of this message
@@ -67,6 +70,122 @@ type _AdsTableSizes struct {
 }
 
 var _ AdsTableSizes = (*_AdsTableSizes)(nil)
+
+// NewAdsTableSizes factory function for _AdsTableSizes
+func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
+	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsTableSizesBuilder is a builder for AdsTableSizes
+type AdsTableSizesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder
+	// WithSymbolCount adds SymbolCount (property field)
+	WithSymbolCount(uint32) AdsTableSizesBuilder
+	// WithSymbolLength adds SymbolLength (property field)
+	WithSymbolLength(uint32) AdsTableSizesBuilder
+	// WithDataTypeCount adds DataTypeCount (property field)
+	WithDataTypeCount(uint32) AdsTableSizesBuilder
+	// WithDataTypeLength adds DataTypeLength (property field)
+	WithDataTypeLength(uint32) AdsTableSizesBuilder
+	// WithExtraCount adds ExtraCount (property field)
+	WithExtraCount(uint32) AdsTableSizesBuilder
+	// WithExtraLength adds ExtraLength (property field)
+	WithExtraLength(uint32) AdsTableSizesBuilder
+	// Build builds the AdsTableSizes or returns an error if something is wrong
+	Build() (AdsTableSizes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsTableSizes
+}
+
+// NewAdsTableSizesBuilder() creates a AdsTableSizesBuilder
+func NewAdsTableSizesBuilder() AdsTableSizesBuilder {
+	return &_AdsTableSizesBuilder{_AdsTableSizes: new(_AdsTableSizes)}
+}
+
+type _AdsTableSizesBuilder struct {
+	*_AdsTableSizes
+
+	err *utils.MultiError
+}
+
+var _ (AdsTableSizesBuilder) = (*_AdsTableSizesBuilder)(nil)
+
+func (b *_AdsTableSizesBuilder) WithMandatoryFields(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) AdsTableSizesBuilder {
+	return b.WithSymbolCount(symbolCount).WithSymbolLength(symbolLength).WithDataTypeCount(dataTypeCount).WithDataTypeLength(dataTypeLength).WithExtraCount(extraCount).WithExtraLength(extraLength)
+}
+
+func (b *_AdsTableSizesBuilder) WithSymbolCount(symbolCount uint32) AdsTableSizesBuilder {
+	b.SymbolCount = symbolCount
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) WithSymbolLength(symbolLength uint32) AdsTableSizesBuilder {
+	b.SymbolLength = symbolLength
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) WithDataTypeCount(dataTypeCount uint32) AdsTableSizesBuilder {
+	b.DataTypeCount = dataTypeCount
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) WithDataTypeLength(dataTypeLength uint32) AdsTableSizesBuilder {
+	b.DataTypeLength = dataTypeLength
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) WithExtraCount(extraCount uint32) AdsTableSizesBuilder {
+	b.ExtraCount = extraCount
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) WithExtraLength(extraLength uint32) AdsTableSizesBuilder {
+	b.ExtraLength = extraLength
+	return b
+}
+
+func (b *_AdsTableSizesBuilder) Build() (AdsTableSizes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsTableSizes.deepCopy(), nil
+}
+
+func (b *_AdsTableSizesBuilder) MustBuild() AdsTableSizes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsTableSizesBuilder) DeepCopy() any {
+	_copy := b.CreateAdsTableSizesBuilder().(*_AdsTableSizesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsTableSizesBuilder creates a AdsTableSizesBuilder
+func (b *_AdsTableSizes) CreateAdsTableSizesBuilder() AdsTableSizesBuilder {
+	if b == nil {
+		return NewAdsTableSizesBuilder()
+	}
+	return &_AdsTableSizesBuilder{_AdsTableSizes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,11 +220,6 @@ func (m *_AdsTableSizes) GetExtraLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsTableSizes factory function for _AdsTableSizes
-func NewAdsTableSizes(symbolCount uint32, symbolLength uint32, dataTypeCount uint32, dataTypeLength uint32, extraCount uint32, extraLength uint32) *_AdsTableSizes {
-	return &_AdsTableSizes{SymbolCount: symbolCount, SymbolLength: symbolLength, DataTypeCount: dataTypeCount, DataTypeLength: dataTypeLength, ExtraCount: extraCount, ExtraLength: extraLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsTableSizes(structType any) AdsTableSizes {
@@ -165,7 +279,7 @@ func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsTableSizes) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsTableSizes AdsTableSizes, err error) {
@@ -269,13 +383,36 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_AdsTableSizes) IsAdsTableSizes() {}
 
+func (m *_AdsTableSizes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsTableSizes) deepCopy() *_AdsTableSizes {
+	if m == nil {
+		return nil
+	}
+	_AdsTableSizesCopy := &_AdsTableSizes{
+		m.SymbolCount,
+		m.SymbolLength,
+		m.DataTypeCount,
+		m.DataTypeLength,
+		m.ExtraCount,
+		m.ExtraLength,
+	}
+	return _AdsTableSizesCopy
+}
+
 func (m *_AdsTableSizes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

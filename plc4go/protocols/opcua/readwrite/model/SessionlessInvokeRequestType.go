@@ -38,6 +38,7 @@ type SessionlessInvokeRequestType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetUrisVersion returns UrisVersion (property field)
 	GetUrisVersion() uint32
@@ -57,6 +58,8 @@ type SessionlessInvokeRequestType interface {
 	GetServiceId() uint32
 	// IsSessionlessInvokeRequestType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSessionlessInvokeRequestType()
+	// CreateBuilder creates a SessionlessInvokeRequestTypeBuilder
+	CreateSessionlessInvokeRequestTypeBuilder() SessionlessInvokeRequestTypeBuilder
 }
 
 // _SessionlessInvokeRequestType is the data-structure of this message
@@ -74,6 +77,163 @@ type _SessionlessInvokeRequestType struct {
 
 var _ SessionlessInvokeRequestType = (*_SessionlessInvokeRequestType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SessionlessInvokeRequestType)(nil)
+
+// NewSessionlessInvokeRequestType factory function for _SessionlessInvokeRequestType
+func NewSessionlessInvokeRequestType(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) *_SessionlessInvokeRequestType {
+	_result := &_SessionlessInvokeRequestType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		UrisVersion:                       urisVersion,
+		NoOfNamespaceUris:                 noOfNamespaceUris,
+		NamespaceUris:                     namespaceUris,
+		NoOfServerUris:                    noOfServerUris,
+		ServerUris:                        serverUris,
+		NoOfLocaleIds:                     noOfLocaleIds,
+		LocaleIds:                         localeIds,
+		ServiceId:                         serviceId,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SessionlessInvokeRequestTypeBuilder is a builder for SessionlessInvokeRequestType
+type SessionlessInvokeRequestTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder
+	// WithUrisVersion adds UrisVersion (property field)
+	WithUrisVersion(uint32) SessionlessInvokeRequestTypeBuilder
+	// WithNoOfNamespaceUris adds NoOfNamespaceUris (property field)
+	WithNoOfNamespaceUris(int32) SessionlessInvokeRequestTypeBuilder
+	// WithNamespaceUris adds NamespaceUris (property field)
+	WithNamespaceUris(...PascalString) SessionlessInvokeRequestTypeBuilder
+	// WithNoOfServerUris adds NoOfServerUris (property field)
+	WithNoOfServerUris(int32) SessionlessInvokeRequestTypeBuilder
+	// WithServerUris adds ServerUris (property field)
+	WithServerUris(...PascalString) SessionlessInvokeRequestTypeBuilder
+	// WithNoOfLocaleIds adds NoOfLocaleIds (property field)
+	WithNoOfLocaleIds(int32) SessionlessInvokeRequestTypeBuilder
+	// WithLocaleIds adds LocaleIds (property field)
+	WithLocaleIds(...PascalString) SessionlessInvokeRequestTypeBuilder
+	// WithServiceId adds ServiceId (property field)
+	WithServiceId(uint32) SessionlessInvokeRequestTypeBuilder
+	// Build builds the SessionlessInvokeRequestType or returns an error if something is wrong
+	Build() (SessionlessInvokeRequestType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SessionlessInvokeRequestType
+}
+
+// NewSessionlessInvokeRequestTypeBuilder() creates a SessionlessInvokeRequestTypeBuilder
+func NewSessionlessInvokeRequestTypeBuilder() SessionlessInvokeRequestTypeBuilder {
+	return &_SessionlessInvokeRequestTypeBuilder{_SessionlessInvokeRequestType: new(_SessionlessInvokeRequestType)}
+}
+
+type _SessionlessInvokeRequestTypeBuilder struct {
+	*_SessionlessInvokeRequestType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SessionlessInvokeRequestTypeBuilder) = (*_SessionlessInvokeRequestTypeBuilder)(nil)
+
+func (b *_SessionlessInvokeRequestTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithMandatoryFields(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) SessionlessInvokeRequestTypeBuilder {
+	return b.WithUrisVersion(urisVersion).WithNoOfNamespaceUris(noOfNamespaceUris).WithNamespaceUris(namespaceUris...).WithNoOfServerUris(noOfServerUris).WithServerUris(serverUris...).WithNoOfLocaleIds(noOfLocaleIds).WithLocaleIds(localeIds...).WithServiceId(serviceId)
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithUrisVersion(urisVersion uint32) SessionlessInvokeRequestTypeBuilder {
+	b.UrisVersion = urisVersion
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfNamespaceUris(noOfNamespaceUris int32) SessionlessInvokeRequestTypeBuilder {
+	b.NoOfNamespaceUris = noOfNamespaceUris
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithNamespaceUris(namespaceUris ...PascalString) SessionlessInvokeRequestTypeBuilder {
+	b.NamespaceUris = namespaceUris
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfServerUris(noOfServerUris int32) SessionlessInvokeRequestTypeBuilder {
+	b.NoOfServerUris = noOfServerUris
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithServerUris(serverUris ...PascalString) SessionlessInvokeRequestTypeBuilder {
+	b.ServerUris = serverUris
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithNoOfLocaleIds(noOfLocaleIds int32) SessionlessInvokeRequestTypeBuilder {
+	b.NoOfLocaleIds = noOfLocaleIds
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithLocaleIds(localeIds ...PascalString) SessionlessInvokeRequestTypeBuilder {
+	b.LocaleIds = localeIds
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) WithServiceId(serviceId uint32) SessionlessInvokeRequestTypeBuilder {
+	b.ServiceId = serviceId
+	return b
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) Build() (SessionlessInvokeRequestType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SessionlessInvokeRequestType.deepCopy(), nil
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) MustBuild() SessionlessInvokeRequestType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SessionlessInvokeRequestTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SessionlessInvokeRequestTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSessionlessInvokeRequestTypeBuilder().(*_SessionlessInvokeRequestTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSessionlessInvokeRequestTypeBuilder creates a SessionlessInvokeRequestTypeBuilder
+func (b *_SessionlessInvokeRequestType) CreateSessionlessInvokeRequestTypeBuilder() SessionlessInvokeRequestTypeBuilder {
+	if b == nil {
+		return NewSessionlessInvokeRequestTypeBuilder()
+	}
+	return &_SessionlessInvokeRequestTypeBuilder{_SessionlessInvokeRequestType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,23 +294,6 @@ func (m *_SessionlessInvokeRequestType) GetServiceId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSessionlessInvokeRequestType factory function for _SessionlessInvokeRequestType
-func NewSessionlessInvokeRequestType(urisVersion uint32, noOfNamespaceUris int32, namespaceUris []PascalString, noOfServerUris int32, serverUris []PascalString, noOfLocaleIds int32, localeIds []PascalString, serviceId uint32) *_SessionlessInvokeRequestType {
-	_result := &_SessionlessInvokeRequestType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		UrisVersion:                       urisVersion,
-		NoOfNamespaceUris:                 noOfNamespaceUris,
-		NamespaceUris:                     namespaceUris,
-		NoOfServerUris:                    noOfServerUris,
-		ServerUris:                        serverUris,
-		NoOfLocaleIds:                     noOfLocaleIds,
-		LocaleIds:                         localeIds,
-		ServiceId:                         serviceId,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSessionlessInvokeRequestType(structType any) SessionlessInvokeRequestType {
@@ -348,13 +491,40 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_SessionlessInvokeRequestType) IsSessionlessInvokeRequestType() {}
 
+func (m *_SessionlessInvokeRequestType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionlessInvokeRequestType) deepCopy() *_SessionlessInvokeRequestType {
+	if m == nil {
+		return nil
+	}
+	_SessionlessInvokeRequestTypeCopy := &_SessionlessInvokeRequestType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.UrisVersion,
+		m.NoOfNamespaceUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.NamespaceUris),
+		m.NoOfServerUris,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerUris),
+		m.NoOfLocaleIds,
+		utils.DeepCopySlice[PascalString, PascalString](m.LocaleIds),
+		m.ServiceId,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SessionlessInvokeRequestTypeCopy
+}
+
 func (m *_SessionlessInvokeRequestType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

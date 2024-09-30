@@ -38,12 +38,15 @@ type ModbusDeviceInformationObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectId returns ObjectId (property field)
 	GetObjectId() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsModbusDeviceInformationObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusDeviceInformationObject()
+	// CreateBuilder creates a ModbusDeviceInformationObjectBuilder
+	CreateModbusDeviceInformationObjectBuilder() ModbusDeviceInformationObjectBuilder
 }
 
 // _ModbusDeviceInformationObject is the data-structure of this message
@@ -53,6 +56,94 @@ type _ModbusDeviceInformationObject struct {
 }
 
 var _ ModbusDeviceInformationObject = (*_ModbusDeviceInformationObject)(nil)
+
+// NewModbusDeviceInformationObject factory function for _ModbusDeviceInformationObject
+func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDeviceInformationObject {
+	return &_ModbusDeviceInformationObject{ObjectId: objectId, Data: data}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusDeviceInformationObjectBuilder is a builder for ModbusDeviceInformationObject
+type ModbusDeviceInformationObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectId uint8, data []byte) ModbusDeviceInformationObjectBuilder
+	// WithObjectId adds ObjectId (property field)
+	WithObjectId(uint8) ModbusDeviceInformationObjectBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ModbusDeviceInformationObjectBuilder
+	// Build builds the ModbusDeviceInformationObject or returns an error if something is wrong
+	Build() (ModbusDeviceInformationObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusDeviceInformationObject
+}
+
+// NewModbusDeviceInformationObjectBuilder() creates a ModbusDeviceInformationObjectBuilder
+func NewModbusDeviceInformationObjectBuilder() ModbusDeviceInformationObjectBuilder {
+	return &_ModbusDeviceInformationObjectBuilder{_ModbusDeviceInformationObject: new(_ModbusDeviceInformationObject)}
+}
+
+type _ModbusDeviceInformationObjectBuilder struct {
+	*_ModbusDeviceInformationObject
+
+	err *utils.MultiError
+}
+
+var _ (ModbusDeviceInformationObjectBuilder) = (*_ModbusDeviceInformationObjectBuilder)(nil)
+
+func (b *_ModbusDeviceInformationObjectBuilder) WithMandatoryFields(objectId uint8, data []byte) ModbusDeviceInformationObjectBuilder {
+	return b.WithObjectId(objectId).WithData(data...)
+}
+
+func (b *_ModbusDeviceInformationObjectBuilder) WithObjectId(objectId uint8) ModbusDeviceInformationObjectBuilder {
+	b.ObjectId = objectId
+	return b
+}
+
+func (b *_ModbusDeviceInformationObjectBuilder) WithData(data ...byte) ModbusDeviceInformationObjectBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ModbusDeviceInformationObjectBuilder) Build() (ModbusDeviceInformationObject, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusDeviceInformationObject.deepCopy(), nil
+}
+
+func (b *_ModbusDeviceInformationObjectBuilder) MustBuild() ModbusDeviceInformationObject {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ModbusDeviceInformationObjectBuilder) DeepCopy() any {
+	_copy := b.CreateModbusDeviceInformationObjectBuilder().(*_ModbusDeviceInformationObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusDeviceInformationObjectBuilder creates a ModbusDeviceInformationObjectBuilder
+func (b *_ModbusDeviceInformationObject) CreateModbusDeviceInformationObjectBuilder() ModbusDeviceInformationObjectBuilder {
+	if b == nil {
+		return NewModbusDeviceInformationObjectBuilder()
+	}
+	return &_ModbusDeviceInformationObjectBuilder{_ModbusDeviceInformationObject: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_ModbusDeviceInformationObject) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusDeviceInformationObject factory function for _ModbusDeviceInformationObject
-func NewModbusDeviceInformationObject(objectId uint8, data []byte) *_ModbusDeviceInformationObject {
-	return &_ModbusDeviceInformationObject{ObjectId: objectId, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusDeviceInformationObject(structType any) ModbusDeviceInformationObject {
@@ -128,7 +214,7 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ModbusDeviceInformationObject) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__modbusDeviceInformationObject ModbusDeviceInformationObject, err error) {
@@ -202,13 +288,32 @@ func (m *_ModbusDeviceInformationObject) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_ModbusDeviceInformationObject) IsModbusDeviceInformationObject() {}
 
+func (m *_ModbusDeviceInformationObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusDeviceInformationObject) deepCopy() *_ModbusDeviceInformationObject {
+	if m == nil {
+		return nil
+	}
+	_ModbusDeviceInformationObjectCopy := &_ModbusDeviceInformationObject{
+		m.ObjectId,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _ModbusDeviceInformationObjectCopy
+}
+
 func (m *_ModbusDeviceInformationObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

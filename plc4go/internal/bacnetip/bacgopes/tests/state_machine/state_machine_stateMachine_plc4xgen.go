@@ -48,12 +48,9 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.PushContext("stateMachine"); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.interceptor)
 
-		if err := writeBuffer.WriteString("interceptor", uint32(len(_value)*8), _value); err != nil {
-			return err
-		}
+	if err := writeBuffer.WriteString("interceptor", uint32(len(fmt.Sprintf("%p", d.interceptor))*8), fmt.Sprintf("%p", d.interceptor)); err != nil {
+		return err
 	}
 
 	if err := writeBuffer.WriteBit("stateDecorator", d.stateDecorator != nil); err != nil {
@@ -76,14 +73,9 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
 		return err
 	}
-	if d.machineGroup != nil {
-		{
-			_value := fmt.Sprintf("%v", d.machineGroup)
 
-			if err := writeBuffer.WriteString("machineGroup", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
-		}
+	if err := writeBuffer.WriteString("machineGroup", uint32(len(fmt.Sprintf("%p", d.machineGroup))*8), fmt.Sprintf("%p", d.machineGroup)); err != nil {
+		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.stateSubStruct)
@@ -131,9 +123,10 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return err
 		}
 	}
-
-	if err := writeBuffer.WriteString("stateMachineTimeout", uint32(len(fmt.Sprintf("%s", d.stateMachineTimeout))*8), fmt.Sprintf("%s", d.stateMachineTimeout)); err != nil {
-		return err
+	if d.stateMachineTimeout != nil {
+		if err := writeBuffer.WriteString("stateMachineTimeout", uint32(len(fmt.Sprintf("%s", *d.stateMachineTimeout))*8), fmt.Sprintf("%s", *d.stateMachineTimeout)); err != nil {
+			return err
+		}
 	}
 	if d.timeoutTask != nil {
 		{
@@ -186,6 +179,10 @@ func (d *stateMachine) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.PopContext("transactionLog", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("stateMachine"); err != nil {
 		return err
 	}
@@ -198,9 +195,9 @@ func (d *stateMachine) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

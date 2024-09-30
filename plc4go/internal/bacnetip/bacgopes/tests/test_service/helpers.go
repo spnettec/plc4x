@@ -48,10 +48,12 @@ type _NetworkServiceElement struct {
 	*NetworkServiceElement
 }
 
-func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
+func new_NetworkServiceElement(localLog zerolog.Logger, options ...Option) (*_NetworkServiceElement, error) {
 	n := &_NetworkServiceElement{}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, Combine(optionsForParent, WithNetworkServiceElementStartupDisabled(true))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -63,9 +65,9 @@ type ApplicationNetwork struct {
 
 	trafficLog      *TrafficLog
 	vlan            *Network
-	tdDeviceObject  *LocalDeviceObject
+	tdDeviceObject  LocalDeviceObject
 	td              *ApplicationStateMachine
-	iutDeviceObject *LocalDeviceObject
+	iutDeviceObject LocalDeviceObject
 	iut             *ApplicationStateMachine
 
 	log zerolog.Logger
@@ -86,19 +88,25 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// make a little LAN
 	a.vlan = NewNetwork(localLog, WithNetworkBroadcastAddress(NewLocalBroadcast(nil)), WithNetworkTrafficLogger(a.trafficLog))
 
+	var err error
 	// test device object
 	octets1024 := model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation := model.BACnetSegmentation_NO_SEGMENTATION
-	a.tdDeviceObject = &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets1024,
-		SegmentationSupported:     &segmentation,
-		VendorIdentifier:          999,
+	a.tdDeviceObject, err = NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets1024,
+			KWSegmentationSupported, &segmentation,
+			KWVendorIdentifier, 999,
+		),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
 	}
 
 	// test device
-	var err error
 	a.td, err = NewApplicationStateMachine(localLog, a.tdDeviceObject, a.vlan)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application state machine")
@@ -108,12 +116,18 @@ func NewApplicationNetwork(localLog zerolog.Logger) (*ApplicationNetwork, error)
 	// implementation under test device object
 	octets1024 = model.MaxApduLengthAccepted_NUM_OCTETS_1024
 	segmentation = model.BACnetSegmentation_NO_SEGMENTATION
-	a.iutDeviceObject = &LocalDeviceObject{
-		ObjectName:                "iut",
-		ObjectIdentifier:          "device:20",
-		MaximumApduLengthAccepted: &octets1024,
-		SegmentationSupported:     &segmentation,
-		VendorIdentifier:          999,
+	a.iutDeviceObject, err = NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "iut",
+			KWObjectIdentifier, "device:20",
+			KWMaximumApduLengthAccepted, &octets1024,
+			KWSegmentationSupported, &segmentation,
+			KWVendorIdentifier, 999,
+		),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
 	}
 
 	// implementation under test
@@ -264,16 +278,18 @@ type SnifferStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network) (*SnifferStateMachine, error) {
+func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network, options ...Option) (*SnifferStateMachine, error) {
 	s := &SnifferStateMachine{
 		name: "sniffer",
 		log:  localLog,
 	}
+	ApplyAppliers(options, s)
+	optionsForParent := AddLeafTypeIfAbundant(options, s)
 	s.address, _ = NewAddress(NoArgs)
 
 	// continue with initialization
 	var err error
-	s.ClientContract, err = NewClient(localLog)
+	s.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -282,7 +298,7 @@ func NewSnifferStateMachine(localLog zerolog.Logger, vlan *Network) (*SnifferSta
 	init()
 
 	// create a promiscuous node, added to the network
-	s.node, err = NewNode(localLog, s.address, WithNodeLan(vlan), WithNodePromiscuous(true))
+	s.node, err = NewNode(localLog, s.address, Combine(options, WithNodeLan(vlan), WithNodePromiscuous(true))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -352,13 +368,15 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDeviceObject, vlan *Network) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice LocalDeviceObject, vlan *Network, options ...Option) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
 		log: localLog,
 	}
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
 
 	// build and address and save it
-	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
+	_, instance := ObjectIdentifierStringToTuple(localDevice.GetObjectIdentifier())
 	var err error
 	a.address, err = NewAddress(NA(instance))
 	if err != nil {
@@ -367,16 +385,16 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	a.log.Debug().Stringer("address", a.address).Msg("address")
 
 	// continue with initialization
-	a.ApplicationIOController, err = NewApplicationIOController(a.log, localDevice)
+	a.ApplicationIOController, err = NewApplicationIOController(a.log, Combine(optionsForParent, WithApplicationLocalDeviceObject(localDevice))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = NewStateMachine(a.log, a, Combine(optionsForParent, WithStateMachineName(localDevice.GetObjectName()))...)
 	init()
 
 	// include a application decoder
-	a.asap, err = NewApplicationServiceAccessPoint(a.log)
+	a.asap, err = NewApplicationServiceAccessPoint(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
@@ -387,19 +405,19 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	// the segmentation state machines need access to the same device
 	// information cache as the application
 	deviceInfoCache := a.GetDeviceInfoCache()
-	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
+	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice, Combine(options, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
 
 	// a network service access point will be needed
-	a.nsap, err = NewNetworkServiceAccessPoint(a.log)
+	a.nsap, err = NewNetworkServiceAccessPoint(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	a.nse, err = new_NetworkServiceElement(a.log)
+	a.nse, err = new_NetworkServiceElement(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -415,7 +433,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	}
 
 	// create a node, added to the network
-	a.node, err = NewNode(a.log, a.address, WithNodeLan(vlan))
+	a.node, err = NewNode(a.log, a.address, Combine(options, WithNodeLan(vlan))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}

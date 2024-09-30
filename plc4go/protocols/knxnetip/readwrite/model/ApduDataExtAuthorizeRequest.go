@@ -38,6 +38,7 @@ type ApduDataExtAuthorizeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetLevel returns Level (property field)
 	GetLevel() uint8
@@ -45,6 +46,8 @@ type ApduDataExtAuthorizeRequest interface {
 	GetData() []byte
 	// IsApduDataExtAuthorizeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtAuthorizeRequest()
+	// CreateBuilder creates a ApduDataExtAuthorizeRequestBuilder
+	CreateApduDataExtAuthorizeRequestBuilder() ApduDataExtAuthorizeRequestBuilder
 }
 
 // _ApduDataExtAuthorizeRequest is the data-structure of this message
@@ -56,6 +59,115 @@ type _ApduDataExtAuthorizeRequest struct {
 
 var _ ApduDataExtAuthorizeRequest = (*_ApduDataExtAuthorizeRequest)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtAuthorizeRequest)(nil)
+
+// NewApduDataExtAuthorizeRequest factory function for _ApduDataExtAuthorizeRequest
+func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_ApduDataExtAuthorizeRequest {
+	_result := &_ApduDataExtAuthorizeRequest{
+		ApduDataExtContract: NewApduDataExt(length),
+		Level:               level,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtAuthorizeRequestBuilder is a builder for ApduDataExtAuthorizeRequest
+type ApduDataExtAuthorizeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(level uint8, data []byte) ApduDataExtAuthorizeRequestBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(uint8) ApduDataExtAuthorizeRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataExtAuthorizeRequestBuilder
+	// Build builds the ApduDataExtAuthorizeRequest or returns an error if something is wrong
+	Build() (ApduDataExtAuthorizeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtAuthorizeRequest
+}
+
+// NewApduDataExtAuthorizeRequestBuilder() creates a ApduDataExtAuthorizeRequestBuilder
+func NewApduDataExtAuthorizeRequestBuilder() ApduDataExtAuthorizeRequestBuilder {
+	return &_ApduDataExtAuthorizeRequestBuilder{_ApduDataExtAuthorizeRequest: new(_ApduDataExtAuthorizeRequest)}
+}
+
+type _ApduDataExtAuthorizeRequestBuilder struct {
+	*_ApduDataExtAuthorizeRequest
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtAuthorizeRequestBuilder) = (*_ApduDataExtAuthorizeRequestBuilder)(nil)
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) WithMandatoryFields(level uint8, data []byte) ApduDataExtAuthorizeRequestBuilder {
+	return b.WithLevel(level).WithData(data...)
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) WithLevel(level uint8) ApduDataExtAuthorizeRequestBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) WithData(data ...byte) ApduDataExtAuthorizeRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) Build() (ApduDataExtAuthorizeRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtAuthorizeRequest.deepCopy(), nil
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) MustBuild() ApduDataExtAuthorizeRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtAuthorizeRequestBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtAuthorizeRequestBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtAuthorizeRequestBuilder().(*_ApduDataExtAuthorizeRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtAuthorizeRequestBuilder creates a ApduDataExtAuthorizeRequestBuilder
+func (b *_ApduDataExtAuthorizeRequest) CreateApduDataExtAuthorizeRequestBuilder() ApduDataExtAuthorizeRequestBuilder {
+	if b == nil {
+		return NewApduDataExtAuthorizeRequestBuilder()
+	}
+	return &_ApduDataExtAuthorizeRequestBuilder{_ApduDataExtAuthorizeRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ApduDataExtAuthorizeRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtAuthorizeRequest factory function for _ApduDataExtAuthorizeRequest
-func NewApduDataExtAuthorizeRequest(level uint8, data []byte, length uint8) *_ApduDataExtAuthorizeRequest {
-	_result := &_ApduDataExtAuthorizeRequest{
-		ApduDataExtContract: NewApduDataExt(length),
-		Level:               level,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtAuthorizeRequest(structType any) ApduDataExtAuthorizeRequest {
@@ -203,13 +304,34 @@ func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_ApduDataExtAuthorizeRequest) IsApduDataExtAuthorizeRequest() {}
 
+func (m *_ApduDataExtAuthorizeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtAuthorizeRequest) deepCopy() *_ApduDataExtAuthorizeRequest {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtAuthorizeRequestCopy := &_ApduDataExtAuthorizeRequest{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.Level,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtAuthorizeRequestCopy
+}
+
 func (m *_ApduDataExtAuthorizeRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

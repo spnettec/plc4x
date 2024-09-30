@@ -38,6 +38,7 @@ type AirConditioningDataZoneTemperature interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -49,6 +50,8 @@ type AirConditioningDataZoneTemperature interface {
 	GetSensorStatus() HVACSensorStatus
 	// IsAirConditioningDataZoneTemperature is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataZoneTemperature()
+	// CreateBuilder creates a AirConditioningDataZoneTemperatureBuilder
+	CreateAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTemperatureBuilder
 }
 
 // _AirConditioningDataZoneTemperature is the data-structure of this message
@@ -62,6 +65,179 @@ type _AirConditioningDataZoneTemperature struct {
 
 var _ AirConditioningDataZoneTemperature = (*_AirConditioningDataZoneTemperature)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataZoneTemperature)(nil)
+
+// NewAirConditioningDataZoneTemperature factory function for _AirConditioningDataZoneTemperature
+func NewAirConditioningDataZoneTemperature(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) *_AirConditioningDataZoneTemperature {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataZoneTemperature must not be nil")
+	}
+	if temperature == nil {
+		panic("temperature of type HVACTemperature for AirConditioningDataZoneTemperature must not be nil")
+	}
+	_result := &_AirConditioningDataZoneTemperature{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Temperature:                 temperature,
+		SensorStatus:                sensorStatus,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataZoneTemperatureBuilder is a builder for AirConditioningDataZoneTemperature
+type AirConditioningDataZoneTemperatureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataZoneTemperatureBuilder
+	// WithZoneList adds ZoneList (property field)
+	WithZoneList(HVACZoneList) AirConditioningDataZoneTemperatureBuilder
+	// WithZoneListBuilder adds ZoneList (property field) which is build by the builder
+	WithZoneListBuilder(func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneTemperatureBuilder
+	// WithTemperature adds Temperature (property field)
+	WithTemperature(HVACTemperature) AirConditioningDataZoneTemperatureBuilder
+	// WithTemperatureBuilder adds Temperature (property field) which is build by the builder
+	WithTemperatureBuilder(func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataZoneTemperatureBuilder
+	// WithSensorStatus adds SensorStatus (property field)
+	WithSensorStatus(HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder
+	// Build builds the AirConditioningDataZoneTemperature or returns an error if something is wrong
+	Build() (AirConditioningDataZoneTemperature, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataZoneTemperature
+}
+
+// NewAirConditioningDataZoneTemperatureBuilder() creates a AirConditioningDataZoneTemperatureBuilder
+func NewAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTemperatureBuilder {
+	return &_AirConditioningDataZoneTemperatureBuilder{_AirConditioningDataZoneTemperature: new(_AirConditioningDataZoneTemperature)}
+}
+
+type _AirConditioningDataZoneTemperatureBuilder struct {
+	*_AirConditioningDataZoneTemperature
+
+	parentBuilder *_AirConditioningDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataZoneTemperatureBuilder) = (*_AirConditioningDataZoneTemperatureBuilder)(nil)
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithTemperature(temperature).WithSensorStatus(sensorStatus)
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataZoneTemperatureBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataZoneTemperatureBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataZoneTemperatureBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
+	var err error
+	b.ZoneList, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithTemperature(temperature HVACTemperature) AirConditioningDataZoneTemperatureBuilder {
+	b.Temperature = temperature
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithTemperatureBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataZoneTemperatureBuilder {
+	builder := builderSupplier(b.Temperature.CreateHVACTemperatureBuilder())
+	var err error
+	b.Temperature, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) WithSensorStatus(sensorStatus HVACSensorStatus) AirConditioningDataZoneTemperatureBuilder {
+	b.SensorStatus = sensorStatus
+	return b
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) Build() (AirConditioningDataZoneTemperature, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+	}
+	if b.Temperature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'temperature' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AirConditioningDataZoneTemperature.deepCopy(), nil
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) MustBuild() AirConditioningDataZoneTemperature {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataZoneTemperatureBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataZoneTemperatureBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataZoneTemperatureBuilder().(*_AirConditioningDataZoneTemperatureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAirConditioningDataZoneTemperatureBuilder creates a AirConditioningDataZoneTemperatureBuilder
+func (b *_AirConditioningDataZoneTemperature) CreateAirConditioningDataZoneTemperatureBuilder() AirConditioningDataZoneTemperatureBuilder {
+	if b == nil {
+		return NewAirConditioningDataZoneTemperatureBuilder()
+	}
+	return &_AirConditioningDataZoneTemperatureBuilder{_AirConditioningDataZoneTemperature: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,25 +278,6 @@ func (m *_AirConditioningDataZoneTemperature) GetSensorStatus() HVACSensorStatus
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataZoneTemperature factory function for _AirConditioningDataZoneTemperature
-func NewAirConditioningDataZoneTemperature(zoneGroup byte, zoneList HVACZoneList, temperature HVACTemperature, sensorStatus HVACSensorStatus, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataZoneTemperature {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataZoneTemperature must not be nil")
-	}
-	if temperature == nil {
-		panic("temperature of type HVACTemperature for AirConditioningDataZoneTemperature must not be nil")
-	}
-	_result := &_AirConditioningDataZoneTemperature{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Temperature:                 temperature,
-		SensorStatus:                sensorStatus,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataZoneTemperature(structType any) AirConditioningDataZoneTemperature {
@@ -245,13 +402,36 @@ func (m *_AirConditioningDataZoneTemperature) SerializeWithWriteBuffer(ctx conte
 
 func (m *_AirConditioningDataZoneTemperature) IsAirConditioningDataZoneTemperature() {}
 
+func (m *_AirConditioningDataZoneTemperature) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataZoneTemperature) deepCopy() *_AirConditioningDataZoneTemperature {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataZoneTemperatureCopy := &_AirConditioningDataZoneTemperature{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Temperature.DeepCopy().(HVACTemperature),
+		m.SensorStatus,
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataZoneTemperatureCopy
+}
+
 func (m *_AirConditioningDataZoneTemperature) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

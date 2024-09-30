@@ -38,12 +38,15 @@ type BACnetDoorValueTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetDoorValue
 	// IsBACnetDoorValueTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDoorValueTagged()
+	// CreateBuilder creates a BACnetDoorValueTaggedBuilder
+	CreateBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder
 }
 
 // _BACnetDoorValueTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetDoorValueTagged struct {
 }
 
 var _ BACnetDoorValueTagged = (*_BACnetDoorValueTagged)(nil)
+
+// NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
+func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
+	}
+	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDoorValueTaggedBuilder is a builder for BACnetDoorValueTagged
+type BACnetDoorValueTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetDoorValue) BACnetDoorValueTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDoorValueTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetDoorValue) BACnetDoorValueTaggedBuilder
+	// Build builds the BACnetDoorValueTagged or returns an error if something is wrong
+	Build() (BACnetDoorValueTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDoorValueTagged
+}
+
+// NewBACnetDoorValueTaggedBuilder() creates a BACnetDoorValueTaggedBuilder
+func NewBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder {
+	return &_BACnetDoorValueTaggedBuilder{_BACnetDoorValueTagged: new(_BACnetDoorValueTagged)}
+}
+
+type _BACnetDoorValueTaggedBuilder struct {
+	*_BACnetDoorValueTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDoorValueTaggedBuilder) = (*_BACnetDoorValueTaggedBuilder)(nil)
+
+func (b *_BACnetDoorValueTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDoorValueTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorValueTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) WithValue(value BACnetDoorValue) BACnetDoorValueTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) Build() (BACnetDoorValueTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDoorValueTagged.deepCopy(), nil
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) MustBuild() BACnetDoorValueTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDoorValueTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDoorValueTaggedBuilder().(*_BACnetDoorValueTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDoorValueTaggedBuilder creates a BACnetDoorValueTaggedBuilder
+func (b *_BACnetDoorValueTagged) CreateBACnetDoorValueTaggedBuilder() BACnetDoorValueTaggedBuilder {
+	if b == nil {
+		return NewBACnetDoorValueTaggedBuilder()
+	}
+	return &_BACnetDoorValueTaggedBuilder{_BACnetDoorValueTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetDoorValueTagged) GetValue() BACnetDoorValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDoorValueTagged factory function for _BACnetDoorValueTagged
-func NewBACnetDoorValueTagged(header BACnetTagHeader, value BACnetDoorValue, tagNumber uint8, tagClass TagClass) *_BACnetDoorValueTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDoorValueTagged must not be nil")
-	}
-	return &_BACnetDoorValueTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDoorValueTagged(structType any) BACnetDoorValueTagged {
@@ -130,7 +237,7 @@ func BACnetDoorValueTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDoorValueTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDoorValueTagged BACnetDoorValueTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetDoorValueTagged) GetTagClass() TagClass {
 
 func (m *_BACnetDoorValueTagged) IsBACnetDoorValueTagged() {}
 
+func (m *_BACnetDoorValueTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorValueTagged) deepCopy() *_BACnetDoorValueTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorValueTaggedCopy := &_BACnetDoorValueTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorValueTaggedCopy
+}
+
 func (m *_BACnetDoorValueTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type KeyValuePair interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetKey returns Key (property field)
 	GetKey() QualifiedName
@@ -45,6 +46,8 @@ type KeyValuePair interface {
 	GetValue() Variant
 	// IsKeyValuePair is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKeyValuePair()
+	// CreateBuilder creates a KeyValuePairBuilder
+	CreateKeyValuePairBuilder() KeyValuePairBuilder
 }
 
 // _KeyValuePair is the data-structure of this message
@@ -56,6 +59,163 @@ type _KeyValuePair struct {
 
 var _ KeyValuePair = (*_KeyValuePair)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_KeyValuePair)(nil)
+
+// NewKeyValuePair factory function for _KeyValuePair
+func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
+	if key == nil {
+		panic("key of type QualifiedName for KeyValuePair must not be nil")
+	}
+	if value == nil {
+		panic("value of type Variant for KeyValuePair must not be nil")
+	}
+	_result := &_KeyValuePair{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Key:                               key,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KeyValuePairBuilder is a builder for KeyValuePair
+type KeyValuePairBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder
+	// WithKey adds Key (property field)
+	WithKey(QualifiedName) KeyValuePairBuilder
+	// WithKeyBuilder adds Key (property field) which is build by the builder
+	WithKeyBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder
+	// WithValue adds Value (property field)
+	WithValue(Variant) KeyValuePairBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(VariantBuilder) VariantBuilder) KeyValuePairBuilder
+	// Build builds the KeyValuePair or returns an error if something is wrong
+	Build() (KeyValuePair, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KeyValuePair
+}
+
+// NewKeyValuePairBuilder() creates a KeyValuePairBuilder
+func NewKeyValuePairBuilder() KeyValuePairBuilder {
+	return &_KeyValuePairBuilder{_KeyValuePair: new(_KeyValuePair)}
+}
+
+type _KeyValuePairBuilder struct {
+	*_KeyValuePair
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (KeyValuePairBuilder) = (*_KeyValuePairBuilder)(nil)
+
+func (b *_KeyValuePairBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_KeyValuePairBuilder) WithMandatoryFields(key QualifiedName, value Variant) KeyValuePairBuilder {
+	return b.WithKey(key).WithValue(value)
+}
+
+func (b *_KeyValuePairBuilder) WithKey(key QualifiedName) KeyValuePairBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_KeyValuePairBuilder) WithKeyBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) KeyValuePairBuilder {
+	builder := builderSupplier(b.Key.CreateQualifiedNameBuilder())
+	var err error
+	b.Key, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_KeyValuePairBuilder) WithValue(value Variant) KeyValuePairBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_KeyValuePairBuilder) WithValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) KeyValuePairBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_KeyValuePairBuilder) Build() (KeyValuePair, error) {
+	if b.Key == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'key' not set"))
+	}
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KeyValuePair.deepCopy(), nil
+}
+
+func (b *_KeyValuePairBuilder) MustBuild() KeyValuePair {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KeyValuePairBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KeyValuePairBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_KeyValuePairBuilder) DeepCopy() any {
+	_copy := b.CreateKeyValuePairBuilder().(*_KeyValuePairBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateKeyValuePairBuilder creates a KeyValuePairBuilder
+func (b *_KeyValuePair) CreateKeyValuePairBuilder() KeyValuePairBuilder {
+	if b == nil {
+		return NewKeyValuePairBuilder()
+	}
+	return &_KeyValuePairBuilder{_KeyValuePair: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +252,6 @@ func (m *_KeyValuePair) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKeyValuePair factory function for _KeyValuePair
-func NewKeyValuePair(key QualifiedName, value Variant) *_KeyValuePair {
-	if key == nil {
-		panic("key of type QualifiedName for KeyValuePair must not be nil")
-	}
-	if value == nil {
-		panic("value of type Variant for KeyValuePair must not be nil")
-	}
-	_result := &_KeyValuePair{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Key:                               key,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKeyValuePair(structType any) KeyValuePair {
@@ -207,13 +350,34 @@ func (m *_KeyValuePair) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_KeyValuePair) IsKeyValuePair() {}
 
+func (m *_KeyValuePair) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KeyValuePair) deepCopy() *_KeyValuePair {
+	if m == nil {
+		return nil
+	}
+	_KeyValuePairCopy := &_KeyValuePair{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Key.DeepCopy().(QualifiedName),
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _KeyValuePairCopy
+}
+
 func (m *_KeyValuePair) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -36,9 +36,12 @@ type MeteringDataMeasureOtherWater interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// IsMeteringDataMeasureOtherWater is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataMeasureOtherWater()
+	// CreateBuilder creates a MeteringDataMeasureOtherWaterBuilder
+	CreateMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder
 }
 
 // _MeteringDataMeasureOtherWater is the data-structure of this message
@@ -48,6 +51,99 @@ type _MeteringDataMeasureOtherWater struct {
 
 var _ MeteringDataMeasureOtherWater = (*_MeteringDataMeasureOtherWater)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
+
+// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
+func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
+	_result := &_MeteringDataMeasureOtherWater{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataMeasureOtherWaterBuilder is a builder for MeteringDataMeasureOtherWater
+type MeteringDataMeasureOtherWaterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MeteringDataMeasureOtherWaterBuilder
+	// Build builds the MeteringDataMeasureOtherWater or returns an error if something is wrong
+	Build() (MeteringDataMeasureOtherWater, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataMeasureOtherWater
+}
+
+// NewMeteringDataMeasureOtherWaterBuilder() creates a MeteringDataMeasureOtherWaterBuilder
+func NewMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder {
+	return &_MeteringDataMeasureOtherWaterBuilder{_MeteringDataMeasureOtherWater: new(_MeteringDataMeasureOtherWater)}
+}
+
+type _MeteringDataMeasureOtherWaterBuilder struct {
+	*_MeteringDataMeasureOtherWater
+
+	parentBuilder *_MeteringDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataMeasureOtherWaterBuilder) = (*_MeteringDataMeasureOtherWaterBuilder)(nil)
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
+}
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) WithMandatoryFields() MeteringDataMeasureOtherWaterBuilder {
+	return b
+}
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) Build() (MeteringDataMeasureOtherWater, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MeteringDataMeasureOtherWater.deepCopy(), nil
+}
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) MustBuild() MeteringDataMeasureOtherWater {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataMeasureOtherWaterBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataMeasureOtherWaterBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataMeasureOtherWaterBuilder().(*_MeteringDataMeasureOtherWaterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMeteringDataMeasureOtherWaterBuilder creates a MeteringDataMeasureOtherWaterBuilder
+func (b *_MeteringDataMeasureOtherWater) CreateMeteringDataMeasureOtherWaterBuilder() MeteringDataMeasureOtherWaterBuilder {
+	if b == nil {
+		return NewMeteringDataMeasureOtherWaterBuilder()
+	}
+	return &_MeteringDataMeasureOtherWaterBuilder{_MeteringDataMeasureOtherWater: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ MeteringDataRequirements = (*_MeteringDataMeasureOtherWater)(nil)
 
 func (m *_MeteringDataMeasureOtherWater) GetParent() MeteringDataContract {
 	return m.MeteringDataContract
-}
-
-// NewMeteringDataMeasureOtherWater factory function for _MeteringDataMeasureOtherWater
-func NewMeteringDataMeasureOtherWater(commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataMeasureOtherWater {
-	_result := &_MeteringDataMeasureOtherWater{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_MeteringDataMeasureOtherWater) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_MeteringDataMeasureOtherWater) IsMeteringDataMeasureOtherWater() {}
 
+func (m *_MeteringDataMeasureOtherWater) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataMeasureOtherWater) deepCopy() *_MeteringDataMeasureOtherWater {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataMeasureOtherWaterCopy := &_MeteringDataMeasureOtherWater{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataMeasureOtherWaterCopy
+}
+
 func (m *_MeteringDataMeasureOtherWater) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

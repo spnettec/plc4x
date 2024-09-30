@@ -38,11 +38,14 @@ type MediaTransportControlDataTrackName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetTrackName returns TrackName (property field)
 	GetTrackName() string
 	// IsMediaTransportControlDataTrackName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataTrackName()
+	// CreateBuilder creates a MediaTransportControlDataTrackNameBuilder
+	CreateMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTrackNameBuilder
 }
 
 // _MediaTransportControlDataTrackName is the data-structure of this message
@@ -53,6 +56,107 @@ type _MediaTransportControlDataTrackName struct {
 
 var _ MediaTransportControlDataTrackName = (*_MediaTransportControlDataTrackName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataTrackName)(nil)
+
+// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
+func NewMediaTransportControlDataTrackName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, trackName string) *_MediaTransportControlDataTrackName {
+	_result := &_MediaTransportControlDataTrackName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		TrackName:                         trackName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataTrackNameBuilder is a builder for MediaTransportControlDataTrackName
+type MediaTransportControlDataTrackNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder
+	// WithTrackName adds TrackName (property field)
+	WithTrackName(string) MediaTransportControlDataTrackNameBuilder
+	// Build builds the MediaTransportControlDataTrackName or returns an error if something is wrong
+	Build() (MediaTransportControlDataTrackName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataTrackName
+}
+
+// NewMediaTransportControlDataTrackNameBuilder() creates a MediaTransportControlDataTrackNameBuilder
+func NewMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTrackNameBuilder {
+	return &_MediaTransportControlDataTrackNameBuilder{_MediaTransportControlDataTrackName: new(_MediaTransportControlDataTrackName)}
+}
+
+type _MediaTransportControlDataTrackNameBuilder struct {
+	*_MediaTransportControlDataTrackName
+
+	parentBuilder *_MediaTransportControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataTrackNameBuilder) = (*_MediaTransportControlDataTrackNameBuilder)(nil)
+
+func (b *_MediaTransportControlDataTrackNameBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) WithMandatoryFields(trackName string) MediaTransportControlDataTrackNameBuilder {
+	return b.WithTrackName(trackName)
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) WithTrackName(trackName string) MediaTransportControlDataTrackNameBuilder {
+	b.TrackName = trackName
+	return b
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) Build() (MediaTransportControlDataTrackName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MediaTransportControlDataTrackName.deepCopy(), nil
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) MustBuild() MediaTransportControlDataTrackName {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataTrackNameBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataTrackNameBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataTrackNameBuilder().(*_MediaTransportControlDataTrackNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMediaTransportControlDataTrackNameBuilder creates a MediaTransportControlDataTrackNameBuilder
+func (b *_MediaTransportControlDataTrackName) CreateMediaTransportControlDataTrackNameBuilder() MediaTransportControlDataTrackNameBuilder {
+	if b == nil {
+		return NewMediaTransportControlDataTrackNameBuilder()
+	}
+	return &_MediaTransportControlDataTrackNameBuilder{_MediaTransportControlDataTrackName: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_MediaTransportControlDataTrackName) GetTrackName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataTrackName factory function for _MediaTransportControlDataTrackName
-func NewMediaTransportControlDataTrackName(trackName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataTrackName {
-	_result := &_MediaTransportControlDataTrackName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		TrackName:                         trackName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataTrackName(structType any) MediaTransportControlDataTrackName {
@@ -176,13 +270,33 @@ func (m *_MediaTransportControlDataTrackName) SerializeWithWriteBuffer(ctx conte
 
 func (m *_MediaTransportControlDataTrackName) IsMediaTransportControlDataTrackName() {}
 
+func (m *_MediaTransportControlDataTrackName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataTrackName) deepCopy() *_MediaTransportControlDataTrackName {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataTrackNameCopy := &_MediaTransportControlDataTrackName{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.TrackName,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataTrackNameCopy
+}
+
 func (m *_MediaTransportControlDataTrackName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

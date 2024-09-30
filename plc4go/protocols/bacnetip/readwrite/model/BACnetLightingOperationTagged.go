@@ -38,6 +38,7 @@ type BACnetLightingOperationTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetLightingOperationTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLightingOperationTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLightingOperationTagged()
+	// CreateBuilder creates a BACnetLightingOperationTaggedBuilder
+	CreateBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder
 }
 
 // _BACnetLightingOperationTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetLightingOperationTagged struct {
 }
 
 var _ BACnetLightingOperationTagged = (*_BACnetLightingOperationTagged)(nil)
+
+// NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
+func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
+	}
+	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLightingOperationTaggedBuilder is a builder for BACnetLightingOperationTagged
+type BACnetLightingOperationTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32) BACnetLightingOperationTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLightingOperationTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingOperationTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLightingOperation) BACnetLightingOperationTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLightingOperationTaggedBuilder
+	// Build builds the BACnetLightingOperationTagged or returns an error if something is wrong
+	Build() (BACnetLightingOperationTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLightingOperationTagged
+}
+
+// NewBACnetLightingOperationTaggedBuilder() creates a BACnetLightingOperationTaggedBuilder
+func NewBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder {
+	return &_BACnetLightingOperationTaggedBuilder{_BACnetLightingOperationTagged: new(_BACnetLightingOperationTagged)}
+}
+
+type _BACnetLightingOperationTaggedBuilder struct {
+	*_BACnetLightingOperationTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLightingOperationTaggedBuilder) = (*_BACnetLightingOperationTaggedBuilder)(nil)
+
+func (b *_BACnetLightingOperationTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32) BACnetLightingOperationTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLightingOperationTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingOperationTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) WithValue(value BACnetLightingOperation) BACnetLightingOperationTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLightingOperationTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) Build() (BACnetLightingOperationTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLightingOperationTagged.deepCopy(), nil
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) MustBuild() BACnetLightingOperationTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLightingOperationTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLightingOperationTaggedBuilder().(*_BACnetLightingOperationTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLightingOperationTaggedBuilder creates a BACnetLightingOperationTaggedBuilder
+func (b *_BACnetLightingOperationTagged) CreateBACnetLightingOperationTaggedBuilder() BACnetLightingOperationTaggedBuilder {
+	if b == nil {
+		return NewBACnetLightingOperationTaggedBuilder()
+	}
+	return &_BACnetLightingOperationTaggedBuilder{_BACnetLightingOperationTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetLightingOperationTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingOperationTagged factory function for _BACnetLightingOperationTagged
-func NewBACnetLightingOperationTagged(header BACnetTagHeader, value BACnetLightingOperation, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLightingOperationTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingOperationTagged must not be nil")
-	}
-	return &_BACnetLightingOperationTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingOperationTagged(structType any) BACnetLightingOperationTagged {
@@ -159,7 +273,7 @@ func BACnetLightingOperationTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLightingOperationTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLightingOperationTagged BACnetLightingOperationTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetLightingOperationTagged) GetTagClass() TagClass {
 
 func (m *_BACnetLightingOperationTagged) IsBACnetLightingOperationTagged() {}
 
+func (m *_BACnetLightingOperationTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingOperationTagged) deepCopy() *_BACnetLightingOperationTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingOperationTaggedCopy := &_BACnetLightingOperationTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingOperationTaggedCopy
+}
+
 func (m *_BACnetLightingOperationTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetConstructedDataUTCTimeSynchronizationRecipients interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUtcTimeSynchronizationRecipients returns UtcTimeSynchronizationRecipients (property field)
 	GetUtcTimeSynchronizationRecipients() []BACnetRecipient
 	// IsBACnetConstructedDataUTCTimeSynchronizationRecipients is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUTCTimeSynchronizationRecipients()
+	// CreateBuilder creates a BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+	CreateBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder() BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
 }
 
 // _BACnetConstructedDataUTCTimeSynchronizationRecipients is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataUTCTimeSynchronizationRecipients struct {
 
 var _ BACnetConstructedDataUTCTimeSynchronizationRecipients = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCTimeSynchronizationRecipients)(nil)
+
+// NewBACnetConstructedDataUTCTimeSynchronizationRecipients factory function for _BACnetConstructedDataUTCTimeSynchronizationRecipients
+func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcTimeSynchronizationRecipients []BACnetRecipient, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
+	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
+		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder is a builder for BACnetConstructedDataUTCTimeSynchronizationRecipients
+type BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(utcTimeSynchronizationRecipients []BACnetRecipient) BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+	// WithUtcTimeSynchronizationRecipients adds UtcTimeSynchronizationRecipients (property field)
+	WithUtcTimeSynchronizationRecipients(...BACnetRecipient) BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+	// Build builds the BACnetConstructedDataUTCTimeSynchronizationRecipients or returns an error if something is wrong
+	Build() (BACnetConstructedDataUTCTimeSynchronizationRecipients, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUTCTimeSynchronizationRecipients
+}
+
+// NewBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder() creates a BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+func NewBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder() BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder {
+	return &_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder{_BACnetConstructedDataUTCTimeSynchronizationRecipients: new(_BACnetConstructedDataUTCTimeSynchronizationRecipients)}
+}
+
+type _BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder struct {
+	*_BACnetConstructedDataUTCTimeSynchronizationRecipients
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) = (*_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder)(nil)
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) WithMandatoryFields(utcTimeSynchronizationRecipients []BACnetRecipient) BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder {
+	return b.WithUtcTimeSynchronizationRecipients(utcTimeSynchronizationRecipients...)
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) WithUtcTimeSynchronizationRecipients(utcTimeSynchronizationRecipients ...BACnetRecipient) BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder {
+	b.UtcTimeSynchronizationRecipients = utcTimeSynchronizationRecipients
+	return b
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) Build() (BACnetConstructedDataUTCTimeSynchronizationRecipients, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataUTCTimeSynchronizationRecipients.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) MustBuild() BACnetConstructedDataUTCTimeSynchronizationRecipients {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder().(*_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder creates a BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder
+func (b *_BACnetConstructedDataUTCTimeSynchronizationRecipients) CreateBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder() BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder()
+	}
+	return &_BACnetConstructedDataUTCTimeSynchronizationRecipientsBuilder{_BACnetConstructedDataUTCTimeSynchronizationRecipients: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) GetUtcTimeSynch
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUTCTimeSynchronizationRecipients factory function for _BACnetConstructedDataUTCTimeSynchronizationRecipients
-func NewBACnetConstructedDataUTCTimeSynchronizationRecipients(utcTimeSynchronizationRecipients []BACnetRecipient, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
-	_result := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
-		BACnetConstructedDataContract:    NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UtcTimeSynchronizationRecipients: utcTimeSynchronizationRecipients,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUTCTimeSynchronizationRecipients(structType any) BACnetConstructedDataUTCTimeSynchronizationRecipients {
@@ -189,13 +283,33 @@ func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) SerializeWithWr
 func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) IsBACnetConstructedDataUTCTimeSynchronizationRecipients() {
 }
 
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) deepCopy() *_BACnetConstructedDataUTCTimeSynchronizationRecipients {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUTCTimeSynchronizationRecipientsCopy := &_BACnetConstructedDataUTCTimeSynchronizationRecipients{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetRecipient, BACnetRecipient](m.UtcTimeSynchronizationRecipients),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUTCTimeSynchronizationRecipientsCopy
+}
+
 func (m *_BACnetConstructedDataUTCTimeSynchronizationRecipients) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type NLMInitializeRoutingTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetNumberOfPorts returns NumberOfPorts (property field)
 	GetNumberOfPorts() uint8
@@ -45,6 +46,8 @@ type NLMInitializeRoutingTable interface {
 	GetPortMappings() []NLMInitializeRoutingTablePortMapping
 	// IsNLMInitializeRoutingTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMInitializeRoutingTable()
+	// CreateBuilder creates a NLMInitializeRoutingTableBuilder
+	CreateNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder
 }
 
 // _NLMInitializeRoutingTable is the data-structure of this message
@@ -56,6 +59,115 @@ type _NLMInitializeRoutingTable struct {
 
 var _ NLMInitializeRoutingTable = (*_NLMInitializeRoutingTable)(nil)
 var _ NLMRequirements = (*_NLMInitializeRoutingTable)(nil)
+
+// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
+func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
+	_result := &_NLMInitializeRoutingTable{
+		NLMContract:   NewNLM(apduLength),
+		NumberOfPorts: numberOfPorts,
+		PortMappings:  portMappings,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMInitializeRoutingTableBuilder is a builder for NLMInitializeRoutingTable
+type NLMInitializeRoutingTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder
+	// WithNumberOfPorts adds NumberOfPorts (property field)
+	WithNumberOfPorts(uint8) NLMInitializeRoutingTableBuilder
+	// WithPortMappings adds PortMappings (property field)
+	WithPortMappings(...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder
+	// Build builds the NLMInitializeRoutingTable or returns an error if something is wrong
+	Build() (NLMInitializeRoutingTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMInitializeRoutingTable
+}
+
+// NewNLMInitializeRoutingTableBuilder() creates a NLMInitializeRoutingTableBuilder
+func NewNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder {
+	return &_NLMInitializeRoutingTableBuilder{_NLMInitializeRoutingTable: new(_NLMInitializeRoutingTable)}
+}
+
+type _NLMInitializeRoutingTableBuilder struct {
+	*_NLMInitializeRoutingTable
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMInitializeRoutingTableBuilder) = (*_NLMInitializeRoutingTableBuilder)(nil)
+
+func (b *_NLMInitializeRoutingTableBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) WithMandatoryFields(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
+	return b.WithNumberOfPorts(numberOfPorts).WithPortMappings(portMappings...)
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) WithNumberOfPorts(numberOfPorts uint8) NLMInitializeRoutingTableBuilder {
+	b.NumberOfPorts = numberOfPorts
+	return b
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) WithPortMappings(portMappings ...NLMInitializeRoutingTablePortMapping) NLMInitializeRoutingTableBuilder {
+	b.PortMappings = portMappings
+	return b
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) Build() (NLMInitializeRoutingTable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMInitializeRoutingTable.deepCopy(), nil
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) MustBuild() NLMInitializeRoutingTable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMInitializeRoutingTableBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMInitializeRoutingTableBuilder) DeepCopy() any {
+	_copy := b.CreateNLMInitializeRoutingTableBuilder().(*_NLMInitializeRoutingTableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMInitializeRoutingTableBuilder creates a NLMInitializeRoutingTableBuilder
+func (b *_NLMInitializeRoutingTable) CreateNLMInitializeRoutingTableBuilder() NLMInitializeRoutingTableBuilder {
+	if b == nil {
+		return NewNLMInitializeRoutingTableBuilder()
+	}
+	return &_NLMInitializeRoutingTableBuilder{_NLMInitializeRoutingTable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_NLMInitializeRoutingTable) GetPortMappings() []NLMInitializeRoutingTab
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMInitializeRoutingTable factory function for _NLMInitializeRoutingTable
-func NewNLMInitializeRoutingTable(numberOfPorts uint8, portMappings []NLMInitializeRoutingTablePortMapping, apduLength uint16) *_NLMInitializeRoutingTable {
-	_result := &_NLMInitializeRoutingTable{
-		NLMContract:   NewNLM(apduLength),
-		NumberOfPorts: numberOfPorts,
-		PortMappings:  portMappings,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMInitializeRoutingTable(structType any) NLMInitializeRoutingTable {
@@ -208,13 +309,34 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_NLMInitializeRoutingTable) IsNLMInitializeRoutingTable() {}
 
+func (m *_NLMInitializeRoutingTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMInitializeRoutingTable) deepCopy() *_NLMInitializeRoutingTable {
+	if m == nil {
+		return nil
+	}
+	_NLMInitializeRoutingTableCopy := &_NLMInitializeRoutingTable{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.NumberOfPorts,
+		utils.DeepCopySlice[NLMInitializeRoutingTablePortMapping, NLMInitializeRoutingTablePortMapping](m.PortMappings),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMInitializeRoutingTableCopy
+}
+
 func (m *_NLMInitializeRoutingTable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataThreatLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetThreatLevel returns ThreatLevel (property field)
 	GetThreatLevel() BACnetAccessThreatLevel
@@ -45,6 +46,8 @@ type BACnetConstructedDataThreatLevel interface {
 	GetActualValue() BACnetAccessThreatLevel
 	// IsBACnetConstructedDataThreatLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataThreatLevel()
+	// CreateBuilder creates a BACnetConstructedDataThreatLevelBuilder
+	CreateBACnetConstructedDataThreatLevelBuilder() BACnetConstructedDataThreatLevelBuilder
 }
 
 // _BACnetConstructedDataThreatLevel is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataThreatLevel struct {
 
 var _ BACnetConstructedDataThreatLevel = (*_BACnetConstructedDataThreatLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataThreatLevel)(nil)
+
+// NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
+func NewBACnetConstructedDataThreatLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, threatLevel BACnetAccessThreatLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
+	if threatLevel == nil {
+		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataThreatLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ThreatLevel:                   threatLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataThreatLevelBuilder is a builder for BACnetConstructedDataThreatLevel
+type BACnetConstructedDataThreatLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(threatLevel BACnetAccessThreatLevel) BACnetConstructedDataThreatLevelBuilder
+	// WithThreatLevel adds ThreatLevel (property field)
+	WithThreatLevel(BACnetAccessThreatLevel) BACnetConstructedDataThreatLevelBuilder
+	// WithThreatLevelBuilder adds ThreatLevel (property field) which is build by the builder
+	WithThreatLevelBuilder(func(BACnetAccessThreatLevelBuilder) BACnetAccessThreatLevelBuilder) BACnetConstructedDataThreatLevelBuilder
+	// Build builds the BACnetConstructedDataThreatLevel or returns an error if something is wrong
+	Build() (BACnetConstructedDataThreatLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataThreatLevel
+}
+
+// NewBACnetConstructedDataThreatLevelBuilder() creates a BACnetConstructedDataThreatLevelBuilder
+func NewBACnetConstructedDataThreatLevelBuilder() BACnetConstructedDataThreatLevelBuilder {
+	return &_BACnetConstructedDataThreatLevelBuilder{_BACnetConstructedDataThreatLevel: new(_BACnetConstructedDataThreatLevel)}
+}
+
+type _BACnetConstructedDataThreatLevelBuilder struct {
+	*_BACnetConstructedDataThreatLevel
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataThreatLevelBuilder) = (*_BACnetConstructedDataThreatLevelBuilder)(nil)
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) WithMandatoryFields(threatLevel BACnetAccessThreatLevel) BACnetConstructedDataThreatLevelBuilder {
+	return b.WithThreatLevel(threatLevel)
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) WithThreatLevel(threatLevel BACnetAccessThreatLevel) BACnetConstructedDataThreatLevelBuilder {
+	b.ThreatLevel = threatLevel
+	return b
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) WithThreatLevelBuilder(builderSupplier func(BACnetAccessThreatLevelBuilder) BACnetAccessThreatLevelBuilder) BACnetConstructedDataThreatLevelBuilder {
+	builder := builderSupplier(b.ThreatLevel.CreateBACnetAccessThreatLevelBuilder())
+	var err error
+	b.ThreatLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessThreatLevelBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) Build() (BACnetConstructedDataThreatLevel, error) {
+	if b.ThreatLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'threatLevel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataThreatLevel.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) MustBuild() BACnetConstructedDataThreatLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataThreatLevelBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataThreatLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataThreatLevelBuilder().(*_BACnetConstructedDataThreatLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataThreatLevelBuilder creates a BACnetConstructedDataThreatLevelBuilder
+func (b *_BACnetConstructedDataThreatLevel) CreateBACnetConstructedDataThreatLevelBuilder() BACnetConstructedDataThreatLevelBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataThreatLevelBuilder()
+	}
+	return &_BACnetConstructedDataThreatLevelBuilder{_BACnetConstructedDataThreatLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataThreatLevel) GetActualValue() BACnetAccessThreatL
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataThreatLevel factory function for _BACnetConstructedDataThreatLevel
-func NewBACnetConstructedDataThreatLevel(threatLevel BACnetAccessThreatLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataThreatLevel {
-	if threatLevel == nil {
-		panic("threatLevel of type BACnetAccessThreatLevel for BACnetConstructedDataThreatLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataThreatLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ThreatLevel:                   threatLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataThreatLevel(structType any) BACnetConstructedDataThreatLevel {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataThreatLevel) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataThreatLevel) IsBACnetConstructedDataThreatLevel() {}
 
+func (m *_BACnetConstructedDataThreatLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataThreatLevel) deepCopy() *_BACnetConstructedDataThreatLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataThreatLevelCopy := &_BACnetConstructedDataThreatLevel{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ThreatLevel.DeepCopy().(BACnetAccessThreatLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataThreatLevelCopy
+}
+
 func (m *_BACnetConstructedDataThreatLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

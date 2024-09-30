@@ -53,7 +53,7 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 		_debug("__init__ %r %r", address, vlan)
 	}
 	var err error
-	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(address), WithClientStateMachineExtension(b), WithLeafType(b))
 	if err != nil {
 		return nil, errors.New("error building client state machine")
 	}
@@ -70,6 +70,9 @@ func NewBIPBBMDStateMachine(localLog zerolog.Logger, address string, vlan *IPNet
 
 	// build an address, full mask
 	bdtAddress := fmt.Sprintf("%s/32:%d", b.address.AddrTuple.Left, b.address.AddrTuple.Right)
+	if _debug != nil {
+		_debug("    - bdt_address: %r", bdtAddress)
+	}
 	b.log.Debug().Str("bdtAddress", bdtAddress).Msg("bdtAddress")
 
 	// add itself as the first entry in the BDT

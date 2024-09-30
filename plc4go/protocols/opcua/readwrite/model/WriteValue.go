@@ -38,6 +38,7 @@ type WriteValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -49,6 +50,8 @@ type WriteValue interface {
 	GetValue() DataValue
 	// IsWriteValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWriteValue()
+	// CreateBuilder creates a WriteValueBuilder
+	CreateWriteValueBuilder() WriteValueBuilder
 }
 
 // _WriteValue is the data-structure of this message
@@ -62,6 +65,203 @@ type _WriteValue struct {
 
 var _ WriteValue = (*_WriteValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_WriteValue)(nil)
+
+// NewWriteValue factory function for _WriteValue
+func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for WriteValue must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for WriteValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type DataValue for WriteValue must not be nil")
+	}
+	_result := &_WriteValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WriteValueBuilder is a builder for WriteValue
+type WriteValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) WriteValueBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) WriteValueBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) WriteValueBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(DataValue) WriteValueBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(DataValueBuilder) DataValueBuilder) WriteValueBuilder
+	// Build builds the WriteValue or returns an error if something is wrong
+	Build() (WriteValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WriteValue
+}
+
+// NewWriteValueBuilder() creates a WriteValueBuilder
+func NewWriteValueBuilder() WriteValueBuilder {
+	return &_WriteValueBuilder{_WriteValue: new(_WriteValue)}
+}
+
+type _WriteValueBuilder struct {
+	*_WriteValue
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (WriteValueBuilder) = (*_WriteValueBuilder)(nil)
+
+func (b *_WriteValueBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_WriteValueBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) WriteValueBuilder {
+	return b.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithValue(value)
+}
+
+func (b *_WriteValueBuilder) WithNodeId(nodeId NodeId) WriteValueBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_WriteValueBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_WriteValueBuilder) WithAttributeId(attributeId uint32) WriteValueBuilder {
+	b.AttributeId = attributeId
+	return b
+}
+
+func (b *_WriteValueBuilder) WithIndexRange(indexRange PascalString) WriteValueBuilder {
+	b.IndexRange = indexRange
+	return b
+}
+
+func (b *_WriteValueBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
+	var err error
+	b.IndexRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_WriteValueBuilder) WithValue(value DataValue) WriteValueBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_WriteValueBuilder) WithValueBuilder(builderSupplier func(DataValueBuilder) DataValueBuilder) WriteValueBuilder {
+	builder := builderSupplier(b.Value.CreateDataValueBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DataValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_WriteValueBuilder) Build() (WriteValue, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._WriteValue.deepCopy(), nil
+}
+
+func (b *_WriteValueBuilder) MustBuild() WriteValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WriteValueBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WriteValueBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_WriteValueBuilder) DeepCopy() any {
+	_copy := b.CreateWriteValueBuilder().(*_WriteValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateWriteValueBuilder creates a WriteValueBuilder
+func (b *_WriteValue) CreateWriteValueBuilder() WriteValueBuilder {
+	if b == nil {
+		return NewWriteValueBuilder()
+	}
+	return &_WriteValueBuilder{_WriteValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +306,6 @@ func (m *_WriteValue) GetValue() DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWriteValue factory function for _WriteValue
-func NewWriteValue(nodeId NodeId, attributeId uint32, indexRange PascalString, value DataValue) *_WriteValue {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for WriteValue must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for WriteValue must not be nil")
-	}
-	if value == nil {
-		panic("value of type DataValue for WriteValue must not be nil")
-	}
-	_result := &_WriteValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWriteValue(structType any) WriteValue {
@@ -252,13 +430,36 @@ func (m *_WriteValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_WriteValue) IsWriteValue() {}
 
+func (m *_WriteValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WriteValue) deepCopy() *_WriteValue {
+	if m == nil {
+		return nil
+	}
+	_WriteValueCopy := &_WriteValue{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.Value.DeepCopy().(DataValue),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _WriteValueCopy
+}
+
 func (m *_WriteValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

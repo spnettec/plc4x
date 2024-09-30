@@ -38,6 +38,7 @@ type BACnetAccessEventTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetAccessEventTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessEventTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessEventTagged()
+	// CreateBuilder creates a BACnetAccessEventTaggedBuilder
+	CreateBACnetAccessEventTaggedBuilder() BACnetAccessEventTaggedBuilder
 }
 
 // _BACnetAccessEventTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetAccessEventTagged struct {
 }
 
 var _ BACnetAccessEventTagged = (*_BACnetAccessEventTagged)(nil)
+
+// NewBACnetAccessEventTagged factory function for _BACnetAccessEventTagged
+func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessEventTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessEventTagged must not be nil")
+	}
+	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessEventTaggedBuilder is a builder for BACnetAccessEventTagged
+type BACnetAccessEventTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32) BACnetAccessEventTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessEventTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessEventTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessEvent) BACnetAccessEventTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessEventTaggedBuilder
+	// Build builds the BACnetAccessEventTagged or returns an error if something is wrong
+	Build() (BACnetAccessEventTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessEventTagged
+}
+
+// NewBACnetAccessEventTaggedBuilder() creates a BACnetAccessEventTaggedBuilder
+func NewBACnetAccessEventTaggedBuilder() BACnetAccessEventTaggedBuilder {
+	return &_BACnetAccessEventTaggedBuilder{_BACnetAccessEventTagged: new(_BACnetAccessEventTagged)}
+}
+
+type _BACnetAccessEventTaggedBuilder struct {
+	*_BACnetAccessEventTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessEventTaggedBuilder) = (*_BACnetAccessEventTaggedBuilder)(nil)
+
+func (b *_BACnetAccessEventTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32) BACnetAccessEventTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessEventTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessEventTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) WithValue(value BACnetAccessEvent) BACnetAccessEventTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessEventTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) Build() (BACnetAccessEventTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessEventTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) MustBuild() BACnetAccessEventTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessEventTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessEventTaggedBuilder().(*_BACnetAccessEventTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessEventTaggedBuilder creates a BACnetAccessEventTaggedBuilder
+func (b *_BACnetAccessEventTagged) CreateBACnetAccessEventTaggedBuilder() BACnetAccessEventTaggedBuilder {
+	if b == nil {
+		return NewBACnetAccessEventTaggedBuilder()
+	}
+	return &_BACnetAccessEventTaggedBuilder{_BACnetAccessEventTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetAccessEventTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessEventTagged factory function for _BACnetAccessEventTagged
-func NewBACnetAccessEventTagged(header BACnetTagHeader, value BACnetAccessEvent, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessEventTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessEventTagged must not be nil")
-	}
-	return &_BACnetAccessEventTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessEventTagged(structType any) BACnetAccessEventTagged {
@@ -159,7 +273,7 @@ func BACnetAccessEventTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessEventTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessEventTagged BACnetAccessEventTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetAccessEventTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAccessEventTagged) IsBACnetAccessEventTagged() {}
 
+func (m *_BACnetAccessEventTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessEventTagged) deepCopy() *_BACnetAccessEventTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessEventTaggedCopy := &_BACnetAccessEventTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessEventTaggedCopy
+}
+
 func (m *_BACnetAccessEventTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

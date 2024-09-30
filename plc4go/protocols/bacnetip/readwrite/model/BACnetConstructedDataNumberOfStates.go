@@ -38,6 +38,7 @@ type BACnetConstructedDataNumberOfStates interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfState returns NumberOfState (property field)
 	GetNumberOfState() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataNumberOfStates interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataNumberOfStates is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNumberOfStates()
+	// CreateBuilder creates a BACnetConstructedDataNumberOfStatesBuilder
+	CreateBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumberOfStatesBuilder
 }
 
 // _BACnetConstructedDataNumberOfStates is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataNumberOfStates struct {
 
 var _ BACnetConstructedDataNumberOfStates = (*_BACnetConstructedDataNumberOfStates)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNumberOfStates)(nil)
+
+// NewBACnetConstructedDataNumberOfStates factory function for _BACnetConstructedDataNumberOfStates
+func NewBACnetConstructedDataNumberOfStates(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfState BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfStates {
+	if numberOfState == nil {
+		panic("numberOfState of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfStates must not be nil")
+	}
+	_result := &_BACnetConstructedDataNumberOfStates{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfState:                 numberOfState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNumberOfStatesBuilder is a builder for BACnetConstructedDataNumberOfStates
+type BACnetConstructedDataNumberOfStatesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder
+	// WithNumberOfState adds NumberOfState (property field)
+	WithNumberOfState(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder
+	// WithNumberOfStateBuilder adds NumberOfState (property field) which is build by the builder
+	WithNumberOfStateBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfStatesBuilder
+	// Build builds the BACnetConstructedDataNumberOfStates or returns an error if something is wrong
+	Build() (BACnetConstructedDataNumberOfStates, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNumberOfStates
+}
+
+// NewBACnetConstructedDataNumberOfStatesBuilder() creates a BACnetConstructedDataNumberOfStatesBuilder
+func NewBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumberOfStatesBuilder {
+	return &_BACnetConstructedDataNumberOfStatesBuilder{_BACnetConstructedDataNumberOfStates: new(_BACnetConstructedDataNumberOfStates)}
+}
+
+type _BACnetConstructedDataNumberOfStatesBuilder struct {
+	*_BACnetConstructedDataNumberOfStates
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNumberOfStatesBuilder) = (*_BACnetConstructedDataNumberOfStatesBuilder)(nil)
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithMandatoryFields(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
+	return b.WithNumberOfState(numberOfState)
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfState(numberOfState BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNumberOfStatesBuilder {
+	b.NumberOfState = numberOfState
+	return b
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) WithNumberOfStateBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNumberOfStatesBuilder {
+	builder := builderSupplier(b.NumberOfState.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) Build() (BACnetConstructedDataNumberOfStates, error) {
+	if b.NumberOfState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'numberOfState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataNumberOfStates.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) MustBuild() BACnetConstructedDataNumberOfStates {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNumberOfStatesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNumberOfStatesBuilder().(*_BACnetConstructedDataNumberOfStatesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataNumberOfStatesBuilder creates a BACnetConstructedDataNumberOfStatesBuilder
+func (b *_BACnetConstructedDataNumberOfStates) CreateBACnetConstructedDataNumberOfStatesBuilder() BACnetConstructedDataNumberOfStatesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataNumberOfStatesBuilder()
+	}
+	return &_BACnetConstructedDataNumberOfStatesBuilder{_BACnetConstructedDataNumberOfStates: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataNumberOfStates) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNumberOfStates factory function for _BACnetConstructedDataNumberOfStates
-func NewBACnetConstructedDataNumberOfStates(numberOfState BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNumberOfStates {
-	if numberOfState == nil {
-		panic("numberOfState of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNumberOfStates must not be nil")
-	}
-	_result := &_BACnetConstructedDataNumberOfStates{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfState:                 numberOfState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNumberOfStates(structType any) BACnetConstructedDataNumberOfStates {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataNumberOfStates) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataNumberOfStates) IsBACnetConstructedDataNumberOfStates() {}
 
+func (m *_BACnetConstructedDataNumberOfStates) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNumberOfStates) deepCopy() *_BACnetConstructedDataNumberOfStates {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNumberOfStatesCopy := &_BACnetConstructedDataNumberOfStates{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfState.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNumberOfStatesCopy
+}
+
 func (m *_BACnetConstructedDataNumberOfStates) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

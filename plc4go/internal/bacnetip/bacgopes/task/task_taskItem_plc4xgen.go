@@ -48,9 +48,10 @@ func (d *taskItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	if err := writeBuffer.PushContext("taskItem"); err != nil {
 		return err
 	}
-
-	if err := writeBuffer.WriteString("taskTime", uint32(len(fmt.Sprintf("%s", d.taskTime))*8), fmt.Sprintf("%s", d.taskTime)); err != nil {
-		return err
+	if d.taskTime != nil {
+		if err := writeBuffer.WriteString("taskTime", uint32(len(fmt.Sprintf("%s", *d.taskTime))*8), fmt.Sprintf("%s", *d.taskTime)); err != nil {
+			return err
+		}
 	}
 
 	if err := writeBuffer.WriteInt64("id", 64, int64(d.id)); err != nil {
@@ -75,9 +76,9 @@ func (d *taskItem) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

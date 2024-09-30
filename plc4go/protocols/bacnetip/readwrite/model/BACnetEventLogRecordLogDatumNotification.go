@@ -38,6 +38,7 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetEventLogRecordLogDatum
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -47,6 +48,8 @@ type BACnetEventLogRecordLogDatumNotification interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetEventLogRecordLogDatumNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatumNotification()
+	// CreateBuilder creates a BACnetEventLogRecordLogDatumNotificationBuilder
+	CreateBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder
 }
 
 // _BACnetEventLogRecordLogDatumNotification is the data-structure of this message
@@ -59,6 +62,195 @@ type _BACnetEventLogRecordLogDatumNotification struct {
 
 var _ BACnetEventLogRecordLogDatumNotification = (*_BACnetEventLogRecordLogDatumNotification)(nil)
 var _ BACnetEventLogRecordLogDatumRequirements = (*_BACnetEventLogRecordLogDatumNotification)(nil)
+
+// NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
+func NewBACnetEventLogRecordLogDatumNotification(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if notification == nil {
+		panic("notification of type ConfirmedEventNotificationRequest for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
+	}
+	_result := &_BACnetEventLogRecordLogDatumNotification{
+		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		InnerOpeningTag:                      innerOpeningTag,
+		Notification:                         notification,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventLogRecordLogDatumNotificationBuilder is a builder for BACnetEventLogRecordLogDatumNotification
+type BACnetEventLogRecordLogDatumNotificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithNotification adds Notification (property field)
+	WithNotification(ConfirmedEventNotificationRequest) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithNotificationBuilder adds Notification (property field) which is build by the builder
+	WithNotificationBuilder(func(ConfirmedEventNotificationRequestBuilder) ConfirmedEventNotificationRequestBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder
+	// Build builds the BACnetEventLogRecordLogDatumNotification or returns an error if something is wrong
+	Build() (BACnetEventLogRecordLogDatumNotification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventLogRecordLogDatumNotification
+}
+
+// NewBACnetEventLogRecordLogDatumNotificationBuilder() creates a BACnetEventLogRecordLogDatumNotificationBuilder
+func NewBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder {
+	return &_BACnetEventLogRecordLogDatumNotificationBuilder{_BACnetEventLogRecordLogDatumNotification: new(_BACnetEventLogRecordLogDatumNotification)}
+}
+
+type _BACnetEventLogRecordLogDatumNotificationBuilder struct {
+	*_BACnetEventLogRecordLogDatumNotification
+
+	parentBuilder *_BACnetEventLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventLogRecordLogDatumNotificationBuilder) = (*_BACnetEventLogRecordLogDatumNotificationBuilder)(nil)
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) setParent(contract BACnetEventLogRecordLogDatumContract) {
+	b.BACnetEventLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithNotification(notification).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithNotification(notification ConfirmedEventNotificationRequest) BACnetEventLogRecordLogDatumNotificationBuilder {
+	b.Notification = notification
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithNotificationBuilder(builderSupplier func(ConfirmedEventNotificationRequestBuilder) ConfirmedEventNotificationRequestBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(b.Notification.CreateConfirmedEventNotificationRequestBuilder())
+	var err error
+	b.Notification, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ConfirmedEventNotificationRequestBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetEventLogRecordLogDatumNotificationBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumNotificationBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) Build() (BACnetEventLogRecordLogDatumNotification, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.Notification == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'notification' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventLogRecordLogDatumNotification.deepCopy(), nil
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) MustBuild() BACnetEventLogRecordLogDatumNotification {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) Done() BACnetEventLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) buildForBACnetEventLogRecordLogDatum() (BACnetEventLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetEventLogRecordLogDatumNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventLogRecordLogDatumNotificationBuilder().(*_BACnetEventLogRecordLogDatumNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventLogRecordLogDatumNotificationBuilder creates a BACnetEventLogRecordLogDatumNotificationBuilder
+func (b *_BACnetEventLogRecordLogDatumNotification) CreateBACnetEventLogRecordLogDatumNotificationBuilder() BACnetEventLogRecordLogDatumNotificationBuilder {
+	if b == nil {
+		return NewBACnetEventLogRecordLogDatumNotificationBuilder()
+	}
+	return &_BACnetEventLogRecordLogDatumNotificationBuilder{_BACnetEventLogRecordLogDatumNotification: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +287,6 @@ func (m *_BACnetEventLogRecordLogDatumNotification) GetInnerClosingTag() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatumNotification factory function for _BACnetEventLogRecordLogDatumNotification
-func NewBACnetEventLogRecordLogDatumNotification(innerOpeningTag BACnetOpeningTag, notification ConfirmedEventNotificationRequest, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatumNotification {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	if notification == nil {
-		panic("notification of type ConfirmedEventNotificationRequest for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatumNotification must not be nil")
-	}
-	_result := &_BACnetEventLogRecordLogDatumNotification{
-		BACnetEventLogRecordLogDatumContract: NewBACnetEventLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		InnerOpeningTag:                      innerOpeningTag,
-		Notification:                         notification,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatumNotification(structType any) BACnetEventLogRecordLogDatumNotification {
@@ -227,13 +398,35 @@ func (m *_BACnetEventLogRecordLogDatumNotification) SerializeWithWriteBuffer(ctx
 
 func (m *_BACnetEventLogRecordLogDatumNotification) IsBACnetEventLogRecordLogDatumNotification() {}
 
+func (m *_BACnetEventLogRecordLogDatumNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatumNotification) deepCopy() *_BACnetEventLogRecordLogDatumNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumNotificationCopy := &_BACnetEventLogRecordLogDatumNotification{
+		m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Notification.DeepCopy().(ConfirmedEventNotificationRequest),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetEventLogRecordLogDatumContract.(*_BACnetEventLogRecordLogDatum)._SubType = m
+	return _BACnetEventLogRecordLogDatumNotificationCopy
+}
+
 func (m *_BACnetEventLogRecordLogDatumNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

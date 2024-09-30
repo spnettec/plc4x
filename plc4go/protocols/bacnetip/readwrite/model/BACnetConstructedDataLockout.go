@@ -38,6 +38,7 @@ type BACnetConstructedDataLockout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockout returns Lockout (property field)
 	GetLockout() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataLockout interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataLockout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLockout()
+	// CreateBuilder creates a BACnetConstructedDataLockoutBuilder
+	CreateBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilder
 }
 
 // _BACnetConstructedDataLockout is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLockout struct {
 
 var _ BACnetConstructedDataLockout = (*_BACnetConstructedDataLockout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockout)(nil)
+
+// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
+func NewBACnetConstructedDataLockout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockout BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
+	if lockout == nil {
+		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
+	}
+	_result := &_BACnetConstructedDataLockout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Lockout:                       lockout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLockoutBuilder is a builder for BACnetConstructedDataLockout
+type BACnetConstructedDataLockoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder
+	// WithLockout adds Lockout (property field)
+	WithLockout(BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder
+	// WithLockoutBuilder adds Lockout (property field) which is build by the builder
+	WithLockoutBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLockoutBuilder
+	// Build builds the BACnetConstructedDataLockout or returns an error if something is wrong
+	Build() (BACnetConstructedDataLockout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLockout
+}
+
+// NewBACnetConstructedDataLockoutBuilder() creates a BACnetConstructedDataLockoutBuilder
+func NewBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilder {
+	return &_BACnetConstructedDataLockoutBuilder{_BACnetConstructedDataLockout: new(_BACnetConstructedDataLockout)}
+}
+
+type _BACnetConstructedDataLockoutBuilder struct {
+	*_BACnetConstructedDataLockout
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLockoutBuilder) = (*_BACnetConstructedDataLockoutBuilder)(nil)
+
+func (b *_BACnetConstructedDataLockoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) WithMandatoryFields(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
+	return b.WithLockout(lockout)
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) WithLockout(lockout BACnetApplicationTagBoolean) BACnetConstructedDataLockoutBuilder {
+	b.Lockout = lockout
+	return b
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) WithLockoutBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLockoutBuilder {
+	builder := builderSupplier(b.Lockout.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.Lockout, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) Build() (BACnetConstructedDataLockout, error) {
+	if b.Lockout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lockout' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLockout.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) MustBuild() BACnetConstructedDataLockout {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLockoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLockoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLockoutBuilder().(*_BACnetConstructedDataLockoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLockoutBuilder creates a BACnetConstructedDataLockoutBuilder
+func (b *_BACnetConstructedDataLockout) CreateBACnetConstructedDataLockoutBuilder() BACnetConstructedDataLockoutBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLockoutBuilder()
+	}
+	return &_BACnetConstructedDataLockoutBuilder{_BACnetConstructedDataLockout: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLockout) GetActualValue() BACnetApplicationTagBoo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLockout factory function for _BACnetConstructedDataLockout
-func NewBACnetConstructedDataLockout(lockout BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockout {
-	if lockout == nil {
-		panic("lockout of type BACnetApplicationTagBoolean for BACnetConstructedDataLockout must not be nil")
-	}
-	_result := &_BACnetConstructedDataLockout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Lockout:                       lockout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLockout(structType any) BACnetConstructedDataLockout {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLockout) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetConstructedDataLockout) IsBACnetConstructedDataLockout() {}
 
+func (m *_BACnetConstructedDataLockout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockout) deepCopy() *_BACnetConstructedDataLockout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockoutCopy := &_BACnetConstructedDataLockout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Lockout.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockoutCopy
+}
+
 func (m *_BACnetConstructedDataLockout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

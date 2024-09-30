@@ -38,6 +38,7 @@ type BACnetEventTimestamps interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetToOffnormal returns ToOffnormal (property field)
 	GetToOffnormal() BACnetTimeStamp
 	// GetToFault returns ToFault (property field)
@@ -46,6 +47,8 @@ type BACnetEventTimestamps interface {
 	GetToNormal() BACnetTimeStamp
 	// IsBACnetEventTimestamps is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventTimestamps()
+	// CreateBuilder creates a BACnetEventTimestampsBuilder
+	CreateBACnetEventTimestampsBuilder() BACnetEventTimestampsBuilder
 }
 
 // _BACnetEventTimestamps is the data-structure of this message
@@ -56,6 +59,173 @@ type _BACnetEventTimestamps struct {
 }
 
 var _ BACnetEventTimestamps = (*_BACnetEventTimestamps)(nil)
+
+// NewBACnetEventTimestamps factory function for _BACnetEventTimestamps
+func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) *_BACnetEventTimestamps {
+	if toOffnormal == nil {
+		panic("toOffnormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	if toFault == nil {
+		panic("toFault of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	if toNormal == nil {
+		panic("toNormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
+	}
+	return &_BACnetEventTimestamps{ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventTimestampsBuilder is a builder for BACnetEventTimestamps
+type BACnetEventTimestampsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) BACnetEventTimestampsBuilder
+	// WithToOffnormal adds ToOffnormal (property field)
+	WithToOffnormal(BACnetTimeStamp) BACnetEventTimestampsBuilder
+	// WithToOffnormalBuilder adds ToOffnormal (property field) which is build by the builder
+	WithToOffnormalBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder
+	// WithToFault adds ToFault (property field)
+	WithToFault(BACnetTimeStamp) BACnetEventTimestampsBuilder
+	// WithToFaultBuilder adds ToFault (property field) which is build by the builder
+	WithToFaultBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder
+	// WithToNormal adds ToNormal (property field)
+	WithToNormal(BACnetTimeStamp) BACnetEventTimestampsBuilder
+	// WithToNormalBuilder adds ToNormal (property field) which is build by the builder
+	WithToNormalBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder
+	// Build builds the BACnetEventTimestamps or returns an error if something is wrong
+	Build() (BACnetEventTimestamps, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventTimestamps
+}
+
+// NewBACnetEventTimestampsBuilder() creates a BACnetEventTimestampsBuilder
+func NewBACnetEventTimestampsBuilder() BACnetEventTimestampsBuilder {
+	return &_BACnetEventTimestampsBuilder{_BACnetEventTimestamps: new(_BACnetEventTimestamps)}
+}
+
+type _BACnetEventTimestampsBuilder struct {
+	*_BACnetEventTimestamps
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventTimestampsBuilder) = (*_BACnetEventTimestampsBuilder)(nil)
+
+func (b *_BACnetEventTimestampsBuilder) WithMandatoryFields(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) BACnetEventTimestampsBuilder {
+	return b.WithToOffnormal(toOffnormal).WithToFault(toFault).WithToNormal(toNormal)
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToOffnormal(toOffnormal BACnetTimeStamp) BACnetEventTimestampsBuilder {
+	b.ToOffnormal = toOffnormal
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToOffnormalBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder {
+	builder := builderSupplier(b.ToOffnormal.CreateBACnetTimeStampBuilder())
+	var err error
+	b.ToOffnormal, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToFault(toFault BACnetTimeStamp) BACnetEventTimestampsBuilder {
+	b.ToFault = toFault
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToFaultBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder {
+	builder := builderSupplier(b.ToFault.CreateBACnetTimeStampBuilder())
+	var err error
+	b.ToFault, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToNormal(toNormal BACnetTimeStamp) BACnetEventTimestampsBuilder {
+	b.ToNormal = toNormal
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) WithToNormalBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetEventTimestampsBuilder {
+	builder := builderSupplier(b.ToNormal.CreateBACnetTimeStampBuilder())
+	var err error
+	b.ToNormal, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventTimestampsBuilder) Build() (BACnetEventTimestamps, error) {
+	if b.ToOffnormal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'toOffnormal' not set"))
+	}
+	if b.ToFault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'toFault' not set"))
+	}
+	if b.ToNormal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'toNormal' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventTimestamps.deepCopy(), nil
+}
+
+func (b *_BACnetEventTimestampsBuilder) MustBuild() BACnetEventTimestamps {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventTimestampsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventTimestampsBuilder().(*_BACnetEventTimestampsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventTimestampsBuilder creates a BACnetEventTimestampsBuilder
+func (b *_BACnetEventTimestamps) CreateBACnetEventTimestampsBuilder() BACnetEventTimestampsBuilder {
+	if b == nil {
+		return NewBACnetEventTimestampsBuilder()
+	}
+	return &_BACnetEventTimestampsBuilder{_BACnetEventTimestamps: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +248,6 @@ func (m *_BACnetEventTimestamps) GetToNormal() BACnetTimeStamp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventTimestamps factory function for _BACnetEventTimestamps
-func NewBACnetEventTimestamps(toOffnormal BACnetTimeStamp, toFault BACnetTimeStamp, toNormal BACnetTimeStamp) *_BACnetEventTimestamps {
-	if toOffnormal == nil {
-		panic("toOffnormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	if toFault == nil {
-		panic("toFault of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	if toNormal == nil {
-		panic("toNormal of type BACnetTimeStamp for BACnetEventTimestamps must not be nil")
-	}
-	return &_BACnetEventTimestamps{ToOffnormal: toOffnormal, ToFault: toFault, ToNormal: toNormal}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventTimestamps(structType any) BACnetEventTimestamps {
@@ -142,7 +298,7 @@ func BACnetEventTimestampsParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventTimestamps) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetEventTimestamps BACnetEventTimestamps, err error) {
@@ -216,13 +372,33 @@ func (m *_BACnetEventTimestamps) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_BACnetEventTimestamps) IsBACnetEventTimestamps() {}
 
+func (m *_BACnetEventTimestamps) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventTimestamps) deepCopy() *_BACnetEventTimestamps {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventTimestampsCopy := &_BACnetEventTimestamps{
+		m.ToOffnormal.DeepCopy().(BACnetTimeStamp),
+		m.ToFault.DeepCopy().(BACnetTimeStamp),
+		m.ToNormal.DeepCopy().(BACnetTimeStamp),
+	}
+	return _BACnetEventTimestampsCopy
+}
+
 func (m *_BACnetEventTimestamps) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetChannelValueOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetOctetStringValue returns OctetStringValue (property field)
 	GetOctetStringValue() BACnetApplicationTagOctetString
 	// IsBACnetChannelValueOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueOctetString()
+	// CreateBuilder creates a BACnetChannelValueOctetStringBuilder
+	CreateBACnetChannelValueOctetStringBuilder() BACnetChannelValueOctetStringBuilder
 }
 
 // _BACnetChannelValueOctetString is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetChannelValueOctetString struct {
 
 var _ BACnetChannelValueOctetString = (*_BACnetChannelValueOctetString)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueOctetString)(nil)
+
+// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
+func NewBACnetChannelValueOctetString(peekedTagHeader BACnetTagHeader, octetStringValue BACnetApplicationTagOctetString) *_BACnetChannelValueOctetString {
+	if octetStringValue == nil {
+		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
+	}
+	_result := &_BACnetChannelValueOctetString{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		OctetStringValue:           octetStringValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueOctetStringBuilder is a builder for BACnetChannelValueOctetString
+type BACnetChannelValueOctetStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder
+	// WithOctetStringValue adds OctetStringValue (property field)
+	WithOctetStringValue(BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder
+	// WithOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
+	WithOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetChannelValueOctetStringBuilder
+	// Build builds the BACnetChannelValueOctetString or returns an error if something is wrong
+	Build() (BACnetChannelValueOctetString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueOctetString
+}
+
+// NewBACnetChannelValueOctetStringBuilder() creates a BACnetChannelValueOctetStringBuilder
+func NewBACnetChannelValueOctetStringBuilder() BACnetChannelValueOctetStringBuilder {
+	return &_BACnetChannelValueOctetStringBuilder{_BACnetChannelValueOctetString: new(_BACnetChannelValueOctetString)}
+}
+
+type _BACnetChannelValueOctetStringBuilder struct {
+	*_BACnetChannelValueOctetString
+
+	parentBuilder *_BACnetChannelValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueOctetStringBuilder) = (*_BACnetChannelValueOctetStringBuilder)(nil)
+
+func (b *_BACnetChannelValueOctetStringBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) WithMandatoryFields(octetStringValue BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder {
+	return b.WithOctetStringValue(octetStringValue)
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) WithOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetChannelValueOctetStringBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) WithOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetChannelValueOctetStringBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.OctetStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) Build() (BACnetChannelValueOctetString, error) {
+	if b.OctetStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'octetStringValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetChannelValueOctetString.deepCopy(), nil
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) MustBuild() BACnetChannelValueOctetString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueOctetStringBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueOctetStringBuilder().(*_BACnetChannelValueOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetChannelValueOctetStringBuilder creates a BACnetChannelValueOctetStringBuilder
+func (b *_BACnetChannelValueOctetString) CreateBACnetChannelValueOctetStringBuilder() BACnetChannelValueOctetStringBuilder {
+	if b == nil {
+		return NewBACnetChannelValueOctetStringBuilder()
+	}
+	return &_BACnetChannelValueOctetStringBuilder{_BACnetChannelValueOctetString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetChannelValueOctetString) GetOctetStringValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueOctetString factory function for _BACnetChannelValueOctetString
-func NewBACnetChannelValueOctetString(octetStringValue BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueOctetString {
-	if octetStringValue == nil {
-		panic("octetStringValue of type BACnetApplicationTagOctetString for BACnetChannelValueOctetString must not be nil")
-	}
-	_result := &_BACnetChannelValueOctetString{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		OctetStringValue:           octetStringValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueOctetString(structType any) BACnetChannelValueOctetString {
@@ -179,13 +294,33 @@ func (m *_BACnetChannelValueOctetString) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetChannelValueOctetString) IsBACnetChannelValueOctetString() {}
 
+func (m *_BACnetChannelValueOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueOctetString) deepCopy() *_BACnetChannelValueOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueOctetStringCopy := &_BACnetChannelValueOctetString{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueOctetStringCopy
+}
+
 func (m *_BACnetChannelValueOctetString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type NLMIAmRouterToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
 	// IsNLMIAmRouterToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMIAmRouterToNetwork()
+	// CreateBuilder creates a NLMIAmRouterToNetworkBuilder
+	CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder
 }
 
 // _NLMIAmRouterToNetwork is the data-structure of this message
@@ -53,6 +56,107 @@ type _NLMIAmRouterToNetwork struct {
 
 var _ NLMIAmRouterToNetwork = (*_NLMIAmRouterToNetwork)(nil)
 var _ NLMRequirements = (*_NLMIAmRouterToNetwork)(nil)
+
+// NewNLMIAmRouterToNetwork factory function for _NLMIAmRouterToNetwork
+func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMIAmRouterToNetwork {
+	_result := &_NLMIAmRouterToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMIAmRouterToNetworkBuilder is a builder for NLMIAmRouterToNetwork
+type NLMIAmRouterToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder
+	// WithDestinationNetworkAddresses adds DestinationNetworkAddresses (property field)
+	WithDestinationNetworkAddresses(...uint16) NLMIAmRouterToNetworkBuilder
+	// Build builds the NLMIAmRouterToNetwork or returns an error if something is wrong
+	Build() (NLMIAmRouterToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMIAmRouterToNetwork
+}
+
+// NewNLMIAmRouterToNetworkBuilder() creates a NLMIAmRouterToNetworkBuilder
+func NewNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
+	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: new(_NLMIAmRouterToNetwork)}
+}
+
+type _NLMIAmRouterToNetworkBuilder struct {
+	*_NLMIAmRouterToNetwork
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMIAmRouterToNetworkBuilder) = (*_NLMIAmRouterToNetworkBuilder)(nil)
+
+func (b *_NLMIAmRouterToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMIAmRouterToNetworkBuilder {
+	return b.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMIAmRouterToNetworkBuilder {
+	b.DestinationNetworkAddresses = destinationNetworkAddresses
+	return b
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) Build() (NLMIAmRouterToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMIAmRouterToNetwork.deepCopy(), nil
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) MustBuild() NLMIAmRouterToNetwork {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMIAmRouterToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMIAmRouterToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMIAmRouterToNetworkBuilder().(*_NLMIAmRouterToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMIAmRouterToNetworkBuilder creates a NLMIAmRouterToNetworkBuilder
+func (b *_NLMIAmRouterToNetwork) CreateNLMIAmRouterToNetworkBuilder() NLMIAmRouterToNetworkBuilder {
+	if b == nil {
+		return NewNLMIAmRouterToNetworkBuilder()
+	}
+	return &_NLMIAmRouterToNetworkBuilder{_NLMIAmRouterToNetwork: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_NLMIAmRouterToNetwork) GetDestinationNetworkAddresses() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMIAmRouterToNetwork factory function for _NLMIAmRouterToNetwork
-func NewNLMIAmRouterToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMIAmRouterToNetwork {
-	_result := &_NLMIAmRouterToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMIAmRouterToNetwork(structType any) NLMIAmRouterToNetwork {
@@ -182,13 +276,33 @@ func (m *_NLMIAmRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_NLMIAmRouterToNetwork) IsNLMIAmRouterToNetwork() {}
 
+func (m *_NLMIAmRouterToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMIAmRouterToNetwork) deepCopy() *_NLMIAmRouterToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMIAmRouterToNetworkCopy := &_NLMIAmRouterToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMIAmRouterToNetworkCopy
+}
+
 func (m *_NLMIAmRouterToNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

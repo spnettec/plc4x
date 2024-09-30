@@ -38,6 +38,7 @@ type BACnetConstructedDataIsUTC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIsUtc returns IsUtc (property field)
 	GetIsUtc() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataIsUTC interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataIsUTC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIsUTC()
+	// CreateBuilder creates a BACnetConstructedDataIsUTCBuilder
+	CreateBACnetConstructedDataIsUTCBuilder() BACnetConstructedDataIsUTCBuilder
 }
 
 // _BACnetConstructedDataIsUTC is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIsUTC struct {
 
 var _ BACnetConstructedDataIsUTC = (*_BACnetConstructedDataIsUTC)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIsUTC)(nil)
+
+// NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
+func NewBACnetConstructedDataIsUTC(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, isUtc BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
+	if isUtc == nil {
+		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
+	}
+	_result := &_BACnetConstructedDataIsUTC{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IsUtc:                         isUtc,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIsUTCBuilder is a builder for BACnetConstructedDataIsUTC
+type BACnetConstructedDataIsUTCBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(isUtc BACnetApplicationTagBoolean) BACnetConstructedDataIsUTCBuilder
+	// WithIsUtc adds IsUtc (property field)
+	WithIsUtc(BACnetApplicationTagBoolean) BACnetConstructedDataIsUTCBuilder
+	// WithIsUtcBuilder adds IsUtc (property field) which is build by the builder
+	WithIsUtcBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIsUTCBuilder
+	// Build builds the BACnetConstructedDataIsUTC or returns an error if something is wrong
+	Build() (BACnetConstructedDataIsUTC, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIsUTC
+}
+
+// NewBACnetConstructedDataIsUTCBuilder() creates a BACnetConstructedDataIsUTCBuilder
+func NewBACnetConstructedDataIsUTCBuilder() BACnetConstructedDataIsUTCBuilder {
+	return &_BACnetConstructedDataIsUTCBuilder{_BACnetConstructedDataIsUTC: new(_BACnetConstructedDataIsUTC)}
+}
+
+type _BACnetConstructedDataIsUTCBuilder struct {
+	*_BACnetConstructedDataIsUTC
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIsUTCBuilder) = (*_BACnetConstructedDataIsUTCBuilder)(nil)
+
+func (b *_BACnetConstructedDataIsUTCBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) WithMandatoryFields(isUtc BACnetApplicationTagBoolean) BACnetConstructedDataIsUTCBuilder {
+	return b.WithIsUtc(isUtc)
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) WithIsUtc(isUtc BACnetApplicationTagBoolean) BACnetConstructedDataIsUTCBuilder {
+	b.IsUtc = isUtc
+	return b
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) WithIsUtcBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIsUTCBuilder {
+	builder := builderSupplier(b.IsUtc.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.IsUtc, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) Build() (BACnetConstructedDataIsUTC, error) {
+	if b.IsUtc == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'isUtc' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIsUTC.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) MustBuild() BACnetConstructedDataIsUTC {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIsUTCBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIsUTCBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIsUTCBuilder().(*_BACnetConstructedDataIsUTCBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIsUTCBuilder creates a BACnetConstructedDataIsUTCBuilder
+func (b *_BACnetConstructedDataIsUTC) CreateBACnetConstructedDataIsUTCBuilder() BACnetConstructedDataIsUTCBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIsUTCBuilder()
+	}
+	return &_BACnetConstructedDataIsUTCBuilder{_BACnetConstructedDataIsUTC: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIsUTC) GetActualValue() BACnetApplicationTagBoole
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIsUTC factory function for _BACnetConstructedDataIsUTC
-func NewBACnetConstructedDataIsUTC(isUtc BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIsUTC {
-	if isUtc == nil {
-		panic("isUtc of type BACnetApplicationTagBoolean for BACnetConstructedDataIsUTC must not be nil")
-	}
-	_result := &_BACnetConstructedDataIsUTC{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IsUtc:                         isUtc,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIsUTC(structType any) BACnetConstructedDataIsUTC {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIsUTC) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_BACnetConstructedDataIsUTC) IsBACnetConstructedDataIsUTC() {}
 
+func (m *_BACnetConstructedDataIsUTC) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIsUTC) deepCopy() *_BACnetConstructedDataIsUTC {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIsUTCCopy := &_BACnetConstructedDataIsUTC{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IsUtc.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIsUTCCopy
+}
+
 func (m *_BACnetConstructedDataIsUTC) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

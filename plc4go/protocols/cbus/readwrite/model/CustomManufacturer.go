@@ -38,10 +38,13 @@ type CustomManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCustomManufacturer()
+	// CreateBuilder creates a CustomManufacturerBuilder
+	CreateCustomManufacturerBuilder() CustomManufacturerBuilder
 }
 
 // _CustomManufacturer is the data-structure of this message
@@ -53,6 +56,87 @@ type _CustomManufacturer struct {
 }
 
 var _ CustomManufacturer = (*_CustomManufacturer)(nil)
+
+// NewCustomManufacturer factory function for _CustomManufacturer
+func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
+	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CustomManufacturerBuilder is a builder for CustomManufacturer
+type CustomManufacturerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(customString string) CustomManufacturerBuilder
+	// WithCustomString adds CustomString (property field)
+	WithCustomString(string) CustomManufacturerBuilder
+	// Build builds the CustomManufacturer or returns an error if something is wrong
+	Build() (CustomManufacturer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CustomManufacturer
+}
+
+// NewCustomManufacturerBuilder() creates a CustomManufacturerBuilder
+func NewCustomManufacturerBuilder() CustomManufacturerBuilder {
+	return &_CustomManufacturerBuilder{_CustomManufacturer: new(_CustomManufacturer)}
+}
+
+type _CustomManufacturerBuilder struct {
+	*_CustomManufacturer
+
+	err *utils.MultiError
+}
+
+var _ (CustomManufacturerBuilder) = (*_CustomManufacturerBuilder)(nil)
+
+func (b *_CustomManufacturerBuilder) WithMandatoryFields(customString string) CustomManufacturerBuilder {
+	return b.WithCustomString(customString)
+}
+
+func (b *_CustomManufacturerBuilder) WithCustomString(customString string) CustomManufacturerBuilder {
+	b.CustomString = customString
+	return b
+}
+
+func (b *_CustomManufacturerBuilder) Build() (CustomManufacturer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CustomManufacturer.deepCopy(), nil
+}
+
+func (b *_CustomManufacturerBuilder) MustBuild() CustomManufacturer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CustomManufacturerBuilder) DeepCopy() any {
+	_copy := b.CreateCustomManufacturerBuilder().(*_CustomManufacturerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCustomManufacturerBuilder creates a CustomManufacturerBuilder
+func (b *_CustomManufacturer) CreateCustomManufacturerBuilder() CustomManufacturerBuilder {
+	if b == nil {
+		return NewCustomManufacturerBuilder()
+	}
+	return &_CustomManufacturerBuilder{_CustomManufacturer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,11 +151,6 @@ func (m *_CustomManufacturer) GetCustomString() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCustomManufacturer factory function for _CustomManufacturer
-func NewCustomManufacturer(customString string, numBytes uint8) *_CustomManufacturer {
-	return &_CustomManufacturer{CustomString: customString, NumBytes: numBytes}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCustomManufacturer(structType any) CustomManufacturer {
@@ -116,7 +195,7 @@ func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CustomManufacturer) parse(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (__customManufacturer CustomManufacturer, err error) {
@@ -180,13 +259,32 @@ func (m *_CustomManufacturer) GetNumBytes() uint8 {
 
 func (m *_CustomManufacturer) IsCustomManufacturer() {}
 
+func (m *_CustomManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CustomManufacturer) deepCopy() *_CustomManufacturer {
+	if m == nil {
+		return nil
+	}
+	_CustomManufacturerCopy := &_CustomManufacturer{
+		m.CustomString,
+		m.NumBytes,
+	}
+	return _CustomManufacturerCopy
+}
+
 func (m *_CustomManufacturer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

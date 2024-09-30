@@ -41,9 +41,12 @@ type ServerErrorReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ReplyOrConfirmation
 	// IsServerErrorReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerErrorReply()
+	// CreateBuilder creates a ServerErrorReplyBuilder
+	CreateServerErrorReplyBuilder() ServerErrorReplyBuilder
 }
 
 // _ServerErrorReply is the data-structure of this message
@@ -53,6 +56,99 @@ type _ServerErrorReply struct {
 
 var _ ServerErrorReply = (*_ServerErrorReply)(nil)
 var _ ReplyOrConfirmationRequirements = (*_ServerErrorReply)(nil)
+
+// NewServerErrorReply factory function for _ServerErrorReply
+func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
+	_result := &_ServerErrorReply{
+		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
+	}
+	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServerErrorReplyBuilder is a builder for ServerErrorReply
+type ServerErrorReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ServerErrorReplyBuilder
+	// Build builds the ServerErrorReply or returns an error if something is wrong
+	Build() (ServerErrorReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServerErrorReply
+}
+
+// NewServerErrorReplyBuilder() creates a ServerErrorReplyBuilder
+func NewServerErrorReplyBuilder() ServerErrorReplyBuilder {
+	return &_ServerErrorReplyBuilder{_ServerErrorReply: new(_ServerErrorReply)}
+}
+
+type _ServerErrorReplyBuilder struct {
+	*_ServerErrorReply
+
+	parentBuilder *_ReplyOrConfirmationBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ServerErrorReplyBuilder) = (*_ServerErrorReplyBuilder)(nil)
+
+func (b *_ServerErrorReplyBuilder) setParent(contract ReplyOrConfirmationContract) {
+	b.ReplyOrConfirmationContract = contract
+}
+
+func (b *_ServerErrorReplyBuilder) WithMandatoryFields() ServerErrorReplyBuilder {
+	return b
+}
+
+func (b *_ServerErrorReplyBuilder) Build() (ServerErrorReply, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ServerErrorReply.deepCopy(), nil
+}
+
+func (b *_ServerErrorReplyBuilder) MustBuild() ServerErrorReply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServerErrorReplyBuilder) Done() ReplyOrConfirmationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServerErrorReplyBuilder) buildForReplyOrConfirmation() (ReplyOrConfirmation, error) {
+	return b.Build()
+}
+
+func (b *_ServerErrorReplyBuilder) DeepCopy() any {
+	_copy := b.CreateServerErrorReplyBuilder().(*_ServerErrorReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateServerErrorReplyBuilder creates a ServerErrorReplyBuilder
+func (b *_ServerErrorReply) CreateServerErrorReplyBuilder() ServerErrorReplyBuilder {
+	if b == nil {
+		return NewServerErrorReplyBuilder()
+	}
+	return &_ServerErrorReplyBuilder{_ServerErrorReply: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,15 +177,6 @@ func (m *_ServerErrorReply) GetErrorMarker() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerErrorReply factory function for _ServerErrorReply
-func NewServerErrorReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ServerErrorReply {
-	_result := &_ServerErrorReply{
-		ReplyOrConfirmationContract: NewReplyOrConfirmation(peekedByte, cBusOptions, requestContext),
-	}
-	_result.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerErrorReply(structType any) ServerErrorReply {
@@ -175,13 +262,32 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_ServerErrorReply) IsServerErrorReply() {}
 
+func (m *_ServerErrorReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerErrorReply) deepCopy() *_ServerErrorReply {
+	if m == nil {
+		return nil
+	}
+	_ServerErrorReplyCopy := &_ServerErrorReply{
+		m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation).deepCopy(),
+	}
+	m.ReplyOrConfirmationContract.(*_ReplyOrConfirmation)._SubType = m
+	return _ServerErrorReplyCopy
+}
+
 func (m *_ServerErrorReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

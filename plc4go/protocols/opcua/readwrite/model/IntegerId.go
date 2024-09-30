@@ -36,8 +36,11 @@ type IntegerId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsIntegerId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIntegerId()
+	// CreateBuilder creates a IntegerIdBuilder
+	CreateIntegerIdBuilder() IntegerIdBuilder
 }
 
 // _IntegerId is the data-structure of this message
@@ -50,6 +53,75 @@ var _ IntegerId = (*_IntegerId)(nil)
 func NewIntegerId() *_IntegerId {
 	return &_IntegerId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IntegerIdBuilder is a builder for IntegerId
+type IntegerIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() IntegerIdBuilder
+	// Build builds the IntegerId or returns an error if something is wrong
+	Build() (IntegerId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IntegerId
+}
+
+// NewIntegerIdBuilder() creates a IntegerIdBuilder
+func NewIntegerIdBuilder() IntegerIdBuilder {
+	return &_IntegerIdBuilder{_IntegerId: new(_IntegerId)}
+}
+
+type _IntegerIdBuilder struct {
+	*_IntegerId
+
+	err *utils.MultiError
+}
+
+var _ (IntegerIdBuilder) = (*_IntegerIdBuilder)(nil)
+
+func (b *_IntegerIdBuilder) WithMandatoryFields() IntegerIdBuilder {
+	return b
+}
+
+func (b *_IntegerIdBuilder) Build() (IntegerId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IntegerId.deepCopy(), nil
+}
+
+func (b *_IntegerIdBuilder) MustBuild() IntegerId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_IntegerIdBuilder) DeepCopy() any {
+	_copy := b.CreateIntegerIdBuilder().(*_IntegerIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIntegerIdBuilder creates a IntegerIdBuilder
+func (b *_IntegerId) CreateIntegerIdBuilder() IntegerIdBuilder {
+	if b == nil {
+		return NewIntegerIdBuilder()
+	}
+	return &_IntegerIdBuilder{_IntegerId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastIntegerId(structType any) IntegerId {
@@ -91,7 +163,7 @@ func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_IntegerId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__integerId IntegerId, err error) {
@@ -135,13 +207,29 @@ func (m *_IntegerId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_IntegerId) IsIntegerId() {}
 
+func (m *_IntegerId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IntegerId) deepCopy() *_IntegerId {
+	if m == nil {
+		return nil
+	}
+	_IntegerIdCopy := &_IntegerId{}
+	return _IntegerIdCopy
+}
+
 func (m *_IntegerId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

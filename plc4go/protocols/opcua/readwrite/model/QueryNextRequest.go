@@ -38,6 +38,7 @@ type QueryNextRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type QueryNextRequest interface {
 	GetContinuationPoint() PascalByteString
 	// IsQueryNextRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQueryNextRequest()
+	// CreateBuilder creates a QueryNextRequestBuilder
+	CreateQueryNextRequestBuilder() QueryNextRequestBuilder
 }
 
 // _QueryNextRequest is the data-structure of this message
@@ -61,6 +64,171 @@ type _QueryNextRequest struct {
 
 var _ QueryNextRequest = (*_QueryNextRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryNextRequest)(nil)
+
+// NewQueryNextRequest factory function for _QueryNextRequest
+func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
+	}
+	_result := &_QueryNextRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		ReleaseContinuationPoint:          releaseContinuationPoint,
+		ContinuationPoint:                 continuationPoint,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QueryNextRequestBuilder is a builder for QueryNextRequest
+type QueryNextRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) QueryNextRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextRequestBuilder
+	// WithReleaseContinuationPoint adds ReleaseContinuationPoint (property field)
+	WithReleaseContinuationPoint(bool) QueryNextRequestBuilder
+	// WithContinuationPoint adds ContinuationPoint (property field)
+	WithContinuationPoint(PascalByteString) QueryNextRequestBuilder
+	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
+	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) QueryNextRequestBuilder
+	// Build builds the QueryNextRequest or returns an error if something is wrong
+	Build() (QueryNextRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QueryNextRequest
+}
+
+// NewQueryNextRequestBuilder() creates a QueryNextRequestBuilder
+func NewQueryNextRequestBuilder() QueryNextRequestBuilder {
+	return &_QueryNextRequestBuilder{_QueryNextRequest: new(_QueryNextRequest)}
+}
+
+type _QueryNextRequestBuilder struct {
+	*_QueryNextRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (QueryNextRequestBuilder) = (*_QueryNextRequestBuilder)(nil)
+
+func (b *_QueryNextRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_QueryNextRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) QueryNextRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithReleaseContinuationPoint(releaseContinuationPoint).WithContinuationPoint(continuationPoint)
+}
+
+func (b *_QueryNextRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) QueryNextRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_QueryNextRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryNextRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryNextRequestBuilder) WithReleaseContinuationPoint(releaseContinuationPoint bool) QueryNextRequestBuilder {
+	b.ReleaseContinuationPoint = releaseContinuationPoint
+	return b
+}
+
+func (b *_QueryNextRequestBuilder) WithContinuationPoint(continuationPoint PascalByteString) QueryNextRequestBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
+}
+
+func (b *_QueryNextRequestBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) QueryNextRequestBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
+	var err error
+	b.ContinuationPoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryNextRequestBuilder) Build() (QueryNextRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryNextRequest.deepCopy(), nil
+}
+
+func (b *_QueryNextRequestBuilder) MustBuild() QueryNextRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryNextRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryNextRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryNextRequestBuilder) DeepCopy() any {
+	_copy := b.CreateQueryNextRequestBuilder().(*_QueryNextRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateQueryNextRequestBuilder creates a QueryNextRequestBuilder
+func (b *_QueryNextRequest) CreateQueryNextRequestBuilder() QueryNextRequestBuilder {
+	if b == nil {
+		return NewQueryNextRequestBuilder()
+	}
+	return &_QueryNextRequestBuilder{_QueryNextRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,24 +269,6 @@ func (m *_QueryNextRequest) GetContinuationPoint() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryNextRequest factory function for _QueryNextRequest
-func NewQueryNextRequest(requestHeader ExtensionObjectDefinition, releaseContinuationPoint bool, continuationPoint PascalByteString) *_QueryNextRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryNextRequest must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for QueryNextRequest must not be nil")
-	}
-	_result := &_QueryNextRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		ReleaseContinuationPoint:          releaseContinuationPoint,
-		ContinuationPoint:                 continuationPoint,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryNextRequest(structType any) QueryNextRequest {
@@ -243,13 +393,36 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_QueryNextRequest) IsQueryNextRequest() {}
 
+func (m *_QueryNextRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryNextRequest) deepCopy() *_QueryNextRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryNextRequestCopy := &_QueryNextRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ReleaseContinuationPoint,
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryNextRequestCopy
+}
+
 func (m *_QueryNextRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

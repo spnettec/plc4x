@@ -38,12 +38,15 @@ type BACnetAuthenticationPolicyListEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCredentialDataInput returns CredentialDataInput (property field)
 	GetCredentialDataInput() BACnetDeviceObjectReferenceEnclosed
 	// GetIndex returns Index (property field)
 	GetIndex() BACnetContextTagUnsignedInteger
 	// IsBACnetAuthenticationPolicyListEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthenticationPolicyListEntry()
+	// CreateBuilder creates a BACnetAuthenticationPolicyListEntryBuilder
+	CreateBACnetAuthenticationPolicyListEntryBuilder() BACnetAuthenticationPolicyListEntryBuilder
 }
 
 // _BACnetAuthenticationPolicyListEntry is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetAuthenticationPolicyListEntry struct {
 }
 
 var _ BACnetAuthenticationPolicyListEntry = (*_BACnetAuthenticationPolicyListEntry)(nil)
+
+// NewBACnetAuthenticationPolicyListEntry factory function for _BACnetAuthenticationPolicyListEntry
+func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicyListEntry {
+	if credentialDataInput == nil {
+		panic("credentialDataInput of type BACnetDeviceObjectReferenceEnclosed for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
+	if index == nil {
+		panic("index of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicyListEntry must not be nil")
+	}
+	return &_BACnetAuthenticationPolicyListEntry{CredentialDataInput: credentialDataInput, Index: index}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthenticationPolicyListEntryBuilder is a builder for BACnetAuthenticationPolicyListEntry
+type BACnetAuthenticationPolicyListEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder
+	// WithCredentialDataInput adds CredentialDataInput (property field)
+	WithCredentialDataInput(BACnetDeviceObjectReferenceEnclosed) BACnetAuthenticationPolicyListEntryBuilder
+	// WithCredentialDataInputBuilder adds CredentialDataInput (property field) which is build by the builder
+	WithCredentialDataInputBuilder(func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAuthenticationPolicyListEntryBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder
+	// WithIndexBuilder adds Index (property field) which is build by the builder
+	WithIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyListEntryBuilder
+	// Build builds the BACnetAuthenticationPolicyListEntry or returns an error if something is wrong
+	Build() (BACnetAuthenticationPolicyListEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthenticationPolicyListEntry
+}
+
+// NewBACnetAuthenticationPolicyListEntryBuilder() creates a BACnetAuthenticationPolicyListEntryBuilder
+func NewBACnetAuthenticationPolicyListEntryBuilder() BACnetAuthenticationPolicyListEntryBuilder {
+	return &_BACnetAuthenticationPolicyListEntryBuilder{_BACnetAuthenticationPolicyListEntry: new(_BACnetAuthenticationPolicyListEntry)}
+}
+
+type _BACnetAuthenticationPolicyListEntryBuilder struct {
+	*_BACnetAuthenticationPolicyListEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthenticationPolicyListEntryBuilder) = (*_BACnetAuthenticationPolicyListEntryBuilder)(nil)
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithMandatoryFields(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
+	return b.WithCredentialDataInput(credentialDataInput).WithIndex(index)
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInput(credentialDataInput BACnetDeviceObjectReferenceEnclosed) BACnetAuthenticationPolicyListEntryBuilder {
+	b.CredentialDataInput = credentialDataInput
+	return b
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithCredentialDataInputBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAuthenticationPolicyListEntryBuilder {
+	builder := builderSupplier(b.CredentialDataInput.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+	var err error
+	b.CredentialDataInput, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithIndex(index BACnetContextTagUnsignedInteger) BACnetAuthenticationPolicyListEntryBuilder {
+	b.Index = index
+	return b
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) WithIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationPolicyListEntryBuilder {
+	builder := builderSupplier(b.Index.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Index, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) Build() (BACnetAuthenticationPolicyListEntry, error) {
+	if b.CredentialDataInput == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'credentialDataInput' not set"))
+	}
+	if b.Index == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'index' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAuthenticationPolicyListEntry.deepCopy(), nil
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) MustBuild() BACnetAuthenticationPolicyListEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAuthenticationPolicyListEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationPolicyListEntryBuilder().(*_BACnetAuthenticationPolicyListEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAuthenticationPolicyListEntryBuilder creates a BACnetAuthenticationPolicyListEntryBuilder
+func (b *_BACnetAuthenticationPolicyListEntry) CreateBACnetAuthenticationPolicyListEntryBuilder() BACnetAuthenticationPolicyListEntryBuilder {
+	if b == nil {
+		return NewBACnetAuthenticationPolicyListEntryBuilder()
+	}
+	return &_BACnetAuthenticationPolicyListEntryBuilder{_BACnetAuthenticationPolicyListEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetAuthenticationPolicyListEntry) GetIndex() BACnetContextTagUnsign
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationPolicyListEntry factory function for _BACnetAuthenticationPolicyListEntry
-func NewBACnetAuthenticationPolicyListEntry(credentialDataInput BACnetDeviceObjectReferenceEnclosed, index BACnetContextTagUnsignedInteger) *_BACnetAuthenticationPolicyListEntry {
-	if credentialDataInput == nil {
-		panic("credentialDataInput of type BACnetDeviceObjectReferenceEnclosed for BACnetAuthenticationPolicyListEntry must not be nil")
-	}
-	if index == nil {
-		panic("index of type BACnetContextTagUnsignedInteger for BACnetAuthenticationPolicyListEntry must not be nil")
-	}
-	return &_BACnetAuthenticationPolicyListEntry{CredentialDataInput: credentialDataInput, Index: index}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationPolicyListEntry(structType any) BACnetAuthenticationPolicyListEntry {
@@ -129,7 +257,7 @@ func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthenticationPolicyListEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAuthenticationPolicyListEntry BACnetAuthenticationPolicyListEntry, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetAuthenticationPolicyListEntry) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetAuthenticationPolicyListEntry) IsBACnetAuthenticationPolicyListEntry() {}
 
+func (m *_BACnetAuthenticationPolicyListEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationPolicyListEntry) deepCopy() *_BACnetAuthenticationPolicyListEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationPolicyListEntryCopy := &_BACnetAuthenticationPolicyListEntry{
+		m.CredentialDataInput.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Index.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetAuthenticationPolicyListEntryCopy
+}
+
 func (m *_BACnetAuthenticationPolicyListEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

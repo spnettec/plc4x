@@ -38,6 +38,7 @@ type AirConditioningDataSetHumiditySetbackLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -49,6 +50,8 @@ type AirConditioningDataSetHumiditySetbackLimit interface {
 	GetHvacModeAndFlags() HVACHumidityModeAndFlags
 	// IsAirConditioningDataSetHumiditySetbackLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataSetHumiditySetbackLimit()
+	// CreateBuilder creates a AirConditioningDataSetHumiditySetbackLimitBuilder
+	CreateAirConditioningDataSetHumiditySetbackLimitBuilder() AirConditioningDataSetHumiditySetbackLimitBuilder
 }
 
 // _AirConditioningDataSetHumiditySetbackLimit is the data-structure of this message
@@ -62,6 +65,203 @@ type _AirConditioningDataSetHumiditySetbackLimit struct {
 
 var _ AirConditioningDataSetHumiditySetbackLimit = (*_AirConditioningDataSetHumiditySetbackLimit)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataSetHumiditySetbackLimit)(nil)
+
+// NewAirConditioningDataSetHumiditySetbackLimit factory function for _AirConditioningDataSetHumiditySetbackLimit
+func NewAirConditioningDataSetHumiditySetbackLimit(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) *_AirConditioningDataSetHumiditySetbackLimit {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	if limit == nil {
+		panic("limit of type HVACHumidity for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetHumiditySetbackLimit must not be nil")
+	}
+	_result := &_AirConditioningDataSetHumiditySetbackLimit{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Limit:                       limit,
+		HvacModeAndFlags:            hvacModeAndFlags,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataSetHumiditySetbackLimitBuilder is a builder for AirConditioningDataSetHumiditySetbackLimit
+type AirConditioningDataSetHumiditySetbackLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithZoneList adds ZoneList (property field)
+	WithZoneList(HVACZoneList) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithZoneListBuilder adds ZoneList (property field) which is build by the builder
+	WithZoneListBuilder(func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithLimit adds Limit (property field)
+	WithLimit(HVACHumidity) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithLimitBuilder adds Limit (property field) which is build by the builder
+	WithLimitBuilder(func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithHvacModeAndFlags adds HvacModeAndFlags (property field)
+	WithHvacModeAndFlags(HVACHumidityModeAndFlags) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// WithHvacModeAndFlagsBuilder adds HvacModeAndFlags (property field) which is build by the builder
+	WithHvacModeAndFlagsBuilder(func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder
+	// Build builds the AirConditioningDataSetHumiditySetbackLimit or returns an error if something is wrong
+	Build() (AirConditioningDataSetHumiditySetbackLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataSetHumiditySetbackLimit
+}
+
+// NewAirConditioningDataSetHumiditySetbackLimitBuilder() creates a AirConditioningDataSetHumiditySetbackLimitBuilder
+func NewAirConditioningDataSetHumiditySetbackLimitBuilder() AirConditioningDataSetHumiditySetbackLimitBuilder {
+	return &_AirConditioningDataSetHumiditySetbackLimitBuilder{_AirConditioningDataSetHumiditySetbackLimit: new(_AirConditioningDataSetHumiditySetbackLimit)}
+}
+
+type _AirConditioningDataSetHumiditySetbackLimitBuilder struct {
+	*_AirConditioningDataSetHumiditySetbackLimit
+
+	parentBuilder *_AirConditioningDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataSetHumiditySetbackLimitBuilder) = (*_AirConditioningDataSetHumiditySetbackLimitBuilder)(nil)
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithLimit(limit).WithHvacModeAndFlags(hvacModeAndFlags)
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
+	var err error
+	b.ZoneList, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithLimit(limit HVACHumidity) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	b.Limit = limit
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithLimitBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	builder := builderSupplier(b.Limit.CreateHVACHumidityBuilder())
+	var err error
+	b.Limit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	b.HvacModeAndFlags = hvacModeAndFlags
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataSetHumiditySetbackLimitBuilder {
+	builder := builderSupplier(b.HvacModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
+	var err error
+	b.HvacModeAndFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) Build() (AirConditioningDataSetHumiditySetbackLimit, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+	}
+	if b.Limit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'limit' not set"))
+	}
+	if b.HvacModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AirConditioningDataSetHumiditySetbackLimit.deepCopy(), nil
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) MustBuild() AirConditioningDataSetHumiditySetbackLimit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataSetHumiditySetbackLimitBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataSetHumiditySetbackLimitBuilder().(*_AirConditioningDataSetHumiditySetbackLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAirConditioningDataSetHumiditySetbackLimitBuilder creates a AirConditioningDataSetHumiditySetbackLimitBuilder
+func (b *_AirConditioningDataSetHumiditySetbackLimit) CreateAirConditioningDataSetHumiditySetbackLimitBuilder() AirConditioningDataSetHumiditySetbackLimitBuilder {
+	if b == nil {
+		return NewAirConditioningDataSetHumiditySetbackLimitBuilder()
+	}
+	return &_AirConditioningDataSetHumiditySetbackLimitBuilder{_AirConditioningDataSetHumiditySetbackLimit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,28 +302,6 @@ func (m *_AirConditioningDataSetHumiditySetbackLimit) GetHvacModeAndFlags() HVAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataSetHumiditySetbackLimit factory function for _AirConditioningDataSetHumiditySetbackLimit
-func NewAirConditioningDataSetHumiditySetbackLimit(zoneGroup byte, zoneList HVACZoneList, limit HVACHumidity, hvacModeAndFlags HVACHumidityModeAndFlags, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataSetHumiditySetbackLimit {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	if limit == nil {
-		panic("limit of type HVACHumidity for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataSetHumiditySetbackLimit must not be nil")
-	}
-	_result := &_AirConditioningDataSetHumiditySetbackLimit{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Limit:                       limit,
-		HvacModeAndFlags:            hvacModeAndFlags,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataSetHumiditySetbackLimit(structType any) AirConditioningDataSetHumiditySetbackLimit {
@@ -249,13 +427,36 @@ func (m *_AirConditioningDataSetHumiditySetbackLimit) SerializeWithWriteBuffer(c
 func (m *_AirConditioningDataSetHumiditySetbackLimit) IsAirConditioningDataSetHumiditySetbackLimit() {
 }
 
+func (m *_AirConditioningDataSetHumiditySetbackLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataSetHumiditySetbackLimit) deepCopy() *_AirConditioningDataSetHumiditySetbackLimit {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataSetHumiditySetbackLimitCopy := &_AirConditioningDataSetHumiditySetbackLimit{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Limit.DeepCopy().(HVACHumidity),
+		m.HvacModeAndFlags.DeepCopy().(HVACHumidityModeAndFlags),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataSetHumiditySetbackLimitCopy
+}
+
 func (m *_AirConditioningDataSetHumiditySetbackLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

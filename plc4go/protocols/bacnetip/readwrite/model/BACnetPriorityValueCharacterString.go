@@ -38,11 +38,14 @@ type BACnetPriorityValueCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetCharacterStringValue returns CharacterStringValue (property field)
 	GetCharacterStringValue() BACnetApplicationTagCharacterString
 	// IsBACnetPriorityValueCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueCharacterString()
+	// CreateBuilder creates a BACnetPriorityValueCharacterStringBuilder
+	CreateBACnetPriorityValueCharacterStringBuilder() BACnetPriorityValueCharacterStringBuilder
 }
 
 // _BACnetPriorityValueCharacterString is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPriorityValueCharacterString struct {
 
 var _ BACnetPriorityValueCharacterString = (*_BACnetPriorityValueCharacterString)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueCharacterString)(nil)
+
+// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
+func NewBACnetPriorityValueCharacterString(peekedTagHeader BACnetTagHeader, characterStringValue BACnetApplicationTagCharacterString, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
+	if characterStringValue == nil {
+		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
+	}
+	_result := &_BACnetPriorityValueCharacterString{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		CharacterStringValue:        characterStringValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueCharacterStringBuilder is a builder for BACnetPriorityValueCharacterString
+type BACnetPriorityValueCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithCharacterStringValue(BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder
+	// WithCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetPriorityValueCharacterStringBuilder
+	// Build builds the BACnetPriorityValueCharacterString or returns an error if something is wrong
+	Build() (BACnetPriorityValueCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueCharacterString
+}
+
+// NewBACnetPriorityValueCharacterStringBuilder() creates a BACnetPriorityValueCharacterStringBuilder
+func NewBACnetPriorityValueCharacterStringBuilder() BACnetPriorityValueCharacterStringBuilder {
+	return &_BACnetPriorityValueCharacterStringBuilder{_BACnetPriorityValueCharacterString: new(_BACnetPriorityValueCharacterString)}
+}
+
+type _BACnetPriorityValueCharacterStringBuilder struct {
+	*_BACnetPriorityValueCharacterString
+
+	parentBuilder *_BACnetPriorityValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueCharacterStringBuilder) = (*_BACnetPriorityValueCharacterStringBuilder)(nil)
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) WithMandatoryFields(characterStringValue BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder {
+	return b.WithCharacterStringValue(characterStringValue)
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) WithCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetPriorityValueCharacterStringBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) WithCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetPriorityValueCharacterStringBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) Build() (BACnetPriorityValueCharacterString, error) {
+	if b.CharacterStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'characterStringValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValueCharacterString.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) MustBuild() BACnetPriorityValueCharacterString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueCharacterStringBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueCharacterStringBuilder().(*_BACnetPriorityValueCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityValueCharacterStringBuilder creates a BACnetPriorityValueCharacterStringBuilder
+func (b *_BACnetPriorityValueCharacterString) CreateBACnetPriorityValueCharacterStringBuilder() BACnetPriorityValueCharacterStringBuilder {
+	if b == nil {
+		return NewBACnetPriorityValueCharacterStringBuilder()
+	}
+	return &_BACnetPriorityValueCharacterStringBuilder{_BACnetPriorityValueCharacterString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPriorityValueCharacterString) GetCharacterStringValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueCharacterString factory function for _BACnetPriorityValueCharacterString
-func NewBACnetPriorityValueCharacterString(characterStringValue BACnetApplicationTagCharacterString, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueCharacterString {
-	if characterStringValue == nil {
-		panic("characterStringValue of type BACnetApplicationTagCharacterString for BACnetPriorityValueCharacterString must not be nil")
-	}
-	_result := &_BACnetPriorityValueCharacterString{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		CharacterStringValue:        characterStringValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueCharacterString(structType any) BACnetPriorityValueCharacterString {
@@ -179,13 +294,33 @@ func (m *_BACnetPriorityValueCharacterString) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetPriorityValueCharacterString) IsBACnetPriorityValueCharacterString() {}
 
+func (m *_BACnetPriorityValueCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueCharacterString) deepCopy() *_BACnetPriorityValueCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueCharacterStringCopy := &_BACnetPriorityValueCharacterString{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueCharacterStringCopy
+}
+
 func (m *_BACnetPriorityValueCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

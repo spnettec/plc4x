@@ -38,10 +38,13 @@ type BridgeAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsBridgeAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBridgeAddress()
+	// CreateBuilder creates a BridgeAddressBuilder
+	CreateBridgeAddressBuilder() BridgeAddressBuilder
 }
 
 // _BridgeAddress is the data-structure of this message
@@ -50,6 +53,87 @@ type _BridgeAddress struct {
 }
 
 var _ BridgeAddress = (*_BridgeAddress)(nil)
+
+// NewBridgeAddress factory function for _BridgeAddress
+func NewBridgeAddress(address byte) *_BridgeAddress {
+	return &_BridgeAddress{Address: address}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BridgeAddressBuilder is a builder for BridgeAddress
+type BridgeAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address byte) BridgeAddressBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(byte) BridgeAddressBuilder
+	// Build builds the BridgeAddress or returns an error if something is wrong
+	Build() (BridgeAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BridgeAddress
+}
+
+// NewBridgeAddressBuilder() creates a BridgeAddressBuilder
+func NewBridgeAddressBuilder() BridgeAddressBuilder {
+	return &_BridgeAddressBuilder{_BridgeAddress: new(_BridgeAddress)}
+}
+
+type _BridgeAddressBuilder struct {
+	*_BridgeAddress
+
+	err *utils.MultiError
+}
+
+var _ (BridgeAddressBuilder) = (*_BridgeAddressBuilder)(nil)
+
+func (b *_BridgeAddressBuilder) WithMandatoryFields(address byte) BridgeAddressBuilder {
+	return b.WithAddress(address)
+}
+
+func (b *_BridgeAddressBuilder) WithAddress(address byte) BridgeAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_BridgeAddressBuilder) Build() (BridgeAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BridgeAddress.deepCopy(), nil
+}
+
+func (b *_BridgeAddressBuilder) MustBuild() BridgeAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BridgeAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBridgeAddressBuilder().(*_BridgeAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBridgeAddressBuilder creates a BridgeAddressBuilder
+func (b *_BridgeAddress) CreateBridgeAddressBuilder() BridgeAddressBuilder {
+	if b == nil {
+		return NewBridgeAddressBuilder()
+	}
+	return &_BridgeAddressBuilder{_BridgeAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_BridgeAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBridgeAddress factory function for _BridgeAddress
-func NewBridgeAddress(address byte) *_BridgeAddress {
-	return &_BridgeAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBridgeAddress(structType any) BridgeAddress {
@@ -113,7 +192,7 @@ func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BridgeAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bridgeAddress BridgeAddress, err error) {
@@ -167,13 +246,31 @@ func (m *_BridgeAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_BridgeAddress) IsBridgeAddress() {}
 
+func (m *_BridgeAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BridgeAddress) deepCopy() *_BridgeAddress {
+	if m == nil {
+		return nil
+	}
+	_BridgeAddressCopy := &_BridgeAddress{
+		m.Address,
+	}
+	return _BridgeAddressCopy
+}
+
 func (m *_BridgeAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

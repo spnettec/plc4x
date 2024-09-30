@@ -40,8 +40,11 @@ type BACnetLogData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
+	// CreateBuilder creates a BACnetLogDataBuilder
+	CreateBACnetLogDataBuilder() BACnetLogDataBuilder
 }
 
 // BACnetLogDataContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type BACnetLogDataContract interface {
 	GetTagNumber() uint8
 	// IsBACnetLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogData()
+	// CreateBuilder creates a BACnetLogDataBuilder
+	CreateBACnetLogDataBuilder() BACnetLogDataBuilder
 }
 
 // BACnetLogDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,270 @@ type _BACnetLogData struct {
 }
 
 var _ BACnetLogDataContract = (*_BACnetLogData)(nil)
+
+// NewBACnetLogData factory function for _BACnetLogData
+func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogData must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
+	}
+	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataBuilder is a builder for BACnetLogData
+type BACnetLogDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetLogDataBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetLogDataBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetLogDataBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder
+	// AsBACnetLogDataLogStatus converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogStatus() interface {
+		BACnetLogDataLogStatusBuilder
+		Done() BACnetLogDataBuilder
+	}
+	// AsBACnetLogDataLogData converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogData() interface {
+		BACnetLogDataLogDataBuilder
+		Done() BACnetLogDataBuilder
+	}
+	// AsBACnetLogDataLogDataTimeChange converts this build to a subType of BACnetLogData. It is always possible to return to current builder using Done()
+	AsBACnetLogDataLogDataTimeChange() interface {
+		BACnetLogDataLogDataTimeChangeBuilder
+		Done() BACnetLogDataBuilder
+	}
+	// Build builds the BACnetLogData or returns an error if something is wrong
+	PartialBuild() (BACnetLogDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetLogDataContract
+	// Build builds the BACnetLogData or returns an error if something is wrong
+	Build() (BACnetLogData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogData
+}
+
+// NewBACnetLogDataBuilder() creates a BACnetLogDataBuilder
+func NewBACnetLogDataBuilder() BACnetLogDataBuilder {
+	return &_BACnetLogDataBuilder{_BACnetLogData: new(_BACnetLogData)}
+}
+
+type _BACnetLogDataChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetLogDataContract)
+	buildForBACnetLogData() (BACnetLogData, error)
+}
+
+type _BACnetLogDataBuilder struct {
+	*_BACnetLogData
+
+	childBuilder _BACnetLogDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataBuilder) = (*_BACnetLogDataBuilder)(nil)
+
+func (b *_BACnetLogDataBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetLogDataBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLogDataBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetLogDataBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLogDataBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataBuilder) PartialBuild() (BACnetLogDataContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogData.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataBuilder) PartialMustBuild() BACnetLogDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogStatus() interface {
+	BACnetLogDataLogStatusBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogStatusBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogStatusBuilder().(*_BACnetLogDataLogStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogData() interface {
+	BACnetLogDataLogDataBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogDataBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogDataBuilder().(*_BACnetLogDataLogDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) AsBACnetLogDataLogDataTimeChange() interface {
+	BACnetLogDataLogDataTimeChangeBuilder
+	Done() BACnetLogDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetLogDataLogDataTimeChangeBuilder
+		Done() BACnetLogDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetLogDataLogDataTimeChangeBuilder().(*_BACnetLogDataLogDataTimeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetLogDataBuilder) Build() (BACnetLogData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetLogData()
+}
+
+func (b *_BACnetLogDataBuilder) MustBuild() BACnetLogData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLogDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataBuilder().(*_BACnetLogDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetLogDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataBuilder creates a BACnetLogDataBuilder
+func (b *_BACnetLogData) CreateBACnetLogDataBuilder() BACnetLogDataBuilder {
+	if b == nil {
+		return NewBACnetLogDataBuilder()
+	}
+	return &_BACnetLogDataBuilder{_BACnetLogData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,20 +387,6 @@ func (pm *_BACnetLogData) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogData factory function for _BACnetLogData
-func NewBACnetLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogData {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLogData must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetLogData must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLogData must not be nil")
-	}
-	return &_BACnetLogData{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogData(structType any) BACnetLogData {
@@ -177,7 +432,7 @@ func BACnetLogDataParseWithBufferProducer[T BACnetLogData](tagNumber uint8) func
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -187,7 +442,12 @@ func BACnetLogDataParseWithBuffer[T BACnetLogData](ctx context.Context, readBuff
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetLogData BACnetLogData, err error) {
@@ -221,15 +481,15 @@ func (m *_BACnetLogData) parse(ctx context.Context, readBuffer utils.ReadBuffer,
 	var _child BACnetLogData
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetLogDataLogStatus
-		if _child, err = (&_BACnetLogDataLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogStatus for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(1): // BACnetLogDataLogData
-		if _child, err = (&_BACnetLogDataLogData{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogData).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogData for type-switch of BACnetLogData")
 		}
 	case peekedTagNumber == uint8(2): // BACnetLogDataLogDataTimeChange
-		if _child, err = (&_BACnetLogDataLogDataTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetLogDataLogDataTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetLogDataLogDataTimeChange for type-switch of BACnetLogData")
 		}
 	default:
@@ -297,3 +557,21 @@ func (m *_BACnetLogData) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetLogData) IsBACnetLogData() {}
+
+func (m *_BACnetLogData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogData) deepCopy() *_BACnetLogData {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataCopy := &_BACnetLogData{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLogDataCopy
+}

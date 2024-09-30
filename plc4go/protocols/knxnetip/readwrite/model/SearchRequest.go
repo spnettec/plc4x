@@ -40,11 +40,14 @@ type SearchRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiIDiscoveryEndpoint returns HpaiIDiscoveryEndpoint (property field)
 	GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint
 	// IsSearchRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSearchRequest()
+	// CreateBuilder creates a SearchRequestBuilder
+	CreateSearchRequestBuilder() SearchRequestBuilder
 }
 
 // _SearchRequest is the data-structure of this message
@@ -55,6 +58,131 @@ type _SearchRequest struct {
 
 var _ SearchRequest = (*_SearchRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_SearchRequest)(nil)
+
+// NewSearchRequest factory function for _SearchRequest
+func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
+	if hpaiIDiscoveryEndpoint == nil {
+		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
+	}
+	_result := &_SearchRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SearchRequestBuilder is a builder for SearchRequest
+type SearchRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) SearchRequestBuilder
+	// WithHpaiIDiscoveryEndpoint adds HpaiIDiscoveryEndpoint (property field)
+	WithHpaiIDiscoveryEndpoint(HPAIDiscoveryEndpoint) SearchRequestBuilder
+	// WithHpaiIDiscoveryEndpointBuilder adds HpaiIDiscoveryEndpoint (property field) which is build by the builder
+	WithHpaiIDiscoveryEndpointBuilder(func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) SearchRequestBuilder
+	// Build builds the SearchRequest or returns an error if something is wrong
+	Build() (SearchRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SearchRequest
+}
+
+// NewSearchRequestBuilder() creates a SearchRequestBuilder
+func NewSearchRequestBuilder() SearchRequestBuilder {
+	return &_SearchRequestBuilder{_SearchRequest: new(_SearchRequest)}
+}
+
+type _SearchRequestBuilder struct {
+	*_SearchRequest
+
+	parentBuilder *_KnxNetIpMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SearchRequestBuilder) = (*_SearchRequestBuilder)(nil)
+
+func (b *_SearchRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
+}
+
+func (b *_SearchRequestBuilder) WithMandatoryFields(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) SearchRequestBuilder {
+	return b.WithHpaiIDiscoveryEndpoint(hpaiIDiscoveryEndpoint)
+}
+
+func (b *_SearchRequestBuilder) WithHpaiIDiscoveryEndpoint(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) SearchRequestBuilder {
+	b.HpaiIDiscoveryEndpoint = hpaiIDiscoveryEndpoint
+	return b
+}
+
+func (b *_SearchRequestBuilder) WithHpaiIDiscoveryEndpointBuilder(builderSupplier func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) SearchRequestBuilder {
+	builder := builderSupplier(b.HpaiIDiscoveryEndpoint.CreateHPAIDiscoveryEndpointBuilder())
+	var err error
+	b.HpaiIDiscoveryEndpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HPAIDiscoveryEndpointBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SearchRequestBuilder) Build() (SearchRequest, error) {
+	if b.HpaiIDiscoveryEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hpaiIDiscoveryEndpoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SearchRequest.deepCopy(), nil
+}
+
+func (b *_SearchRequestBuilder) MustBuild() SearchRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SearchRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SearchRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_SearchRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSearchRequestBuilder().(*_SearchRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSearchRequestBuilder creates a SearchRequestBuilder
+func (b *_SearchRequest) CreateSearchRequestBuilder() SearchRequestBuilder {
+	if b == nil {
+		return NewSearchRequestBuilder()
+	}
+	return &_SearchRequestBuilder{_SearchRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +215,6 @@ func (m *_SearchRequest) GetHpaiIDiscoveryEndpoint() HPAIDiscoveryEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSearchRequest factory function for _SearchRequest
-func NewSearchRequest(hpaiIDiscoveryEndpoint HPAIDiscoveryEndpoint) *_SearchRequest {
-	if hpaiIDiscoveryEndpoint == nil {
-		panic("hpaiIDiscoveryEndpoint of type HPAIDiscoveryEndpoint for SearchRequest must not be nil")
-	}
-	_result := &_SearchRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiIDiscoveryEndpoint:  hpaiIDiscoveryEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSearchRequest(structType any) SearchRequest {
@@ -185,13 +300,33 @@ func (m *_SearchRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_SearchRequest) IsSearchRequest() {}
 
+func (m *_SearchRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SearchRequest) deepCopy() *_SearchRequest {
+	if m == nil {
+		return nil
+	}
+	_SearchRequestCopy := &_SearchRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiIDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _SearchRequestCopy
+}
+
 func (m *_SearchRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

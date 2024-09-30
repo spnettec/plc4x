@@ -38,11 +38,14 @@ type BACnetOptionalBinaryPVValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
 	// IsBACnetOptionalBinaryPVValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalBinaryPVValue()
+	// CreateBuilder creates a BACnetOptionalBinaryPVValueBuilder
+	CreateBACnetOptionalBinaryPVValueBuilder() BACnetOptionalBinaryPVValueBuilder
 }
 
 // _BACnetOptionalBinaryPVValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetOptionalBinaryPVValue struct {
 
 var _ BACnetOptionalBinaryPVValue = (*_BACnetOptionalBinaryPVValue)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVValue)(nil)
+
+// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
+func NewBACnetOptionalBinaryPVValue(peekedTagHeader BACnetTagHeader, binaryPv BACnetBinaryPVTagged) *_BACnetOptionalBinaryPVValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVValue{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		BinaryPv:                       binaryPv,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOptionalBinaryPVValueBuilder is a builder for BACnetOptionalBinaryPVValue
+type BACnetOptionalBinaryPVValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder
+	// WithBinaryPv adds BinaryPv (property field)
+	WithBinaryPv(BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder
+	// WithBinaryPvBuilder adds BinaryPv (property field) which is build by the builder
+	WithBinaryPvBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetOptionalBinaryPVValueBuilder
+	// Build builds the BACnetOptionalBinaryPVValue or returns an error if something is wrong
+	Build() (BACnetOptionalBinaryPVValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalBinaryPVValue
+}
+
+// NewBACnetOptionalBinaryPVValueBuilder() creates a BACnetOptionalBinaryPVValueBuilder
+func NewBACnetOptionalBinaryPVValueBuilder() BACnetOptionalBinaryPVValueBuilder {
+	return &_BACnetOptionalBinaryPVValueBuilder{_BACnetOptionalBinaryPVValue: new(_BACnetOptionalBinaryPVValue)}
+}
+
+type _BACnetOptionalBinaryPVValueBuilder struct {
+	*_BACnetOptionalBinaryPVValue
+
+	parentBuilder *_BACnetOptionalBinaryPVBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOptionalBinaryPVValueBuilder) = (*_BACnetOptionalBinaryPVValueBuilder)(nil)
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) setParent(contract BACnetOptionalBinaryPVContract) {
+	b.BACnetOptionalBinaryPVContract = contract
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder {
+	return b.WithBinaryPv(binaryPv)
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) WithBinaryPv(binaryPv BACnetBinaryPVTagged) BACnetOptionalBinaryPVValueBuilder {
+	b.BinaryPv = binaryPv
+	return b
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) WithBinaryPvBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetOptionalBinaryPVValueBuilder {
+	builder := builderSupplier(b.BinaryPv.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	b.BinaryPv, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) Build() (BACnetOptionalBinaryPVValue, error) {
+	if b.BinaryPv == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'binaryPv' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetOptionalBinaryPVValue.deepCopy(), nil
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) MustBuild() BACnetOptionalBinaryPVValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetOptionalBinaryPVValueBuilder) Done() BACnetOptionalBinaryPVBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) buildForBACnetOptionalBinaryPV() (BACnetOptionalBinaryPV, error) {
+	return b.Build()
+}
+
+func (b *_BACnetOptionalBinaryPVValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalBinaryPVValueBuilder().(*_BACnetOptionalBinaryPVValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetOptionalBinaryPVValueBuilder creates a BACnetOptionalBinaryPVValueBuilder
+func (b *_BACnetOptionalBinaryPVValue) CreateBACnetOptionalBinaryPVValueBuilder() BACnetOptionalBinaryPVValueBuilder {
+	if b == nil {
+		return NewBACnetOptionalBinaryPVValueBuilder()
+	}
+	return &_BACnetOptionalBinaryPVValueBuilder{_BACnetOptionalBinaryPVValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetOptionalBinaryPVValue) GetBinaryPv() BACnetBinaryPVTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVValue factory function for _BACnetOptionalBinaryPVValue
-func NewBACnetOptionalBinaryPVValue(binaryPv BACnetBinaryPVTagged, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVValue {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetOptionalBinaryPVValue must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVValue{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		BinaryPv:                       binaryPv,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVValue(structType any) BACnetOptionalBinaryPVValue {
@@ -179,13 +294,33 @@ func (m *_BACnetOptionalBinaryPVValue) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_BACnetOptionalBinaryPVValue) IsBACnetOptionalBinaryPVValue() {}
 
+func (m *_BACnetOptionalBinaryPVValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVValue) deepCopy() *_BACnetOptionalBinaryPVValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVValueCopy := &_BACnetOptionalBinaryPVValue{
+		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVValueCopy
+}
+
 func (m *_BACnetOptionalBinaryPVValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

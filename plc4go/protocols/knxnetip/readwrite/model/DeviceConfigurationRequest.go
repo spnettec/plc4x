@@ -40,6 +40,7 @@ type DeviceConfigurationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDeviceConfigurationRequestDataBlock returns DeviceConfigurationRequestDataBlock (property field)
 	GetDeviceConfigurationRequestDataBlock() DeviceConfigurationRequestDataBlock
@@ -47,6 +48,8 @@ type DeviceConfigurationRequest interface {
 	GetCemi() CEMI
 	// IsDeviceConfigurationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceConfigurationRequest()
+	// CreateBuilder creates a DeviceConfigurationRequestBuilder
+	CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder
 }
 
 // _DeviceConfigurationRequest is the data-structure of this message
@@ -61,6 +64,163 @@ type _DeviceConfigurationRequest struct {
 
 var _ DeviceConfigurationRequest = (*_DeviceConfigurationRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DeviceConfigurationRequest)(nil)
+
+// NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
+func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
+	if deviceConfigurationRequestDataBlock == nil {
+		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
+	}
+	if cemi == nil {
+		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
+	}
+	_result := &_DeviceConfigurationRequest{
+		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
+		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
+		Cemi:                                cemi,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceConfigurationRequestBuilder is a builder for DeviceConfigurationRequest
+type DeviceConfigurationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder
+	// WithDeviceConfigurationRequestDataBlock adds DeviceConfigurationRequestDataBlock (property field)
+	WithDeviceConfigurationRequestDataBlock(DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder
+	// WithDeviceConfigurationRequestDataBlockBuilder adds DeviceConfigurationRequestDataBlock (property field) which is build by the builder
+	WithDeviceConfigurationRequestDataBlockBuilder(func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder
+	// WithCemi adds Cemi (property field)
+	WithCemi(CEMI) DeviceConfigurationRequestBuilder
+	// WithCemiBuilder adds Cemi (property field) which is build by the builder
+	WithCemiBuilder(func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder
+	// Build builds the DeviceConfigurationRequest or returns an error if something is wrong
+	Build() (DeviceConfigurationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceConfigurationRequest
+}
+
+// NewDeviceConfigurationRequestBuilder() creates a DeviceConfigurationRequestBuilder
+func NewDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
+	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: new(_DeviceConfigurationRequest)}
+}
+
+type _DeviceConfigurationRequestBuilder struct {
+	*_DeviceConfigurationRequest
+
+	parentBuilder *_KnxNetIpMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeviceConfigurationRequestBuilder) = (*_DeviceConfigurationRequestBuilder)(nil)
+
+func (b *_DeviceConfigurationRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithMandatoryFields(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI) DeviceConfigurationRequestBuilder {
+	return b.WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock).WithCemi(cemi)
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlock(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock) DeviceConfigurationRequestBuilder {
+	b.DeviceConfigurationRequestDataBlock = deviceConfigurationRequestDataBlock
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithDeviceConfigurationRequestDataBlockBuilder(builderSupplier func(DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestDataBlockBuilder) DeviceConfigurationRequestBuilder {
+	builder := builderSupplier(b.DeviceConfigurationRequestDataBlock.CreateDeviceConfigurationRequestDataBlockBuilder())
+	var err error
+	b.DeviceConfigurationRequestDataBlock, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DeviceConfigurationRequestDataBlockBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithCemi(cemi CEMI) DeviceConfigurationRequestBuilder {
+	b.Cemi = cemi
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) WithCemiBuilder(builderSupplier func(CEMIBuilder) CEMIBuilder) DeviceConfigurationRequestBuilder {
+	builder := builderSupplier(b.Cemi.CreateCEMIBuilder())
+	var err error
+	b.Cemi, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CEMIBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeviceConfigurationRequestBuilder) Build() (DeviceConfigurationRequest, error) {
+	if b.DeviceConfigurationRequestDataBlock == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceConfigurationRequestDataBlock' not set"))
+	}
+	if b.Cemi == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'cemi' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeviceConfigurationRequest.deepCopy(), nil
+}
+
+func (b *_DeviceConfigurationRequestBuilder) MustBuild() DeviceConfigurationRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeviceConfigurationRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeviceConfigurationRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DeviceConfigurationRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationRequestBuilder().(*_DeviceConfigurationRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeviceConfigurationRequestBuilder creates a DeviceConfigurationRequestBuilder
+func (b *_DeviceConfigurationRequest) CreateDeviceConfigurationRequestBuilder() DeviceConfigurationRequestBuilder {
+	if b == nil {
+		return NewDeviceConfigurationRequestBuilder()
+	}
+	return &_DeviceConfigurationRequestBuilder{_DeviceConfigurationRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,23 +257,6 @@ func (m *_DeviceConfigurationRequest) GetCemi() CEMI {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationRequest factory function for _DeviceConfigurationRequest
-func NewDeviceConfigurationRequest(deviceConfigurationRequestDataBlock DeviceConfigurationRequestDataBlock, cemi CEMI, totalLength uint16) *_DeviceConfigurationRequest {
-	if deviceConfigurationRequestDataBlock == nil {
-		panic("deviceConfigurationRequestDataBlock of type DeviceConfigurationRequestDataBlock for DeviceConfigurationRequest must not be nil")
-	}
-	if cemi == nil {
-		panic("cemi of type CEMI for DeviceConfigurationRequest must not be nil")
-	}
-	_result := &_DeviceConfigurationRequest{
-		KnxNetIpMessageContract:             NewKnxNetIpMessage(),
-		DeviceConfigurationRequestDataBlock: deviceConfigurationRequestDataBlock,
-		Cemi:                                cemi,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationRequest(structType any) DeviceConfigurationRequest {
@@ -222,13 +365,35 @@ func (m *_DeviceConfigurationRequest) GetTotalLength() uint16 {
 
 func (m *_DeviceConfigurationRequest) IsDeviceConfigurationRequest() {}
 
+func (m *_DeviceConfigurationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationRequest) deepCopy() *_DeviceConfigurationRequest {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationRequestCopy := &_DeviceConfigurationRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.DeviceConfigurationRequestDataBlock.DeepCopy().(DeviceConfigurationRequestDataBlock),
+		m.Cemi.DeepCopy().(CEMI),
+		m.TotalLength,
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DeviceConfigurationRequestCopy
+}
+
 func (m *_DeviceConfigurationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

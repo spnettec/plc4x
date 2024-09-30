@@ -38,11 +38,14 @@ type BACnetPriorityValueDateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetDateTimeValue returns DateTimeValue (property field)
 	GetDateTimeValue() BACnetDateTimeEnclosed
 	// IsBACnetPriorityValueDateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueDateTime()
+	// CreateBuilder creates a BACnetPriorityValueDateTimeBuilder
+	CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder
 }
 
 // _BACnetPriorityValueDateTime is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPriorityValueDateTime struct {
 
 var _ BACnetPriorityValueDateTime = (*_BACnetPriorityValueDateTime)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDateTime)(nil)
+
+// NewBACnetPriorityValueDateTime factory function for _BACnetPriorityValueDateTime
+func NewBACnetPriorityValueDateTime(peekedTagHeader BACnetTagHeader, dateTimeValue BACnetDateTimeEnclosed, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetPriorityValueDateTime must not be nil")
+	}
+	_result := &_BACnetPriorityValueDateTime{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DateTimeValue:               dateTimeValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueDateTimeBuilder is a builder for BACnetPriorityValueDateTime
+type BACnetPriorityValueDateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder
+	// Build builds the BACnetPriorityValueDateTime or returns an error if something is wrong
+	Build() (BACnetPriorityValueDateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueDateTime
+}
+
+// NewBACnetPriorityValueDateTimeBuilder() creates a BACnetPriorityValueDateTimeBuilder
+func NewBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
+	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: new(_BACnetPriorityValueDateTime)}
+}
+
+type _BACnetPriorityValueDateTimeBuilder struct {
+	*_BACnetPriorityValueDateTime
+
+	parentBuilder *_BACnetPriorityValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueDateTimeBuilder) = (*_BACnetPriorityValueDateTimeBuilder)(nil)
+
+func (b *_BACnetPriorityValueDateTimeBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) WithMandatoryFields(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	return b.WithDateTimeValue(dateTimeValue)
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValue(dateTimeValue BACnetDateTimeEnclosed) BACnetPriorityValueDateTimeBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetPriorityValueDateTimeBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	b.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) Build() (BACnetPriorityValueDateTime, error) {
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValueDateTime.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) MustBuild() BACnetPriorityValueDateTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueDateTimeBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueDateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueDateTimeBuilder().(*_BACnetPriorityValueDateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityValueDateTimeBuilder creates a BACnetPriorityValueDateTimeBuilder
+func (b *_BACnetPriorityValueDateTime) CreateBACnetPriorityValueDateTimeBuilder() BACnetPriorityValueDateTimeBuilder {
+	if b == nil {
+		return NewBACnetPriorityValueDateTimeBuilder()
+	}
+	return &_BACnetPriorityValueDateTimeBuilder{_BACnetPriorityValueDateTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPriorityValueDateTime) GetDateTimeValue() BACnetDateTimeEnclosed
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueDateTime factory function for _BACnetPriorityValueDateTime
-func NewBACnetPriorityValueDateTime(dateTimeValue BACnetDateTimeEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDateTime {
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTimeEnclosed for BACnetPriorityValueDateTime must not be nil")
-	}
-	_result := &_BACnetPriorityValueDateTime{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		DateTimeValue:               dateTimeValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueDateTime(structType any) BACnetPriorityValueDateTime {
@@ -179,13 +294,33 @@ func (m *_BACnetPriorityValueDateTime) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_BACnetPriorityValueDateTime) IsBACnetPriorityValueDateTime() {}
 
+func (m *_BACnetPriorityValueDateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueDateTime) deepCopy() *_BACnetPriorityValueDateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueDateTimeCopy := &_BACnetPriorityValueDateTime{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.DateTimeValue.DeepCopy().(BACnetDateTimeEnclosed),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueDateTimeCopy
+}
+
 func (m *_BACnetPriorityValueDateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

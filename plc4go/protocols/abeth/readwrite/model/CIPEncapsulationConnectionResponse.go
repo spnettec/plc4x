@@ -37,9 +37,12 @@ type CIPEncapsulationConnectionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// IsCIPEncapsulationConnectionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationConnectionResponse()
+	// CreateBuilder creates a CIPEncapsulationConnectionResponseBuilder
+	CreateCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder
 }
 
 // _CIPEncapsulationConnectionResponse is the data-structure of this message
@@ -49,6 +52,99 @@ type _CIPEncapsulationConnectionResponse struct {
 
 var _ CIPEncapsulationConnectionResponse = (*_CIPEncapsulationConnectionResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationConnectionResponse)(nil)
+
+// NewCIPEncapsulationConnectionResponse factory function for _CIPEncapsulationConnectionResponse
+func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionResponse {
+	_result := &_CIPEncapsulationConnectionResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationConnectionResponseBuilder is a builder for CIPEncapsulationConnectionResponse
+type CIPEncapsulationConnectionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder
+	// Build builds the CIPEncapsulationConnectionResponse or returns an error if something is wrong
+	Build() (CIPEncapsulationConnectionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationConnectionResponse
+}
+
+// NewCIPEncapsulationConnectionResponseBuilder() creates a CIPEncapsulationConnectionResponseBuilder
+func NewCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder {
+	return &_CIPEncapsulationConnectionResponseBuilder{_CIPEncapsulationConnectionResponse: new(_CIPEncapsulationConnectionResponse)}
+}
+
+type _CIPEncapsulationConnectionResponseBuilder struct {
+	*_CIPEncapsulationConnectionResponse
+
+	parentBuilder *_CIPEncapsulationPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationConnectionResponseBuilder) = (*_CIPEncapsulationConnectionResponseBuilder)(nil)
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) setParent(contract CIPEncapsulationPacketContract) {
+	b.CIPEncapsulationPacketContract = contract
+}
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) WithMandatoryFields() CIPEncapsulationConnectionResponseBuilder {
+	return b
+}
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) Build() (CIPEncapsulationConnectionResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPEncapsulationConnectionResponse.deepCopy(), nil
+}
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) MustBuild() CIPEncapsulationConnectionResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CIPEncapsulationConnectionResponseBuilder) Done() CIPEncapsulationPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error) {
+	return b.Build()
+}
+
+func (b *_CIPEncapsulationConnectionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationConnectionResponseBuilder().(*_CIPEncapsulationConnectionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCIPEncapsulationConnectionResponseBuilder creates a CIPEncapsulationConnectionResponseBuilder
+func (b *_CIPEncapsulationConnectionResponse) CreateCIPEncapsulationConnectionResponseBuilder() CIPEncapsulationConnectionResponseBuilder {
+	if b == nil {
+		return NewCIPEncapsulationConnectionResponseBuilder()
+	}
+	return &_CIPEncapsulationConnectionResponseBuilder{_CIPEncapsulationConnectionResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +162,6 @@ func (m *_CIPEncapsulationConnectionResponse) GetCommandType() uint16 {
 
 func (m *_CIPEncapsulationConnectionResponse) GetParent() CIPEncapsulationPacketContract {
 	return m.CIPEncapsulationPacketContract
-}
-
-// NewCIPEncapsulationConnectionResponse factory function for _CIPEncapsulationConnectionResponse
-func NewCIPEncapsulationConnectionResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationConnectionResponse {
-	_result := &_CIPEncapsulationConnectionResponse{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -148,13 +235,32 @@ func (m *_CIPEncapsulationConnectionResponse) SerializeWithWriteBuffer(ctx conte
 
 func (m *_CIPEncapsulationConnectionResponse) IsCIPEncapsulationConnectionResponse() {}
 
+func (m *_CIPEncapsulationConnectionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationConnectionResponse) deepCopy() *_CIPEncapsulationConnectionResponse {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationConnectionResponseCopy := &_CIPEncapsulationConnectionResponse{
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationConnectionResponseCopy
+}
+
 func (m *_CIPEncapsulationConnectionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

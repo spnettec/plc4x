@@ -38,12 +38,15 @@ type BACnetTagPayloadEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetData returns Data (property field)
 	GetData() []byte
 	// GetActualValue returns ActualValue (virtual field)
 	GetActualValue() uint32
 	// IsBACnetTagPayloadEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadEnumerated()
+	// CreateBuilder creates a BACnetTagPayloadEnumeratedBuilder
+	CreateBACnetTagPayloadEnumeratedBuilder() BACnetTagPayloadEnumeratedBuilder
 }
 
 // _BACnetTagPayloadEnumerated is the data-structure of this message
@@ -55,6 +58,87 @@ type _BACnetTagPayloadEnumerated struct {
 }
 
 var _ BACnetTagPayloadEnumerated = (*_BACnetTagPayloadEnumerated)(nil)
+
+// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
+func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
+	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadEnumeratedBuilder is a builder for BACnetTagPayloadEnumerated
+type BACnetTagPayloadEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) BACnetTagPayloadEnumeratedBuilder
+	// Build builds the BACnetTagPayloadEnumerated or returns an error if something is wrong
+	Build() (BACnetTagPayloadEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadEnumerated
+}
+
+// NewBACnetTagPayloadEnumeratedBuilder() creates a BACnetTagPayloadEnumeratedBuilder
+func NewBACnetTagPayloadEnumeratedBuilder() BACnetTagPayloadEnumeratedBuilder {
+	return &_BACnetTagPayloadEnumeratedBuilder{_BACnetTagPayloadEnumerated: new(_BACnetTagPayloadEnumerated)}
+}
+
+type _BACnetTagPayloadEnumeratedBuilder struct {
+	*_BACnetTagPayloadEnumerated
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadEnumeratedBuilder) = (*_BACnetTagPayloadEnumeratedBuilder)(nil)
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) WithMandatoryFields(data []byte) BACnetTagPayloadEnumeratedBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) WithData(data ...byte) BACnetTagPayloadEnumeratedBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) Build() (BACnetTagPayloadEnumerated, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadEnumerated.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) MustBuild() BACnetTagPayloadEnumerated {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadEnumeratedBuilder().(*_BACnetTagPayloadEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadEnumeratedBuilder creates a BACnetTagPayloadEnumeratedBuilder
+func (b *_BACnetTagPayloadEnumerated) CreateBACnetTagPayloadEnumeratedBuilder() BACnetTagPayloadEnumeratedBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadEnumeratedBuilder()
+	}
+	return &_BACnetTagPayloadEnumeratedBuilder{_BACnetTagPayloadEnumerated: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,11 +168,6 @@ func (m *_BACnetTagPayloadEnumerated) GetActualValue() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadEnumerated factory function for _BACnetTagPayloadEnumerated
-func NewBACnetTagPayloadEnumerated(data []byte, actualLength uint32) *_BACnetTagPayloadEnumerated {
-	return &_BACnetTagPayloadEnumerated{Data: data, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadEnumerated(structType any) BACnetTagPayloadEnumerated {
@@ -137,7 +216,7 @@ func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadEnumerated) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadEnumerated BACnetTagPayloadEnumerated, err error) {
@@ -213,13 +292,32 @@ func (m *_BACnetTagPayloadEnumerated) GetActualLength() uint32 {
 
 func (m *_BACnetTagPayloadEnumerated) IsBACnetTagPayloadEnumerated() {}
 
+func (m *_BACnetTagPayloadEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadEnumerated) deepCopy() *_BACnetTagPayloadEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadEnumeratedCopy := &_BACnetTagPayloadEnumerated{
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadEnumeratedCopy
+}
+
 func (m *_BACnetTagPayloadEnumerated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

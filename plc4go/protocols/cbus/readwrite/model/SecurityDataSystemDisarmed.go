@@ -36,9 +36,12 @@ type SecurityDataSystemDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataSystemDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataSystemDisarmed()
+	// CreateBuilder creates a SecurityDataSystemDisarmedBuilder
+	CreateSecurityDataSystemDisarmedBuilder() SecurityDataSystemDisarmedBuilder
 }
 
 // _SecurityDataSystemDisarmed is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataSystemDisarmed struct {
 
 var _ SecurityDataSystemDisarmed = (*_SecurityDataSystemDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
+
+// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
+func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
+	_result := &_SecurityDataSystemDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataSystemDisarmedBuilder is a builder for SecurityDataSystemDisarmed
+type SecurityDataSystemDisarmedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataSystemDisarmedBuilder
+	// Build builds the SecurityDataSystemDisarmed or returns an error if something is wrong
+	Build() (SecurityDataSystemDisarmed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataSystemDisarmed
+}
+
+// NewSecurityDataSystemDisarmedBuilder() creates a SecurityDataSystemDisarmedBuilder
+func NewSecurityDataSystemDisarmedBuilder() SecurityDataSystemDisarmedBuilder {
+	return &_SecurityDataSystemDisarmedBuilder{_SecurityDataSystemDisarmed: new(_SecurityDataSystemDisarmed)}
+}
+
+type _SecurityDataSystemDisarmedBuilder struct {
+	*_SecurityDataSystemDisarmed
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataSystemDisarmedBuilder) = (*_SecurityDataSystemDisarmedBuilder)(nil)
+
+func (b *_SecurityDataSystemDisarmedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataSystemDisarmedBuilder) WithMandatoryFields() SecurityDataSystemDisarmedBuilder {
+	return b
+}
+
+func (b *_SecurityDataSystemDisarmedBuilder) Build() (SecurityDataSystemDisarmed, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataSystemDisarmed.deepCopy(), nil
+}
+
+func (b *_SecurityDataSystemDisarmedBuilder) MustBuild() SecurityDataSystemDisarmed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataSystemDisarmedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataSystemDisarmedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataSystemDisarmedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataSystemDisarmedBuilder().(*_SecurityDataSystemDisarmedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataSystemDisarmedBuilder creates a SecurityDataSystemDisarmedBuilder
+func (b *_SecurityDataSystemDisarmed) CreateSecurityDataSystemDisarmedBuilder() SecurityDataSystemDisarmedBuilder {
+	if b == nil {
+		return NewSecurityDataSystemDisarmedBuilder()
+	}
+	return &_SecurityDataSystemDisarmedBuilder{_SecurityDataSystemDisarmed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataSystemDisarmed)(nil)
 
 func (m *_SecurityDataSystemDisarmed) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataSystemDisarmed factory function for _SecurityDataSystemDisarmed
-func NewSecurityDataSystemDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemDisarmed {
-	_result := &_SecurityDataSystemDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataSystemDisarmed) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_SecurityDataSystemDisarmed) IsSecurityDataSystemDisarmed() {}
 
+func (m *_SecurityDataSystemDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemDisarmed) deepCopy() *_SecurityDataSystemDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemDisarmedCopy := &_SecurityDataSystemDisarmed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemDisarmedCopy
+}
+
 func (m *_SecurityDataSystemDisarmed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type TunnelingRequestDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
 	GetSequenceCounter() uint8
 	// IsTunnelingRequestDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTunnelingRequestDataBlock()
+	// CreateBuilder creates a TunnelingRequestDataBlockBuilder
+	CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder
 }
 
 // _TunnelingRequestDataBlock is the data-structure of this message
@@ -55,6 +58,94 @@ type _TunnelingRequestDataBlock struct {
 }
 
 var _ TunnelingRequestDataBlock = (*_TunnelingRequestDataBlock)(nil)
+
+// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
+func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
+	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TunnelingRequestDataBlockBuilder is a builder for TunnelingRequestDataBlock
+type TunnelingRequestDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) TunnelingRequestDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) TunnelingRequestDataBlockBuilder
+	// Build builds the TunnelingRequestDataBlock or returns an error if something is wrong
+	Build() (TunnelingRequestDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TunnelingRequestDataBlock
+}
+
+// NewTunnelingRequestDataBlockBuilder() creates a TunnelingRequestDataBlockBuilder
+func NewTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
+	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: new(_TunnelingRequestDataBlock)}
+}
+
+type _TunnelingRequestDataBlockBuilder struct {
+	*_TunnelingRequestDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (TunnelingRequestDataBlockBuilder) = (*_TunnelingRequestDataBlockBuilder)(nil)
+
+func (b *_TunnelingRequestDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter)
+}
+
+func (b *_TunnelingRequestDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingRequestDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
+}
+
+func (b *_TunnelingRequestDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingRequestDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
+}
+
+func (b *_TunnelingRequestDataBlockBuilder) Build() (TunnelingRequestDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TunnelingRequestDataBlock.deepCopy(), nil
+}
+
+func (b *_TunnelingRequestDataBlockBuilder) MustBuild() TunnelingRequestDataBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TunnelingRequestDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingRequestDataBlockBuilder().(*_TunnelingRequestDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTunnelingRequestDataBlockBuilder creates a TunnelingRequestDataBlockBuilder
+func (b *_TunnelingRequestDataBlock) CreateTunnelingRequestDataBlockBuilder() TunnelingRequestDataBlockBuilder {
+	if b == nil {
+		return NewTunnelingRequestDataBlockBuilder()
+	}
+	return &_TunnelingRequestDataBlockBuilder{_TunnelingRequestDataBlock: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,11 +164,6 @@ func (m *_TunnelingRequestDataBlock) GetSequenceCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingRequestDataBlock factory function for _TunnelingRequestDataBlock
-func NewTunnelingRequestDataBlock(communicationChannelId uint8, sequenceCounter uint8) *_TunnelingRequestDataBlock {
-	return &_TunnelingRequestDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingRequestDataBlock(structType any) TunnelingRequestDataBlock {
@@ -131,7 +217,7 @@ func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TunnelingRequestDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tunnelingRequestDataBlock TunnelingRequestDataBlock, err error) {
@@ -215,13 +301,33 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_TunnelingRequestDataBlock) IsTunnelingRequestDataBlock() {}
 
+func (m *_TunnelingRequestDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingRequestDataBlock) deepCopy() *_TunnelingRequestDataBlock {
+	if m == nil {
+		return nil
+	}
+	_TunnelingRequestDataBlockCopy := &_TunnelingRequestDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.reservedField0,
+	}
+	return _TunnelingRequestDataBlockCopy
+}
+
 func (m *_TunnelingRequestDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

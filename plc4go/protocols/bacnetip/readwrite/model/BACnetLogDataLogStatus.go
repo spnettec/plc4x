@@ -38,11 +38,14 @@ type BACnetLogDataLogStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
 	// IsBACnetLogDataLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogStatus()
+	// CreateBuilder creates a BACnetLogDataLogStatusBuilder
+	CreateBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder
 }
 
 // _BACnetLogDataLogStatus is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogDataLogStatus struct {
 
 var _ BACnetLogDataLogStatus = (*_BACnetLogDataLogStatus)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogStatus)(nil)
+
+// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
+func NewBACnetLogDataLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetLogDataLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
+	}
+	_result := &_BACnetLogDataLogStatus{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:             logStatus,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogStatusBuilder is a builder for BACnetLogDataLogStatus
+type BACnetLogDataLogStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder
+	// WithLogStatus adds LogStatus (property field)
+	WithLogStatus(BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder
+	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
+	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogDataLogStatusBuilder
+	// Build builds the BACnetLogDataLogStatus or returns an error if something is wrong
+	Build() (BACnetLogDataLogStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogStatus
+}
+
+// NewBACnetLogDataLogStatusBuilder() creates a BACnetLogDataLogStatusBuilder
+func NewBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder {
+	return &_BACnetLogDataLogStatusBuilder{_BACnetLogDataLogStatus: new(_BACnetLogDataLogStatus)}
+}
+
+type _BACnetLogDataLogStatusBuilder struct {
+	*_BACnetLogDataLogStatus
+
+	parentBuilder *_BACnetLogDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogStatusBuilder) = (*_BACnetLogDataLogStatusBuilder)(nil)
+
+func (b *_BACnetLogDataLogStatusBuilder) setParent(contract BACnetLogDataContract) {
+	b.BACnetLogDataContract = contract
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder {
+	return b.WithLogStatus(logStatus)
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogDataLogStatusBuilder {
+	b.LogStatus = logStatus
+	return b
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogDataLogStatusBuilder {
+	builder := builderSupplier(b.LogStatus.CreateBACnetLogStatusTaggedBuilder())
+	var err error
+	b.LogStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) Build() (BACnetLogDataLogStatus, error) {
+	if b.LogStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'logStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogStatus.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) MustBuild() BACnetLogDataLogStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogStatusBuilder) Done() BACnetLogDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) buildForBACnetLogData() (BACnetLogData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogStatusBuilder().(*_BACnetLogDataLogStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataLogStatusBuilder creates a BACnetLogDataLogStatusBuilder
+func (b *_BACnetLogDataLogStatus) CreateBACnetLogDataLogStatusBuilder() BACnetLogDataLogStatusBuilder {
+	if b == nil {
+		return NewBACnetLogDataLogStatusBuilder()
+	}
+	return &_BACnetLogDataLogStatusBuilder{_BACnetLogDataLogStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogDataLogStatus) GetLogStatus() BACnetLogStatusTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogStatus factory function for _BACnetLogDataLogStatus
-func NewBACnetLogDataLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogStatus {
-	if logStatus == nil {
-		panic("logStatus of type BACnetLogStatusTagged for BACnetLogDataLogStatus must not be nil")
-	}
-	_result := &_BACnetLogDataLogStatus{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		LogStatus:             logStatus,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogStatus(structType any) BACnetLogDataLogStatus {
@@ -179,13 +294,33 @@ func (m *_BACnetLogDataLogStatus) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetLogDataLogStatus) IsBACnetLogDataLogStatus() {}
 
+func (m *_BACnetLogDataLogStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogStatus) deepCopy() *_BACnetLogDataLogStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogStatusCopy := &_BACnetLogDataLogStatus{
+		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
+		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogStatusCopy
+}
+
 func (m *_BACnetLogDataLogStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

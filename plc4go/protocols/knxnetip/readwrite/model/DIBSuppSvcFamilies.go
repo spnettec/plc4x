@@ -38,12 +38,15 @@ type DIBSuppSvcFamilies interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetServiceIds returns ServiceIds (property field)
 	GetServiceIds() []ServiceId
 	// IsDIBSuppSvcFamilies is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDIBSuppSvcFamilies()
+	// CreateBuilder creates a DIBSuppSvcFamiliesBuilder
+	CreateDIBSuppSvcFamiliesBuilder() DIBSuppSvcFamiliesBuilder
 }
 
 // _DIBSuppSvcFamilies is the data-structure of this message
@@ -53,6 +56,94 @@ type _DIBSuppSvcFamilies struct {
 }
 
 var _ DIBSuppSvcFamilies = (*_DIBSuppSvcFamilies)(nil)
+
+// NewDIBSuppSvcFamilies factory function for _DIBSuppSvcFamilies
+func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBSuppSvcFamilies {
+	return &_DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DIBSuppSvcFamiliesBuilder is a builder for DIBSuppSvcFamilies
+type DIBSuppSvcFamiliesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(descriptionType uint8, serviceIds []ServiceId) DIBSuppSvcFamiliesBuilder
+	// WithDescriptionType adds DescriptionType (property field)
+	WithDescriptionType(uint8) DIBSuppSvcFamiliesBuilder
+	// WithServiceIds adds ServiceIds (property field)
+	WithServiceIds(...ServiceId) DIBSuppSvcFamiliesBuilder
+	// Build builds the DIBSuppSvcFamilies or returns an error if something is wrong
+	Build() (DIBSuppSvcFamilies, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DIBSuppSvcFamilies
+}
+
+// NewDIBSuppSvcFamiliesBuilder() creates a DIBSuppSvcFamiliesBuilder
+func NewDIBSuppSvcFamiliesBuilder() DIBSuppSvcFamiliesBuilder {
+	return &_DIBSuppSvcFamiliesBuilder{_DIBSuppSvcFamilies: new(_DIBSuppSvcFamilies)}
+}
+
+type _DIBSuppSvcFamiliesBuilder struct {
+	*_DIBSuppSvcFamilies
+
+	err *utils.MultiError
+}
+
+var _ (DIBSuppSvcFamiliesBuilder) = (*_DIBSuppSvcFamiliesBuilder)(nil)
+
+func (b *_DIBSuppSvcFamiliesBuilder) WithMandatoryFields(descriptionType uint8, serviceIds []ServiceId) DIBSuppSvcFamiliesBuilder {
+	return b.WithDescriptionType(descriptionType).WithServiceIds(serviceIds...)
+}
+
+func (b *_DIBSuppSvcFamiliesBuilder) WithDescriptionType(descriptionType uint8) DIBSuppSvcFamiliesBuilder {
+	b.DescriptionType = descriptionType
+	return b
+}
+
+func (b *_DIBSuppSvcFamiliesBuilder) WithServiceIds(serviceIds ...ServiceId) DIBSuppSvcFamiliesBuilder {
+	b.ServiceIds = serviceIds
+	return b
+}
+
+func (b *_DIBSuppSvcFamiliesBuilder) Build() (DIBSuppSvcFamilies, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DIBSuppSvcFamilies.deepCopy(), nil
+}
+
+func (b *_DIBSuppSvcFamiliesBuilder) MustBuild() DIBSuppSvcFamilies {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DIBSuppSvcFamiliesBuilder) DeepCopy() any {
+	_copy := b.CreateDIBSuppSvcFamiliesBuilder().(*_DIBSuppSvcFamiliesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDIBSuppSvcFamiliesBuilder creates a DIBSuppSvcFamiliesBuilder
+func (b *_DIBSuppSvcFamilies) CreateDIBSuppSvcFamiliesBuilder() DIBSuppSvcFamiliesBuilder {
+	if b == nil {
+		return NewDIBSuppSvcFamiliesBuilder()
+	}
+	return &_DIBSuppSvcFamiliesBuilder{_DIBSuppSvcFamilies: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_DIBSuppSvcFamilies) GetServiceIds() []ServiceId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDIBSuppSvcFamilies factory function for _DIBSuppSvcFamilies
-func NewDIBSuppSvcFamilies(descriptionType uint8, serviceIds []ServiceId) *_DIBSuppSvcFamilies {
-	return &_DIBSuppSvcFamilies{DescriptionType: descriptionType, ServiceIds: serviceIds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDIBSuppSvcFamilies(structType any) DIBSuppSvcFamilies {
@@ -130,7 +216,7 @@ func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DIBSuppSvcFamilies) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dIBSuppSvcFamilies DIBSuppSvcFamilies, err error) {
@@ -204,13 +290,32 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_DIBSuppSvcFamilies) IsDIBSuppSvcFamilies() {}
 
+func (m *_DIBSuppSvcFamilies) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DIBSuppSvcFamilies) deepCopy() *_DIBSuppSvcFamilies {
+	if m == nil {
+		return nil
+	}
+	_DIBSuppSvcFamiliesCopy := &_DIBSuppSvcFamilies{
+		m.DescriptionType,
+		utils.DeepCopySlice[ServiceId, ServiceId](m.ServiceIds),
+	}
+	return _DIBSuppSvcFamiliesCopy
+}
+
 func (m *_DIBSuppSvcFamilies) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

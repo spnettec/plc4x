@@ -38,6 +38,7 @@ type BACnetDaysOfWeekTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -58,6 +59,8 @@ type BACnetDaysOfWeekTagged interface {
 	GetSunday() bool
 	// IsBACnetDaysOfWeekTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDaysOfWeekTagged()
+	// CreateBuilder creates a BACnetDaysOfWeekTaggedBuilder
+	CreateBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder
 }
 
 // _BACnetDaysOfWeekTagged is the data-structure of this message
@@ -71,6 +74,142 @@ type _BACnetDaysOfWeekTagged struct {
 }
 
 var _ BACnetDaysOfWeekTagged = (*_BACnetDaysOfWeekTagged)(nil)
+
+// NewBACnetDaysOfWeekTagged factory function for _BACnetDaysOfWeekTagged
+func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetDaysOfWeekTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDaysOfWeekTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetDaysOfWeekTagged must not be nil")
+	}
+	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDaysOfWeekTaggedBuilder is a builder for BACnetDaysOfWeekTagged
+type BACnetDaysOfWeekTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDaysOfWeekTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDaysOfWeekTaggedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetDaysOfWeekTaggedBuilder
+	// Build builds the BACnetDaysOfWeekTagged or returns an error if something is wrong
+	Build() (BACnetDaysOfWeekTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDaysOfWeekTagged
+}
+
+// NewBACnetDaysOfWeekTaggedBuilder() creates a BACnetDaysOfWeekTaggedBuilder
+func NewBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder {
+	return &_BACnetDaysOfWeekTaggedBuilder{_BACnetDaysOfWeekTagged: new(_BACnetDaysOfWeekTagged)}
+}
+
+type _BACnetDaysOfWeekTaggedBuilder struct {
+	*_BACnetDaysOfWeekTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDaysOfWeekTaggedBuilder) = (*_BACnetDaysOfWeekTaggedBuilder)(nil)
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder {
+	return b.WithHeader(header).WithPayload(payload)
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDaysOfWeekTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDaysOfWeekTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetDaysOfWeekTaggedBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetDaysOfWeekTaggedBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) Build() (BACnetDaysOfWeekTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDaysOfWeekTagged.deepCopy(), nil
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) MustBuild() BACnetDaysOfWeekTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDaysOfWeekTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDaysOfWeekTaggedBuilder().(*_BACnetDaysOfWeekTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDaysOfWeekTaggedBuilder creates a BACnetDaysOfWeekTaggedBuilder
+func (b *_BACnetDaysOfWeekTagged) CreateBACnetDaysOfWeekTaggedBuilder() BACnetDaysOfWeekTaggedBuilder {
+	if b == nil {
+		return NewBACnetDaysOfWeekTaggedBuilder()
+	}
+	return &_BACnetDaysOfWeekTaggedBuilder{_BACnetDaysOfWeekTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,17 +280,6 @@ func (m *_BACnetDaysOfWeekTagged) GetSunday() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetDaysOfWeekTagged factory function for _BACnetDaysOfWeekTagged
-func NewBACnetDaysOfWeekTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetDaysOfWeekTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDaysOfWeekTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetDaysOfWeekTagged must not be nil")
-	}
-	return &_BACnetDaysOfWeekTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetDaysOfWeekTagged(structType any) BACnetDaysOfWeekTagged {
 	if casted, ok := structType.(BACnetDaysOfWeekTagged); ok {
@@ -212,7 +340,7 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDaysOfWeekTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDaysOfWeekTagged BACnetDaysOfWeekTagged, err error) {
@@ -383,13 +511,34 @@ func (m *_BACnetDaysOfWeekTagged) GetTagClass() TagClass {
 
 func (m *_BACnetDaysOfWeekTagged) IsBACnetDaysOfWeekTagged() {}
 
+func (m *_BACnetDaysOfWeekTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDaysOfWeekTagged) deepCopy() *_BACnetDaysOfWeekTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDaysOfWeekTaggedCopy := &_BACnetDaysOfWeekTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDaysOfWeekTaggedCopy
+}
+
 func (m *_BACnetDaysOfWeekTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

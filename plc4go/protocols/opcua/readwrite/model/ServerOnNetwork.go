@@ -38,6 +38,7 @@ type ServerOnNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRecordId returns RecordId (property field)
 	GetRecordId() uint32
@@ -51,6 +52,8 @@ type ServerOnNetwork interface {
 	GetServerCapabilities() []PascalString
 	// IsServerOnNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServerOnNetwork()
+	// CreateBuilder creates a ServerOnNetworkBuilder
+	CreateServerOnNetworkBuilder() ServerOnNetworkBuilder
 }
 
 // _ServerOnNetwork is the data-structure of this message
@@ -65,6 +68,187 @@ type _ServerOnNetwork struct {
 
 var _ ServerOnNetwork = (*_ServerOnNetwork)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ServerOnNetwork)(nil)
+
+// NewServerOnNetwork factory function for _ServerOnNetwork
+func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
+	if serverName == nil {
+		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
+	}
+	if discoveryUrl == nil {
+		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
+	}
+	_result := &_ServerOnNetwork{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RecordId:                          recordId,
+		ServerName:                        serverName,
+		DiscoveryUrl:                      discoveryUrl,
+		NoOfServerCapabilities:            noOfServerCapabilities,
+		ServerCapabilities:                serverCapabilities,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServerOnNetworkBuilder is a builder for ServerOnNetwork
+type ServerOnNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder
+	// WithRecordId adds RecordId (property field)
+	WithRecordId(uint32) ServerOnNetworkBuilder
+	// WithServerName adds ServerName (property field)
+	WithServerName(PascalString) ServerOnNetworkBuilder
+	// WithServerNameBuilder adds ServerName (property field) which is build by the builder
+	WithServerNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder
+	// WithDiscoveryUrl adds DiscoveryUrl (property field)
+	WithDiscoveryUrl(PascalString) ServerOnNetworkBuilder
+	// WithDiscoveryUrlBuilder adds DiscoveryUrl (property field) which is build by the builder
+	WithDiscoveryUrlBuilder(func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder
+	// WithNoOfServerCapabilities adds NoOfServerCapabilities (property field)
+	WithNoOfServerCapabilities(int32) ServerOnNetworkBuilder
+	// WithServerCapabilities adds ServerCapabilities (property field)
+	WithServerCapabilities(...PascalString) ServerOnNetworkBuilder
+	// Build builds the ServerOnNetwork or returns an error if something is wrong
+	Build() (ServerOnNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServerOnNetwork
+}
+
+// NewServerOnNetworkBuilder() creates a ServerOnNetworkBuilder
+func NewServerOnNetworkBuilder() ServerOnNetworkBuilder {
+	return &_ServerOnNetworkBuilder{_ServerOnNetwork: new(_ServerOnNetwork)}
+}
+
+type _ServerOnNetworkBuilder struct {
+	*_ServerOnNetwork
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ServerOnNetworkBuilder) = (*_ServerOnNetworkBuilder)(nil)
+
+func (b *_ServerOnNetworkBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ServerOnNetworkBuilder) WithMandatoryFields(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) ServerOnNetworkBuilder {
+	return b.WithRecordId(recordId).WithServerName(serverName).WithDiscoveryUrl(discoveryUrl).WithNoOfServerCapabilities(noOfServerCapabilities).WithServerCapabilities(serverCapabilities...)
+}
+
+func (b *_ServerOnNetworkBuilder) WithRecordId(recordId uint32) ServerOnNetworkBuilder {
+	b.RecordId = recordId
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithServerName(serverName PascalString) ServerOnNetworkBuilder {
+	b.ServerName = serverName
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithServerNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder {
+	builder := builderSupplier(b.ServerName.CreatePascalStringBuilder())
+	var err error
+	b.ServerName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithDiscoveryUrl(discoveryUrl PascalString) ServerOnNetworkBuilder {
+	b.DiscoveryUrl = discoveryUrl
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithDiscoveryUrlBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ServerOnNetworkBuilder {
+	builder := builderSupplier(b.DiscoveryUrl.CreatePascalStringBuilder())
+	var err error
+	b.DiscoveryUrl, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithNoOfServerCapabilities(noOfServerCapabilities int32) ServerOnNetworkBuilder {
+	b.NoOfServerCapabilities = noOfServerCapabilities
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) WithServerCapabilities(serverCapabilities ...PascalString) ServerOnNetworkBuilder {
+	b.ServerCapabilities = serverCapabilities
+	return b
+}
+
+func (b *_ServerOnNetworkBuilder) Build() (ServerOnNetwork, error) {
+	if b.ServerName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverName' not set"))
+	}
+	if b.DiscoveryUrl == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'discoveryUrl' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ServerOnNetwork.deepCopy(), nil
+}
+
+func (b *_ServerOnNetworkBuilder) MustBuild() ServerOnNetwork {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServerOnNetworkBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServerOnNetworkBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ServerOnNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateServerOnNetworkBuilder().(*_ServerOnNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateServerOnNetworkBuilder creates a ServerOnNetworkBuilder
+func (b *_ServerOnNetwork) CreateServerOnNetworkBuilder() ServerOnNetworkBuilder {
+	if b == nil {
+		return NewServerOnNetworkBuilder()
+	}
+	return &_ServerOnNetworkBuilder{_ServerOnNetwork: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +297,6 @@ func (m *_ServerOnNetwork) GetServerCapabilities() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServerOnNetwork factory function for _ServerOnNetwork
-func NewServerOnNetwork(recordId uint32, serverName PascalString, discoveryUrl PascalString, noOfServerCapabilities int32, serverCapabilities []PascalString) *_ServerOnNetwork {
-	if serverName == nil {
-		panic("serverName of type PascalString for ServerOnNetwork must not be nil")
-	}
-	if discoveryUrl == nil {
-		panic("discoveryUrl of type PascalString for ServerOnNetwork must not be nil")
-	}
-	_result := &_ServerOnNetwork{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RecordId:                          recordId,
-		ServerName:                        serverName,
-		DiscoveryUrl:                      discoveryUrl,
-		NoOfServerCapabilities:            noOfServerCapabilities,
-		ServerCapabilities:                serverCapabilities,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServerOnNetwork(structType any) ServerOnNetwork {
@@ -277,13 +441,37 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ServerOnNetwork) IsServerOnNetwork() {}
 
+func (m *_ServerOnNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServerOnNetwork) deepCopy() *_ServerOnNetwork {
+	if m == nil {
+		return nil
+	}
+	_ServerOnNetworkCopy := &_ServerOnNetwork{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RecordId,
+		m.ServerName.DeepCopy().(PascalString),
+		m.DiscoveryUrl.DeepCopy().(PascalString),
+		m.NoOfServerCapabilities,
+		utils.DeepCopySlice[PascalString, PascalString](m.ServerCapabilities),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ServerOnNetworkCopy
+}
+
 func (m *_ServerOnNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

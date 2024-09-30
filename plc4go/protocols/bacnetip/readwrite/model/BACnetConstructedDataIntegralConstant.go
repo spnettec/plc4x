@@ -38,6 +38,7 @@ type BACnetConstructedDataIntegralConstant interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIntegralConstant returns IntegralConstant (property field)
 	GetIntegralConstant() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataIntegralConstant interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataIntegralConstant is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIntegralConstant()
+	// CreateBuilder creates a BACnetConstructedDataIntegralConstantBuilder
+	CreateBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder
 }
 
 // _BACnetConstructedDataIntegralConstant is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIntegralConstant struct {
 
 var _ BACnetConstructedDataIntegralConstant = (*_BACnetConstructedDataIntegralConstant)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIntegralConstant)(nil)
+
+// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
+func NewBACnetConstructedDataIntegralConstant(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integralConstant BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
+	if integralConstant == nil {
+		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
+	}
+	_result := &_BACnetConstructedDataIntegralConstant{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IntegralConstant:              integralConstant,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIntegralConstantBuilder is a builder for BACnetConstructedDataIntegralConstant
+type BACnetConstructedDataIntegralConstantBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder
+	// WithIntegralConstant adds IntegralConstant (property field)
+	WithIntegralConstant(BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder
+	// WithIntegralConstantBuilder adds IntegralConstant (property field) which is build by the builder
+	WithIntegralConstantBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataIntegralConstantBuilder
+	// Build builds the BACnetConstructedDataIntegralConstant or returns an error if something is wrong
+	Build() (BACnetConstructedDataIntegralConstant, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIntegralConstant
+}
+
+// NewBACnetConstructedDataIntegralConstantBuilder() creates a BACnetConstructedDataIntegralConstantBuilder
+func NewBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder {
+	return &_BACnetConstructedDataIntegralConstantBuilder{_BACnetConstructedDataIntegralConstant: new(_BACnetConstructedDataIntegralConstant)}
+}
+
+type _BACnetConstructedDataIntegralConstantBuilder struct {
+	*_BACnetConstructedDataIntegralConstant
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIntegralConstantBuilder) = (*_BACnetConstructedDataIntegralConstantBuilder)(nil)
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) WithMandatoryFields(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder {
+	return b.WithIntegralConstant(integralConstant)
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) WithIntegralConstant(integralConstant BACnetApplicationTagReal) BACnetConstructedDataIntegralConstantBuilder {
+	b.IntegralConstant = integralConstant
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) WithIntegralConstantBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataIntegralConstantBuilder {
+	builder := builderSupplier(b.IntegralConstant.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.IntegralConstant, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) Build() (BACnetConstructedDataIntegralConstant, error) {
+	if b.IntegralConstant == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'integralConstant' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIntegralConstant.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) MustBuild() BACnetConstructedDataIntegralConstant {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIntegralConstantBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIntegralConstantBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIntegralConstantBuilder().(*_BACnetConstructedDataIntegralConstantBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIntegralConstantBuilder creates a BACnetConstructedDataIntegralConstantBuilder
+func (b *_BACnetConstructedDataIntegralConstant) CreateBACnetConstructedDataIntegralConstantBuilder() BACnetConstructedDataIntegralConstantBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIntegralConstantBuilder()
+	}
+	return &_BACnetConstructedDataIntegralConstantBuilder{_BACnetConstructedDataIntegralConstant: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIntegralConstant) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIntegralConstant factory function for _BACnetConstructedDataIntegralConstant
-func NewBACnetConstructedDataIntegralConstant(integralConstant BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIntegralConstant {
-	if integralConstant == nil {
-		panic("integralConstant of type BACnetApplicationTagReal for BACnetConstructedDataIntegralConstant must not be nil")
-	}
-	_result := &_BACnetConstructedDataIntegralConstant{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IntegralConstant:              integralConstant,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIntegralConstant(structType any) BACnetConstructedDataIntegralConstant {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIntegralConstant) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataIntegralConstant) IsBACnetConstructedDataIntegralConstant() {}
 
+func (m *_BACnetConstructedDataIntegralConstant) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIntegralConstant) deepCopy() *_BACnetConstructedDataIntegralConstant {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIntegralConstantCopy := &_BACnetConstructedDataIntegralConstant{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IntegralConstant.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIntegralConstantCopy
+}
+
 func (m *_BACnetConstructedDataIntegralConstant) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

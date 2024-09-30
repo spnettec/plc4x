@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIpGlobalAddress returns BacnetIpGlobalAddress (property field)
 	GetBacnetIpGlobalAddress() BACnetHostNPort
@@ -45,6 +46,8 @@ type BACnetConstructedDataBACnetIPGlobalAddress interface {
 	GetActualValue() BACnetHostNPort
 	// IsBACnetConstructedDataBACnetIPGlobalAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBACnetIPGlobalAddress()
+	// CreateBuilder creates a BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDataBACnetIPGlobalAddressBuilder
 }
 
 // _BACnetConstructedDataBACnetIPGlobalAddress is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBACnetIPGlobalAddress struct {
 
 var _ BACnetConstructedDataBACnetIPGlobalAddress = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPGlobalAddress)(nil)
+
+// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
+func NewBACnetConstructedDataBACnetIPGlobalAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpGlobalAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if bacnetIpGlobalAddress == nil {
+		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBACnetIPGlobalAddressBuilder is a builder for BACnetConstructedDataBACnetIPGlobalAddress
+type BACnetConstructedDataBACnetIPGlobalAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	// WithBacnetIpGlobalAddress adds BacnetIpGlobalAddress (property field)
+	WithBacnetIpGlobalAddress(BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	// WithBacnetIpGlobalAddressBuilder adds BacnetIpGlobalAddress (property field) which is build by the builder
+	WithBacnetIpGlobalAddressBuilder(func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataBACnetIPGlobalAddressBuilder
+	// Build builds the BACnetConstructedDataBACnetIPGlobalAddress or returns an error if something is wrong
+	Build() (BACnetConstructedDataBACnetIPGlobalAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBACnetIPGlobalAddress
+}
+
+// NewBACnetConstructedDataBACnetIPGlobalAddressBuilder() creates a BACnetConstructedDataBACnetIPGlobalAddressBuilder
+func NewBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	return &_BACnetConstructedDataBACnetIPGlobalAddressBuilder{_BACnetConstructedDataBACnetIPGlobalAddress: new(_BACnetConstructedDataBACnetIPGlobalAddress)}
+}
+
+type _BACnetConstructedDataBACnetIPGlobalAddressBuilder struct {
+	*_BACnetConstructedDataBACnetIPGlobalAddress
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBACnetIPGlobalAddressBuilder) = (*_BACnetConstructedDataBACnetIPGlobalAddressBuilder)(nil)
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithMandatoryFields(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	return b.WithBacnetIpGlobalAddress(bacnetIpGlobalAddress)
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	b.BacnetIpGlobalAddress = bacnetIpGlobalAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) WithBacnetIpGlobalAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	builder := builderSupplier(b.BacnetIpGlobalAddress.CreateBACnetHostNPortBuilder())
+	var err error
+	b.BacnetIpGlobalAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Build() (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+	if b.BacnetIpGlobalAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bacnetIpGlobalAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBACnetIPGlobalAddress.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) MustBuild() BACnetConstructedDataBACnetIPGlobalAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPGlobalAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder().(*_BACnetConstructedDataBACnetIPGlobalAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder creates a BACnetConstructedDataBACnetIPGlobalAddressBuilder
+func (b *_BACnetConstructedDataBACnetIPGlobalAddress) CreateBACnetConstructedDataBACnetIPGlobalAddressBuilder() BACnetConstructedDataBACnetIPGlobalAddressBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBACnetIPGlobalAddressBuilder()
+	}
+	return &_BACnetConstructedDataBACnetIPGlobalAddressBuilder{_BACnetConstructedDataBACnetIPGlobalAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) GetActualValue() BACnetHos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPGlobalAddress factory function for _BACnetConstructedDataBACnetIPGlobalAddress
-func NewBACnetConstructedDataBACnetIPGlobalAddress(bacnetIpGlobalAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPGlobalAddress {
-	if bacnetIpGlobalAddress == nil {
-		panic("bacnetIpGlobalAddress of type BACnetHostNPort for BACnetConstructedDataBACnetIPGlobalAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPGlobalAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIpGlobalAddress:         bacnetIpGlobalAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPGlobalAddress(structType any) BACnetConstructedDataBACnetIPGlobalAddress {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataBACnetIPGlobalAddress) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) IsBACnetConstructedDataBACnetIPGlobalAddress() {
 }
 
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPGlobalAddress) deepCopy() *_BACnetConstructedDataBACnetIPGlobalAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPGlobalAddressCopy := &_BACnetConstructedDataBACnetIPGlobalAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BacnetIpGlobalAddress.DeepCopy().(BACnetHostNPort),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPGlobalAddressCopy
+}
+
 func (m *_BACnetConstructedDataBACnetIPGlobalAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

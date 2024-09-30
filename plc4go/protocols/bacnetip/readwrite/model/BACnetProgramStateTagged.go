@@ -38,12 +38,15 @@ type BACnetProgramStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProgramState
 	// IsBACnetProgramStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProgramStateTagged()
+	// CreateBuilder creates a BACnetProgramStateTaggedBuilder
+	CreateBACnetProgramStateTaggedBuilder() BACnetProgramStateTaggedBuilder
 }
 
 // _BACnetProgramStateTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetProgramStateTagged struct {
 }
 
 var _ BACnetProgramStateTagged = (*_BACnetProgramStateTagged)(nil)
+
+// NewBACnetProgramStateTagged factory function for _BACnetProgramStateTagged
+func NewBACnetProgramStateTagged(header BACnetTagHeader, value BACnetProgramState, tagNumber uint8, tagClass TagClass) *_BACnetProgramStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramStateTagged must not be nil")
+	}
+	return &_BACnetProgramStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProgramStateTaggedBuilder is a builder for BACnetProgramStateTagged
+type BACnetProgramStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetProgramState) BACnetProgramStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetProgramStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetProgramState) BACnetProgramStateTaggedBuilder
+	// Build builds the BACnetProgramStateTagged or returns an error if something is wrong
+	Build() (BACnetProgramStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProgramStateTagged
+}
+
+// NewBACnetProgramStateTaggedBuilder() creates a BACnetProgramStateTaggedBuilder
+func NewBACnetProgramStateTaggedBuilder() BACnetProgramStateTaggedBuilder {
+	return &_BACnetProgramStateTaggedBuilder{_BACnetProgramStateTagged: new(_BACnetProgramStateTagged)}
+}
+
+type _BACnetProgramStateTaggedBuilder struct {
+	*_BACnetProgramStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProgramStateTaggedBuilder) = (*_BACnetProgramStateTaggedBuilder)(nil)
+
+func (b *_BACnetProgramStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetProgramState) BACnetProgramStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetProgramStateTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) WithValue(value BACnetProgramState) BACnetProgramStateTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) Build() (BACnetProgramStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetProgramStateTagged.deepCopy(), nil
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) MustBuild() BACnetProgramStateTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetProgramStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProgramStateTaggedBuilder().(*_BACnetProgramStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetProgramStateTaggedBuilder creates a BACnetProgramStateTaggedBuilder
+func (b *_BACnetProgramStateTagged) CreateBACnetProgramStateTaggedBuilder() BACnetProgramStateTaggedBuilder {
+	if b == nil {
+		return NewBACnetProgramStateTaggedBuilder()
+	}
+	return &_BACnetProgramStateTaggedBuilder{_BACnetProgramStateTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetProgramStateTagged) GetValue() BACnetProgramState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramStateTagged factory function for _BACnetProgramStateTagged
-func NewBACnetProgramStateTagged(header BACnetTagHeader, value BACnetProgramState, tagNumber uint8, tagClass TagClass) *_BACnetProgramStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramStateTagged must not be nil")
-	}
-	return &_BACnetProgramStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramStateTagged(structType any) BACnetProgramStateTagged {
@@ -130,7 +237,7 @@ func BACnetProgramStateTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetProgramStateTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetProgramStateTagged BACnetProgramStateTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetProgramStateTagged) GetTagClass() TagClass {
 
 func (m *_BACnetProgramStateTagged) IsBACnetProgramStateTagged() {}
 
+func (m *_BACnetProgramStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramStateTagged) deepCopy() *_BACnetProgramStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramStateTaggedCopy := &_BACnetProgramStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramStateTaggedCopy
+}
+
 func (m *_BACnetProgramStateTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

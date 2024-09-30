@@ -38,6 +38,7 @@ type BACnetAuthorizationExemptionTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetAuthorizationExemptionTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAuthorizationExemptionTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthorizationExemptionTagged()
+	// CreateBuilder creates a BACnetAuthorizationExemptionTaggedBuilder
+	CreateBACnetAuthorizationExemptionTaggedBuilder() BACnetAuthorizationExemptionTaggedBuilder
 }
 
 // _BACnetAuthorizationExemptionTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetAuthorizationExemptionTagged struct {
 }
 
 var _ BACnetAuthorizationExemptionTagged = (*_BACnetAuthorizationExemptionTagged)(nil)
+
+// NewBACnetAuthorizationExemptionTagged factory function for _BACnetAuthorizationExemptionTagged
+func NewBACnetAuthorizationExemptionTagged(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationExemptionTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthorizationExemptionTagged must not be nil")
+	}
+	return &_BACnetAuthorizationExemptionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthorizationExemptionTaggedBuilder is a builder for BACnetAuthorizationExemptionTagged
+type BACnetAuthorizationExemptionTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAuthorizationExemptionTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationExemptionTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAuthorizationExemption) BACnetAuthorizationExemptionTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAuthorizationExemptionTaggedBuilder
+	// Build builds the BACnetAuthorizationExemptionTagged or returns an error if something is wrong
+	Build() (BACnetAuthorizationExemptionTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthorizationExemptionTagged
+}
+
+// NewBACnetAuthorizationExemptionTaggedBuilder() creates a BACnetAuthorizationExemptionTaggedBuilder
+func NewBACnetAuthorizationExemptionTaggedBuilder() BACnetAuthorizationExemptionTaggedBuilder {
+	return &_BACnetAuthorizationExemptionTaggedBuilder{_BACnetAuthorizationExemptionTagged: new(_BACnetAuthorizationExemptionTagged)}
+}
+
+type _BACnetAuthorizationExemptionTaggedBuilder struct {
+	*_BACnetAuthorizationExemptionTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthorizationExemptionTaggedBuilder) = (*_BACnetAuthorizationExemptionTaggedBuilder)(nil)
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthorizationExemptionTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationExemptionTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithValue(value BACnetAuthorizationExemption) BACnetAuthorizationExemptionTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationExemptionTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) Build() (BACnetAuthorizationExemptionTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAuthorizationExemptionTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) MustBuild() BACnetAuthorizationExemptionTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAuthorizationExemptionTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthorizationExemptionTaggedBuilder().(*_BACnetAuthorizationExemptionTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAuthorizationExemptionTaggedBuilder creates a BACnetAuthorizationExemptionTaggedBuilder
+func (b *_BACnetAuthorizationExemptionTagged) CreateBACnetAuthorizationExemptionTaggedBuilder() BACnetAuthorizationExemptionTaggedBuilder {
+	if b == nil {
+		return NewBACnetAuthorizationExemptionTaggedBuilder()
+	}
+	return &_BACnetAuthorizationExemptionTaggedBuilder{_BACnetAuthorizationExemptionTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetAuthorizationExemptionTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthorizationExemptionTagged factory function for _BACnetAuthorizationExemptionTagged
-func NewBACnetAuthorizationExemptionTagged(header BACnetTagHeader, value BACnetAuthorizationExemption, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationExemptionTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthorizationExemptionTagged must not be nil")
-	}
-	return &_BACnetAuthorizationExemptionTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthorizationExemptionTagged(structType any) BACnetAuthorizationExemptionTagged {
@@ -159,7 +273,7 @@ func BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx context.Context, read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthorizationExemptionTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAuthorizationExemptionTagged BACnetAuthorizationExemptionTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetAuthorizationExemptionTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAuthorizationExemptionTagged) IsBACnetAuthorizationExemptionTagged() {}
 
+func (m *_BACnetAuthorizationExemptionTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthorizationExemptionTagged) deepCopy() *_BACnetAuthorizationExemptionTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthorizationExemptionTaggedCopy := &_BACnetAuthorizationExemptionTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthorizationExemptionTaggedCopy
+}
+
 func (m *_BACnetAuthorizationExemptionTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

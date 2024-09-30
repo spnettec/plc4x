@@ -38,6 +38,7 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7ParameterUserDataItem
 	// GetMethod returns Method (property field)
 	GetMethod() uint8
@@ -57,6 +58,8 @@ type S7ParameterUserDataItemCPUFunctions interface {
 	GetErrorCode() *uint16
 	// IsS7ParameterUserDataItemCPUFunctions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserDataItemCPUFunctions()
+	// CreateBuilder creates a S7ParameterUserDataItemCPUFunctionsBuilder
+	CreateS7ParameterUserDataItemCPUFunctionsBuilder() S7ParameterUserDataItemCPUFunctionsBuilder
 }
 
 // _S7ParameterUserDataItemCPUFunctions is the data-structure of this message
@@ -74,6 +77,163 @@ type _S7ParameterUserDataItemCPUFunctions struct {
 
 var _ S7ParameterUserDataItemCPUFunctions = (*_S7ParameterUserDataItemCPUFunctions)(nil)
 var _ S7ParameterUserDataItemRequirements = (*_S7ParameterUserDataItemCPUFunctions)(nil)
+
+// NewS7ParameterUserDataItemCPUFunctions factory function for _S7ParameterUserDataItemCPUFunctions
+func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *_S7ParameterUserDataItemCPUFunctions {
+	_result := &_S7ParameterUserDataItemCPUFunctions{
+		S7ParameterUserDataItemContract: NewS7ParameterUserDataItem(),
+		Method:                          method,
+		CpuFunctionType:                 cpuFunctionType,
+		CpuFunctionGroup:                cpuFunctionGroup,
+		CpuSubfunction:                  cpuSubfunction,
+		SequenceNumber:                  sequenceNumber,
+		DataUnitReferenceNumber:         dataUnitReferenceNumber,
+		LastDataUnit:                    lastDataUnit,
+		ErrorCode:                       errorCode,
+	}
+	_result.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterUserDataItemCPUFunctionsBuilder is a builder for S7ParameterUserDataItemCPUFunctions
+type S7ParameterUserDataItemCPUFunctionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithMethod adds Method (property field)
+	WithMethod(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithCpuFunctionType adds CpuFunctionType (property field)
+	WithCpuFunctionType(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithCpuFunctionGroup adds CpuFunctionGroup (property field)
+	WithCpuFunctionGroup(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithCpuSubfunction adds CpuSubfunction (property field)
+	WithCpuSubfunction(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithDataUnitReferenceNumber adds DataUnitReferenceNumber (property field)
+	WithOptionalDataUnitReferenceNumber(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithLastDataUnit adds LastDataUnit (property field)
+	WithOptionalLastDataUnit(uint8) S7ParameterUserDataItemCPUFunctionsBuilder
+	// WithErrorCode adds ErrorCode (property field)
+	WithOptionalErrorCode(uint16) S7ParameterUserDataItemCPUFunctionsBuilder
+	// Build builds the S7ParameterUserDataItemCPUFunctions or returns an error if something is wrong
+	Build() (S7ParameterUserDataItemCPUFunctions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterUserDataItemCPUFunctions
+}
+
+// NewS7ParameterUserDataItemCPUFunctionsBuilder() creates a S7ParameterUserDataItemCPUFunctionsBuilder
+func NewS7ParameterUserDataItemCPUFunctionsBuilder() S7ParameterUserDataItemCPUFunctionsBuilder {
+	return &_S7ParameterUserDataItemCPUFunctionsBuilder{_S7ParameterUserDataItemCPUFunctions: new(_S7ParameterUserDataItemCPUFunctions)}
+}
+
+type _S7ParameterUserDataItemCPUFunctionsBuilder struct {
+	*_S7ParameterUserDataItemCPUFunctions
+
+	parentBuilder *_S7ParameterUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterUserDataItemCPUFunctionsBuilder) = (*_S7ParameterUserDataItemCPUFunctionsBuilder)(nil)
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) setParent(contract S7ParameterUserDataItemContract) {
+	b.S7ParameterUserDataItemContract = contract
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithMandatoryFields(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	return b.WithMethod(method).WithCpuFunctionType(cpuFunctionType).WithCpuFunctionGroup(cpuFunctionGroup).WithCpuSubfunction(cpuSubfunction).WithSequenceNumber(sequenceNumber)
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithMethod(method uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.Method = method
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithCpuFunctionType(cpuFunctionType uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.CpuFunctionType = cpuFunctionType
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithCpuFunctionGroup(cpuFunctionGroup uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.CpuFunctionGroup = cpuFunctionGroup
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithCpuSubfunction(cpuSubfunction uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.CpuSubfunction = cpuSubfunction
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithSequenceNumber(sequenceNumber uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithOptionalDataUnitReferenceNumber(dataUnitReferenceNumber uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.DataUnitReferenceNumber = &dataUnitReferenceNumber
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithOptionalLastDataUnit(lastDataUnit uint8) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.LastDataUnit = &lastDataUnit
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) WithOptionalErrorCode(errorCode uint16) S7ParameterUserDataItemCPUFunctionsBuilder {
+	b.ErrorCode = &errorCode
+	return b
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) Build() (S7ParameterUserDataItemCPUFunctions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7ParameterUserDataItemCPUFunctions.deepCopy(), nil
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) MustBuild() S7ParameterUserDataItemCPUFunctions {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) Done() S7ParameterUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) buildForS7ParameterUserDataItem() (S7ParameterUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterUserDataItemCPUFunctionsBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterUserDataItemCPUFunctionsBuilder().(*_S7ParameterUserDataItemCPUFunctionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7ParameterUserDataItemCPUFunctionsBuilder creates a S7ParameterUserDataItemCPUFunctionsBuilder
+func (b *_S7ParameterUserDataItemCPUFunctions) CreateS7ParameterUserDataItemCPUFunctionsBuilder() S7ParameterUserDataItemCPUFunctionsBuilder {
+	if b == nil {
+		return NewS7ParameterUserDataItemCPUFunctionsBuilder()
+	}
+	return &_S7ParameterUserDataItemCPUFunctionsBuilder{_S7ParameterUserDataItemCPUFunctions: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,23 +294,6 @@ func (m *_S7ParameterUserDataItemCPUFunctions) GetErrorCode() *uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterUserDataItemCPUFunctions factory function for _S7ParameterUserDataItemCPUFunctions
-func NewS7ParameterUserDataItemCPUFunctions(method uint8, cpuFunctionType uint8, cpuFunctionGroup uint8, cpuSubfunction uint8, sequenceNumber uint8, dataUnitReferenceNumber *uint8, lastDataUnit *uint8, errorCode *uint16) *_S7ParameterUserDataItemCPUFunctions {
-	_result := &_S7ParameterUserDataItemCPUFunctions{
-		S7ParameterUserDataItemContract: NewS7ParameterUserDataItem(),
-		Method:                          method,
-		CpuFunctionType:                 cpuFunctionType,
-		CpuFunctionGroup:                cpuFunctionGroup,
-		CpuSubfunction:                  cpuSubfunction,
-		SequenceNumber:                  sequenceNumber,
-		DataUnitReferenceNumber:         dataUnitReferenceNumber,
-		LastDataUnit:                    lastDataUnit,
-		ErrorCode:                       errorCode,
-	}
-	_result.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterUserDataItemCPUFunctions(structType any) S7ParameterUserDataItemCPUFunctions {
@@ -349,13 +492,40 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 
 func (m *_S7ParameterUserDataItemCPUFunctions) IsS7ParameterUserDataItemCPUFunctions() {}
 
+func (m *_S7ParameterUserDataItemCPUFunctions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterUserDataItemCPUFunctions) deepCopy() *_S7ParameterUserDataItemCPUFunctions {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterUserDataItemCPUFunctionsCopy := &_S7ParameterUserDataItemCPUFunctions{
+		m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem).deepCopy(),
+		m.Method,
+		m.CpuFunctionType,
+		m.CpuFunctionGroup,
+		m.CpuSubfunction,
+		m.SequenceNumber,
+		utils.CopyPtr[uint8](m.DataUnitReferenceNumber),
+		utils.CopyPtr[uint8](m.LastDataUnit),
+		utils.CopyPtr[uint16](m.ErrorCode),
+	}
+	m.S7ParameterUserDataItemContract.(*_S7ParameterUserDataItem)._SubType = m
+	return _S7ParameterUserDataItemCPUFunctionsCopy
+}
+
 func (m *_S7ParameterUserDataItemCPUFunctions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

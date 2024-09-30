@@ -38,6 +38,7 @@ type AssociatedQueryValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -48,6 +49,8 @@ type AssociatedQueryValueType interface {
 	GetData() []uint8
 	// IsAssociatedQueryValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAssociatedQueryValueType()
+	// CreateBuilder creates a AssociatedQueryValueTypeBuilder
+	CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder
 }
 
 // _AssociatedQueryValueType is the data-structure of this message
@@ -59,6 +62,108 @@ type _AssociatedQueryValueType struct {
 }
 
 var _ AssociatedQueryValueType = (*_AssociatedQueryValueType)(nil)
+
+// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
+func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
+	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AssociatedQueryValueTypeBuilder is a builder for AssociatedQueryValueType
+type AssociatedQueryValueTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) AssociatedQueryValueTypeBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) AssociatedQueryValueTypeBuilder
+	// WithValueLength adds ValueLength (property field)
+	WithValueLength(uint16) AssociatedQueryValueTypeBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) AssociatedQueryValueTypeBuilder
+	// Build builds the AssociatedQueryValueType or returns an error if something is wrong
+	Build() (AssociatedQueryValueType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AssociatedQueryValueType
+}
+
+// NewAssociatedQueryValueTypeBuilder() creates a AssociatedQueryValueTypeBuilder
+func NewAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
+	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: new(_AssociatedQueryValueType)}
+}
+
+type _AssociatedQueryValueTypeBuilder struct {
+	*_AssociatedQueryValueType
+
+	err *utils.MultiError
+}
+
+var _ (AssociatedQueryValueTypeBuilder) = (*_AssociatedQueryValueTypeBuilder)(nil)
+
+func (b *_AssociatedQueryValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedQueryValueTypeBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedQueryValueTypeBuilder {
+	b.ReturnCode = returnCode
+	return b
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedQueryValueTypeBuilder {
+	b.TransportSize = transportSize
+	return b
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedQueryValueTypeBuilder {
+	b.ValueLength = valueLength
+	return b
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) WithData(data ...uint8) AssociatedQueryValueTypeBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) Build() (AssociatedQueryValueType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AssociatedQueryValueType.deepCopy(), nil
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) MustBuild() AssociatedQueryValueType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AssociatedQueryValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAssociatedQueryValueTypeBuilder().(*_AssociatedQueryValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAssociatedQueryValueTypeBuilder creates a AssociatedQueryValueTypeBuilder
+func (b *_AssociatedQueryValueType) CreateAssociatedQueryValueTypeBuilder() AssociatedQueryValueTypeBuilder {
+	if b == nil {
+		return NewAssociatedQueryValueTypeBuilder()
+	}
+	return &_AssociatedQueryValueTypeBuilder{_AssociatedQueryValueType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +190,6 @@ func (m *_AssociatedQueryValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedQueryValueType factory function for _AssociatedQueryValueType
-func NewAssociatedQueryValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedQueryValueType {
-	return &_AssociatedQueryValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedQueryValueType(structType any) AssociatedQueryValueType {
@@ -145,7 +245,7 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AssociatedQueryValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__associatedQueryValueType AssociatedQueryValueType, err error) {
@@ -229,13 +329,34 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_AssociatedQueryValueType) IsAssociatedQueryValueType() {}
 
+func (m *_AssociatedQueryValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AssociatedQueryValueType) deepCopy() *_AssociatedQueryValueType {
+	if m == nil {
+		return nil
+	}
+	_AssociatedQueryValueTypeCopy := &_AssociatedQueryValueType{
+		m.ReturnCode,
+		m.TransportSize,
+		m.ValueLength,
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	return _AssociatedQueryValueTypeCopy
+}
+
 func (m *_AssociatedQueryValueType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

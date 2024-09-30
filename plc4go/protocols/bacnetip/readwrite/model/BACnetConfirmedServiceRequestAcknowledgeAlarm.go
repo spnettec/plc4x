@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetAcknowledgingProcessIdentifier returns AcknowledgingProcessIdentifier (property field)
 	GetAcknowledgingProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -53,6 +54,8 @@ type BACnetConfirmedServiceRequestAcknowledgeAlarm interface {
 	GetTimeOfAcknowledgment() BACnetTimeStampEnclosed
 	// IsBACnetConfirmedServiceRequestAcknowledgeAlarm is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestAcknowledgeAlarm()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	CreateBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder() BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
 }
 
 // _BACnetConfirmedServiceRequestAcknowledgeAlarm is the data-structure of this message
@@ -68,6 +71,291 @@ type _BACnetConfirmedServiceRequestAcknowledgeAlarm struct {
 
 var _ BACnetConfirmedServiceRequestAcknowledgeAlarm = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAcknowledgeAlarm)(nil)
+
+// NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	if acknowledgingProcessIdentifier == nil {
+		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if eventObjectIdentifier == nil {
+		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if eventStateAcknowledged == nil {
+		panic("eventStateAcknowledged of type BACnetEventStateTagged for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timestamp == nil {
+		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if acknowledgmentSource == nil {
+		panic("acknowledgmentSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	if timeOfAcknowledgment == nil {
+		panic("timeOfAcknowledgment of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		AcknowledgingProcessIdentifier:        acknowledgingProcessIdentifier,
+		EventObjectIdentifier:                 eventObjectIdentifier,
+		EventStateAcknowledged:                eventStateAcknowledged,
+		Timestamp:                             timestamp,
+		AcknowledgmentSource:                  acknowledgmentSource,
+		TimeOfAcknowledgment:                  timeOfAcknowledgment,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder is a builder for BACnetConfirmedServiceRequestAcknowledgeAlarm
+type BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithAcknowledgingProcessIdentifier adds AcknowledgingProcessIdentifier (property field)
+	WithAcknowledgingProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithAcknowledgingProcessIdentifierBuilder adds AcknowledgingProcessIdentifier (property field) which is build by the builder
+	WithAcknowledgingProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithEventObjectIdentifier adds EventObjectIdentifier (property field)
+	WithEventObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithEventObjectIdentifierBuilder adds EventObjectIdentifier (property field) which is build by the builder
+	WithEventObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithEventStateAcknowledged adds EventStateAcknowledged (property field)
+	WithEventStateAcknowledged(BACnetEventStateTagged) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithEventStateAcknowledgedBuilder adds EventStateAcknowledged (property field) which is build by the builder
+	WithEventStateAcknowledgedBuilder(func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithAcknowledgmentSource adds AcknowledgmentSource (property field)
+	WithAcknowledgmentSource(BACnetContextTagCharacterString) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithAcknowledgmentSourceBuilder adds AcknowledgmentSource (property field) which is build by the builder
+	WithAcknowledgmentSourceBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithTimeOfAcknowledgment adds TimeOfAcknowledgment (property field)
+	WithTimeOfAcknowledgment(BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// WithTimeOfAcknowledgmentBuilder adds TimeOfAcknowledgment (property field) which is build by the builder
+	WithTimeOfAcknowledgmentBuilder(func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+	// Build builds the BACnetConfirmedServiceRequestAcknowledgeAlarm or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestAcknowledgeAlarm, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestAcknowledgeAlarm
+}
+
+// NewBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder() creates a BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+func NewBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder() BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	return &_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder{_BACnetConfirmedServiceRequestAcknowledgeAlarm: new(_BACnetConfirmedServiceRequestAcknowledgeAlarm)}
+}
+
+type _BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder struct {
+	*_BACnetConfirmedServiceRequestAcknowledgeAlarm
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) = (*_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithMandatoryFields(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	return b.WithAcknowledgingProcessIdentifier(acknowledgingProcessIdentifier).WithEventObjectIdentifier(eventObjectIdentifier).WithEventStateAcknowledged(eventStateAcknowledged).WithTimestamp(timestamp).WithAcknowledgmentSource(acknowledgmentSource).WithTimeOfAcknowledgment(timeOfAcknowledgment)
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithAcknowledgingProcessIdentifier(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.AcknowledgingProcessIdentifier = acknowledgingProcessIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithAcknowledgingProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.AcknowledgingProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.AcknowledgingProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithEventObjectIdentifier(eventObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.EventObjectIdentifier = eventObjectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithEventObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.EventObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.EventObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithEventStateAcknowledged(eventStateAcknowledged BACnetEventStateTagged) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.EventStateAcknowledged = eventStateAcknowledged
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithEventStateAcknowledgedBuilder(builderSupplier func(BACnetEventStateTaggedBuilder) BACnetEventStateTaggedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.EventStateAcknowledged.CreateBACnetEventStateTaggedBuilder())
+	var err error
+	b.EventStateAcknowledged, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEventStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithTimestamp(timestamp BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.Timestamp = timestamp
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithTimestampBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetTimeStampEnclosedBuilder())
+	var err error
+	b.Timestamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithAcknowledgmentSource(acknowledgmentSource BACnetContextTagCharacterString) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.AcknowledgmentSource = acknowledgmentSource
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithAcknowledgmentSourceBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.AcknowledgmentSource.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	b.AcknowledgmentSource, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithTimeOfAcknowledgment(timeOfAcknowledgment BACnetTimeStampEnclosed) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	b.TimeOfAcknowledgment = timeOfAcknowledgment
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) WithTimeOfAcknowledgmentBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	builder := builderSupplier(b.TimeOfAcknowledgment.CreateBACnetTimeStampEnclosedBuilder())
+	var err error
+	b.TimeOfAcknowledgment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) Build() (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
+	if b.AcknowledgingProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'acknowledgingProcessIdentifier' not set"))
+	}
+	if b.EventObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventObjectIdentifier' not set"))
+	}
+	if b.EventStateAcknowledged == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventStateAcknowledged' not set"))
+	}
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.AcknowledgmentSource == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'acknowledgmentSource' not set"))
+	}
+	if b.TimeOfAcknowledgment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeOfAcknowledgment' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestAcknowledgeAlarm.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) MustBuild() BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder().(*_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder creates a BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder
+func (b *_BACnetConfirmedServiceRequestAcknowledgeAlarm) CreateBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder() BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestAcknowledgeAlarmBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestAcknowledgeAlarmBuilder{_BACnetConfirmedServiceRequestAcknowledgeAlarm: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,39 +408,6 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) GetTimeOfAcknowledgment
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAcknowledgeAlarm factory function for _BACnetConfirmedServiceRequestAcknowledgeAlarm
-func NewBACnetConfirmedServiceRequestAcknowledgeAlarm(acknowledgingProcessIdentifier BACnetContextTagUnsignedInteger, eventObjectIdentifier BACnetContextTagObjectIdentifier, eventStateAcknowledged BACnetEventStateTagged, timestamp BACnetTimeStampEnclosed, acknowledgmentSource BACnetContextTagCharacterString, timeOfAcknowledgment BACnetTimeStampEnclosed, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
-	if acknowledgingProcessIdentifier == nil {
-		panic("acknowledgingProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if eventObjectIdentifier == nil {
-		panic("eventObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if eventStateAcknowledged == nil {
-		panic("eventStateAcknowledged of type BACnetEventStateTagged for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if timestamp == nil {
-		panic("timestamp of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if acknowledgmentSource == nil {
-		panic("acknowledgmentSource of type BACnetContextTagCharacterString for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	if timeOfAcknowledgment == nil {
-		panic("timeOfAcknowledgment of type BACnetTimeStampEnclosed for BACnetConfirmedServiceRequestAcknowledgeAlarm must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		AcknowledgingProcessIdentifier:        acknowledgingProcessIdentifier,
-		EventObjectIdentifier:                 eventObjectIdentifier,
-		EventStateAcknowledged:                eventStateAcknowledged,
-		Timestamp:                             timestamp,
-		AcknowledgmentSource:                  acknowledgmentSource,
-		TimeOfAcknowledgment:                  timeOfAcknowledgment,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAcknowledgeAlarm(structType any) BACnetConfirmedServiceRequestAcknowledgeAlarm {
@@ -304,13 +559,38 @@ func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) SerializeWithWriteBuffe
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) IsBACnetConfirmedServiceRequestAcknowledgeAlarm() {
 }
 
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) deepCopy() *_BACnetConfirmedServiceRequestAcknowledgeAlarm {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAcknowledgeAlarmCopy := &_BACnetConfirmedServiceRequestAcknowledgeAlarm{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.AcknowledgingProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.EventObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.EventStateAcknowledged.DeepCopy().(BACnetEventStateTagged),
+		m.Timestamp.DeepCopy().(BACnetTimeStampEnclosed),
+		m.AcknowledgmentSource.DeepCopy().(BACnetContextTagCharacterString),
+		m.TimeOfAcknowledgment.DeepCopy().(BACnetTimeStampEnclosed),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAcknowledgeAlarmCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestAcknowledgeAlarm) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

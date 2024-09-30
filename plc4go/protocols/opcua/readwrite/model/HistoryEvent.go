@@ -38,6 +38,7 @@ type HistoryEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEvents returns NoOfEvents (property field)
 	GetNoOfEvents() int32
@@ -45,6 +46,8 @@ type HistoryEvent interface {
 	GetEvents() []ExtensionObjectDefinition
 	// IsHistoryEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryEvent()
+	// CreateBuilder creates a HistoryEventBuilder
+	CreateHistoryEventBuilder() HistoryEventBuilder
 }
 
 // _HistoryEvent is the data-structure of this message
@@ -56,6 +59,115 @@ type _HistoryEvent struct {
 
 var _ HistoryEvent = (*_HistoryEvent)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryEvent)(nil)
+
+// NewHistoryEvent factory function for _HistoryEvent
+func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
+	_result := &_HistoryEvent{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEvents:                        noOfEvents,
+		Events:                            events,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryEventBuilder is a builder for HistoryEvent
+type HistoryEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder
+	// WithNoOfEvents adds NoOfEvents (property field)
+	WithNoOfEvents(int32) HistoryEventBuilder
+	// WithEvents adds Events (property field)
+	WithEvents(...ExtensionObjectDefinition) HistoryEventBuilder
+	// Build builds the HistoryEvent or returns an error if something is wrong
+	Build() (HistoryEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryEvent
+}
+
+// NewHistoryEventBuilder() creates a HistoryEventBuilder
+func NewHistoryEventBuilder() HistoryEventBuilder {
+	return &_HistoryEventBuilder{_HistoryEvent: new(_HistoryEvent)}
+}
+
+type _HistoryEventBuilder struct {
+	*_HistoryEvent
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryEventBuilder) = (*_HistoryEventBuilder)(nil)
+
+func (b *_HistoryEventBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryEventBuilder) WithMandatoryFields(noOfEvents int32, events []ExtensionObjectDefinition) HistoryEventBuilder {
+	return b.WithNoOfEvents(noOfEvents).WithEvents(events...)
+}
+
+func (b *_HistoryEventBuilder) WithNoOfEvents(noOfEvents int32) HistoryEventBuilder {
+	b.NoOfEvents = noOfEvents
+	return b
+}
+
+func (b *_HistoryEventBuilder) WithEvents(events ...ExtensionObjectDefinition) HistoryEventBuilder {
+	b.Events = events
+	return b
+}
+
+func (b *_HistoryEventBuilder) Build() (HistoryEvent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryEvent.deepCopy(), nil
+}
+
+func (b *_HistoryEventBuilder) MustBuild() HistoryEvent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryEventBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryEventBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryEventBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryEventBuilder().(*_HistoryEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryEventBuilder creates a HistoryEventBuilder
+func (b *_HistoryEvent) CreateHistoryEventBuilder() HistoryEventBuilder {
+	if b == nil {
+		return NewHistoryEventBuilder()
+	}
+	return &_HistoryEventBuilder{_HistoryEvent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_HistoryEvent) GetEvents() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryEvent factory function for _HistoryEvent
-func NewHistoryEvent(noOfEvents int32, events []ExtensionObjectDefinition) *_HistoryEvent {
-	_result := &_HistoryEvent{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEvents:                        noOfEvents,
-		Events:                            events,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryEvent(structType any) HistoryEvent {
@@ -208,13 +309,34 @@ func (m *_HistoryEvent) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_HistoryEvent) IsHistoryEvent() {}
 
+func (m *_HistoryEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryEvent) deepCopy() *_HistoryEvent {
+	if m == nil {
+		return nil
+	}
+	_HistoryEventCopy := &_HistoryEvent{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEvents,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Events),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryEventCopy
+}
+
 func (m *_HistoryEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

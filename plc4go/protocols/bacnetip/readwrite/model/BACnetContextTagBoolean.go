@@ -38,6 +38,7 @@ type BACnetContextTagBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetValue returns Value (property field)
 	GetValue() uint8
@@ -47,6 +48,8 @@ type BACnetContextTagBoolean interface {
 	GetActualValue() bool
 	// IsBACnetContextTagBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagBoolean()
+	// CreateBuilder creates a BACnetContextTagBooleanBuilder
+	CreateBACnetContextTagBooleanBuilder() BACnetContextTagBooleanBuilder
 }
 
 // _BACnetContextTagBoolean is the data-structure of this message
@@ -58,6 +61,139 @@ type _BACnetContextTagBoolean struct {
 
 var _ BACnetContextTagBoolean = (*_BACnetContextTagBoolean)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBoolean)(nil)
+
+// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
+func NewBACnetContextTagBoolean(header BACnetTagHeader, value uint8, payload BACnetTagPayloadBoolean, tagNumberArgument uint8) *_BACnetContextTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
+	}
+	_result := &_BACnetContextTagBoolean{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Value:                    value,
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagBooleanBuilder is a builder for BACnetContextTagBoolean
+type BACnetContextTagBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value uint8, payload BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint8) BACnetContextTagBooleanBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetContextTagBooleanBuilder
+	// Build builds the BACnetContextTagBoolean or returns an error if something is wrong
+	Build() (BACnetContextTagBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagBoolean
+}
+
+// NewBACnetContextTagBooleanBuilder() creates a BACnetContextTagBooleanBuilder
+func NewBACnetContextTagBooleanBuilder() BACnetContextTagBooleanBuilder {
+	return &_BACnetContextTagBooleanBuilder{_BACnetContextTagBoolean: new(_BACnetContextTagBoolean)}
+}
+
+type _BACnetContextTagBooleanBuilder struct {
+	*_BACnetContextTagBoolean
+
+	parentBuilder *_BACnetContextTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagBooleanBuilder) = (*_BACnetContextTagBooleanBuilder)(nil)
+
+func (b *_BACnetContextTagBooleanBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
+}
+
+func (b *_BACnetContextTagBooleanBuilder) WithMandatoryFields(value uint8, payload BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder {
+	return b.WithValue(value).WithPayload(payload)
+}
+
+func (b *_BACnetContextTagBooleanBuilder) WithValue(value uint8) BACnetContextTagBooleanBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetContextTagBooleanBuilder) WithPayload(payload BACnetTagPayloadBoolean) BACnetContextTagBooleanBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagBooleanBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetContextTagBooleanBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBooleanBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetContextTagBooleanBuilder) Build() (BACnetContextTagBoolean, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetContextTagBoolean.deepCopy(), nil
+}
+
+func (b *_BACnetContextTagBooleanBuilder) MustBuild() BACnetContextTagBoolean {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagBooleanBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagBooleanBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagBooleanBuilder().(*_BACnetContextTagBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetContextTagBooleanBuilder creates a BACnetContextTagBooleanBuilder
+func (b *_BACnetContextTagBoolean) CreateBACnetContextTagBooleanBuilder() BACnetContextTagBooleanBuilder {
+	if b == nil {
+		return NewBACnetContextTagBooleanBuilder()
+	}
+	return &_BACnetContextTagBooleanBuilder{_BACnetContextTagBoolean: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +245,6 @@ func (m *_BACnetContextTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagBoolean factory function for _BACnetContextTagBoolean
-func NewBACnetContextTagBoolean(value uint8, payload BACnetTagPayloadBoolean, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetContextTagBoolean must not be nil")
-	}
-	_result := &_BACnetContextTagBoolean{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Value:                    value,
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagBoolean(structType any) BACnetContextTagBoolean {
@@ -240,13 +362,34 @@ func (m *_BACnetContextTagBoolean) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetContextTagBoolean) IsBACnetContextTagBoolean() {}
 
+func (m *_BACnetContextTagBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagBoolean) deepCopy() *_BACnetContextTagBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagBooleanCopy := &_BACnetContextTagBoolean{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Value,
+		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagBooleanCopy
+}
+
 func (m *_BACnetContextTagBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime interfac
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime struct 
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)(nil)
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeValue BACnetApplicationTagTime, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeValue: timeValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithTimeValue(BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
+
+	parentBuilder *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder)(nil)
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	return b.WithTimeValue(timeValue)
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	b.TimeValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Ge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(timeValue BACnetApplicationTagTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		TimeValue: timeValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
@@ -180,13 +295,33 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) Se
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime() {
 }
 
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTimeCopy
+}
+
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

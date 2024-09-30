@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumValueTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumValueTimestamp returns MinimumValueTimestamp (property field)
 	GetMinimumValueTimestamp() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataMinimumValueTimestamp interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataMinimumValueTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMinimumValueTimestamp()
+	// CreateBuilder creates a BACnetConstructedDataMinimumValueTimestampBuilder
+	CreateBACnetConstructedDataMinimumValueTimestampBuilder() BACnetConstructedDataMinimumValueTimestampBuilder
 }
 
 // _BACnetConstructedDataMinimumValueTimestamp is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataMinimumValueTimestamp struct {
 
 var _ BACnetConstructedDataMinimumValueTimestamp = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumValueTimestamp)(nil)
+
+// NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
+func NewBACnetConstructedDataMinimumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
+	if minimumValueTimestamp == nil {
+		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumValueTimestamp{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumValueTimestamp:         minimumValueTimestamp,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMinimumValueTimestampBuilder is a builder for BACnetConstructedDataMinimumValueTimestamp
+type BACnetConstructedDataMinimumValueTimestampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumValueTimestamp BACnetDateTime) BACnetConstructedDataMinimumValueTimestampBuilder
+	// WithMinimumValueTimestamp adds MinimumValueTimestamp (property field)
+	WithMinimumValueTimestamp(BACnetDateTime) BACnetConstructedDataMinimumValueTimestampBuilder
+	// WithMinimumValueTimestampBuilder adds MinimumValueTimestamp (property field) which is build by the builder
+	WithMinimumValueTimestampBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMinimumValueTimestampBuilder
+	// Build builds the BACnetConstructedDataMinimumValueTimestamp or returns an error if something is wrong
+	Build() (BACnetConstructedDataMinimumValueTimestamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMinimumValueTimestamp
+}
+
+// NewBACnetConstructedDataMinimumValueTimestampBuilder() creates a BACnetConstructedDataMinimumValueTimestampBuilder
+func NewBACnetConstructedDataMinimumValueTimestampBuilder() BACnetConstructedDataMinimumValueTimestampBuilder {
+	return &_BACnetConstructedDataMinimumValueTimestampBuilder{_BACnetConstructedDataMinimumValueTimestamp: new(_BACnetConstructedDataMinimumValueTimestamp)}
+}
+
+type _BACnetConstructedDataMinimumValueTimestampBuilder struct {
+	*_BACnetConstructedDataMinimumValueTimestamp
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMinimumValueTimestampBuilder) = (*_BACnetConstructedDataMinimumValueTimestampBuilder)(nil)
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) WithMandatoryFields(minimumValueTimestamp BACnetDateTime) BACnetConstructedDataMinimumValueTimestampBuilder {
+	return b.WithMinimumValueTimestamp(minimumValueTimestamp)
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) WithMinimumValueTimestamp(minimumValueTimestamp BACnetDateTime) BACnetConstructedDataMinimumValueTimestampBuilder {
+	b.MinimumValueTimestamp = minimumValueTimestamp
+	return b
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) WithMinimumValueTimestampBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMinimumValueTimestampBuilder {
+	builder := builderSupplier(b.MinimumValueTimestamp.CreateBACnetDateTimeBuilder())
+	var err error
+	b.MinimumValueTimestamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) Build() (BACnetConstructedDataMinimumValueTimestamp, error) {
+	if b.MinimumValueTimestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'minimumValueTimestamp' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMinimumValueTimestamp.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) MustBuild() BACnetConstructedDataMinimumValueTimestamp {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMinimumValueTimestampBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMinimumValueTimestampBuilder().(*_BACnetConstructedDataMinimumValueTimestampBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMinimumValueTimestampBuilder creates a BACnetConstructedDataMinimumValueTimestampBuilder
+func (b *_BACnetConstructedDataMinimumValueTimestamp) CreateBACnetConstructedDataMinimumValueTimestampBuilder() BACnetConstructedDataMinimumValueTimestampBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMinimumValueTimestampBuilder()
+	}
+	return &_BACnetConstructedDataMinimumValueTimestampBuilder{_BACnetConstructedDataMinimumValueTimestamp: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumValueTimestamp factory function for _BACnetConstructedDataMinimumValueTimestamp
-func NewBACnetConstructedDataMinimumValueTimestamp(minimumValueTimestamp BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumValueTimestamp {
-	if minimumValueTimestamp == nil {
-		panic("minimumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMinimumValueTimestamp must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumValueTimestamp:         minimumValueTimestamp,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumValueTimestamp(structType any) BACnetConstructedDataMinimumValueTimestamp {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataMinimumValueTimestamp) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataMinimumValueTimestamp) IsBACnetConstructedDataMinimumValueTimestamp() {
 }
 
+func (m *_BACnetConstructedDataMinimumValueTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumValueTimestamp) deepCopy() *_BACnetConstructedDataMinimumValueTimestamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumValueTimestampCopy := &_BACnetConstructedDataMinimumValueTimestamp{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MinimumValueTimestamp.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumValueTimestampCopy
+}
+
 func (m *_BACnetConstructedDataMinimumValueTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

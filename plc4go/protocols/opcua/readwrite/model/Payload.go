@@ -40,8 +40,11 @@ type Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
+	// CreateBuilder creates a PayloadBuilder
+	CreatePayloadBuilder() PayloadBuilder
 }
 
 // PayloadContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type PayloadContract interface {
 	GetByteCount() uint32
 	// IsPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPayload()
+	// CreateBuilder creates a PayloadBuilder
+	CreatePayloadBuilder() PayloadBuilder
 }
 
 // PayloadRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +78,187 @@ type _Payload struct {
 
 var _ PayloadContract = (*_Payload)(nil)
 
+// NewPayload factory function for _Payload
+func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
+	if sequenceHeader == nil {
+		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
+	}
+	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PayloadBuilder is a builder for Payload
+type PayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sequenceHeader SequenceHeader) PayloadBuilder
+	// WithSequenceHeader adds SequenceHeader (property field)
+	WithSequenceHeader(SequenceHeader) PayloadBuilder
+	// WithSequenceHeaderBuilder adds SequenceHeader (property field) which is build by the builder
+	WithSequenceHeaderBuilder(func(SequenceHeaderBuilder) SequenceHeaderBuilder) PayloadBuilder
+	// AsExtensiblePayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
+	AsExtensiblePayload() interface {
+		ExtensiblePayloadBuilder
+		Done() PayloadBuilder
+	}
+	// AsBinaryPayload converts this build to a subType of Payload. It is always possible to return to current builder using Done()
+	AsBinaryPayload() interface {
+		BinaryPayloadBuilder
+		Done() PayloadBuilder
+	}
+	// Build builds the Payload or returns an error if something is wrong
+	PartialBuild() (PayloadContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() PayloadContract
+	// Build builds the Payload or returns an error if something is wrong
+	Build() (Payload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Payload
+}
+
+// NewPayloadBuilder() creates a PayloadBuilder
+func NewPayloadBuilder() PayloadBuilder {
+	return &_PayloadBuilder{_Payload: new(_Payload)}
+}
+
+type _PayloadChildBuilder interface {
+	utils.Copyable
+	setParent(PayloadContract)
+	buildForPayload() (Payload, error)
+}
+
+type _PayloadBuilder struct {
+	*_Payload
+
+	childBuilder _PayloadChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PayloadBuilder) = (*_PayloadBuilder)(nil)
+
+func (b *_PayloadBuilder) WithMandatoryFields(sequenceHeader SequenceHeader) PayloadBuilder {
+	return b.WithSequenceHeader(sequenceHeader)
+}
+
+func (b *_PayloadBuilder) WithSequenceHeader(sequenceHeader SequenceHeader) PayloadBuilder {
+	b.SequenceHeader = sequenceHeader
+	return b
+}
+
+func (b *_PayloadBuilder) WithSequenceHeaderBuilder(builderSupplier func(SequenceHeaderBuilder) SequenceHeaderBuilder) PayloadBuilder {
+	builder := builderSupplier(b.SequenceHeader.CreateSequenceHeaderBuilder())
+	var err error
+	b.SequenceHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SequenceHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PayloadBuilder) PartialBuild() (PayloadContract, error) {
+	if b.SequenceHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sequenceHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Payload.deepCopy(), nil
+}
+
+func (b *_PayloadBuilder) PartialMustBuild() PayloadContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PayloadBuilder) AsExtensiblePayload() interface {
+	ExtensiblePayloadBuilder
+	Done() PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ExtensiblePayloadBuilder
+		Done() PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewExtensiblePayloadBuilder().(*_ExtensiblePayloadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PayloadBuilder) AsBinaryPayload() interface {
+	BinaryPayloadBuilder
+	Done() PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BinaryPayloadBuilder
+		Done() PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBinaryPayloadBuilder().(*_BinaryPayloadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PayloadBuilder) Build() (Payload, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForPayload()
+}
+
+func (b *_PayloadBuilder) MustBuild() Payload {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PayloadBuilder) DeepCopy() any {
+	_copy := b.CreatePayloadBuilder().(*_PayloadBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_PayloadChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePayloadBuilder creates a PayloadBuilder
+func (b *_Payload) CreatePayloadBuilder() PayloadBuilder {
+	if b == nil {
+		return NewPayloadBuilder()
+	}
+	return &_PayloadBuilder{_Payload: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,14 +272,6 @@ func (m *_Payload) GetSequenceHeader() SequenceHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPayload factory function for _Payload
-func NewPayload(sequenceHeader SequenceHeader, byteCount uint32) *_Payload {
-	if sequenceHeader == nil {
-		panic("sequenceHeader of type SequenceHeader for Payload must not be nil")
-	}
-	return &_Payload{SequenceHeader: sequenceHeader, ByteCount: byteCount}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPayload(structType any) Payload {
@@ -134,7 +312,7 @@ func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -144,7 +322,12 @@ func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (__payload Payload, err error) {
@@ -166,11 +349,11 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, exten
 	var _child Payload
 	switch {
 	case extensible == bool(true): // ExtensiblePayload
-		if _child, err = (&_ExtensiblePayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
 	case extensible == bool(false): // BinaryPayload
-		if _child, err = (&_BinaryPayload{}).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:
@@ -222,3 +405,19 @@ func (m *_Payload) GetByteCount() uint32 {
 ////
 
 func (m *_Payload) IsPayload() {}
+
+func (m *_Payload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Payload) deepCopy() *_Payload {
+	if m == nil {
+		return nil
+	}
+	_PayloadCopy := &_Payload{
+		nil, // will be set by child
+		m.SequenceHeader.DeepCopy().(SequenceHeader),
+		m.ByteCount,
+	}
+	return _PayloadCopy
+}

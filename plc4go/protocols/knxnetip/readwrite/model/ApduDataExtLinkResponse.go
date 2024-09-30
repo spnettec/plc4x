@@ -36,9 +36,12 @@ type ApduDataExtLinkResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtLinkResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkResponse()
+	// CreateBuilder creates a ApduDataExtLinkResponseBuilder
+	CreateApduDataExtLinkResponseBuilder() ApduDataExtLinkResponseBuilder
 }
 
 // _ApduDataExtLinkResponse is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataExtLinkResponse struct {
 
 var _ ApduDataExtLinkResponse = (*_ApduDataExtLinkResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkResponse)(nil)
+
+// NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
+func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
+	_result := &_ApduDataExtLinkResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtLinkResponseBuilder is a builder for ApduDataExtLinkResponse
+type ApduDataExtLinkResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtLinkResponseBuilder
+	// Build builds the ApduDataExtLinkResponse or returns an error if something is wrong
+	Build() (ApduDataExtLinkResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtLinkResponse
+}
+
+// NewApduDataExtLinkResponseBuilder() creates a ApduDataExtLinkResponseBuilder
+func NewApduDataExtLinkResponseBuilder() ApduDataExtLinkResponseBuilder {
+	return &_ApduDataExtLinkResponseBuilder{_ApduDataExtLinkResponse: new(_ApduDataExtLinkResponse)}
+}
+
+type _ApduDataExtLinkResponseBuilder struct {
+	*_ApduDataExtLinkResponse
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtLinkResponseBuilder) = (*_ApduDataExtLinkResponseBuilder)(nil)
+
+func (b *_ApduDataExtLinkResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtLinkResponseBuilder) WithMandatoryFields() ApduDataExtLinkResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtLinkResponseBuilder) Build() (ApduDataExtLinkResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtLinkResponse.deepCopy(), nil
+}
+
+func (b *_ApduDataExtLinkResponseBuilder) MustBuild() ApduDataExtLinkResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtLinkResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtLinkResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtLinkResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtLinkResponseBuilder().(*_ApduDataExtLinkResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtLinkResponseBuilder creates a ApduDataExtLinkResponseBuilder
+func (b *_ApduDataExtLinkResponse) CreateApduDataExtLinkResponseBuilder() ApduDataExtLinkResponseBuilder {
+	if b == nil {
+		return NewApduDataExtLinkResponseBuilder()
+	}
+	return &_ApduDataExtLinkResponseBuilder{_ApduDataExtLinkResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataExtLinkResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtLinkResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtLinkResponse factory function for _ApduDataExtLinkResponse
-func NewApduDataExtLinkResponse(length uint8) *_ApduDataExtLinkResponse {
-	_result := &_ApduDataExtLinkResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataExtLinkResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_ApduDataExtLinkResponse) IsApduDataExtLinkResponse() {}
 
+func (m *_ApduDataExtLinkResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtLinkResponse) deepCopy() *_ApduDataExtLinkResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtLinkResponseCopy := &_ApduDataExtLinkResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtLinkResponseCopy
+}
+
 func (m *_ApduDataExtLinkResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

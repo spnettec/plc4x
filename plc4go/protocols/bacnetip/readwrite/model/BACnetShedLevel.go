@@ -40,8 +40,11 @@ type BACnetShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetShedLevel()
+	// CreateBuilder creates a BACnetShedLevelBuilder
+	CreateBACnetShedLevelBuilder() BACnetShedLevelBuilder
 }
 
 // BACnetShedLevelContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetShedLevelContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetShedLevel()
+	// CreateBuilder creates a BACnetShedLevelBuilder
+	CreateBACnetShedLevelBuilder() BACnetShedLevelBuilder
 }
 
 // BACnetShedLevelRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,208 @@ type _BACnetShedLevel struct {
 }
 
 var _ BACnetShedLevelContract = (*_BACnetShedLevel)(nil)
+
+// NewBACnetShedLevel factory function for _BACnetShedLevel
+func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
+	}
+	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetShedLevelBuilder is a builder for BACnetShedLevel
+type BACnetShedLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetShedLevelBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetShedLevelBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedLevelBuilder
+	// AsBACnetShedLevelPercent converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
+	AsBACnetShedLevelPercent() interface {
+		BACnetShedLevelPercentBuilder
+		Done() BACnetShedLevelBuilder
+	}
+	// AsBACnetShedLevelLevel converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
+	AsBACnetShedLevelLevel() interface {
+		BACnetShedLevelLevelBuilder
+		Done() BACnetShedLevelBuilder
+	}
+	// AsBACnetShedLevelAmount converts this build to a subType of BACnetShedLevel. It is always possible to return to current builder using Done()
+	AsBACnetShedLevelAmount() interface {
+		BACnetShedLevelAmountBuilder
+		Done() BACnetShedLevelBuilder
+	}
+	// Build builds the BACnetShedLevel or returns an error if something is wrong
+	PartialBuild() (BACnetShedLevelContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetShedLevelContract
+	// Build builds the BACnetShedLevel or returns an error if something is wrong
+	Build() (BACnetShedLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetShedLevel
+}
+
+// NewBACnetShedLevelBuilder() creates a BACnetShedLevelBuilder
+func NewBACnetShedLevelBuilder() BACnetShedLevelBuilder {
+	return &_BACnetShedLevelBuilder{_BACnetShedLevel: new(_BACnetShedLevel)}
+}
+
+type _BACnetShedLevelChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetShedLevelContract)
+	buildForBACnetShedLevel() (BACnetShedLevel, error)
+}
+
+type _BACnetShedLevelBuilder struct {
+	*_BACnetShedLevel
+
+	childBuilder _BACnetShedLevelChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetShedLevelBuilder) = (*_BACnetShedLevelBuilder)(nil)
+
+func (b *_BACnetShedLevelBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetShedLevelBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetShedLevelBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetShedLevelBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetShedLevelBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetShedLevelBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetShedLevelBuilder) PartialBuild() (BACnetShedLevelContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetShedLevel.deepCopy(), nil
+}
+
+func (b *_BACnetShedLevelBuilder) PartialMustBuild() BACnetShedLevelContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelPercent() interface {
+	BACnetShedLevelPercentBuilder
+	Done() BACnetShedLevelBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetShedLevelPercentBuilder
+		Done() BACnetShedLevelBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetShedLevelPercentBuilder().(*_BACnetShedLevelPercentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelLevel() interface {
+	BACnetShedLevelLevelBuilder
+	Done() BACnetShedLevelBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetShedLevelLevelBuilder
+		Done() BACnetShedLevelBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetShedLevelLevelBuilder().(*_BACnetShedLevelLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetShedLevelBuilder) AsBACnetShedLevelAmount() interface {
+	BACnetShedLevelAmountBuilder
+	Done() BACnetShedLevelBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetShedLevelAmountBuilder
+		Done() BACnetShedLevelBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetShedLevelAmountBuilder().(*_BACnetShedLevelAmountBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetShedLevelBuilder) Build() (BACnetShedLevel, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetShedLevel()
+}
+
+func (b *_BACnetShedLevelBuilder) MustBuild() BACnetShedLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetShedLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetShedLevelBuilder().(*_BACnetShedLevelBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetShedLevelChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetShedLevelBuilder creates a BACnetShedLevelBuilder
+func (b *_BACnetShedLevel) CreateBACnetShedLevelBuilder() BACnetShedLevelBuilder {
+	if b == nil {
+		return NewBACnetShedLevelBuilder()
+	}
+	return &_BACnetShedLevelBuilder{_BACnetShedLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +306,6 @@ func (pm *_BACnetShedLevel) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetShedLevel factory function for _BACnetShedLevel
-func NewBACnetShedLevel(peekedTagHeader BACnetTagHeader) *_BACnetShedLevel {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetShedLevel must not be nil")
-	}
-	return &_BACnetShedLevel{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetShedLevel(structType any) BACnetShedLevel {
@@ -146,7 +345,7 @@ func BACnetShedLevelParseWithBufferProducer[T BACnetShedLevel]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +355,12 @@ func BACnetShedLevelParseWithBuffer[T BACnetShedLevel](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetShedLevel BACnetShedLevel, err error) {
@@ -184,15 +388,15 @@ func (m *_BACnetShedLevel) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetShedLevel
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetShedLevelPercent
-		if _child, err = (&_BACnetShedLevelPercent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelPercent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelPercent for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(1): // BACnetShedLevelLevel
-		if _child, err = (&_BACnetShedLevelLevel{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelLevel).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelLevel for type-switch of BACnetShedLevel")
 		}
 	case peekedTagNumber == uint8(2): // BACnetShedLevelAmount
-		if _child, err = (&_BACnetShedLevelAmount{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetShedLevelAmount).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetShedLevelAmount for type-switch of BACnetShedLevel")
 		}
 	default:
@@ -236,3 +440,18 @@ func (pm *_BACnetShedLevel) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetShedLevel) IsBACnetShedLevel() {}
+
+func (m *_BACnetShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetShedLevel) deepCopy() *_BACnetShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetShedLevelCopy := &_BACnetShedLevel{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetShedLevelCopy
+}

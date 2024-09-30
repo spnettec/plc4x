@@ -36,8 +36,11 @@ type ContinuationPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsContinuationPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContinuationPoint()
+	// CreateBuilder creates a ContinuationPointBuilder
+	CreateContinuationPointBuilder() ContinuationPointBuilder
 }
 
 // _ContinuationPoint is the data-structure of this message
@@ -50,6 +53,75 @@ var _ ContinuationPoint = (*_ContinuationPoint)(nil)
 func NewContinuationPoint() *_ContinuationPoint {
 	return &_ContinuationPoint{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ContinuationPointBuilder is a builder for ContinuationPoint
+type ContinuationPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ContinuationPointBuilder
+	// Build builds the ContinuationPoint or returns an error if something is wrong
+	Build() (ContinuationPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ContinuationPoint
+}
+
+// NewContinuationPointBuilder() creates a ContinuationPointBuilder
+func NewContinuationPointBuilder() ContinuationPointBuilder {
+	return &_ContinuationPointBuilder{_ContinuationPoint: new(_ContinuationPoint)}
+}
+
+type _ContinuationPointBuilder struct {
+	*_ContinuationPoint
+
+	err *utils.MultiError
+}
+
+var _ (ContinuationPointBuilder) = (*_ContinuationPointBuilder)(nil)
+
+func (b *_ContinuationPointBuilder) WithMandatoryFields() ContinuationPointBuilder {
+	return b
+}
+
+func (b *_ContinuationPointBuilder) Build() (ContinuationPoint, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ContinuationPoint.deepCopy(), nil
+}
+
+func (b *_ContinuationPointBuilder) MustBuild() ContinuationPoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ContinuationPointBuilder) DeepCopy() any {
+	_copy := b.CreateContinuationPointBuilder().(*_ContinuationPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateContinuationPointBuilder creates a ContinuationPointBuilder
+func (b *_ContinuationPoint) CreateContinuationPointBuilder() ContinuationPointBuilder {
+	if b == nil {
+		return NewContinuationPointBuilder()
+	}
+	return &_ContinuationPointBuilder{_ContinuationPoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastContinuationPoint(structType any) ContinuationPoint {
@@ -91,7 +163,7 @@ func ContinuationPointParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ContinuationPoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__continuationPoint ContinuationPoint, err error) {
@@ -135,13 +207,29 @@ func (m *_ContinuationPoint) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_ContinuationPoint) IsContinuationPoint() {}
 
+func (m *_ContinuationPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContinuationPoint) deepCopy() *_ContinuationPoint {
+	if m == nil {
+		return nil
+	}
+	_ContinuationPointCopy := &_ContinuationPoint{}
+	return _ContinuationPointCopy
+}
+
 func (m *_ContinuationPoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

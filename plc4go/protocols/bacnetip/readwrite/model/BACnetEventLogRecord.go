@@ -38,12 +38,15 @@ type BACnetEventLogRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetLogDatum returns LogDatum (property field)
 	GetLogDatum() BACnetEventLogRecordLogDatum
 	// IsBACnetEventLogRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecord()
+	// CreateBuilder creates a BACnetEventLogRecordBuilder
+	CreateBACnetEventLogRecordBuilder() BACnetEventLogRecordBuilder
 }
 
 // _BACnetEventLogRecord is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetEventLogRecord struct {
 }
 
 var _ BACnetEventLogRecord = (*_BACnetEventLogRecord)(nil)
+
+// NewBACnetEventLogRecord factory function for _BACnetEventLogRecord
+func NewBACnetEventLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) *_BACnetEventLogRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetEventLogRecord must not be nil")
+	}
+	if logDatum == nil {
+		panic("logDatum of type BACnetEventLogRecordLogDatum for BACnetEventLogRecord must not be nil")
+	}
+	return &_BACnetEventLogRecord{Timestamp: timestamp, LogDatum: logDatum}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventLogRecordBuilder is a builder for BACnetEventLogRecord
+type BACnetEventLogRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) BACnetEventLogRecordBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(BACnetDateTimeEnclosed) BACnetEventLogRecordBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetEventLogRecordBuilder
+	// WithLogDatum adds LogDatum (property field)
+	WithLogDatum(BACnetEventLogRecordLogDatum) BACnetEventLogRecordBuilder
+	// WithLogDatumBuilder adds LogDatum (property field) which is build by the builder
+	WithLogDatumBuilder(func(BACnetEventLogRecordLogDatumBuilder) BACnetEventLogRecordLogDatumBuilder) BACnetEventLogRecordBuilder
+	// Build builds the BACnetEventLogRecord or returns an error if something is wrong
+	Build() (BACnetEventLogRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventLogRecord
+}
+
+// NewBACnetEventLogRecordBuilder() creates a BACnetEventLogRecordBuilder
+func NewBACnetEventLogRecordBuilder() BACnetEventLogRecordBuilder {
+	return &_BACnetEventLogRecordBuilder{_BACnetEventLogRecord: new(_BACnetEventLogRecord)}
+}
+
+type _BACnetEventLogRecordBuilder struct {
+	*_BACnetEventLogRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventLogRecordBuilder) = (*_BACnetEventLogRecordBuilder)(nil)
+
+func (b *_BACnetEventLogRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) BACnetEventLogRecordBuilder {
+	return b.WithTimestamp(timestamp).WithLogDatum(logDatum)
+}
+
+func (b *_BACnetEventLogRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetEventLogRecordBuilder {
+	b.Timestamp = timestamp
+	return b
+}
+
+func (b *_BACnetEventLogRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetEventLogRecordBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	b.Timestamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordBuilder) WithLogDatum(logDatum BACnetEventLogRecordLogDatum) BACnetEventLogRecordBuilder {
+	b.LogDatum = logDatum
+	return b
+}
+
+func (b *_BACnetEventLogRecordBuilder) WithLogDatumBuilder(builderSupplier func(BACnetEventLogRecordLogDatumBuilder) BACnetEventLogRecordLogDatumBuilder) BACnetEventLogRecordBuilder {
+	builder := builderSupplier(b.LogDatum.CreateBACnetEventLogRecordLogDatumBuilder())
+	var err error
+	b.LogDatum, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEventLogRecordLogDatumBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordBuilder) Build() (BACnetEventLogRecord, error) {
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.LogDatum == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'logDatum' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventLogRecord.deepCopy(), nil
+}
+
+func (b *_BACnetEventLogRecordBuilder) MustBuild() BACnetEventLogRecord {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventLogRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventLogRecordBuilder().(*_BACnetEventLogRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventLogRecordBuilder creates a BACnetEventLogRecordBuilder
+func (b *_BACnetEventLogRecord) CreateBACnetEventLogRecordBuilder() BACnetEventLogRecordBuilder {
+	if b == nil {
+		return NewBACnetEventLogRecordBuilder()
+	}
+	return &_BACnetEventLogRecordBuilder{_BACnetEventLogRecord: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetEventLogRecord) GetLogDatum() BACnetEventLogRecordLogDatum {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecord factory function for _BACnetEventLogRecord
-func NewBACnetEventLogRecord(timestamp BACnetDateTimeEnclosed, logDatum BACnetEventLogRecordLogDatum) *_BACnetEventLogRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetEventLogRecord must not be nil")
-	}
-	if logDatum == nil {
-		panic("logDatum of type BACnetEventLogRecordLogDatum for BACnetEventLogRecord must not be nil")
-	}
-	return &_BACnetEventLogRecord{Timestamp: timestamp, LogDatum: logDatum}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecord(structType any) BACnetEventLogRecord {
@@ -129,7 +257,7 @@ func BACnetEventLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventLogRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetEventLogRecord BACnetEventLogRecord, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetEventLogRecord) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetEventLogRecord) IsBACnetEventLogRecord() {}
 
+func (m *_BACnetEventLogRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecord) deepCopy() *_BACnetEventLogRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordCopy := &_BACnetEventLogRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.LogDatum.DeepCopy().(BACnetEventLogRecordLogDatum),
+	}
+	return _BACnetEventLogRecordCopy
+}
+
 func (m *_BACnetEventLogRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type ParameterValueInterfaceOptions3 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() InterfaceOptions3
@@ -45,6 +46,8 @@ type ParameterValueInterfaceOptions3 interface {
 	GetData() []byte
 	// IsParameterValueInterfaceOptions3 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueInterfaceOptions3()
+	// CreateBuilder creates a ParameterValueInterfaceOptions3Builder
+	CreateParameterValueInterfaceOptions3Builder() ParameterValueInterfaceOptions3Builder
 }
 
 // _ParameterValueInterfaceOptions3 is the data-structure of this message
@@ -56,6 +59,139 @@ type _ParameterValueInterfaceOptions3 struct {
 
 var _ ParameterValueInterfaceOptions3 = (*_ParameterValueInterfaceOptions3)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueInterfaceOptions3)(nil)
+
+// NewParameterValueInterfaceOptions3 factory function for _ParameterValueInterfaceOptions3
+func NewParameterValueInterfaceOptions3(value InterfaceOptions3, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions3 {
+	if value == nil {
+		panic("value of type InterfaceOptions3 for ParameterValueInterfaceOptions3 must not be nil")
+	}
+	_result := &_ParameterValueInterfaceOptions3{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueInterfaceOptions3Builder is a builder for ParameterValueInterfaceOptions3
+type ParameterValueInterfaceOptions3Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value InterfaceOptions3, data []byte) ParameterValueInterfaceOptions3Builder
+	// WithValue adds Value (property field)
+	WithValue(InterfaceOptions3) ParameterValueInterfaceOptions3Builder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(InterfaceOptions3Builder) InterfaceOptions3Builder) ParameterValueInterfaceOptions3Builder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueInterfaceOptions3Builder
+	// Build builds the ParameterValueInterfaceOptions3 or returns an error if something is wrong
+	Build() (ParameterValueInterfaceOptions3, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueInterfaceOptions3
+}
+
+// NewParameterValueInterfaceOptions3Builder() creates a ParameterValueInterfaceOptions3Builder
+func NewParameterValueInterfaceOptions3Builder() ParameterValueInterfaceOptions3Builder {
+	return &_ParameterValueInterfaceOptions3Builder{_ParameterValueInterfaceOptions3: new(_ParameterValueInterfaceOptions3)}
+}
+
+type _ParameterValueInterfaceOptions3Builder struct {
+	*_ParameterValueInterfaceOptions3
+
+	parentBuilder *_ParameterValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueInterfaceOptions3Builder) = (*_ParameterValueInterfaceOptions3Builder)(nil)
+
+func (b *_ParameterValueInterfaceOptions3Builder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) WithMandatoryFields(value InterfaceOptions3, data []byte) ParameterValueInterfaceOptions3Builder {
+	return b.WithValue(value).WithData(data...)
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) WithValue(value InterfaceOptions3) ParameterValueInterfaceOptions3Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) WithValueBuilder(builderSupplier func(InterfaceOptions3Builder) InterfaceOptions3Builder) ParameterValueInterfaceOptions3Builder {
+	builder := builderSupplier(b.Value.CreateInterfaceOptions3Builder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "InterfaceOptions3Builder failed"))
+	}
+	return b
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) WithData(data ...byte) ParameterValueInterfaceOptions3Builder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) Build() (ParameterValueInterfaceOptions3, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterValueInterfaceOptions3.deepCopy(), nil
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) MustBuild() ParameterValueInterfaceOptions3 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueInterfaceOptions3Builder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueInterfaceOptions3Builder) DeepCopy() any {
+	_copy := b.CreateParameterValueInterfaceOptions3Builder().(*_ParameterValueInterfaceOptions3Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterValueInterfaceOptions3Builder creates a ParameterValueInterfaceOptions3Builder
+func (b *_ParameterValueInterfaceOptions3) CreateParameterValueInterfaceOptions3Builder() ParameterValueInterfaceOptions3Builder {
+	if b == nil {
+		return NewParameterValueInterfaceOptions3Builder()
+	}
+	return &_ParameterValueInterfaceOptions3Builder{_ParameterValueInterfaceOptions3: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_ParameterValueInterfaceOptions3) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueInterfaceOptions3 factory function for _ParameterValueInterfaceOptions3
-func NewParameterValueInterfaceOptions3(value InterfaceOptions3, data []byte, numBytes uint8) *_ParameterValueInterfaceOptions3 {
-	if value == nil {
-		panic("value of type InterfaceOptions3 for ParameterValueInterfaceOptions3 must not be nil")
-	}
-	_result := &_ParameterValueInterfaceOptions3{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueInterfaceOptions3(structType any) ParameterValueInterfaceOptions3 {
@@ -211,13 +333,34 @@ func (m *_ParameterValueInterfaceOptions3) SerializeWithWriteBuffer(ctx context.
 
 func (m *_ParameterValueInterfaceOptions3) IsParameterValueInterfaceOptions3() {}
 
+func (m *_ParameterValueInterfaceOptions3) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueInterfaceOptions3) deepCopy() *_ParameterValueInterfaceOptions3 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueInterfaceOptions3Copy := &_ParameterValueInterfaceOptions3{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(InterfaceOptions3),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueInterfaceOptions3Copy
+}
+
 func (m *_ParameterValueInterfaceOptions3) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

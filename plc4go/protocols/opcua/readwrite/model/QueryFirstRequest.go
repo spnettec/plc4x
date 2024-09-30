@@ -38,6 +38,7 @@ type QueryFirstRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -55,6 +56,8 @@ type QueryFirstRequest interface {
 	GetMaxReferencesToReturn() uint32
 	// IsQueryFirstRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQueryFirstRequest()
+	// CreateBuilder creates a QueryFirstRequestBuilder
+	CreateQueryFirstRequestBuilder() QueryFirstRequestBuilder
 }
 
 // _QueryFirstRequest is the data-structure of this message
@@ -71,6 +74,227 @@ type _QueryFirstRequest struct {
 
 var _ QueryFirstRequest = (*_QueryFirstRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryFirstRequest)(nil)
+
+// NewQueryFirstRequest factory function for _QueryFirstRequest
+func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if view == nil {
+		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	if filter == nil {
+		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
+	}
+	_result := &_QueryFirstRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		View:                              view,
+		NoOfNodeTypes:                     noOfNodeTypes,
+		NodeTypes:                         nodeTypes,
+		Filter:                            filter,
+		MaxDataSetsToReturn:               maxDataSetsToReturn,
+		MaxReferencesToReturn:             maxReferencesToReturn,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QueryFirstRequestBuilder is a builder for QueryFirstRequest
+type QueryFirstRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
+	// WithView adds View (property field)
+	WithView(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithViewBuilder adds View (property field) which is build by the builder
+	WithViewBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
+	// WithNoOfNodeTypes adds NoOfNodeTypes (property field)
+	WithNoOfNodeTypes(int32) QueryFirstRequestBuilder
+	// WithNodeTypes adds NodeTypes (property field)
+	WithNodeTypes(...ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithFilter adds Filter (property field)
+	WithFilter(ExtensionObjectDefinition) QueryFirstRequestBuilder
+	// WithFilterBuilder adds Filter (property field) which is build by the builder
+	WithFilterBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder
+	// WithMaxDataSetsToReturn adds MaxDataSetsToReturn (property field)
+	WithMaxDataSetsToReturn(uint32) QueryFirstRequestBuilder
+	// WithMaxReferencesToReturn adds MaxReferencesToReturn (property field)
+	WithMaxReferencesToReturn(uint32) QueryFirstRequestBuilder
+	// Build builds the QueryFirstRequest or returns an error if something is wrong
+	Build() (QueryFirstRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QueryFirstRequest
+}
+
+// NewQueryFirstRequestBuilder() creates a QueryFirstRequestBuilder
+func NewQueryFirstRequestBuilder() QueryFirstRequestBuilder {
+	return &_QueryFirstRequestBuilder{_QueryFirstRequest: new(_QueryFirstRequest)}
+}
+
+type _QueryFirstRequestBuilder struct {
+	*_QueryFirstRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (QueryFirstRequestBuilder) = (*_QueryFirstRequestBuilder)(nil)
+
+func (b *_QueryFirstRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_QueryFirstRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) QueryFirstRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithView(view).WithNoOfNodeTypes(noOfNodeTypes).WithNodeTypes(nodeTypes...).WithFilter(filter).WithMaxDataSetsToReturn(maxDataSetsToReturn).WithMaxReferencesToReturn(maxReferencesToReturn)
+}
+
+func (b *_QueryFirstRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithView(view ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.View = view
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithViewBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.View.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.View, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithNoOfNodeTypes(noOfNodeTypes int32) QueryFirstRequestBuilder {
+	b.NoOfNodeTypes = noOfNodeTypes
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithNodeTypes(nodeTypes ...ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.NodeTypes = nodeTypes
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithFilter(filter ExtensionObjectDefinition) QueryFirstRequestBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithFilterBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) QueryFirstRequestBuilder {
+	builder := builderSupplier(b.Filter.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.Filter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithMaxDataSetsToReturn(maxDataSetsToReturn uint32) QueryFirstRequestBuilder {
+	b.MaxDataSetsToReturn = maxDataSetsToReturn
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) WithMaxReferencesToReturn(maxReferencesToReturn uint32) QueryFirstRequestBuilder {
+	b.MaxReferencesToReturn = maxReferencesToReturn
+	return b
+}
+
+func (b *_QueryFirstRequestBuilder) Build() (QueryFirstRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.View == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'view' not set"))
+	}
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryFirstRequest.deepCopy(), nil
+}
+
+func (b *_QueryFirstRequestBuilder) MustBuild() QueryFirstRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryFirstRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryFirstRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryFirstRequestBuilder) DeepCopy() any {
+	_copy := b.CreateQueryFirstRequestBuilder().(*_QueryFirstRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateQueryFirstRequestBuilder creates a QueryFirstRequestBuilder
+func (b *_QueryFirstRequest) CreateQueryFirstRequestBuilder() QueryFirstRequestBuilder {
+	if b == nil {
+		return NewQueryFirstRequestBuilder()
+	}
+	return &_QueryFirstRequestBuilder{_QueryFirstRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -127,31 +351,6 @@ func (m *_QueryFirstRequest) GetMaxReferencesToReturn() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryFirstRequest factory function for _QueryFirstRequest
-func NewQueryFirstRequest(requestHeader ExtensionObjectDefinition, view ExtensionObjectDefinition, noOfNodeTypes int32, nodeTypes []ExtensionObjectDefinition, filter ExtensionObjectDefinition, maxDataSetsToReturn uint32, maxReferencesToReturn uint32) *_QueryFirstRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if view == nil {
-		panic("view of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	if filter == nil {
-		panic("filter of type ExtensionObjectDefinition for QueryFirstRequest must not be nil")
-	}
-	_result := &_QueryFirstRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		View:                              view,
-		NoOfNodeTypes:                     noOfNodeTypes,
-		NodeTypes:                         nodeTypes,
-		Filter:                            filter,
-		MaxDataSetsToReturn:               maxDataSetsToReturn,
-		MaxReferencesToReturn:             maxReferencesToReturn,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryFirstRequest(structType any) QueryFirstRequest {
@@ -322,13 +521,39 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_QueryFirstRequest) IsQueryFirstRequest() {}
 
+func (m *_QueryFirstRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryFirstRequest) deepCopy() *_QueryFirstRequest {
+	if m == nil {
+		return nil
+	}
+	_QueryFirstRequestCopy := &_QueryFirstRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.View.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodeTypes,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodeTypes),
+		m.Filter.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxDataSetsToReturn,
+		m.MaxReferencesToReturn,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryFirstRequestCopy
+}
+
 func (m *_QueryFirstRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type VariantUInt64 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantUInt64 interface {
 	GetValue() []uint64
 	// IsVariantUInt64 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantUInt64()
+	// CreateBuilder creates a VariantUInt64Builder
+	CreateVariantUInt64Builder() VariantUInt64Builder
 }
 
 // _VariantUInt64 is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantUInt64 struct {
 
 var _ VariantUInt64 = (*_VariantUInt64)(nil)
 var _ VariantRequirements = (*_VariantUInt64)(nil)
+
+// NewVariantUInt64 factory function for _VariantUInt64
+func NewVariantUInt64(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint64) *_VariantUInt64 {
+	_result := &_VariantUInt64{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantUInt64Builder is a builder for VariantUInt64
+type VariantUInt64Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []uint64) VariantUInt64Builder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantUInt64Builder
+	// WithValue adds Value (property field)
+	WithValue(...uint64) VariantUInt64Builder
+	// Build builds the VariantUInt64 or returns an error if something is wrong
+	Build() (VariantUInt64, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantUInt64
+}
+
+// NewVariantUInt64Builder() creates a VariantUInt64Builder
+func NewVariantUInt64Builder() VariantUInt64Builder {
+	return &_VariantUInt64Builder{_VariantUInt64: new(_VariantUInt64)}
+}
+
+type _VariantUInt64Builder struct {
+	*_VariantUInt64
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantUInt64Builder) = (*_VariantUInt64Builder)(nil)
+
+func (b *_VariantUInt64Builder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantUInt64Builder) WithMandatoryFields(value []uint64) VariantUInt64Builder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantUInt64Builder) WithOptionalArrayLength(arrayLength int32) VariantUInt64Builder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantUInt64Builder) WithValue(value ...uint64) VariantUInt64Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantUInt64Builder) Build() (VariantUInt64, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantUInt64.deepCopy(), nil
+}
+
+func (b *_VariantUInt64Builder) MustBuild() VariantUInt64 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantUInt64Builder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantUInt64Builder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantUInt64Builder) DeepCopy() any {
+	_copy := b.CreateVariantUInt64Builder().(*_VariantUInt64Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantUInt64Builder creates a VariantUInt64Builder
+func (b *_VariantUInt64) CreateVariantUInt64Builder() VariantUInt64Builder {
+	if b == nil {
+		return NewVariantUInt64Builder()
+	}
+	return &_VariantUInt64Builder{_VariantUInt64: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantUInt64) GetValue() []uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantUInt64 factory function for _VariantUInt64
-func NewVariantUInt64(arrayLength *int32, value []uint64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantUInt64 {
-	_result := &_VariantUInt64{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantUInt64(structType any) VariantUInt64 {
@@ -206,13 +307,34 @@ func (m *_VariantUInt64) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_VariantUInt64) IsVariantUInt64() {}
 
+func (m *_VariantUInt64) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantUInt64) deepCopy() *_VariantUInt64 {
+	if m == nil {
+		return nil
+	}
+	_VariantUInt64Copy := &_VariantUInt64{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[uint64, uint64](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantUInt64Copy
+}
+
 func (m *_VariantUInt64) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

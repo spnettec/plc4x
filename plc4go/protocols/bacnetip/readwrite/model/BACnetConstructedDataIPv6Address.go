@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6Address returns Ipv6Address (property field)
 	GetIpv6Address() BACnetApplicationTagOctetString
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPv6Address interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPv6Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6Address()
+	// CreateBuilder creates a BACnetConstructedDataIPv6AddressBuilder
+	CreateBACnetConstructedDataIPv6AddressBuilder() BACnetConstructedDataIPv6AddressBuilder
 }
 
 // _BACnetConstructedDataIPv6Address is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPv6Address struct {
 
 var _ BACnetConstructedDataIPv6Address = (*_BACnetConstructedDataIPv6Address)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6Address)(nil)
+
+// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
+func NewBACnetConstructedDataIPv6Address(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6Address BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
+	if ipv6Address == nil {
+		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6Address{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6Address:                   ipv6Address,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPv6AddressBuilder is a builder for BACnetConstructedDataIPv6Address
+type BACnetConstructedDataIPv6AddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipv6Address BACnetApplicationTagOctetString) BACnetConstructedDataIPv6AddressBuilder
+	// WithIpv6Address adds Ipv6Address (property field)
+	WithIpv6Address(BACnetApplicationTagOctetString) BACnetConstructedDataIPv6AddressBuilder
+	// WithIpv6AddressBuilder adds Ipv6Address (property field) which is build by the builder
+	WithIpv6AddressBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6AddressBuilder
+	// Build builds the BACnetConstructedDataIPv6Address or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPv6Address, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPv6Address
+}
+
+// NewBACnetConstructedDataIPv6AddressBuilder() creates a BACnetConstructedDataIPv6AddressBuilder
+func NewBACnetConstructedDataIPv6AddressBuilder() BACnetConstructedDataIPv6AddressBuilder {
+	return &_BACnetConstructedDataIPv6AddressBuilder{_BACnetConstructedDataIPv6Address: new(_BACnetConstructedDataIPv6Address)}
+}
+
+type _BACnetConstructedDataIPv6AddressBuilder struct {
+	*_BACnetConstructedDataIPv6Address
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPv6AddressBuilder) = (*_BACnetConstructedDataIPv6AddressBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) WithMandatoryFields(ipv6Address BACnetApplicationTagOctetString) BACnetConstructedDataIPv6AddressBuilder {
+	return b.WithIpv6Address(ipv6Address)
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) WithIpv6Address(ipv6Address BACnetApplicationTagOctetString) BACnetConstructedDataIPv6AddressBuilder {
+	b.Ipv6Address = ipv6Address
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) WithIpv6AddressBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6AddressBuilder {
+	builder := builderSupplier(b.Ipv6Address.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.Ipv6Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) Build() (BACnetConstructedDataIPv6Address, error) {
+	if b.Ipv6Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipv6Address' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPv6Address.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) MustBuild() BACnetConstructedDataIPv6Address {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6AddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6AddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6AddressBuilder().(*_BACnetConstructedDataIPv6AddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPv6AddressBuilder creates a BACnetConstructedDataIPv6AddressBuilder
+func (b *_BACnetConstructedDataIPv6Address) CreateBACnetConstructedDataIPv6AddressBuilder() BACnetConstructedDataIPv6AddressBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPv6AddressBuilder()
+	}
+	return &_BACnetConstructedDataIPv6AddressBuilder{_BACnetConstructedDataIPv6Address: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPv6Address) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6Address factory function for _BACnetConstructedDataIPv6Address
-func NewBACnetConstructedDataIPv6Address(ipv6Address BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6Address {
-	if ipv6Address == nil {
-		panic("ipv6Address of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6Address must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6Address{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6Address:                   ipv6Address,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6Address(structType any) BACnetConstructedDataIPv6Address {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPv6Address) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataIPv6Address) IsBACnetConstructedDataIPv6Address() {}
 
+func (m *_BACnetConstructedDataIPv6Address) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6Address) deepCopy() *_BACnetConstructedDataIPv6Address {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6AddressCopy := &_BACnetConstructedDataIPv6Address{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6Address.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6AddressCopy
+}
+
 func (m *_BACnetConstructedDataIPv6Address) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

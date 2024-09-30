@@ -38,6 +38,7 @@ type AlarmMessageAckType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -46,6 +47,8 @@ type AlarmMessageAckType interface {
 	GetMessageObjects() []AlarmMessageObjectAckType
 	// IsAlarmMessageAckType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlarmMessageAckType()
+	// CreateBuilder creates a AlarmMessageAckTypeBuilder
+	CreateAlarmMessageAckTypeBuilder() AlarmMessageAckTypeBuilder
 }
 
 // _AlarmMessageAckType is the data-structure of this message
@@ -56,6 +59,101 @@ type _AlarmMessageAckType struct {
 }
 
 var _ AlarmMessageAckType = (*_AlarmMessageAckType)(nil)
+
+// NewAlarmMessageAckType factory function for _AlarmMessageAckType
+func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) *_AlarmMessageAckType {
+	return &_AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlarmMessageAckTypeBuilder is a builder for AlarmMessageAckType
+type AlarmMessageAckTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder
+	// WithFunctionId adds FunctionId (property field)
+	WithFunctionId(uint8) AlarmMessageAckTypeBuilder
+	// WithNumberOfObjects adds NumberOfObjects (property field)
+	WithNumberOfObjects(uint8) AlarmMessageAckTypeBuilder
+	// WithMessageObjects adds MessageObjects (property field)
+	WithMessageObjects(...AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder
+	// Build builds the AlarmMessageAckType or returns an error if something is wrong
+	Build() (AlarmMessageAckType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AlarmMessageAckType
+}
+
+// NewAlarmMessageAckTypeBuilder() creates a AlarmMessageAckTypeBuilder
+func NewAlarmMessageAckTypeBuilder() AlarmMessageAckTypeBuilder {
+	return &_AlarmMessageAckTypeBuilder{_AlarmMessageAckType: new(_AlarmMessageAckType)}
+}
+
+type _AlarmMessageAckTypeBuilder struct {
+	*_AlarmMessageAckType
+
+	err *utils.MultiError
+}
+
+var _ (AlarmMessageAckTypeBuilder) = (*_AlarmMessageAckTypeBuilder)(nil)
+
+func (b *_AlarmMessageAckTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
+	return b.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+}
+
+func (b *_AlarmMessageAckTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckTypeBuilder {
+	b.FunctionId = functionId
+	return b
+}
+
+func (b *_AlarmMessageAckTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
+}
+
+func (b *_AlarmMessageAckTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageObjectAckType) AlarmMessageAckTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
+}
+
+func (b *_AlarmMessageAckTypeBuilder) Build() (AlarmMessageAckType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AlarmMessageAckType.deepCopy(), nil
+}
+
+func (b *_AlarmMessageAckTypeBuilder) MustBuild() AlarmMessageAckType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AlarmMessageAckTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckTypeBuilder().(*_AlarmMessageAckTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAlarmMessageAckTypeBuilder creates a AlarmMessageAckTypeBuilder
+func (b *_AlarmMessageAckType) CreateAlarmMessageAckTypeBuilder() AlarmMessageAckTypeBuilder {
+	if b == nil {
+		return NewAlarmMessageAckTypeBuilder()
+	}
+	return &_AlarmMessageAckTypeBuilder{_AlarmMessageAckType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_AlarmMessageAckType) GetMessageObjects() []AlarmMessageObjectAckType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckType factory function for _AlarmMessageAckType
-func NewAlarmMessageAckType(functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageObjectAckType) *_AlarmMessageAckType {
-	return &_AlarmMessageAckType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckType(structType any) AlarmMessageAckType {
@@ -140,7 +233,7 @@ func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AlarmMessageAckType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageAckType AlarmMessageAckType, err error) {
@@ -214,13 +307,33 @@ func (m *_AlarmMessageAckType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_AlarmMessageAckType) IsAlarmMessageAckType() {}
 
+func (m *_AlarmMessageAckType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckType) deepCopy() *_AlarmMessageAckType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckTypeCopy := &_AlarmMessageAckType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[AlarmMessageObjectAckType, AlarmMessageObjectAckType](m.MessageObjects),
+	}
+	return _AlarmMessageAckTypeCopy
+}
+
 func (m *_AlarmMessageAckType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type BACnetSecurityPolicyTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSecurityPolicy
 	// IsBACnetSecurityPolicyTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSecurityPolicyTagged()
+	// CreateBuilder creates a BACnetSecurityPolicyTaggedBuilder
+	CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder
 }
 
 // _BACnetSecurityPolicyTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetSecurityPolicyTagged struct {
 }
 
 var _ BACnetSecurityPolicyTagged = (*_BACnetSecurityPolicyTagged)(nil)
+
+// NewBACnetSecurityPolicyTagged factory function for _BACnetSecurityPolicyTagged
+func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityPolicy, tagNumber uint8, tagClass TagClass) *_BACnetSecurityPolicyTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSecurityPolicyTagged must not be nil")
+	}
+	return &_BACnetSecurityPolicyTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSecurityPolicyTaggedBuilder is a builder for BACnetSecurityPolicyTagged
+type BACnetSecurityPolicyTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder
+	// Build builds the BACnetSecurityPolicyTagged or returns an error if something is wrong
+	Build() (BACnetSecurityPolicyTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSecurityPolicyTagged
+}
+
+// NewBACnetSecurityPolicyTaggedBuilder() creates a BACnetSecurityPolicyTaggedBuilder
+func NewBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
+	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: new(_BACnetSecurityPolicyTagged)}
+}
+
+type _BACnetSecurityPolicyTaggedBuilder struct {
+	*_BACnetSecurityPolicyTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSecurityPolicyTaggedBuilder) = (*_BACnetSecurityPolicyTaggedBuilder)(nil)
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSecurityPolicyTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityPolicyTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) WithValue(value BACnetSecurityPolicy) BACnetSecurityPolicyTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) Build() (BACnetSecurityPolicyTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSecurityPolicyTagged.deepCopy(), nil
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) MustBuild() BACnetSecurityPolicyTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSecurityPolicyTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityPolicyTaggedBuilder().(*_BACnetSecurityPolicyTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSecurityPolicyTaggedBuilder creates a BACnetSecurityPolicyTaggedBuilder
+func (b *_BACnetSecurityPolicyTagged) CreateBACnetSecurityPolicyTaggedBuilder() BACnetSecurityPolicyTaggedBuilder {
+	if b == nil {
+		return NewBACnetSecurityPolicyTaggedBuilder()
+	}
+	return &_BACnetSecurityPolicyTaggedBuilder{_BACnetSecurityPolicyTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetSecurityPolicyTagged) GetValue() BACnetSecurityPolicy {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityPolicyTagged factory function for _BACnetSecurityPolicyTagged
-func NewBACnetSecurityPolicyTagged(header BACnetTagHeader, value BACnetSecurityPolicy, tagNumber uint8, tagClass TagClass) *_BACnetSecurityPolicyTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSecurityPolicyTagged must not be nil")
-	}
-	return &_BACnetSecurityPolicyTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityPolicyTagged(structType any) BACnetSecurityPolicyTagged {
@@ -130,7 +237,7 @@ func BACnetSecurityPolicyTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSecurityPolicyTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetSecurityPolicyTagged BACnetSecurityPolicyTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetSecurityPolicyTagged) GetTagClass() TagClass {
 
 func (m *_BACnetSecurityPolicyTagged) IsBACnetSecurityPolicyTagged() {}
 
+func (m *_BACnetSecurityPolicyTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityPolicyTagged) deepCopy() *_BACnetSecurityPolicyTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityPolicyTaggedCopy := &_BACnetSecurityPolicyTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSecurityPolicyTaggedCopy
+}
+
 func (m *_BACnetSecurityPolicyTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

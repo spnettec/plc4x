@@ -38,12 +38,15 @@ type ByteStringArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() int32
 	// GetValue returns Value (property field)
 	GetValue() []uint8
 	// IsByteStringArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsByteStringArray()
+	// CreateBuilder creates a ByteStringArrayBuilder
+	CreateByteStringArrayBuilder() ByteStringArrayBuilder
 }
 
 // _ByteStringArray is the data-structure of this message
@@ -53,6 +56,94 @@ type _ByteStringArray struct {
 }
 
 var _ ByteStringArray = (*_ByteStringArray)(nil)
+
+// NewByteStringArray factory function for _ByteStringArray
+func NewByteStringArray(arrayLength int32, value []uint8) *_ByteStringArray {
+	return &_ByteStringArray{ArrayLength: arrayLength, Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ByteStringArrayBuilder is a builder for ByteStringArray
+type ByteStringArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithArrayLength(int32) ByteStringArrayBuilder
+	// WithValue adds Value (property field)
+	WithValue(...uint8) ByteStringArrayBuilder
+	// Build builds the ByteStringArray or returns an error if something is wrong
+	Build() (ByteStringArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ByteStringArray
+}
+
+// NewByteStringArrayBuilder() creates a ByteStringArrayBuilder
+func NewByteStringArrayBuilder() ByteStringArrayBuilder {
+	return &_ByteStringArrayBuilder{_ByteStringArray: new(_ByteStringArray)}
+}
+
+type _ByteStringArrayBuilder struct {
+	*_ByteStringArray
+
+	err *utils.MultiError
+}
+
+var _ (ByteStringArrayBuilder) = (*_ByteStringArrayBuilder)(nil)
+
+func (b *_ByteStringArrayBuilder) WithMandatoryFields(arrayLength int32, value []uint8) ByteStringArrayBuilder {
+	return b.WithArrayLength(arrayLength).WithValue(value...)
+}
+
+func (b *_ByteStringArrayBuilder) WithArrayLength(arrayLength int32) ByteStringArrayBuilder {
+	b.ArrayLength = arrayLength
+	return b
+}
+
+func (b *_ByteStringArrayBuilder) WithValue(value ...uint8) ByteStringArrayBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ByteStringArrayBuilder) Build() (ByteStringArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ByteStringArray.deepCopy(), nil
+}
+
+func (b *_ByteStringArrayBuilder) MustBuild() ByteStringArray {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ByteStringArrayBuilder) DeepCopy() any {
+	_copy := b.CreateByteStringArrayBuilder().(*_ByteStringArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateByteStringArrayBuilder creates a ByteStringArrayBuilder
+func (b *_ByteStringArray) CreateByteStringArrayBuilder() ByteStringArrayBuilder {
+	if b == nil {
+		return NewByteStringArrayBuilder()
+	}
+	return &_ByteStringArrayBuilder{_ByteStringArray: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_ByteStringArray) GetValue() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewByteStringArray factory function for _ByteStringArray
-func NewByteStringArray(arrayLength int32, value []uint8) *_ByteStringArray {
-	return &_ByteStringArray{ArrayLength: arrayLength, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastByteStringArray(structType any) ByteStringArray {
@@ -125,7 +211,7 @@ func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ByteStringArray) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__byteStringArray ByteStringArray, err error) {
@@ -189,13 +275,32 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ByteStringArray) IsByteStringArray() {}
 
+func (m *_ByteStringArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ByteStringArray) deepCopy() *_ByteStringArray {
+	if m == nil {
+		return nil
+	}
+	_ByteStringArrayCopy := &_ByteStringArray{
+		m.ArrayLength,
+		utils.DeepCopySlice[uint8, uint8](m.Value),
+	}
+	return _ByteStringArrayCopy
+}
+
 func (m *_ByteStringArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

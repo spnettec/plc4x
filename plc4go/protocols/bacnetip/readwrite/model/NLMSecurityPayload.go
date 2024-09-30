@@ -38,6 +38,7 @@ type NLMSecurityPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetPayloadLength returns PayloadLength (property field)
 	GetPayloadLength() uint16
@@ -45,6 +46,8 @@ type NLMSecurityPayload interface {
 	GetPayload() []byte
 	// IsNLMSecurityPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMSecurityPayload()
+	// CreateBuilder creates a NLMSecurityPayloadBuilder
+	CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder
 }
 
 // _NLMSecurityPayload is the data-structure of this message
@@ -56,6 +59,115 @@ type _NLMSecurityPayload struct {
 
 var _ NLMSecurityPayload = (*_NLMSecurityPayload)(nil)
 var _ NLMRequirements = (*_NLMSecurityPayload)(nil)
+
+// NewNLMSecurityPayload factory function for _NLMSecurityPayload
+func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
+	_result := &_NLMSecurityPayload{
+		NLMContract:   NewNLM(apduLength),
+		PayloadLength: payloadLength,
+		Payload:       payload,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMSecurityPayloadBuilder is a builder for NLMSecurityPayload
+type NLMSecurityPayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder
+	// WithPayloadLength adds PayloadLength (property field)
+	WithPayloadLength(uint16) NLMSecurityPayloadBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(...byte) NLMSecurityPayloadBuilder
+	// Build builds the NLMSecurityPayload or returns an error if something is wrong
+	Build() (NLMSecurityPayload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMSecurityPayload
+}
+
+// NewNLMSecurityPayloadBuilder() creates a NLMSecurityPayloadBuilder
+func NewNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
+	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: new(_NLMSecurityPayload)}
+}
+
+type _NLMSecurityPayloadBuilder struct {
+	*_NLMSecurityPayload
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMSecurityPayloadBuilder) = (*_NLMSecurityPayloadBuilder)(nil)
+
+func (b *_NLMSecurityPayloadBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMSecurityPayloadBuilder) WithMandatoryFields(payloadLength uint16, payload []byte) NLMSecurityPayloadBuilder {
+	return b.WithPayloadLength(payloadLength).WithPayload(payload...)
+}
+
+func (b *_NLMSecurityPayloadBuilder) WithPayloadLength(payloadLength uint16) NLMSecurityPayloadBuilder {
+	b.PayloadLength = payloadLength
+	return b
+}
+
+func (b *_NLMSecurityPayloadBuilder) WithPayload(payload ...byte) NLMSecurityPayloadBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_NLMSecurityPayloadBuilder) Build() (NLMSecurityPayload, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMSecurityPayload.deepCopy(), nil
+}
+
+func (b *_NLMSecurityPayloadBuilder) MustBuild() NLMSecurityPayload {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMSecurityPayloadBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMSecurityPayloadBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMSecurityPayloadBuilder) DeepCopy() any {
+	_copy := b.CreateNLMSecurityPayloadBuilder().(*_NLMSecurityPayloadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMSecurityPayloadBuilder creates a NLMSecurityPayloadBuilder
+func (b *_NLMSecurityPayload) CreateNLMSecurityPayloadBuilder() NLMSecurityPayloadBuilder {
+	if b == nil {
+		return NewNLMSecurityPayloadBuilder()
+	}
+	return &_NLMSecurityPayloadBuilder{_NLMSecurityPayload: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_NLMSecurityPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityPayload factory function for _NLMSecurityPayload
-func NewNLMSecurityPayload(payloadLength uint16, payload []byte, apduLength uint16) *_NLMSecurityPayload {
-	_result := &_NLMSecurityPayload{
-		NLMContract:   NewNLM(apduLength),
-		PayloadLength: payloadLength,
-		Payload:       payload,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityPayload(structType any) NLMSecurityPayload {
@@ -203,13 +304,34 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_NLMSecurityPayload) IsNLMSecurityPayload() {}
 
+func (m *_NLMSecurityPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityPayload) deepCopy() *_NLMSecurityPayload {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityPayloadCopy := &_NLMSecurityPayload{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.PayloadLength,
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityPayloadCopy
+}
+
 func (m *_NLMSecurityPayload) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

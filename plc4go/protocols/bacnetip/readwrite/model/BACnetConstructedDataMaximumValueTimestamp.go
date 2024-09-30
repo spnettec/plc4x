@@ -38,6 +38,7 @@ type BACnetConstructedDataMaximumValueTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaximumValueTimestamp returns MaximumValueTimestamp (property field)
 	GetMaximumValueTimestamp() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataMaximumValueTimestamp interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataMaximumValueTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaximumValueTimestamp()
+	// CreateBuilder creates a BACnetConstructedDataMaximumValueTimestampBuilder
+	CreateBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDataMaximumValueTimestampBuilder
 }
 
 // _BACnetConstructedDataMaximumValueTimestamp is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataMaximumValueTimestamp struct {
 
 var _ BACnetConstructedDataMaximumValueTimestamp = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumValueTimestamp)(nil)
+
+// NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
+func NewBACnetConstructedDataMaximumValueTimestamp(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValueTimestamp BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
+	if maximumValueTimestamp == nil {
+		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaximumValueTimestamp{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumValueTimestamp:         maximumValueTimestamp,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaximumValueTimestampBuilder is a builder for BACnetConstructedDataMaximumValueTimestamp
+type BACnetConstructedDataMaximumValueTimestampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder
+	// WithMaximumValueTimestamp adds MaximumValueTimestamp (property field)
+	WithMaximumValueTimestamp(BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder
+	// WithMaximumValueTimestampBuilder adds MaximumValueTimestamp (property field) which is build by the builder
+	WithMaximumValueTimestampBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMaximumValueTimestampBuilder
+	// Build builds the BACnetConstructedDataMaximumValueTimestamp or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaximumValueTimestamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaximumValueTimestamp
+}
+
+// NewBACnetConstructedDataMaximumValueTimestampBuilder() creates a BACnetConstructedDataMaximumValueTimestampBuilder
+func NewBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDataMaximumValueTimestampBuilder {
+	return &_BACnetConstructedDataMaximumValueTimestampBuilder{_BACnetConstructedDataMaximumValueTimestamp: new(_BACnetConstructedDataMaximumValueTimestamp)}
+}
+
+type _BACnetConstructedDataMaximumValueTimestampBuilder struct {
+	*_BACnetConstructedDataMaximumValueTimestamp
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaximumValueTimestampBuilder) = (*_BACnetConstructedDataMaximumValueTimestampBuilder)(nil)
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMandatoryFields(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
+	return b.WithMaximumValueTimestamp(maximumValueTimestamp)
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime) BACnetConstructedDataMaximumValueTimestampBuilder {
+	b.MaximumValueTimestamp = maximumValueTimestamp
+	return b
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) WithMaximumValueTimestampBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataMaximumValueTimestampBuilder {
+	builder := builderSupplier(b.MaximumValueTimestamp.CreateBACnetDateTimeBuilder())
+	var err error
+	b.MaximumValueTimestamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) Build() (BACnetConstructedDataMaximumValueTimestamp, error) {
+	if b.MaximumValueTimestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maximumValueTimestamp' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMaximumValueTimestamp.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) MustBuild() BACnetConstructedDataMaximumValueTimestamp {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaximumValueTimestampBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaximumValueTimestampBuilder().(*_BACnetConstructedDataMaximumValueTimestampBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMaximumValueTimestampBuilder creates a BACnetConstructedDataMaximumValueTimestampBuilder
+func (b *_BACnetConstructedDataMaximumValueTimestamp) CreateBACnetConstructedDataMaximumValueTimestampBuilder() BACnetConstructedDataMaximumValueTimestampBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMaximumValueTimestampBuilder()
+	}
+	return &_BACnetConstructedDataMaximumValueTimestampBuilder{_BACnetConstructedDataMaximumValueTimestamp: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaximumValueTimestamp factory function for _BACnetConstructedDataMaximumValueTimestamp
-func NewBACnetConstructedDataMaximumValueTimestamp(maximumValueTimestamp BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValueTimestamp {
-	if maximumValueTimestamp == nil {
-		panic("maximumValueTimestamp of type BACnetDateTime for BACnetConstructedDataMaximumValueTimestamp must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaximumValueTimestamp{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaximumValueTimestamp:         maximumValueTimestamp,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaximumValueTimestamp(structType any) BACnetConstructedDataMaximumValueTimestamp {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataMaximumValueTimestamp) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataMaximumValueTimestamp) IsBACnetConstructedDataMaximumValueTimestamp() {
 }
 
+func (m *_BACnetConstructedDataMaximumValueTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaximumValueTimestamp) deepCopy() *_BACnetConstructedDataMaximumValueTimestamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaximumValueTimestampCopy := &_BACnetConstructedDataMaximumValueTimestamp{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaximumValueTimestamp.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaximumValueTimestampCopy
+}
+
 func (m *_BACnetConstructedDataMaximumValueTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

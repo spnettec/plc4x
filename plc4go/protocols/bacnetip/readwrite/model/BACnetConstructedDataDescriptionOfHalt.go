@@ -38,6 +38,7 @@ type BACnetConstructedDataDescriptionOfHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDescriptionForHalt returns DescriptionForHalt (property field)
 	GetDescriptionForHalt() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataDescriptionOfHalt interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataDescriptionOfHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDescriptionOfHalt()
+	// CreateBuilder creates a BACnetConstructedDataDescriptionOfHaltBuilder
+	CreateBACnetConstructedDataDescriptionOfHaltBuilder() BACnetConstructedDataDescriptionOfHaltBuilder
 }
 
 // _BACnetConstructedDataDescriptionOfHalt is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDescriptionOfHalt struct {
 
 var _ BACnetConstructedDataDescriptionOfHalt = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDescriptionOfHalt)(nil)
+
+// NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
+func NewBACnetConstructedDataDescriptionOfHalt(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, descriptionForHalt BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
+	if descriptionForHalt == nil {
+		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
+	}
+	_result := &_BACnetConstructedDataDescriptionOfHalt{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DescriptionForHalt:            descriptionForHalt,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDescriptionOfHaltBuilder is a builder for BACnetConstructedDataDescriptionOfHalt
+type BACnetConstructedDataDescriptionOfHaltBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(descriptionForHalt BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionOfHaltBuilder
+	// WithDescriptionForHalt adds DescriptionForHalt (property field)
+	WithDescriptionForHalt(BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionOfHaltBuilder
+	// WithDescriptionForHaltBuilder adds DescriptionForHalt (property field) which is build by the builder
+	WithDescriptionForHaltBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDescriptionOfHaltBuilder
+	// Build builds the BACnetConstructedDataDescriptionOfHalt or returns an error if something is wrong
+	Build() (BACnetConstructedDataDescriptionOfHalt, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDescriptionOfHalt
+}
+
+// NewBACnetConstructedDataDescriptionOfHaltBuilder() creates a BACnetConstructedDataDescriptionOfHaltBuilder
+func NewBACnetConstructedDataDescriptionOfHaltBuilder() BACnetConstructedDataDescriptionOfHaltBuilder {
+	return &_BACnetConstructedDataDescriptionOfHaltBuilder{_BACnetConstructedDataDescriptionOfHalt: new(_BACnetConstructedDataDescriptionOfHalt)}
+}
+
+type _BACnetConstructedDataDescriptionOfHaltBuilder struct {
+	*_BACnetConstructedDataDescriptionOfHalt
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDescriptionOfHaltBuilder) = (*_BACnetConstructedDataDescriptionOfHaltBuilder)(nil)
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) WithMandatoryFields(descriptionForHalt BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionOfHaltBuilder {
+	return b.WithDescriptionForHalt(descriptionForHalt)
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) WithDescriptionForHalt(descriptionForHalt BACnetApplicationTagCharacterString) BACnetConstructedDataDescriptionOfHaltBuilder {
+	b.DescriptionForHalt = descriptionForHalt
+	return b
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) WithDescriptionForHaltBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDescriptionOfHaltBuilder {
+	builder := builderSupplier(b.DescriptionForHalt.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.DescriptionForHalt, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) Build() (BACnetConstructedDataDescriptionOfHalt, error) {
+	if b.DescriptionForHalt == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'descriptionForHalt' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDescriptionOfHalt.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) MustBuild() BACnetConstructedDataDescriptionOfHalt {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDescriptionOfHaltBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDescriptionOfHaltBuilder().(*_BACnetConstructedDataDescriptionOfHaltBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDescriptionOfHaltBuilder creates a BACnetConstructedDataDescriptionOfHaltBuilder
+func (b *_BACnetConstructedDataDescriptionOfHalt) CreateBACnetConstructedDataDescriptionOfHaltBuilder() BACnetConstructedDataDescriptionOfHaltBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDescriptionOfHaltBuilder()
+	}
+	return &_BACnetConstructedDataDescriptionOfHaltBuilder{_BACnetConstructedDataDescriptionOfHalt: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDescriptionOfHalt factory function for _BACnetConstructedDataDescriptionOfHalt
-func NewBACnetConstructedDataDescriptionOfHalt(descriptionForHalt BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDescriptionOfHalt {
-	if descriptionForHalt == nil {
-		panic("descriptionForHalt of type BACnetApplicationTagCharacterString for BACnetConstructedDataDescriptionOfHalt must not be nil")
-	}
-	_result := &_BACnetConstructedDataDescriptionOfHalt{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DescriptionForHalt:            descriptionForHalt,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDescriptionOfHalt(structType any) BACnetConstructedDataDescriptionOfHalt {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataDescriptionOfHalt) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataDescriptionOfHalt) IsBACnetConstructedDataDescriptionOfHalt() {}
 
+func (m *_BACnetConstructedDataDescriptionOfHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDescriptionOfHalt) deepCopy() *_BACnetConstructedDataDescriptionOfHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDescriptionOfHaltCopy := &_BACnetConstructedDataDescriptionOfHalt{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DescriptionForHalt.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDescriptionOfHaltCopy
+}
+
 func (m *_BACnetConstructedDataDescriptionOfHalt) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

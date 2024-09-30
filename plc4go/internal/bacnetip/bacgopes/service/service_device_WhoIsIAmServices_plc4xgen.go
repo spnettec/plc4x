@@ -51,13 +51,11 @@ func (d *WhoIsIAmServices) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	if err := d.Capability.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 		return err
 	}
-	if d.localDevice != nil {
-		{
-			_value := fmt.Sprintf("%v", d.localDevice)
+	{
+		_value := fmt.Sprintf("%v", d.localDevice)
 
-			if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("WhoIsIAmServices"); err != nil {
@@ -72,9 +70,9 @@ func (d *WhoIsIAmServices) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

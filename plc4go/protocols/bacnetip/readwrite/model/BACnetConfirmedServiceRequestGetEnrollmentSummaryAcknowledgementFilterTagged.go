@@ -38,12 +38,15 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagg
 }
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged)(nil)
+
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder is a builder for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
+}
+
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder() creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged: new(_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged)}
+}
+
+type _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder struct {
+	*_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
@@ -130,7 +237,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged, err error) {
@@ -218,13 +325,34 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged() {
 }
 
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) deepCopy() *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

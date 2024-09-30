@@ -38,12 +38,15 @@ type ModbusPDUReadFileRecordResponseItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() uint8
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsModbusPDUReadFileRecordResponseItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadFileRecordResponseItem()
+	// CreateBuilder creates a ModbusPDUReadFileRecordResponseItemBuilder
+	CreateModbusPDUReadFileRecordResponseItemBuilder() ModbusPDUReadFileRecordResponseItemBuilder
 }
 
 // _ModbusPDUReadFileRecordResponseItem is the data-structure of this message
@@ -53,6 +56,94 @@ type _ModbusPDUReadFileRecordResponseItem struct {
 }
 
 var _ ModbusPDUReadFileRecordResponseItem = (*_ModbusPDUReadFileRecordResponseItem)(nil)
+
+// NewModbusPDUReadFileRecordResponseItem factory function for _ModbusPDUReadFileRecordResponseItem
+func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *_ModbusPDUReadFileRecordResponseItem {
+	return &_ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadFileRecordResponseItemBuilder is a builder for ModbusPDUReadFileRecordResponseItem
+type ModbusPDUReadFileRecordResponseItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceType uint8, data []byte) ModbusPDUReadFileRecordResponseItemBuilder
+	// WithReferenceType adds ReferenceType (property field)
+	WithReferenceType(uint8) ModbusPDUReadFileRecordResponseItemBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ModbusPDUReadFileRecordResponseItemBuilder
+	// Build builds the ModbusPDUReadFileRecordResponseItem or returns an error if something is wrong
+	Build() (ModbusPDUReadFileRecordResponseItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadFileRecordResponseItem
+}
+
+// NewModbusPDUReadFileRecordResponseItemBuilder() creates a ModbusPDUReadFileRecordResponseItemBuilder
+func NewModbusPDUReadFileRecordResponseItemBuilder() ModbusPDUReadFileRecordResponseItemBuilder {
+	return &_ModbusPDUReadFileRecordResponseItemBuilder{_ModbusPDUReadFileRecordResponseItem: new(_ModbusPDUReadFileRecordResponseItem)}
+}
+
+type _ModbusPDUReadFileRecordResponseItemBuilder struct {
+	*_ModbusPDUReadFileRecordResponseItem
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadFileRecordResponseItemBuilder) = (*_ModbusPDUReadFileRecordResponseItemBuilder)(nil)
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) WithMandatoryFields(referenceType uint8, data []byte) ModbusPDUReadFileRecordResponseItemBuilder {
+	return b.WithReferenceType(referenceType).WithData(data...)
+}
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) WithReferenceType(referenceType uint8) ModbusPDUReadFileRecordResponseItemBuilder {
+	b.ReferenceType = referenceType
+	return b
+}
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) WithData(data ...byte) ModbusPDUReadFileRecordResponseItemBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) Build() (ModbusPDUReadFileRecordResponseItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusPDUReadFileRecordResponseItem.deepCopy(), nil
+}
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) MustBuild() ModbusPDUReadFileRecordResponseItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ModbusPDUReadFileRecordResponseItemBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadFileRecordResponseItemBuilder().(*_ModbusPDUReadFileRecordResponseItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusPDUReadFileRecordResponseItemBuilder creates a ModbusPDUReadFileRecordResponseItemBuilder
+func (b *_ModbusPDUReadFileRecordResponseItem) CreateModbusPDUReadFileRecordResponseItemBuilder() ModbusPDUReadFileRecordResponseItemBuilder {
+	if b == nil {
+		return NewModbusPDUReadFileRecordResponseItemBuilder()
+	}
+	return &_ModbusPDUReadFileRecordResponseItemBuilder{_ModbusPDUReadFileRecordResponseItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_ModbusPDUReadFileRecordResponseItem) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFileRecordResponseItem factory function for _ModbusPDUReadFileRecordResponseItem
-func NewModbusPDUReadFileRecordResponseItem(referenceType uint8, data []byte) *_ModbusPDUReadFileRecordResponseItem {
-	return &_ModbusPDUReadFileRecordResponseItem{ReferenceType: referenceType, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFileRecordResponseItem(structType any) ModbusPDUReadFileRecordResponseItem {
@@ -128,7 +214,7 @@ func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ModbusPDUReadFileRecordResponseItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__modbusPDUReadFileRecordResponseItem ModbusPDUReadFileRecordResponseItem, err error) {
@@ -202,13 +288,32 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 
 func (m *_ModbusPDUReadFileRecordResponseItem) IsModbusPDUReadFileRecordResponseItem() {}
 
+func (m *_ModbusPDUReadFileRecordResponseItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFileRecordResponseItem) deepCopy() *_ModbusPDUReadFileRecordResponseItem {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFileRecordResponseItemCopy := &_ModbusPDUReadFileRecordResponseItem{
+		m.ReferenceType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _ModbusPDUReadFileRecordResponseItemCopy
+}
+
 func (m *_ModbusPDUReadFileRecordResponseItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

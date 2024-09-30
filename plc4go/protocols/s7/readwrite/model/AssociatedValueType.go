@@ -38,6 +38,7 @@ type AssociatedValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
 	// GetTransportSize returns TransportSize (property field)
@@ -48,6 +49,8 @@ type AssociatedValueType interface {
 	GetData() []uint8
 	// IsAssociatedValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAssociatedValueType()
+	// CreateBuilder creates a AssociatedValueTypeBuilder
+	CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder
 }
 
 // _AssociatedValueType is the data-structure of this message
@@ -59,6 +62,108 @@ type _AssociatedValueType struct {
 }
 
 var _ AssociatedValueType = (*_AssociatedValueType)(nil)
+
+// NewAssociatedValueType factory function for _AssociatedValueType
+func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
+	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AssociatedValueTypeBuilder is a builder for AssociatedValueType
+type AssociatedValueTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) AssociatedValueTypeBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) AssociatedValueTypeBuilder
+	// WithValueLength adds ValueLength (property field)
+	WithValueLength(uint16) AssociatedValueTypeBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) AssociatedValueTypeBuilder
+	// Build builds the AssociatedValueType or returns an error if something is wrong
+	Build() (AssociatedValueType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AssociatedValueType
+}
+
+// NewAssociatedValueTypeBuilder() creates a AssociatedValueTypeBuilder
+func NewAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
+	return &_AssociatedValueTypeBuilder{_AssociatedValueType: new(_AssociatedValueType)}
+}
+
+type _AssociatedValueTypeBuilder struct {
+	*_AssociatedValueType
+
+	err *utils.MultiError
+}
+
+var _ (AssociatedValueTypeBuilder) = (*_AssociatedValueTypeBuilder)(nil)
+
+func (b *_AssociatedValueTypeBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) AssociatedValueTypeBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize).WithValueLength(valueLength).WithData(data...)
+}
+
+func (b *_AssociatedValueTypeBuilder) WithReturnCode(returnCode DataTransportErrorCode) AssociatedValueTypeBuilder {
+	b.ReturnCode = returnCode
+	return b
+}
+
+func (b *_AssociatedValueTypeBuilder) WithTransportSize(transportSize DataTransportSize) AssociatedValueTypeBuilder {
+	b.TransportSize = transportSize
+	return b
+}
+
+func (b *_AssociatedValueTypeBuilder) WithValueLength(valueLength uint16) AssociatedValueTypeBuilder {
+	b.ValueLength = valueLength
+	return b
+}
+
+func (b *_AssociatedValueTypeBuilder) WithData(data ...uint8) AssociatedValueTypeBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AssociatedValueTypeBuilder) Build() (AssociatedValueType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AssociatedValueType.deepCopy(), nil
+}
+
+func (b *_AssociatedValueTypeBuilder) MustBuild() AssociatedValueType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AssociatedValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAssociatedValueTypeBuilder().(*_AssociatedValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAssociatedValueTypeBuilder creates a AssociatedValueTypeBuilder
+func (b *_AssociatedValueType) CreateAssociatedValueTypeBuilder() AssociatedValueTypeBuilder {
+	if b == nil {
+		return NewAssociatedValueTypeBuilder()
+	}
+	return &_AssociatedValueTypeBuilder{_AssociatedValueType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +190,6 @@ func (m *_AssociatedValueType) GetData() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAssociatedValueType factory function for _AssociatedValueType
-func NewAssociatedValueType(returnCode DataTransportErrorCode, transportSize DataTransportSize, valueLength uint16, data []uint8) *_AssociatedValueType {
-	return &_AssociatedValueType{ReturnCode: returnCode, TransportSize: transportSize, ValueLength: valueLength, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAssociatedValueType(structType any) AssociatedValueType {
@@ -145,7 +245,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AssociatedValueType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__associatedValueType AssociatedValueType, err error) {
@@ -229,13 +329,34 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_AssociatedValueType) IsAssociatedValueType() {}
 
+func (m *_AssociatedValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AssociatedValueType) deepCopy() *_AssociatedValueType {
+	if m == nil {
+		return nil
+	}
+	_AssociatedValueTypeCopy := &_AssociatedValueType{
+		m.ReturnCode,
+		m.TransportSize,
+		m.ValueLength,
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	return _AssociatedValueTypeCopy
+}
+
 func (m *_AssociatedValueType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

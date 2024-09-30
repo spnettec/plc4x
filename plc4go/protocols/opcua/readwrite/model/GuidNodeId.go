@@ -38,12 +38,15 @@ type GuidNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() GuidValue
 	// IsGuidNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGuidNodeId()
+	// CreateBuilder creates a GuidNodeIdBuilder
+	CreateGuidNodeIdBuilder() GuidNodeIdBuilder
 }
 
 // _GuidNodeId is the data-structure of this message
@@ -53,6 +56,118 @@ type _GuidNodeId struct {
 }
 
 var _ GuidNodeId = (*_GuidNodeId)(nil)
+
+// NewGuidNodeId factory function for _GuidNodeId
+func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
+	if identifier == nil {
+		panic("identifier of type GuidValue for GuidNodeId must not be nil")
+	}
+	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GuidNodeIdBuilder is a builder for GuidNodeId
+type GuidNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, identifier GuidValue) GuidNodeIdBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) GuidNodeIdBuilder
+	// WithIdentifier adds Identifier (property field)
+	WithIdentifier(GuidValue) GuidNodeIdBuilder
+	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
+	WithIdentifierBuilder(func(GuidValueBuilder) GuidValueBuilder) GuidNodeIdBuilder
+	// Build builds the GuidNodeId or returns an error if something is wrong
+	Build() (GuidNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GuidNodeId
+}
+
+// NewGuidNodeIdBuilder() creates a GuidNodeIdBuilder
+func NewGuidNodeIdBuilder() GuidNodeIdBuilder {
+	return &_GuidNodeIdBuilder{_GuidNodeId: new(_GuidNodeId)}
+}
+
+type _GuidNodeIdBuilder struct {
+	*_GuidNodeId
+
+	err *utils.MultiError
+}
+
+var _ (GuidNodeIdBuilder) = (*_GuidNodeIdBuilder)(nil)
+
+func (b *_GuidNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier GuidValue) GuidNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+}
+
+func (b *_GuidNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) GuidNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_GuidNodeIdBuilder) WithIdentifier(identifier GuidValue) GuidNodeIdBuilder {
+	b.Identifier = identifier
+	return b
+}
+
+func (b *_GuidNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(GuidValueBuilder) GuidValueBuilder) GuidNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreateGuidValueBuilder())
+	var err error
+	b.Identifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "GuidValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_GuidNodeIdBuilder) Build() (GuidNodeId, error) {
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GuidNodeId.deepCopy(), nil
+}
+
+func (b *_GuidNodeIdBuilder) MustBuild() GuidNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_GuidNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateGuidNodeIdBuilder().(*_GuidNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateGuidNodeIdBuilder creates a GuidNodeIdBuilder
+func (b *_GuidNodeId) CreateGuidNodeIdBuilder() GuidNodeIdBuilder {
+	if b == nil {
+		return NewGuidNodeIdBuilder()
+	}
+	return &_GuidNodeIdBuilder{_GuidNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +186,6 @@ func (m *_GuidNodeId) GetIdentifier() GuidValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGuidNodeId factory function for _GuidNodeId
-func NewGuidNodeId(namespaceIndex uint16, identifier GuidValue) *_GuidNodeId {
-	if identifier == nil {
-		panic("identifier of type GuidValue for GuidNodeId must not be nil")
-	}
-	return &_GuidNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGuidNodeId(structType any) GuidNodeId {
@@ -126,7 +233,7 @@ func GuidNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_GuidNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__guidNodeId GuidNodeId, err error) {
@@ -190,13 +297,32 @@ func (m *_GuidNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_GuidNodeId) IsGuidNodeId() {}
 
+func (m *_GuidNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GuidNodeId) deepCopy() *_GuidNodeId {
+	if m == nil {
+		return nil
+	}
+	_GuidNodeIdCopy := &_GuidNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(GuidValue),
+	}
+	return _GuidNodeIdCopy
+}
+
 func (m *_GuidNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

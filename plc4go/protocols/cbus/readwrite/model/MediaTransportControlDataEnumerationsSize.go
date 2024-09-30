@@ -38,6 +38,7 @@ type MediaTransportControlDataEnumerationsSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSizeType returns SizeType (property field)
 	GetSizeType() byte
@@ -55,6 +56,8 @@ type MediaTransportControlDataEnumerationsSize interface {
 	GetIsReserved() bool
 	// IsMediaTransportControlDataEnumerationsSize is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataEnumerationsSize()
+	// CreateBuilder creates a MediaTransportControlDataEnumerationsSizeBuilder
+	CreateMediaTransportControlDataEnumerationsSizeBuilder() MediaTransportControlDataEnumerationsSizeBuilder
 }
 
 // _MediaTransportControlDataEnumerationsSize is the data-structure of this message
@@ -67,6 +70,123 @@ type _MediaTransportControlDataEnumerationsSize struct {
 
 var _ MediaTransportControlDataEnumerationsSize = (*_MediaTransportControlDataEnumerationsSize)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataEnumerationsSize)(nil)
+
+// NewMediaTransportControlDataEnumerationsSize factory function for _MediaTransportControlDataEnumerationsSize
+func NewMediaTransportControlDataEnumerationsSize(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, sizeType byte, start uint8, size uint8) *_MediaTransportControlDataEnumerationsSize {
+	_result := &_MediaTransportControlDataEnumerationsSize{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SizeType:                          sizeType,
+		Start:                             start,
+		Size:                              size,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataEnumerationsSizeBuilder is a builder for MediaTransportControlDataEnumerationsSize
+type MediaTransportControlDataEnumerationsSizeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sizeType byte, start uint8, size uint8) MediaTransportControlDataEnumerationsSizeBuilder
+	// WithSizeType adds SizeType (property field)
+	WithSizeType(byte) MediaTransportControlDataEnumerationsSizeBuilder
+	// WithStart adds Start (property field)
+	WithStart(uint8) MediaTransportControlDataEnumerationsSizeBuilder
+	// WithSize adds Size (property field)
+	WithSize(uint8) MediaTransportControlDataEnumerationsSizeBuilder
+	// Build builds the MediaTransportControlDataEnumerationsSize or returns an error if something is wrong
+	Build() (MediaTransportControlDataEnumerationsSize, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataEnumerationsSize
+}
+
+// NewMediaTransportControlDataEnumerationsSizeBuilder() creates a MediaTransportControlDataEnumerationsSizeBuilder
+func NewMediaTransportControlDataEnumerationsSizeBuilder() MediaTransportControlDataEnumerationsSizeBuilder {
+	return &_MediaTransportControlDataEnumerationsSizeBuilder{_MediaTransportControlDataEnumerationsSize: new(_MediaTransportControlDataEnumerationsSize)}
+}
+
+type _MediaTransportControlDataEnumerationsSizeBuilder struct {
+	*_MediaTransportControlDataEnumerationsSize
+
+	parentBuilder *_MediaTransportControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataEnumerationsSizeBuilder) = (*_MediaTransportControlDataEnumerationsSizeBuilder)(nil)
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) WithMandatoryFields(sizeType byte, start uint8, size uint8) MediaTransportControlDataEnumerationsSizeBuilder {
+	return b.WithSizeType(sizeType).WithStart(start).WithSize(size)
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) WithSizeType(sizeType byte) MediaTransportControlDataEnumerationsSizeBuilder {
+	b.SizeType = sizeType
+	return b
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) WithStart(start uint8) MediaTransportControlDataEnumerationsSizeBuilder {
+	b.Start = start
+	return b
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) WithSize(size uint8) MediaTransportControlDataEnumerationsSizeBuilder {
+	b.Size = size
+	return b
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) Build() (MediaTransportControlDataEnumerationsSize, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MediaTransportControlDataEnumerationsSize.deepCopy(), nil
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) MustBuild() MediaTransportControlDataEnumerationsSize {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataEnumerationsSizeBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataEnumerationsSizeBuilder().(*_MediaTransportControlDataEnumerationsSizeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMediaTransportControlDataEnumerationsSizeBuilder creates a MediaTransportControlDataEnumerationsSizeBuilder
+func (b *_MediaTransportControlDataEnumerationsSize) CreateMediaTransportControlDataEnumerationsSizeBuilder() MediaTransportControlDataEnumerationsSizeBuilder {
+	if b == nil {
+		return NewMediaTransportControlDataEnumerationsSizeBuilder()
+	}
+	return &_MediaTransportControlDataEnumerationsSizeBuilder{_MediaTransportControlDataEnumerationsSize: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,18 +256,6 @@ func (m *_MediaTransportControlDataEnumerationsSize) GetIsReserved() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataEnumerationsSize factory function for _MediaTransportControlDataEnumerationsSize
-func NewMediaTransportControlDataEnumerationsSize(sizeType byte, start uint8, size uint8, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataEnumerationsSize {
-	_result := &_MediaTransportControlDataEnumerationsSize{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SizeType:                          sizeType,
-		Start:                             start,
-		Size:                              size,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataEnumerationsSize(structType any) MediaTransportControlDataEnumerationsSize {
@@ -315,13 +423,35 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 
 func (m *_MediaTransportControlDataEnumerationsSize) IsMediaTransportControlDataEnumerationsSize() {}
 
+func (m *_MediaTransportControlDataEnumerationsSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataEnumerationsSize) deepCopy() *_MediaTransportControlDataEnumerationsSize {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataEnumerationsSizeCopy := &_MediaTransportControlDataEnumerationsSize{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.SizeType,
+		m.Start,
+		m.Size,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataEnumerationsSizeCopy
+}
+
 func (m *_MediaTransportControlDataEnumerationsSize) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

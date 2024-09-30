@@ -36,8 +36,11 @@ type SemanticVersionString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSemanticVersionString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSemanticVersionString()
+	// CreateBuilder creates a SemanticVersionStringBuilder
+	CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder
 }
 
 // _SemanticVersionString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ SemanticVersionString = (*_SemanticVersionString)(nil)
 func NewSemanticVersionString() *_SemanticVersionString {
 	return &_SemanticVersionString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SemanticVersionStringBuilder is a builder for SemanticVersionString
+type SemanticVersionStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SemanticVersionStringBuilder
+	// Build builds the SemanticVersionString or returns an error if something is wrong
+	Build() (SemanticVersionString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SemanticVersionString
+}
+
+// NewSemanticVersionStringBuilder() creates a SemanticVersionStringBuilder
+func NewSemanticVersionStringBuilder() SemanticVersionStringBuilder {
+	return &_SemanticVersionStringBuilder{_SemanticVersionString: new(_SemanticVersionString)}
+}
+
+type _SemanticVersionStringBuilder struct {
+	*_SemanticVersionString
+
+	err *utils.MultiError
+}
+
+var _ (SemanticVersionStringBuilder) = (*_SemanticVersionStringBuilder)(nil)
+
+func (b *_SemanticVersionStringBuilder) WithMandatoryFields() SemanticVersionStringBuilder {
+	return b
+}
+
+func (b *_SemanticVersionStringBuilder) Build() (SemanticVersionString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SemanticVersionString.deepCopy(), nil
+}
+
+func (b *_SemanticVersionStringBuilder) MustBuild() SemanticVersionString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SemanticVersionStringBuilder) DeepCopy() any {
+	_copy := b.CreateSemanticVersionStringBuilder().(*_SemanticVersionStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSemanticVersionStringBuilder creates a SemanticVersionStringBuilder
+func (b *_SemanticVersionString) CreateSemanticVersionStringBuilder() SemanticVersionStringBuilder {
+	if b == nil {
+		return NewSemanticVersionStringBuilder()
+	}
+	return &_SemanticVersionStringBuilder{_SemanticVersionString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastSemanticVersionString(structType any) SemanticVersionString {
@@ -91,7 +163,7 @@ func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SemanticVersionString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__semanticVersionString SemanticVersionString, err error) {
@@ -135,13 +207,29 @@ func (m *_SemanticVersionString) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_SemanticVersionString) IsSemanticVersionString() {}
 
+func (m *_SemanticVersionString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SemanticVersionString) deepCopy() *_SemanticVersionString {
+	if m == nil {
+		return nil
+	}
+	_SemanticVersionStringCopy := &_SemanticVersionString{}
+	return _SemanticVersionStringCopy
+}
+
 func (m *_SemanticVersionString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type ExtensionObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeId returns TypeId (property field)
 	GetTypeId() ExpandedNodeId
 	// GetEncodingMask returns EncodingMask (property field)
@@ -48,6 +49,8 @@ type ExtensionObject interface {
 	GetIdentifier() string
 	// IsExtensionObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionObject()
+	// CreateBuilder creates a ExtensionObjectBuilder
+	CreateExtensionObjectBuilder() ExtensionObjectBuilder
 }
 
 // _ExtensionObject is the data-structure of this message
@@ -61,6 +64,164 @@ type _ExtensionObject struct {
 }
 
 var _ ExtensionObject = (*_ExtensionObject)(nil)
+
+// NewExtensionObject factory function for _ExtensionObject
+func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
+	if typeId == nil {
+		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
+	}
+	if body == nil {
+		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
+	}
+	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ExtensionObjectBuilder is a builder for ExtensionObject
+type ExtensionObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(typeId ExpandedNodeId, body ExtensionObjectDefinition) ExtensionObjectBuilder
+	// WithTypeId adds TypeId (property field)
+	WithTypeId(ExpandedNodeId) ExtensionObjectBuilder
+	// WithTypeIdBuilder adds TypeId (property field) which is build by the builder
+	WithTypeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ExtensionObjectBuilder
+	// WithEncodingMask adds EncodingMask (property field)
+	WithOptionalEncodingMask(ExtensionObjectEncodingMask) ExtensionObjectBuilder
+	// WithOptionalEncodingMaskBuilder adds EncodingMask (property field) which is build by the builder
+	WithOptionalEncodingMaskBuilder(func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectBuilder
+	// WithBody adds Body (property field)
+	WithBody(ExtensionObjectDefinition) ExtensionObjectBuilder
+	// WithBodyBuilder adds Body (property field) which is build by the builder
+	WithBodyBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ExtensionObjectBuilder
+	// Build builds the ExtensionObject or returns an error if something is wrong
+	Build() (ExtensionObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ExtensionObject
+}
+
+// NewExtensionObjectBuilder() creates a ExtensionObjectBuilder
+func NewExtensionObjectBuilder() ExtensionObjectBuilder {
+	return &_ExtensionObjectBuilder{_ExtensionObject: new(_ExtensionObject)}
+}
+
+type _ExtensionObjectBuilder struct {
+	*_ExtensionObject
+
+	err *utils.MultiError
+}
+
+var _ (ExtensionObjectBuilder) = (*_ExtensionObjectBuilder)(nil)
+
+func (b *_ExtensionObjectBuilder) WithMandatoryFields(typeId ExpandedNodeId, body ExtensionObjectDefinition) ExtensionObjectBuilder {
+	return b.WithTypeId(typeId).WithBody(body)
+}
+
+func (b *_ExtensionObjectBuilder) WithTypeId(typeId ExpandedNodeId) ExtensionObjectBuilder {
+	b.TypeId = typeId
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) WithTypeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ExtensionObjectBuilder {
+	builder := builderSupplier(b.TypeId.CreateExpandedNodeIdBuilder())
+	var err error
+	b.TypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) WithOptionalEncodingMask(encodingMask ExtensionObjectEncodingMask) ExtensionObjectBuilder {
+	b.EncodingMask = encodingMask
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) WithOptionalEncodingMaskBuilder(builderSupplier func(ExtensionObjectEncodingMaskBuilder) ExtensionObjectEncodingMaskBuilder) ExtensionObjectBuilder {
+	builder := builderSupplier(b.EncodingMask.CreateExtensionObjectEncodingMaskBuilder())
+	var err error
+	b.EncodingMask, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectEncodingMaskBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) WithBody(body ExtensionObjectDefinition) ExtensionObjectBuilder {
+	b.Body = body
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) WithBodyBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ExtensionObjectBuilder {
+	builder := builderSupplier(b.Body.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.Body, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ExtensionObjectBuilder) Build() (ExtensionObject, error) {
+	if b.TypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'typeId' not set"))
+	}
+	if b.Body == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'body' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ExtensionObject.deepCopy(), nil
+}
+
+func (b *_ExtensionObjectBuilder) MustBuild() ExtensionObject {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ExtensionObjectBuilder) DeepCopy() any {
+	_copy := b.CreateExtensionObjectBuilder().(*_ExtensionObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateExtensionObjectBuilder creates a ExtensionObjectBuilder
+func (b *_ExtensionObject) CreateExtensionObjectBuilder() ExtensionObjectBuilder {
+	if b == nil {
+		return NewExtensionObjectBuilder()
+	}
+	return &_ExtensionObjectBuilder{_ExtensionObject: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +261,6 @@ func (m *_ExtensionObject) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionObject factory function for _ExtensionObject
-func NewExtensionObject(typeId ExpandedNodeId, encodingMask ExtensionObjectEncodingMask, body ExtensionObjectDefinition, includeEncodingMask bool) *_ExtensionObject {
-	if typeId == nil {
-		panic("typeId of type ExpandedNodeId for ExtensionObject must not be nil")
-	}
-	if body == nil {
-		panic("body of type ExtensionObjectDefinition for ExtensionObject must not be nil")
-	}
-	return &_ExtensionObject{TypeId: typeId, EncodingMask: encodingMask, Body: body, IncludeEncodingMask: includeEncodingMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionObject(structType any) ExtensionObject {
@@ -165,7 +315,7 @@ func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ExtensionObject) parse(ctx context.Context, readBuffer utils.ReadBuffer, includeEncodingMask bool) (__extensionObject ExtensionObject, err error) {
@@ -265,13 +415,34 @@ func (m *_ExtensionObject) GetIncludeEncodingMask() bool {
 
 func (m *_ExtensionObject) IsExtensionObject() {}
 
+func (m *_ExtensionObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionObject) deepCopy() *_ExtensionObject {
+	if m == nil {
+		return nil
+	}
+	_ExtensionObjectCopy := &_ExtensionObject{
+		m.TypeId.DeepCopy().(ExpandedNodeId),
+		m.EncodingMask.DeepCopy().(ExtensionObjectEncodingMask),
+		m.Body.DeepCopy().(ExtensionObjectDefinition),
+		m.IncludeEncodingMask,
+	}
+	return _ExtensionObjectCopy
+}
+
 func (m *_ExtensionObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

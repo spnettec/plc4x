@@ -38,11 +38,14 @@ type BACnetChannelValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetChannelValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueReal()
+	// CreateBuilder creates a BACnetChannelValueRealBuilder
+	CreateBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder
 }
 
 // _BACnetChannelValueReal is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetChannelValueReal struct {
 
 var _ BACnetChannelValueReal = (*_BACnetChannelValueReal)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueReal)(nil)
+
+// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
+func NewBACnetChannelValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal) *_BACnetChannelValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
+	}
+	_result := &_BACnetChannelValueReal{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		RealValue:                  realValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueRealBuilder is a builder for BACnetChannelValueReal
+type BACnetChannelValueRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetChannelValueRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetChannelValueRealBuilder
+	// Build builds the BACnetChannelValueReal or returns an error if something is wrong
+	Build() (BACnetChannelValueReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueReal
+}
+
+// NewBACnetChannelValueRealBuilder() creates a BACnetChannelValueRealBuilder
+func NewBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder {
+	return &_BACnetChannelValueRealBuilder{_BACnetChannelValueReal: new(_BACnetChannelValueReal)}
+}
+
+type _BACnetChannelValueRealBuilder struct {
+	*_BACnetChannelValueReal
+
+	parentBuilder *_BACnetChannelValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueRealBuilder) = (*_BACnetChannelValueRealBuilder)(nil)
+
+func (b *_BACnetChannelValueRealBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
+}
+
+func (b *_BACnetChannelValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
+	return b.WithRealValue(realValue)
+}
+
+func (b *_BACnetChannelValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetChannelValueRealBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetChannelValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetChannelValueRealBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.RealValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetChannelValueRealBuilder) Build() (BACnetChannelValueReal, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetChannelValueReal.deepCopy(), nil
+}
+
+func (b *_BACnetChannelValueRealBuilder) MustBuild() BACnetChannelValueReal {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueRealBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueRealBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueRealBuilder().(*_BACnetChannelValueRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetChannelValueRealBuilder creates a BACnetChannelValueRealBuilder
+func (b *_BACnetChannelValueReal) CreateBACnetChannelValueRealBuilder() BACnetChannelValueRealBuilder {
+	if b == nil {
+		return NewBACnetChannelValueRealBuilder()
+	}
+	return &_BACnetChannelValueRealBuilder{_BACnetChannelValueReal: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetChannelValueReal) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueReal factory function for _BACnetChannelValueReal
-func NewBACnetChannelValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetChannelValueReal must not be nil")
-	}
-	_result := &_BACnetChannelValueReal{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		RealValue:                  realValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueReal(structType any) BACnetChannelValueReal {
@@ -179,13 +294,33 @@ func (m *_BACnetChannelValueReal) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetChannelValueReal) IsBACnetChannelValueReal() {}
 
+func (m *_BACnetChannelValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueReal) deepCopy() *_BACnetChannelValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueRealCopy := &_BACnetChannelValueReal{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueRealCopy
+}
+
 func (m *_BACnetChannelValueReal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

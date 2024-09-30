@@ -38,6 +38,7 @@ type ApplicationDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetApplicationUri returns ApplicationUri (property field)
 	GetApplicationUri() PascalString
@@ -57,6 +58,8 @@ type ApplicationDescription interface {
 	GetDiscoveryUrls() []PascalString
 	// IsApplicationDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationDescription()
+	// CreateBuilder creates a ApplicationDescriptionBuilder
+	CreateApplicationDescriptionBuilder() ApplicationDescriptionBuilder
 }
 
 // _ApplicationDescription is the data-structure of this message
@@ -74,6 +77,283 @@ type _ApplicationDescription struct {
 
 var _ ApplicationDescription = (*_ApplicationDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ApplicationDescription)(nil)
+
+// NewApplicationDescription factory function for _ApplicationDescription
+func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) *_ApplicationDescription {
+	if applicationUri == nil {
+		panic("applicationUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if productUri == nil {
+		panic("productUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if applicationName == nil {
+		panic("applicationName of type LocalizedText for ApplicationDescription must not be nil")
+	}
+	if gatewayServerUri == nil {
+		panic("gatewayServerUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	if discoveryProfileUri == nil {
+		panic("discoveryProfileUri of type PascalString for ApplicationDescription must not be nil")
+	}
+	_result := &_ApplicationDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ApplicationUri:                    applicationUri,
+		ProductUri:                        productUri,
+		ApplicationName:                   applicationName,
+		ApplicationType:                   applicationType,
+		GatewayServerUri:                  gatewayServerUri,
+		DiscoveryProfileUri:               discoveryProfileUri,
+		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
+		DiscoveryUrls:                     discoveryUrls,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApplicationDescriptionBuilder is a builder for ApplicationDescription
+type ApplicationDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) ApplicationDescriptionBuilder
+	// WithApplicationUri adds ApplicationUri (property field)
+	WithApplicationUri(PascalString) ApplicationDescriptionBuilder
+	// WithApplicationUriBuilder adds ApplicationUri (property field) which is build by the builder
+	WithApplicationUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
+	// WithProductUri adds ProductUri (property field)
+	WithProductUri(PascalString) ApplicationDescriptionBuilder
+	// WithProductUriBuilder adds ProductUri (property field) which is build by the builder
+	WithProductUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
+	// WithApplicationName adds ApplicationName (property field)
+	WithApplicationName(LocalizedText) ApplicationDescriptionBuilder
+	// WithApplicationNameBuilder adds ApplicationName (property field) which is build by the builder
+	WithApplicationNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ApplicationDescriptionBuilder
+	// WithApplicationType adds ApplicationType (property field)
+	WithApplicationType(ApplicationType) ApplicationDescriptionBuilder
+	// WithGatewayServerUri adds GatewayServerUri (property field)
+	WithGatewayServerUri(PascalString) ApplicationDescriptionBuilder
+	// WithGatewayServerUriBuilder adds GatewayServerUri (property field) which is build by the builder
+	WithGatewayServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
+	// WithDiscoveryProfileUri adds DiscoveryProfileUri (property field)
+	WithDiscoveryProfileUri(PascalString) ApplicationDescriptionBuilder
+	// WithDiscoveryProfileUriBuilder adds DiscoveryProfileUri (property field) which is build by the builder
+	WithDiscoveryProfileUriBuilder(func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder
+	// WithNoOfDiscoveryUrls adds NoOfDiscoveryUrls (property field)
+	WithNoOfDiscoveryUrls(int32) ApplicationDescriptionBuilder
+	// WithDiscoveryUrls adds DiscoveryUrls (property field)
+	WithDiscoveryUrls(...PascalString) ApplicationDescriptionBuilder
+	// Build builds the ApplicationDescription or returns an error if something is wrong
+	Build() (ApplicationDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApplicationDescription
+}
+
+// NewApplicationDescriptionBuilder() creates a ApplicationDescriptionBuilder
+func NewApplicationDescriptionBuilder() ApplicationDescriptionBuilder {
+	return &_ApplicationDescriptionBuilder{_ApplicationDescription: new(_ApplicationDescription)}
+}
+
+type _ApplicationDescriptionBuilder struct {
+	*_ApplicationDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApplicationDescriptionBuilder) = (*_ApplicationDescriptionBuilder)(nil)
+
+func (b *_ApplicationDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ApplicationDescriptionBuilder) WithMandatoryFields(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) ApplicationDescriptionBuilder {
+	return b.WithApplicationUri(applicationUri).WithProductUri(productUri).WithApplicationName(applicationName).WithApplicationType(applicationType).WithGatewayServerUri(gatewayServerUri).WithDiscoveryProfileUri(discoveryProfileUri).WithNoOfDiscoveryUrls(noOfDiscoveryUrls).WithDiscoveryUrls(discoveryUrls...)
+}
+
+func (b *_ApplicationDescriptionBuilder) WithApplicationUri(applicationUri PascalString) ApplicationDescriptionBuilder {
+	b.ApplicationUri = applicationUri
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithApplicationUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder {
+	builder := builderSupplier(b.ApplicationUri.CreatePascalStringBuilder())
+	var err error
+	b.ApplicationUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithProductUri(productUri PascalString) ApplicationDescriptionBuilder {
+	b.ProductUri = productUri
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder {
+	builder := builderSupplier(b.ProductUri.CreatePascalStringBuilder())
+	var err error
+	b.ProductUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithApplicationName(applicationName LocalizedText) ApplicationDescriptionBuilder {
+	b.ApplicationName = applicationName
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithApplicationNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ApplicationDescriptionBuilder {
+	builder := builderSupplier(b.ApplicationName.CreateLocalizedTextBuilder())
+	var err error
+	b.ApplicationName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithApplicationType(applicationType ApplicationType) ApplicationDescriptionBuilder {
+	b.ApplicationType = applicationType
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithGatewayServerUri(gatewayServerUri PascalString) ApplicationDescriptionBuilder {
+	b.GatewayServerUri = gatewayServerUri
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithGatewayServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder {
+	builder := builderSupplier(b.GatewayServerUri.CreatePascalStringBuilder())
+	var err error
+	b.GatewayServerUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithDiscoveryProfileUri(discoveryProfileUri PascalString) ApplicationDescriptionBuilder {
+	b.DiscoveryProfileUri = discoveryProfileUri
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithDiscoveryProfileUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ApplicationDescriptionBuilder {
+	builder := builderSupplier(b.DiscoveryProfileUri.CreatePascalStringBuilder())
+	var err error
+	b.DiscoveryProfileUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithNoOfDiscoveryUrls(noOfDiscoveryUrls int32) ApplicationDescriptionBuilder {
+	b.NoOfDiscoveryUrls = noOfDiscoveryUrls
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) WithDiscoveryUrls(discoveryUrls ...PascalString) ApplicationDescriptionBuilder {
+	b.DiscoveryUrls = discoveryUrls
+	return b
+}
+
+func (b *_ApplicationDescriptionBuilder) Build() (ApplicationDescription, error) {
+	if b.ApplicationUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'applicationUri' not set"))
+	}
+	if b.ProductUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'productUri' not set"))
+	}
+	if b.ApplicationName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'applicationName' not set"))
+	}
+	if b.GatewayServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'gatewayServerUri' not set"))
+	}
+	if b.DiscoveryProfileUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'discoveryProfileUri' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApplicationDescription.deepCopy(), nil
+}
+
+func (b *_ApplicationDescriptionBuilder) MustBuild() ApplicationDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApplicationDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApplicationDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ApplicationDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateApplicationDescriptionBuilder().(*_ApplicationDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApplicationDescriptionBuilder creates a ApplicationDescriptionBuilder
+func (b *_ApplicationDescription) CreateApplicationDescriptionBuilder() ApplicationDescriptionBuilder {
+	if b == nil {
+		return NewApplicationDescriptionBuilder()
+	}
+	return &_ApplicationDescriptionBuilder{_ApplicationDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,38 +414,6 @@ func (m *_ApplicationDescription) GetDiscoveryUrls() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApplicationDescription factory function for _ApplicationDescription
-func NewApplicationDescription(applicationUri PascalString, productUri PascalString, applicationName LocalizedText, applicationType ApplicationType, gatewayServerUri PascalString, discoveryProfileUri PascalString, noOfDiscoveryUrls int32, discoveryUrls []PascalString) *_ApplicationDescription {
-	if applicationUri == nil {
-		panic("applicationUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if productUri == nil {
-		panic("productUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if applicationName == nil {
-		panic("applicationName of type LocalizedText for ApplicationDescription must not be nil")
-	}
-	if gatewayServerUri == nil {
-		panic("gatewayServerUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	if discoveryProfileUri == nil {
-		panic("discoveryProfileUri of type PascalString for ApplicationDescription must not be nil")
-	}
-	_result := &_ApplicationDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ApplicationUri:                    applicationUri,
-		ProductUri:                        productUri,
-		ApplicationName:                   applicationName,
-		ApplicationType:                   applicationType,
-		GatewayServerUri:                  gatewayServerUri,
-		DiscoveryProfileUri:               discoveryProfileUri,
-		NoOfDiscoveryUrls:                 noOfDiscoveryUrls,
-		DiscoveryUrls:                     discoveryUrls,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApplicationDescription(structType any) ApplicationDescription {
@@ -349,13 +597,40 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_ApplicationDescription) IsApplicationDescription() {}
 
+func (m *_ApplicationDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationDescription) deepCopy() *_ApplicationDescription {
+	if m == nil {
+		return nil
+	}
+	_ApplicationDescriptionCopy := &_ApplicationDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ApplicationUri.DeepCopy().(PascalString),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.ApplicationName.DeepCopy().(LocalizedText),
+		m.ApplicationType,
+		m.GatewayServerUri.DeepCopy().(PascalString),
+		m.DiscoveryProfileUri.DeepCopy().(PascalString),
+		m.NoOfDiscoveryUrls,
+		utils.DeepCopySlice[PascalString, PascalString](m.DiscoveryUrls),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ApplicationDescriptionCopy
+}
+
 func (m *_ApplicationDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

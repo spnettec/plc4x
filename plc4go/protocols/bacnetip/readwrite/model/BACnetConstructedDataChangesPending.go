@@ -38,6 +38,7 @@ type BACnetConstructedDataChangesPending interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChangesPending returns ChangesPending (property field)
 	GetChangesPending() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataChangesPending interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataChangesPending is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataChangesPending()
+	// CreateBuilder creates a BACnetConstructedDataChangesPendingBuilder
+	CreateBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChangesPendingBuilder
 }
 
 // _BACnetConstructedDataChangesPending is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataChangesPending struct {
 
 var _ BACnetConstructedDataChangesPending = (*_BACnetConstructedDataChangesPending)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangesPending)(nil)
+
+// NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
+func NewBACnetConstructedDataChangesPending(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changesPending BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
+	if changesPending == nil {
+		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
+	}
+	_result := &_BACnetConstructedDataChangesPending{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangesPending:                changesPending,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataChangesPendingBuilder is a builder for BACnetConstructedDataChangesPending
+type BACnetConstructedDataChangesPendingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder
+	// WithChangesPending adds ChangesPending (property field)
+	WithChangesPending(BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder
+	// WithChangesPendingBuilder adds ChangesPending (property field) which is build by the builder
+	WithChangesPendingBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataChangesPendingBuilder
+	// Build builds the BACnetConstructedDataChangesPending or returns an error if something is wrong
+	Build() (BACnetConstructedDataChangesPending, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataChangesPending
+}
+
+// NewBACnetConstructedDataChangesPendingBuilder() creates a BACnetConstructedDataChangesPendingBuilder
+func NewBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChangesPendingBuilder {
+	return &_BACnetConstructedDataChangesPendingBuilder{_BACnetConstructedDataChangesPending: new(_BACnetConstructedDataChangesPending)}
+}
+
+type _BACnetConstructedDataChangesPendingBuilder struct {
+	*_BACnetConstructedDataChangesPending
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataChangesPendingBuilder) = (*_BACnetConstructedDataChangesPendingBuilder)(nil)
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithMandatoryFields(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
+	return b.WithChangesPending(changesPending)
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithChangesPending(changesPending BACnetApplicationTagBoolean) BACnetConstructedDataChangesPendingBuilder {
+	b.ChangesPending = changesPending
+	return b
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) WithChangesPendingBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataChangesPendingBuilder {
+	builder := builderSupplier(b.ChangesPending.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.ChangesPending, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) Build() (BACnetConstructedDataChangesPending, error) {
+	if b.ChangesPending == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'changesPending' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataChangesPending.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) MustBuild() BACnetConstructedDataChangesPending {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataChangesPendingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataChangesPendingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataChangesPendingBuilder().(*_BACnetConstructedDataChangesPendingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataChangesPendingBuilder creates a BACnetConstructedDataChangesPendingBuilder
+func (b *_BACnetConstructedDataChangesPending) CreateBACnetConstructedDataChangesPendingBuilder() BACnetConstructedDataChangesPendingBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataChangesPendingBuilder()
+	}
+	return &_BACnetConstructedDataChangesPendingBuilder{_BACnetConstructedDataChangesPending: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataChangesPending) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChangesPending factory function for _BACnetConstructedDataChangesPending
-func NewBACnetConstructedDataChangesPending(changesPending BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangesPending {
-	if changesPending == nil {
-		panic("changesPending of type BACnetApplicationTagBoolean for BACnetConstructedDataChangesPending must not be nil")
-	}
-	_result := &_BACnetConstructedDataChangesPending{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ChangesPending:                changesPending,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChangesPending(structType any) BACnetConstructedDataChangesPending {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataChangesPending) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataChangesPending) IsBACnetConstructedDataChangesPending() {}
 
+func (m *_BACnetConstructedDataChangesPending) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChangesPending) deepCopy() *_BACnetConstructedDataChangesPending {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChangesPendingCopy := &_BACnetConstructedDataChangesPending{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ChangesPending.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChangesPendingCopy
+}
+
 func (m *_BACnetConstructedDataChangesPending) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

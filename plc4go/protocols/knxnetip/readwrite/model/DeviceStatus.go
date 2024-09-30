@@ -38,10 +38,13 @@ type DeviceStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProgramMode returns ProgramMode (property field)
 	GetProgramMode() bool
 	// IsDeviceStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceStatus()
+	// CreateBuilder creates a DeviceStatusBuilder
+	CreateDeviceStatusBuilder() DeviceStatusBuilder
 }
 
 // _DeviceStatus is the data-structure of this message
@@ -52,6 +55,87 @@ type _DeviceStatus struct {
 }
 
 var _ DeviceStatus = (*_DeviceStatus)(nil)
+
+// NewDeviceStatus factory function for _DeviceStatus
+func NewDeviceStatus(programMode bool) *_DeviceStatus {
+	return &_DeviceStatus{ProgramMode: programMode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceStatusBuilder is a builder for DeviceStatus
+type DeviceStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(programMode bool) DeviceStatusBuilder
+	// WithProgramMode adds ProgramMode (property field)
+	WithProgramMode(bool) DeviceStatusBuilder
+	// Build builds the DeviceStatus or returns an error if something is wrong
+	Build() (DeviceStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceStatus
+}
+
+// NewDeviceStatusBuilder() creates a DeviceStatusBuilder
+func NewDeviceStatusBuilder() DeviceStatusBuilder {
+	return &_DeviceStatusBuilder{_DeviceStatus: new(_DeviceStatus)}
+}
+
+type _DeviceStatusBuilder struct {
+	*_DeviceStatus
+
+	err *utils.MultiError
+}
+
+var _ (DeviceStatusBuilder) = (*_DeviceStatusBuilder)(nil)
+
+func (b *_DeviceStatusBuilder) WithMandatoryFields(programMode bool) DeviceStatusBuilder {
+	return b.WithProgramMode(programMode)
+}
+
+func (b *_DeviceStatusBuilder) WithProgramMode(programMode bool) DeviceStatusBuilder {
+	b.ProgramMode = programMode
+	return b
+}
+
+func (b *_DeviceStatusBuilder) Build() (DeviceStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeviceStatus.deepCopy(), nil
+}
+
+func (b *_DeviceStatusBuilder) MustBuild() DeviceStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DeviceStatusBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceStatusBuilder().(*_DeviceStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeviceStatusBuilder creates a DeviceStatusBuilder
+func (b *_DeviceStatus) CreateDeviceStatusBuilder() DeviceStatusBuilder {
+	if b == nil {
+		return NewDeviceStatusBuilder()
+	}
+	return &_DeviceStatusBuilder{_DeviceStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,11 +150,6 @@ func (m *_DeviceStatus) GetProgramMode() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceStatus factory function for _DeviceStatus
-func NewDeviceStatus(programMode bool) *_DeviceStatus {
-	return &_DeviceStatus{ProgramMode: programMode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceStatus(structType any) DeviceStatus {
@@ -118,7 +197,7 @@ func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DeviceStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceStatus DeviceStatus, err error) {
@@ -182,13 +261,32 @@ func (m *_DeviceStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_DeviceStatus) IsDeviceStatus() {}
 
+func (m *_DeviceStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceStatus) deepCopy() *_DeviceStatus {
+	if m == nil {
+		return nil
+	}
+	_DeviceStatusCopy := &_DeviceStatus{
+		m.ProgramMode,
+		m.reservedField0,
+	}
+	return _DeviceStatusCopy
+}
+
 func (m *_DeviceStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

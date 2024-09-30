@@ -40,8 +40,11 @@ type ReplyOrConfirmation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
+	// CreateBuilder creates a ReplyOrConfirmationBuilder
+	CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder
 }
 
 // ReplyOrConfirmationContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type ReplyOrConfirmationContract interface {
 	GetRequestContext() RequestContext
 	// IsReplyOrConfirmation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReplyOrConfirmation()
+	// CreateBuilder creates a ReplyOrConfirmationBuilder
+	CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder
 }
 
 // ReplyOrConfirmationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -79,6 +84,184 @@ type _ReplyOrConfirmation struct {
 }
 
 var _ ReplyOrConfirmationContract = (*_ReplyOrConfirmation)(nil)
+
+// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
+func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
+	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyOrConfirmationBuilder is a builder for ReplyOrConfirmation
+type ReplyOrConfirmationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(byte) ReplyOrConfirmationBuilder
+	// AsServerErrorReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsServerErrorReply() interface {
+		ServerErrorReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
+	// AsReplyOrConfirmationConfirmation converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsReplyOrConfirmationConfirmation() interface {
+		ReplyOrConfirmationConfirmationBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
+	// AsReplyOrConfirmationReply converts this build to a subType of ReplyOrConfirmation. It is always possible to return to current builder using Done()
+	AsReplyOrConfirmationReply() interface {
+		ReplyOrConfirmationReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}
+	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
+	PartialBuild() (ReplyOrConfirmationContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ReplyOrConfirmationContract
+	// Build builds the ReplyOrConfirmation or returns an error if something is wrong
+	Build() (ReplyOrConfirmation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReplyOrConfirmation
+}
+
+// NewReplyOrConfirmationBuilder() creates a ReplyOrConfirmationBuilder
+func NewReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
+	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: new(_ReplyOrConfirmation)}
+}
+
+type _ReplyOrConfirmationChildBuilder interface {
+	utils.Copyable
+	setParent(ReplyOrConfirmationContract)
+	buildForReplyOrConfirmation() (ReplyOrConfirmation, error)
+}
+
+type _ReplyOrConfirmationBuilder struct {
+	*_ReplyOrConfirmation
+
+	childBuilder _ReplyOrConfirmationChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReplyOrConfirmationBuilder) = (*_ReplyOrConfirmationBuilder)(nil)
+
+func (b *_ReplyOrConfirmationBuilder) WithMandatoryFields(peekedByte byte) ReplyOrConfirmationBuilder {
+	return b.WithPeekedByte(peekedByte)
+}
+
+func (b *_ReplyOrConfirmationBuilder) WithPeekedByte(peekedByte byte) ReplyOrConfirmationBuilder {
+	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_ReplyOrConfirmationBuilder) PartialBuild() (ReplyOrConfirmationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReplyOrConfirmation.deepCopy(), nil
+}
+
+func (b *_ReplyOrConfirmationBuilder) PartialMustBuild() ReplyOrConfirmationContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ReplyOrConfirmationBuilder) AsServerErrorReply() interface {
+	ServerErrorReplyBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ServerErrorReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewServerErrorReplyBuilder().(*_ServerErrorReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationConfirmation() interface {
+	ReplyOrConfirmationConfirmationBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReplyOrConfirmationConfirmationBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReplyOrConfirmationConfirmationBuilder().(*_ReplyOrConfirmationConfirmationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) AsReplyOrConfirmationReply() interface {
+	ReplyOrConfirmationReplyBuilder
+	Done() ReplyOrConfirmationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReplyOrConfirmationReplyBuilder
+		Done() ReplyOrConfirmationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReplyOrConfirmationReplyBuilder().(*_ReplyOrConfirmationReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyOrConfirmationBuilder) Build() (ReplyOrConfirmation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForReplyOrConfirmation()
+}
+
+func (b *_ReplyOrConfirmationBuilder) MustBuild() ReplyOrConfirmation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ReplyOrConfirmationBuilder) DeepCopy() any {
+	_copy := b.CreateReplyOrConfirmationBuilder().(*_ReplyOrConfirmationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ReplyOrConfirmationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReplyOrConfirmationBuilder creates a ReplyOrConfirmationBuilder
+func (b *_ReplyOrConfirmation) CreateReplyOrConfirmationBuilder() ReplyOrConfirmationBuilder {
+	if b == nil {
+		return NewReplyOrConfirmationBuilder()
+	}
+	return &_ReplyOrConfirmationBuilder{_ReplyOrConfirmation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,11 +292,6 @@ func (pm *_ReplyOrConfirmation) GetIsAlpha() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReplyOrConfirmation factory function for _ReplyOrConfirmation
-func NewReplyOrConfirmation(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_ReplyOrConfirmation {
-	return &_ReplyOrConfirmation{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReplyOrConfirmation(structType any) ReplyOrConfirmation {
@@ -153,7 +331,7 @@ func ReplyOrConfirmationParseWithBufferProducer[T ReplyOrConfirmation](cBusOptio
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -163,7 +341,12 @@ func ReplyOrConfirmationParseWithBuffer[T ReplyOrConfirmation](ctx context.Conte
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ReplyOrConfirmation) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (__replyOrConfirmation ReplyOrConfirmation, err error) {
@@ -191,15 +374,15 @@ func (m *_ReplyOrConfirmation) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child ReplyOrConfirmation
 	switch {
 	case isAlpha == bool(false) && peekedByte == 0x21: // ServerErrorReply
-		if _child, err = (&_ServerErrorReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ServerErrorReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServerErrorReply for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(true): // ReplyOrConfirmationConfirmation
-		if _child, err = (&_ReplyOrConfirmationConfirmation{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationConfirmation).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationConfirmation for type-switch of ReplyOrConfirmation")
 		}
 	case isAlpha == bool(false): // ReplyOrConfirmationReply
-		if _child, err = (&_ReplyOrConfirmationReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyOrConfirmationReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyOrConfirmationReply for type-switch of ReplyOrConfirmation")
 		}
 	default:
@@ -256,3 +439,20 @@ func (m *_ReplyOrConfirmation) GetRequestContext() RequestContext {
 ////
 
 func (m *_ReplyOrConfirmation) IsReplyOrConfirmation() {}
+
+func (m *_ReplyOrConfirmation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReplyOrConfirmation) deepCopy() *_ReplyOrConfirmation {
+	if m == nil {
+		return nil
+	}
+	_ReplyOrConfirmationCopy := &_ReplyOrConfirmation{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyOrConfirmationCopy
+}

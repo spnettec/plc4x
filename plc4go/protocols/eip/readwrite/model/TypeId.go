@@ -40,14 +40,19 @@ type TypeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
+	// CreateBuilder creates a TypeIdBuilder
+	CreateTypeIdBuilder() TypeIdBuilder
 }
 
 // TypeIdContract provides a set of functions which can be overwritten by a sub struct
 type TypeIdContract interface {
 	// IsTypeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTypeId()
+	// CreateBuilder creates a TypeIdBuilder
+	CreateTypeIdBuilder() TypeIdBuilder
 }
 
 // TypeIdRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,214 @@ var _ TypeIdContract = (*_TypeId)(nil)
 func NewTypeId() *_TypeId {
 	return &_TypeId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TypeIdBuilder is a builder for TypeId
+type TypeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TypeIdBuilder
+	// AsNullAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsNullAddressItem() interface {
+		NullAddressItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsServicesResponse converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsServicesResponse() interface {
+		ServicesResponseBuilder
+		Done() TypeIdBuilder
+	}
+	// AsConnectedAddressItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsConnectedAddressItem() interface {
+		ConnectedAddressItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsConnectedDataItem() interface {
+		ConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}
+	// AsUnConnectedDataItem converts this build to a subType of TypeId. It is always possible to return to current builder using Done()
+	AsUnConnectedDataItem() interface {
+		UnConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}
+	// Build builds the TypeId or returns an error if something is wrong
+	PartialBuild() (TypeIdContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() TypeIdContract
+	// Build builds the TypeId or returns an error if something is wrong
+	Build() (TypeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TypeId
+}
+
+// NewTypeIdBuilder() creates a TypeIdBuilder
+func NewTypeIdBuilder() TypeIdBuilder {
+	return &_TypeIdBuilder{_TypeId: new(_TypeId)}
+}
+
+type _TypeIdChildBuilder interface {
+	utils.Copyable
+	setParent(TypeIdContract)
+	buildForTypeId() (TypeId, error)
+}
+
+type _TypeIdBuilder struct {
+	*_TypeId
+
+	childBuilder _TypeIdChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TypeIdBuilder) = (*_TypeIdBuilder)(nil)
+
+func (b *_TypeIdBuilder) WithMandatoryFields() TypeIdBuilder {
+	return b
+}
+
+func (b *_TypeIdBuilder) PartialBuild() (TypeIdContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TypeId.deepCopy(), nil
+}
+
+func (b *_TypeIdBuilder) PartialMustBuild() TypeIdContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TypeIdBuilder) AsNullAddressItem() interface {
+	NullAddressItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		NullAddressItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewNullAddressItemBuilder().(*_NullAddressItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsServicesResponse() interface {
+	ServicesResponseBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ServicesResponseBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewServicesResponseBuilder().(*_ServicesResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsConnectedAddressItem() interface {
+	ConnectedAddressItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectedAddressItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsConnectedDataItem() interface {
+	ConnectedDataItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectedDataItemBuilder().(*_ConnectedDataItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) AsUnConnectedDataItem() interface {
+	UnConnectedDataItemBuilder
+	Done() TypeIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		UnConnectedDataItemBuilder
+		Done() TypeIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewUnConnectedDataItemBuilder().(*_UnConnectedDataItemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TypeIdBuilder) Build() (TypeId, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForTypeId()
+}
+
+func (b *_TypeIdBuilder) MustBuild() TypeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TypeIdBuilder) DeepCopy() any {
+	_copy := b.CreateTypeIdBuilder().(*_TypeIdBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_TypeIdChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTypeIdBuilder creates a TypeIdBuilder
+func (b *_TypeId) CreateTypeIdBuilder() TypeIdBuilder {
+	if b == nil {
+		return NewTypeIdBuilder()
+	}
+	return &_TypeIdBuilder{_TypeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastTypeId(structType any) TypeId {
@@ -108,7 +321,7 @@ func TypeIdParseWithBufferProducer[T TypeId]() func(ctx context.Context, readBuf
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +331,12 @@ func TypeIdParseWithBuffer[T TypeId](ctx context.Context, readBuffer utils.ReadB
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_TypeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__typeId TypeId, err error) {
@@ -139,23 +357,23 @@ func (m *_TypeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__typ
 	var _child TypeId
 	switch {
 	case id == 0x0000: // NullAddressItem
-		if _child, err = (&_NullAddressItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_NullAddressItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type NullAddressItem for type-switch of TypeId")
 		}
 	case id == 0x0100: // ServicesResponse
-		if _child, err = (&_ServicesResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ServicesResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ServicesResponse for type-switch of TypeId")
 		}
 	case id == 0x00A1: // ConnectedAddressItem
-		if _child, err = (&_ConnectedAddressItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectedAddressItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectedAddressItem for type-switch of TypeId")
 		}
 	case id == 0x00B1: // ConnectedDataItem
-		if _child, err = (&_ConnectedDataItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectedDataItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectedDataItem for type-switch of TypeId")
 		}
 	case id == 0x00B2: // UnConnectedDataItem
-		if _child, err = (&_UnConnectedDataItem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_UnConnectedDataItem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type UnConnectedDataItem for type-switch of TypeId")
 		}
 	default:
@@ -197,3 +415,17 @@ func (pm *_TypeId) serializeParent(ctx context.Context, writeBuffer utils.WriteB
 }
 
 func (m *_TypeId) IsTypeId() {}
+
+func (m *_TypeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TypeId) deepCopy() *_TypeId {
+	if m == nil {
+		return nil
+	}
+	_TypeIdCopy := &_TypeId{
+		nil, // will be set by child
+	}
+	return _TypeIdCopy
+}

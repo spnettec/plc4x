@@ -42,8 +42,11 @@ type EipConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEipConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipConstants()
+	// CreateBuilder creates a EipConstantsBuilder
+	CreateEipConstantsBuilder() EipConstantsBuilder
 }
 
 // _EipConstants is the data-structure of this message
@@ -51,6 +54,80 @@ type _EipConstants struct {
 }
 
 var _ EipConstants = (*_EipConstants)(nil)
+
+// NewEipConstants factory function for _EipConstants
+func NewEipConstants() *_EipConstants {
+	return &_EipConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipConstantsBuilder is a builder for EipConstants
+type EipConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipConstantsBuilder
+	// Build builds the EipConstants or returns an error if something is wrong
+	Build() (EipConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipConstants
+}
+
+// NewEipConstantsBuilder() creates a EipConstantsBuilder
+func NewEipConstantsBuilder() EipConstantsBuilder {
+	return &_EipConstantsBuilder{_EipConstants: new(_EipConstants)}
+}
+
+type _EipConstantsBuilder struct {
+	*_EipConstants
+
+	err *utils.MultiError
+}
+
+var _ (EipConstantsBuilder) = (*_EipConstantsBuilder)(nil)
+
+func (b *_EipConstantsBuilder) WithMandatoryFields() EipConstantsBuilder {
+	return b
+}
+
+func (b *_EipConstantsBuilder) Build() (EipConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EipConstants.deepCopy(), nil
+}
+
+func (b *_EipConstantsBuilder) MustBuild() EipConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_EipConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateEipConstantsBuilder().(*_EipConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEipConstantsBuilder creates a EipConstantsBuilder
+func (b *_EipConstants) CreateEipConstantsBuilder() EipConstantsBuilder {
+	if b == nil {
+		return NewEipConstantsBuilder()
+	}
+	return &_EipConstantsBuilder{_EipConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,11 +146,6 @@ func (m *_EipConstants) GetEipTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEipConstants factory function for _EipConstants
-func NewEipConstants() *_EipConstants {
-	return &_EipConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEipConstants(structType any) EipConstants {
@@ -121,7 +193,7 @@ func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_EipConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__eipConstants EipConstants, err error) {
@@ -185,13 +257,29 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_EipConstants) IsEipConstants() {}
 
+func (m *_EipConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipConstants) deepCopy() *_EipConstants {
+	if m == nil {
+		return nil
+	}
+	_EipConstantsCopy := &_EipConstants{}
+	return _EipConstantsCopy
+}
+
 func (m *_EipConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetTagPayloadBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetUnusedBits returns UnusedBits (property field)
 	GetUnusedBits() uint8
 	// GetData returns Data (property field)
@@ -46,6 +47,8 @@ type BACnetTagPayloadBitString interface {
 	GetUnused() []bool
 	// IsBACnetTagPayloadBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadBitString()
+	// CreateBuilder creates a BACnetTagPayloadBitStringBuilder
+	CreateBACnetTagPayloadBitStringBuilder() BACnetTagPayloadBitStringBuilder
 }
 
 // _BACnetTagPayloadBitString is the data-structure of this message
@@ -59,6 +62,101 @@ type _BACnetTagPayloadBitString struct {
 }
 
 var _ BACnetTagPayloadBitString = (*_BACnetTagPayloadBitString)(nil)
+
+// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
+func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
+	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadBitStringBuilder is a builder for BACnetTagPayloadBitString
+type BACnetTagPayloadBitStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unusedBits uint8, data []bool, unused []bool) BACnetTagPayloadBitStringBuilder
+	// WithUnusedBits adds UnusedBits (property field)
+	WithUnusedBits(uint8) BACnetTagPayloadBitStringBuilder
+	// WithData adds Data (property field)
+	WithData(...bool) BACnetTagPayloadBitStringBuilder
+	// WithUnused adds Unused (property field)
+	WithUnused(...bool) BACnetTagPayloadBitStringBuilder
+	// Build builds the BACnetTagPayloadBitString or returns an error if something is wrong
+	Build() (BACnetTagPayloadBitString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadBitString
+}
+
+// NewBACnetTagPayloadBitStringBuilder() creates a BACnetTagPayloadBitStringBuilder
+func NewBACnetTagPayloadBitStringBuilder() BACnetTagPayloadBitStringBuilder {
+	return &_BACnetTagPayloadBitStringBuilder{_BACnetTagPayloadBitString: new(_BACnetTagPayloadBitString)}
+}
+
+type _BACnetTagPayloadBitStringBuilder struct {
+	*_BACnetTagPayloadBitString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadBitStringBuilder) = (*_BACnetTagPayloadBitStringBuilder)(nil)
+
+func (b *_BACnetTagPayloadBitStringBuilder) WithMandatoryFields(unusedBits uint8, data []bool, unused []bool) BACnetTagPayloadBitStringBuilder {
+	return b.WithUnusedBits(unusedBits).WithData(data...).WithUnused(unused...)
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) WithUnusedBits(unusedBits uint8) BACnetTagPayloadBitStringBuilder {
+	b.UnusedBits = unusedBits
+	return b
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) WithData(data ...bool) BACnetTagPayloadBitStringBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) WithUnused(unused ...bool) BACnetTagPayloadBitStringBuilder {
+	b.Unused = unused
+	return b
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) Build() (BACnetTagPayloadBitString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadBitString.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) MustBuild() BACnetTagPayloadBitString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadBitStringBuilder().(*_BACnetTagPayloadBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadBitStringBuilder creates a BACnetTagPayloadBitStringBuilder
+func (b *_BACnetTagPayloadBitString) CreateBACnetTagPayloadBitStringBuilder() BACnetTagPayloadBitStringBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadBitStringBuilder()
+	}
+	return &_BACnetTagPayloadBitStringBuilder{_BACnetTagPayloadBitString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +179,6 @@ func (m *_BACnetTagPayloadBitString) GetUnused() []bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadBitString factory function for _BACnetTagPayloadBitString
-func NewBACnetTagPayloadBitString(unusedBits uint8, data []bool, unused []bool, actualLength uint32) *_BACnetTagPayloadBitString {
-	return &_BACnetTagPayloadBitString{UnusedBits: unusedBits, Data: data, Unused: unused, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadBitString(structType any) BACnetTagPayloadBitString {
@@ -140,7 +233,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadBitString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadBitString BACnetTagPayloadBitString, err error) {
@@ -224,13 +317,34 @@ func (m *_BACnetTagPayloadBitString) GetActualLength() uint32 {
 
 func (m *_BACnetTagPayloadBitString) IsBACnetTagPayloadBitString() {}
 
+func (m *_BACnetTagPayloadBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadBitString) deepCopy() *_BACnetTagPayloadBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadBitStringCopy := &_BACnetTagPayloadBitString{
+		m.UnusedBits,
+		utils.DeepCopySlice[bool, bool](m.Data),
+		utils.DeepCopySlice[bool, bool](m.Unused),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadBitStringCopy
+}
+
 func (m *_BACnetTagPayloadBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

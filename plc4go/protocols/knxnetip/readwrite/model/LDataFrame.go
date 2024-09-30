@@ -40,8 +40,11 @@ type LDataFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrame()
+	// CreateBuilder creates a LDataFrameBuilder
+	CreateLDataFrameBuilder() LDataFrameBuilder
 }
 
 // LDataFrameContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type LDataFrameContract interface {
 	GetErrorFlag() bool
 	// IsLDataFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataFrame()
+	// CreateBuilder creates a LDataFrameBuilder
+	CreateLDataFrameBuilder() LDataFrameBuilder
 }
 
 // LDataFrameRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +86,212 @@ type _LDataFrame struct {
 }
 
 var _ LDataFrameContract = (*_LDataFrame)(nil)
+
+// NewLDataFrame factory function for _LDataFrame
+func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
+	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataFrameBuilder is a builder for LDataFrame
+type LDataFrameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) LDataFrameBuilder
+	// WithFrameType adds FrameType (property field)
+	WithFrameType(bool) LDataFrameBuilder
+	// WithNotRepeated adds NotRepeated (property field)
+	WithNotRepeated(bool) LDataFrameBuilder
+	// WithPriority adds Priority (property field)
+	WithPriority(CEMIPriority) LDataFrameBuilder
+	// WithAcknowledgeRequested adds AcknowledgeRequested (property field)
+	WithAcknowledgeRequested(bool) LDataFrameBuilder
+	// WithErrorFlag adds ErrorFlag (property field)
+	WithErrorFlag(bool) LDataFrameBuilder
+	// AsLDataExtended converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLDataExtended() interface {
+		LDataExtendedBuilder
+		Done() LDataFrameBuilder
+	}
+	// AsLPollData converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLPollData() interface {
+		LPollDataBuilder
+		Done() LDataFrameBuilder
+	}
+	// AsLDataFrameACK converts this build to a subType of LDataFrame. It is always possible to return to current builder using Done()
+	AsLDataFrameACK() interface {
+		LDataFrameACKBuilder
+		Done() LDataFrameBuilder
+	}
+	// Build builds the LDataFrame or returns an error if something is wrong
+	PartialBuild() (LDataFrameContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() LDataFrameContract
+	// Build builds the LDataFrame or returns an error if something is wrong
+	Build() (LDataFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataFrame
+}
+
+// NewLDataFrameBuilder() creates a LDataFrameBuilder
+func NewLDataFrameBuilder() LDataFrameBuilder {
+	return &_LDataFrameBuilder{_LDataFrame: new(_LDataFrame)}
+}
+
+type _LDataFrameChildBuilder interface {
+	utils.Copyable
+	setParent(LDataFrameContract)
+	buildForLDataFrame() (LDataFrame, error)
+}
+
+type _LDataFrameBuilder struct {
+	*_LDataFrame
+
+	childBuilder _LDataFrameChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LDataFrameBuilder) = (*_LDataFrameBuilder)(nil)
+
+func (b *_LDataFrameBuilder) WithMandatoryFields(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) LDataFrameBuilder {
+	return b.WithFrameType(frameType).WithNotRepeated(notRepeated).WithPriority(priority).WithAcknowledgeRequested(acknowledgeRequested).WithErrorFlag(errorFlag)
+}
+
+func (b *_LDataFrameBuilder) WithFrameType(frameType bool) LDataFrameBuilder {
+	b.FrameType = frameType
+	return b
+}
+
+func (b *_LDataFrameBuilder) WithNotRepeated(notRepeated bool) LDataFrameBuilder {
+	b.NotRepeated = notRepeated
+	return b
+}
+
+func (b *_LDataFrameBuilder) WithPriority(priority CEMIPriority) LDataFrameBuilder {
+	b.Priority = priority
+	return b
+}
+
+func (b *_LDataFrameBuilder) WithAcknowledgeRequested(acknowledgeRequested bool) LDataFrameBuilder {
+	b.AcknowledgeRequested = acknowledgeRequested
+	return b
+}
+
+func (b *_LDataFrameBuilder) WithErrorFlag(errorFlag bool) LDataFrameBuilder {
+	b.ErrorFlag = errorFlag
+	return b
+}
+
+func (b *_LDataFrameBuilder) PartialBuild() (LDataFrameContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LDataFrame.deepCopy(), nil
+}
+
+func (b *_LDataFrameBuilder) PartialMustBuild() LDataFrameContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LDataFrameBuilder) AsLDataExtended() interface {
+	LDataExtendedBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LDataExtendedBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLDataExtendedBuilder().(*_LDataExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) AsLPollData() interface {
+	LPollDataBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LPollDataBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLPollDataBuilder().(*_LPollDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) AsLDataFrameACK() interface {
+	LDataFrameACKBuilder
+	Done() LDataFrameBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LDataFrameACKBuilder
+		Done() LDataFrameBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLDataFrameACKBuilder().(*_LDataFrameACKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LDataFrameBuilder) Build() (LDataFrame, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForLDataFrame()
+}
+
+func (b *_LDataFrameBuilder) MustBuild() LDataFrame {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LDataFrameBuilder) DeepCopy() any {
+	_copy := b.CreateLDataFrameBuilder().(*_LDataFrameBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_LDataFrameChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLDataFrameBuilder creates a LDataFrameBuilder
+func (b *_LDataFrame) CreateLDataFrameBuilder() LDataFrameBuilder {
+	if b == nil {
+		return NewLDataFrameBuilder()
+	}
+	return &_LDataFrameBuilder{_LDataFrame: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,11 +322,6 @@ func (m *_LDataFrame) GetErrorFlag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataFrame factory function for _LDataFrame
-func NewLDataFrame(frameType bool, notRepeated bool, priority CEMIPriority, acknowledgeRequested bool, errorFlag bool) *_LDataFrame {
-	return &_LDataFrame{FrameType: frameType, NotRepeated: notRepeated, Priority: priority, AcknowledgeRequested: acknowledgeRequested, ErrorFlag: errorFlag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataFrame(structType any) LDataFrame {
@@ -172,7 +378,7 @@ func LDataFrameParseWithBufferProducer[T LDataFrame]() func(ctx context.Context,
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -182,7 +388,12 @@ func LDataFrameParseWithBuffer[T LDataFrame](ctx context.Context, readBuffer uti
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__lDataFrame LDataFrame, err error) {
@@ -238,15 +449,15 @@ func (m *_LDataFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (_
 	var _child LDataFrame
 	switch {
 	case notAckFrame == bool(true) && polling == bool(false): // LDataExtended
-		if _child, err = (&_LDataExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataExtended for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(true) && polling == bool(true): // LPollData
-		if _child, err = (&_LPollData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LPollData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LPollData for type-switch of LDataFrame")
 		}
 	case notAckFrame == bool(false): // LDataFrameACK
-		if _child, err = (&_LDataFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LDataFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LDataFrameACK for type-switch of LDataFrame")
 		}
 	default:
@@ -312,3 +523,22 @@ func (pm *_LDataFrame) serializeParent(ctx context.Context, writeBuffer utils.Wr
 }
 
 func (m *_LDataFrame) IsLDataFrame() {}
+
+func (m *_LDataFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataFrame) deepCopy() *_LDataFrame {
+	if m == nil {
+		return nil
+	}
+	_LDataFrameCopy := &_LDataFrame{
+		nil, // will be set by child
+		m.FrameType,
+		m.NotRepeated,
+		m.Priority,
+		m.AcknowledgeRequested,
+		m.ErrorFlag,
+	}
+	return _LDataFrameCopy
+}

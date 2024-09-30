@@ -36,8 +36,11 @@ type TimeString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTimeString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTimeString()
+	// CreateBuilder creates a TimeStringBuilder
+	CreateTimeStringBuilder() TimeStringBuilder
 }
 
 // _TimeString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ TimeString = (*_TimeString)(nil)
 func NewTimeString() *_TimeString {
 	return &_TimeString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TimeStringBuilder is a builder for TimeString
+type TimeStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TimeStringBuilder
+	// Build builds the TimeString or returns an error if something is wrong
+	Build() (TimeString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TimeString
+}
+
+// NewTimeStringBuilder() creates a TimeStringBuilder
+func NewTimeStringBuilder() TimeStringBuilder {
+	return &_TimeStringBuilder{_TimeString: new(_TimeString)}
+}
+
+type _TimeStringBuilder struct {
+	*_TimeString
+
+	err *utils.MultiError
+}
+
+var _ (TimeStringBuilder) = (*_TimeStringBuilder)(nil)
+
+func (b *_TimeStringBuilder) WithMandatoryFields() TimeStringBuilder {
+	return b
+}
+
+func (b *_TimeStringBuilder) Build() (TimeString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TimeString.deepCopy(), nil
+}
+
+func (b *_TimeStringBuilder) MustBuild() TimeString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TimeStringBuilder) DeepCopy() any {
+	_copy := b.CreateTimeStringBuilder().(*_TimeStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTimeStringBuilder creates a TimeStringBuilder
+func (b *_TimeString) CreateTimeStringBuilder() TimeStringBuilder {
+	if b == nil {
+		return NewTimeStringBuilder()
+	}
+	return &_TimeStringBuilder{_TimeString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastTimeString(structType any) TimeString {
@@ -91,7 +163,7 @@ func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TimeString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__timeString TimeString, err error) {
@@ -135,13 +207,29 @@ func (m *_TimeString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_TimeString) IsTimeString() {}
 
+func (m *_TimeString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TimeString) deepCopy() *_TimeString {
+	if m == nil {
+		return nil
+	}
+	_TimeStringCopy := &_TimeString{}
+	return _TimeStringCopy
+}
+
 func (m *_TimeString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

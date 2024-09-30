@@ -38,6 +38,7 @@ type TimeZoneDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOffset returns Offset (property field)
 	GetOffset() int16
@@ -45,6 +46,8 @@ type TimeZoneDataType interface {
 	GetDaylightSavingInOffset() bool
 	// IsTimeZoneDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTimeZoneDataType()
+	// CreateBuilder creates a TimeZoneDataTypeBuilder
+	CreateTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder
 }
 
 // _TimeZoneDataType is the data-structure of this message
@@ -58,6 +61,115 @@ type _TimeZoneDataType struct {
 
 var _ TimeZoneDataType = (*_TimeZoneDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TimeZoneDataType)(nil)
+
+// NewTimeZoneDataType factory function for _TimeZoneDataType
+func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
+	_result := &_TimeZoneDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Offset:                            offset,
+		DaylightSavingInOffset:            daylightSavingInOffset,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TimeZoneDataTypeBuilder is a builder for TimeZoneDataType
+type TimeZoneDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(offset int16, daylightSavingInOffset bool) TimeZoneDataTypeBuilder
+	// WithOffset adds Offset (property field)
+	WithOffset(int16) TimeZoneDataTypeBuilder
+	// WithDaylightSavingInOffset adds DaylightSavingInOffset (property field)
+	WithDaylightSavingInOffset(bool) TimeZoneDataTypeBuilder
+	// Build builds the TimeZoneDataType or returns an error if something is wrong
+	Build() (TimeZoneDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TimeZoneDataType
+}
+
+// NewTimeZoneDataTypeBuilder() creates a TimeZoneDataTypeBuilder
+func NewTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder {
+	return &_TimeZoneDataTypeBuilder{_TimeZoneDataType: new(_TimeZoneDataType)}
+}
+
+type _TimeZoneDataTypeBuilder struct {
+	*_TimeZoneDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TimeZoneDataTypeBuilder) = (*_TimeZoneDataTypeBuilder)(nil)
+
+func (b *_TimeZoneDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_TimeZoneDataTypeBuilder) WithMandatoryFields(offset int16, daylightSavingInOffset bool) TimeZoneDataTypeBuilder {
+	return b.WithOffset(offset).WithDaylightSavingInOffset(daylightSavingInOffset)
+}
+
+func (b *_TimeZoneDataTypeBuilder) WithOffset(offset int16) TimeZoneDataTypeBuilder {
+	b.Offset = offset
+	return b
+}
+
+func (b *_TimeZoneDataTypeBuilder) WithDaylightSavingInOffset(daylightSavingInOffset bool) TimeZoneDataTypeBuilder {
+	b.DaylightSavingInOffset = daylightSavingInOffset
+	return b
+}
+
+func (b *_TimeZoneDataTypeBuilder) Build() (TimeZoneDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TimeZoneDataType.deepCopy(), nil
+}
+
+func (b *_TimeZoneDataTypeBuilder) MustBuild() TimeZoneDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TimeZoneDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TimeZoneDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TimeZoneDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateTimeZoneDataTypeBuilder().(*_TimeZoneDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTimeZoneDataTypeBuilder creates a TimeZoneDataTypeBuilder
+func (b *_TimeZoneDataType) CreateTimeZoneDataTypeBuilder() TimeZoneDataTypeBuilder {
+	if b == nil {
+		return NewTimeZoneDataTypeBuilder()
+	}
+	return &_TimeZoneDataTypeBuilder{_TimeZoneDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +206,6 @@ func (m *_TimeZoneDataType) GetDaylightSavingInOffset() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTimeZoneDataType factory function for _TimeZoneDataType
-func NewTimeZoneDataType(offset int16, daylightSavingInOffset bool) *_TimeZoneDataType {
-	_result := &_TimeZoneDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Offset:                            offset,
-		DaylightSavingInOffset:            daylightSavingInOffset,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTimeZoneDataType(structType any) TimeZoneDataType {
@@ -216,13 +317,35 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_TimeZoneDataType) IsTimeZoneDataType() {}
 
+func (m *_TimeZoneDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TimeZoneDataType) deepCopy() *_TimeZoneDataType {
+	if m == nil {
+		return nil
+	}
+	_TimeZoneDataTypeCopy := &_TimeZoneDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Offset,
+		m.DaylightSavingInOffset,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TimeZoneDataTypeCopy
+}
+
 func (m *_TimeZoneDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,35 @@ type RouterBusyToNetwork struct {
 	rbtnNetworkList []uint16
 }
 
-func NewRouterBusyToNetwork(opts ...func(*RouterBusyToNetwork)) (*RouterBusyToNetwork, error) {
-	i := &RouterBusyToNetwork{
+func NewRouterBusyToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RouterBusyToNetwork, error) {
+	r := &RouterBusyToNetwork{
 		messageType: 0x04,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMRouterBusyToNetwork(i.rbtnNetworkList, 0), nil)
+	ApplyAppliers(options, r)
+	options = AddLeafTypeIfAbundant(options, r)
+	options = AddNLMIfAbundant(options, model.NewNLMRouterBusyToNetwork(r.rbtnNetworkList, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	r._NPDU = npdu.(*_NPDU)
+	r.AddDebugContents(r, "rbtnNetworkList")
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	r.npduNetMessage = &r.messageType
+	return r, nil
 }
 
-func WithRouterBusyToNetworkDnet(networkList []uint16) func(*RouterBusyToNetwork) {
-	return func(n *RouterBusyToNetwork) {
-		n.rbtnNetworkList = networkList
+// TODO: check if this is rather a KWArgs
+func WithRouterBusyToNetworkDnet(networkList []uint16) GenericApplier[*RouterBusyToNetwork] {
+	return WrapGenericApplier(func(n *RouterBusyToNetwork) { n.rbtnNetworkList = networkList })
+}
+
+func (r *RouterBusyToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "rbtnNetworkList":
+		return r.rbtnNetworkList
 	}
+	return nil
 }
 
 func (r *RouterBusyToNetwork) GetRbtnNetworkList() []uint16 {
@@ -102,8 +108,4 @@ func (r *RouterBusyToNetwork) Decode(npdu Arg) error {
 		r.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RouterBusyToNetwork) String() string {
-	return fmt.Sprintf("RouterBusyToNetwork{%s, rbtnNetworkList: %v}", r._NPDU, r.rbtnNetworkList)
 }

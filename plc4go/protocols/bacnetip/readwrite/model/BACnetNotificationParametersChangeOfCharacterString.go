@@ -38,6 +38,7 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -51,6 +52,8 @@ type BACnetNotificationParametersChangeOfCharacterString interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetNotificationParametersChangeOfCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfCharacterString()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfCharacterStringBuilder
+	CreateBACnetNotificationParametersChangeOfCharacterStringBuilder() BACnetNotificationParametersChangeOfCharacterStringBuilder
 }
 
 // _BACnetNotificationParametersChangeOfCharacterString is the data-structure of this message
@@ -65,6 +68,259 @@ type _BACnetNotificationParametersChangeOfCharacterString struct {
 
 var _ BACnetNotificationParametersChangeOfCharacterString = (*_BACnetNotificationParametersChangeOfCharacterString)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersChangeOfCharacterString)(nil)
+
+// NewBACnetNotificationParametersChangeOfCharacterString factory function for _BACnetNotificationParametersChangeOfCharacterString
+func NewBACnetNotificationParametersChangeOfCharacterString(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfCharacterString {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if changedValue == nil {
+		panic("changedValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if alarmValue == nil {
+		panic("alarmValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfCharacterString{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		ChangedValue:                         changedValue,
+		StatusFlags:                          statusFlags,
+		AlarmValue:                           alarmValue,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfCharacterStringBuilder is a builder for BACnetNotificationParametersChangeOfCharacterString
+type BACnetNotificationParametersChangeOfCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithChangedValue adds ChangedValue (property field)
+	WithChangedValue(BACnetContextTagCharacterString) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithChangedValueBuilder adds ChangedValue (property field) which is build by the builder
+	WithChangedValueBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithAlarmValue adds AlarmValue (property field)
+	WithAlarmValue(BACnetContextTagCharacterString) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithAlarmValueBuilder adds AlarmValue (property field) which is build by the builder
+	WithAlarmValueBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder
+	// Build builds the BACnetNotificationParametersChangeOfCharacterString or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfCharacterString
+}
+
+// NewBACnetNotificationParametersChangeOfCharacterStringBuilder() creates a BACnetNotificationParametersChangeOfCharacterStringBuilder
+func NewBACnetNotificationParametersChangeOfCharacterStringBuilder() BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	return &_BACnetNotificationParametersChangeOfCharacterStringBuilder{_BACnetNotificationParametersChangeOfCharacterString: new(_BACnetNotificationParametersChangeOfCharacterString)}
+}
+
+type _BACnetNotificationParametersChangeOfCharacterStringBuilder struct {
+	*_BACnetNotificationParametersChangeOfCharacterString
+
+	parentBuilder *_BACnetNotificationParametersBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfCharacterStringBuilder) = (*_BACnetNotificationParametersChangeOfCharacterStringBuilder)(nil)
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithChangedValue(changedValue).WithStatusFlags(statusFlags).WithAlarmValue(alarmValue).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithChangedValue(changedValue BACnetContextTagCharacterString) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	b.ChangedValue = changedValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithChangedValueBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.ChangedValue.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	b.ChangedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	b.StatusFlags = statusFlags
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	b.StatusFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithAlarmValue(alarmValue BACnetContextTagCharacterString) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	b.AlarmValue = alarmValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithAlarmValueBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.AlarmValue.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	b.AlarmValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) Build() (BACnetNotificationParametersChangeOfCharacterString, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.ChangedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'changedValue' not set"))
+	}
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if b.AlarmValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'alarmValue' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfCharacterString.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) MustBuild() BACnetNotificationParametersChangeOfCharacterString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfCharacterStringBuilder().(*_BACnetNotificationParametersChangeOfCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersChangeOfCharacterStringBuilder creates a BACnetNotificationParametersChangeOfCharacterStringBuilder
+func (b *_BACnetNotificationParametersChangeOfCharacterString) CreateBACnetNotificationParametersChangeOfCharacterStringBuilder() BACnetNotificationParametersChangeOfCharacterStringBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersChangeOfCharacterStringBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfCharacterStringBuilder{_BACnetNotificationParametersChangeOfCharacterString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,35 +365,6 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) GetInnerClosingTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfCharacterString factory function for _BACnetNotificationParametersChangeOfCharacterString
-func NewBACnetNotificationParametersChangeOfCharacterString(innerOpeningTag BACnetOpeningTag, changedValue BACnetContextTagCharacterString, statusFlags BACnetStatusFlagsTagged, alarmValue BACnetContextTagCharacterString, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersChangeOfCharacterString {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
-	}
-	if changedValue == nil {
-		panic("changedValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersChangeOfCharacterString must not be nil")
-	}
-	if alarmValue == nil {
-		panic("alarmValue of type BACnetContextTagCharacterString for BACnetNotificationParametersChangeOfCharacterString must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfCharacterString must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfCharacterString{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		ChangedValue:                         changedValue,
-		StatusFlags:                          statusFlags,
-		AlarmValue:                           alarmValue,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfCharacterString(structType any) BACnetNotificationParametersChangeOfCharacterString {
@@ -276,13 +503,37 @@ func (m *_BACnetNotificationParametersChangeOfCharacterString) SerializeWithWrit
 func (m *_BACnetNotificationParametersChangeOfCharacterString) IsBACnetNotificationParametersChangeOfCharacterString() {
 }
 
+func (m *_BACnetNotificationParametersChangeOfCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfCharacterString) deepCopy() *_BACnetNotificationParametersChangeOfCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfCharacterStringCopy := &_BACnetNotificationParametersChangeOfCharacterString{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ChangedValue.DeepCopy().(BACnetContextTagCharacterString),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.AlarmValue.DeepCopy().(BACnetContextTagCharacterString),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersChangeOfCharacterStringCopy
+}
+
 func (m *_BACnetNotificationParametersChangeOfCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

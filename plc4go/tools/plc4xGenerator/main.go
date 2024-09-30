@@ -387,7 +387,18 @@ func (g *Generator) generate(typeName string) {
 					}
 					if xIdent.Name == "time" {
 						if sel.Name == "Time" || sel.Name == "Duration" {
-							g.Printf(stringFieldSerialize, "fmt.Sprintf(\"%s\", d."+field.name+")", fieldNameUntitled)
+							deref := ""
+							indentTimes := 0
+							if needsDereference {
+								deref = "*"
+								indentTimes++
+								g.Printf("if d.%s != nil {", field.name)
+							}
+							g.Printf(indent(indentTimes, stringFieldSerialize), "fmt.Sprintf(\"%s\", "+deref+"d."+field.name+")", fieldNameUntitled)
+
+							if needsDereference {
+								g.Printf("}\n")
+							}
 							continue
 						}
 					}
@@ -710,11 +721,11 @@ func (d *%s) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 `
 

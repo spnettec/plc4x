@@ -38,6 +38,7 @@ type CipConnectionManagerResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetOtConnectionId returns OtConnectionId (property field)
 	GetOtConnectionId() uint32
@@ -55,6 +56,8 @@ type CipConnectionManagerResponse interface {
 	GetToApi() uint32
 	// IsCipConnectionManagerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectionManagerResponse()
+	// CreateBuilder creates a CipConnectionManagerResponseBuilder
+	CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder
 }
 
 // _CipConnectionManagerResponse is the data-structure of this message
@@ -74,6 +77,155 @@ type _CipConnectionManagerResponse struct {
 
 var _ CipConnectionManagerResponse = (*_CipConnectionManagerResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectionManagerResponse)(nil)
+
+// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
+func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
+	_result := &_CipConnectionManagerResponse{
+		CipServiceContract:     NewCipService(serviceLen),
+		OtConnectionId:         otConnectionId,
+		ToConnectionId:         toConnectionId,
+		ConnectionSerialNumber: connectionSerialNumber,
+		OriginatorVendorId:     originatorVendorId,
+		OriginatorSerialNumber: originatorSerialNumber,
+		OtApi:                  otApi,
+		ToApi:                  toApi,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectionManagerResponseBuilder is a builder for CipConnectionManagerResponse
+type CipConnectionManagerResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder
+	// WithOtConnectionId adds OtConnectionId (property field)
+	WithOtConnectionId(uint32) CipConnectionManagerResponseBuilder
+	// WithToConnectionId adds ToConnectionId (property field)
+	WithToConnectionId(uint32) CipConnectionManagerResponseBuilder
+	// WithConnectionSerialNumber adds ConnectionSerialNumber (property field)
+	WithConnectionSerialNumber(uint16) CipConnectionManagerResponseBuilder
+	// WithOriginatorVendorId adds OriginatorVendorId (property field)
+	WithOriginatorVendorId(uint16) CipConnectionManagerResponseBuilder
+	// WithOriginatorSerialNumber adds OriginatorSerialNumber (property field)
+	WithOriginatorSerialNumber(uint32) CipConnectionManagerResponseBuilder
+	// WithOtApi adds OtApi (property field)
+	WithOtApi(uint32) CipConnectionManagerResponseBuilder
+	// WithToApi adds ToApi (property field)
+	WithToApi(uint32) CipConnectionManagerResponseBuilder
+	// Build builds the CipConnectionManagerResponse or returns an error if something is wrong
+	Build() (CipConnectionManagerResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectionManagerResponse
+}
+
+// NewCipConnectionManagerResponseBuilder() creates a CipConnectionManagerResponseBuilder
+func NewCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
+	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: new(_CipConnectionManagerResponse)}
+}
+
+type _CipConnectionManagerResponseBuilder struct {
+	*_CipConnectionManagerResponse
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectionManagerResponseBuilder) = (*_CipConnectionManagerResponseBuilder)(nil)
+
+func (b *_CipConnectionManagerResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithMandatoryFields(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32) CipConnectionManagerResponseBuilder {
+	return b.WithOtConnectionId(otConnectionId).WithToConnectionId(toConnectionId).WithConnectionSerialNumber(connectionSerialNumber).WithOriginatorVendorId(originatorVendorId).WithOriginatorSerialNumber(originatorSerialNumber).WithOtApi(otApi).WithToApi(toApi)
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithOtConnectionId(otConnectionId uint32) CipConnectionManagerResponseBuilder {
+	b.OtConnectionId = otConnectionId
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithToConnectionId(toConnectionId uint32) CipConnectionManagerResponseBuilder {
+	b.ToConnectionId = toConnectionId
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithConnectionSerialNumber(connectionSerialNumber uint16) CipConnectionManagerResponseBuilder {
+	b.ConnectionSerialNumber = connectionSerialNumber
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithOriginatorVendorId(originatorVendorId uint16) CipConnectionManagerResponseBuilder {
+	b.OriginatorVendorId = originatorVendorId
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithOriginatorSerialNumber(originatorSerialNumber uint32) CipConnectionManagerResponseBuilder {
+	b.OriginatorSerialNumber = originatorSerialNumber
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithOtApi(otApi uint32) CipConnectionManagerResponseBuilder {
+	b.OtApi = otApi
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) WithToApi(toApi uint32) CipConnectionManagerResponseBuilder {
+	b.ToApi = toApi
+	return b
+}
+
+func (b *_CipConnectionManagerResponseBuilder) Build() (CipConnectionManagerResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipConnectionManagerResponse.deepCopy(), nil
+}
+
+func (b *_CipConnectionManagerResponseBuilder) MustBuild() CipConnectionManagerResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectionManagerResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectionManagerResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectionManagerResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectionManagerResponseBuilder().(*_CipConnectionManagerResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipConnectionManagerResponseBuilder creates a CipConnectionManagerResponseBuilder
+func (b *_CipConnectionManagerResponse) CreateCipConnectionManagerResponseBuilder() CipConnectionManagerResponseBuilder {
+	if b == nil {
+		return NewCipConnectionManagerResponseBuilder()
+	}
+	return &_CipConnectionManagerResponseBuilder{_CipConnectionManagerResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -138,22 +290,6 @@ func (m *_CipConnectionManagerResponse) GetToApi() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectionManagerResponse factory function for _CipConnectionManagerResponse
-func NewCipConnectionManagerResponse(otConnectionId uint32, toConnectionId uint32, connectionSerialNumber uint16, originatorVendorId uint16, originatorSerialNumber uint32, otApi uint32, toApi uint32, serviceLen uint16) *_CipConnectionManagerResponse {
-	_result := &_CipConnectionManagerResponse{
-		CipServiceContract:     NewCipService(serviceLen),
-		OtConnectionId:         otConnectionId,
-		ToConnectionId:         toConnectionId,
-		ConnectionSerialNumber: connectionSerialNumber,
-		OriginatorVendorId:     originatorVendorId,
-		OriginatorSerialNumber: originatorSerialNumber,
-		OtApi:                  otApi,
-		ToApi:                  toApi,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectionManagerResponse(structType any) CipConnectionManagerResponse {
@@ -356,13 +492,41 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_CipConnectionManagerResponse) IsCipConnectionManagerResponse() {}
 
+func (m *_CipConnectionManagerResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectionManagerResponse) deepCopy() *_CipConnectionManagerResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectionManagerResponseCopy := &_CipConnectionManagerResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.OtConnectionId,
+		m.ToConnectionId,
+		m.ConnectionSerialNumber,
+		m.OriginatorVendorId,
+		m.OriginatorSerialNumber,
+		m.OtApi,
+		m.ToApi,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectionManagerResponseCopy
+}
+
 func (m *_CipConnectionManagerResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

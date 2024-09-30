@@ -38,6 +38,7 @@ type ServicesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetEncapsulationProtocol returns EncapsulationProtocol (property field)
 	GetEncapsulationProtocol() uint16
@@ -49,6 +50,8 @@ type ServicesResponse interface {
 	GetData() []byte
 	// IsServicesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServicesResponse()
+	// CreateBuilder creates a ServicesResponseBuilder
+	CreateServicesResponseBuilder() ServicesResponseBuilder
 }
 
 // _ServicesResponse is the data-structure of this message
@@ -65,6 +68,131 @@ type _ServicesResponse struct {
 
 var _ ServicesResponse = (*_ServicesResponse)(nil)
 var _ TypeIdRequirements = (*_ServicesResponse)(nil)
+
+// NewServicesResponse factory function for _ServicesResponse
+func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
+	_result := &_ServicesResponse{
+		TypeIdContract:           NewTypeId(),
+		EncapsulationProtocol:    encapsulationProtocol,
+		SupportsCIPEncapsulation: supportsCIPEncapsulation,
+		SupportsUDP:              supportsUDP,
+		Data:                     data,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServicesResponseBuilder is a builder for ServicesResponse
+type ServicesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder
+	// WithEncapsulationProtocol adds EncapsulationProtocol (property field)
+	WithEncapsulationProtocol(uint16) ServicesResponseBuilder
+	// WithSupportsCIPEncapsulation adds SupportsCIPEncapsulation (property field)
+	WithSupportsCIPEncapsulation(bool) ServicesResponseBuilder
+	// WithSupportsUDP adds SupportsUDP (property field)
+	WithSupportsUDP(bool) ServicesResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ServicesResponseBuilder
+	// Build builds the ServicesResponse or returns an error if something is wrong
+	Build() (ServicesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServicesResponse
+}
+
+// NewServicesResponseBuilder() creates a ServicesResponseBuilder
+func NewServicesResponseBuilder() ServicesResponseBuilder {
+	return &_ServicesResponseBuilder{_ServicesResponse: new(_ServicesResponse)}
+}
+
+type _ServicesResponseBuilder struct {
+	*_ServicesResponse
+
+	parentBuilder *_TypeIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ServicesResponseBuilder) = (*_ServicesResponseBuilder)(nil)
+
+func (b *_ServicesResponseBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
+}
+
+func (b *_ServicesResponseBuilder) WithMandatoryFields(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) ServicesResponseBuilder {
+	return b.WithEncapsulationProtocol(encapsulationProtocol).WithSupportsCIPEncapsulation(supportsCIPEncapsulation).WithSupportsUDP(supportsUDP).WithData(data...)
+}
+
+func (b *_ServicesResponseBuilder) WithEncapsulationProtocol(encapsulationProtocol uint16) ServicesResponseBuilder {
+	b.EncapsulationProtocol = encapsulationProtocol
+	return b
+}
+
+func (b *_ServicesResponseBuilder) WithSupportsCIPEncapsulation(supportsCIPEncapsulation bool) ServicesResponseBuilder {
+	b.SupportsCIPEncapsulation = supportsCIPEncapsulation
+	return b
+}
+
+func (b *_ServicesResponseBuilder) WithSupportsUDP(supportsUDP bool) ServicesResponseBuilder {
+	b.SupportsUDP = supportsUDP
+	return b
+}
+
+func (b *_ServicesResponseBuilder) WithData(data ...byte) ServicesResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ServicesResponseBuilder) Build() (ServicesResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ServicesResponse.deepCopy(), nil
+}
+
+func (b *_ServicesResponseBuilder) MustBuild() ServicesResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ServicesResponseBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ServicesResponseBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ServicesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateServicesResponseBuilder().(*_ServicesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateServicesResponseBuilder creates a ServicesResponseBuilder
+func (b *_ServicesResponse) CreateServicesResponseBuilder() ServicesResponseBuilder {
+	if b == nil {
+		return NewServicesResponseBuilder()
+	}
+	return &_ServicesResponseBuilder{_ServicesResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,19 +237,6 @@ func (m *_ServicesResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServicesResponse factory function for _ServicesResponse
-func NewServicesResponse(encapsulationProtocol uint16, supportsCIPEncapsulation bool, supportsUDP bool, data []byte) *_ServicesResponse {
-	_result := &_ServicesResponse{
-		TypeIdContract:           NewTypeId(),
-		EncapsulationProtocol:    encapsulationProtocol,
-		SupportsCIPEncapsulation: supportsCIPEncapsulation,
-		SupportsUDP:              supportsUDP,
-		Data:                     data,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastServicesResponse(structType any) ServicesResponse {
@@ -287,13 +402,38 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_ServicesResponse) IsServicesResponse() {}
 
+func (m *_ServicesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServicesResponse) deepCopy() *_ServicesResponse {
+	if m == nil {
+		return nil
+	}
+	_ServicesResponseCopy := &_ServicesResponse{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.EncapsulationProtocol,
+		m.SupportsCIPEncapsulation,
+		m.SupportsUDP,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ServicesResponseCopy
+}
+
 func (m *_ServicesResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type ListOfCovNotifications interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMonitoredObjectIdentifier returns MonitoredObjectIdentifier (property field)
 	GetMonitoredObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetOpeningTag returns OpeningTag (property field)
@@ -48,6 +49,8 @@ type ListOfCovNotifications interface {
 	GetClosingTag() BACnetClosingTag
 	// IsListOfCovNotifications is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsListOfCovNotifications()
+	// CreateBuilder creates a ListOfCovNotificationsBuilder
+	CreateListOfCovNotificationsBuilder() ListOfCovNotificationsBuilder
 }
 
 // _ListOfCovNotifications is the data-structure of this message
@@ -59,6 +62,180 @@ type _ListOfCovNotifications struct {
 }
 
 var _ ListOfCovNotifications = (*_ListOfCovNotifications)(nil)
+
+// NewListOfCovNotifications factory function for _ListOfCovNotifications
+func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
+	}
+	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ListOfCovNotificationsBuilder is a builder for ListOfCovNotifications
+type ListOfCovNotificationsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) ListOfCovNotificationsBuilder
+	// WithMonitoredObjectIdentifier adds MonitoredObjectIdentifier (property field)
+	WithMonitoredObjectIdentifier(BACnetContextTagObjectIdentifier) ListOfCovNotificationsBuilder
+	// WithMonitoredObjectIdentifierBuilder adds MonitoredObjectIdentifier (property field) which is build by the builder
+	WithMonitoredObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) ListOfCovNotificationsBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) ListOfCovNotificationsBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) ListOfCovNotificationsBuilder
+	// WithListOfValues adds ListOfValues (property field)
+	WithListOfValues(...ListOfCovNotificationsValue) ListOfCovNotificationsBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) ListOfCovNotificationsBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ListOfCovNotificationsBuilder
+	// Build builds the ListOfCovNotifications or returns an error if something is wrong
+	Build() (ListOfCovNotifications, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ListOfCovNotifications
+}
+
+// NewListOfCovNotificationsBuilder() creates a ListOfCovNotificationsBuilder
+func NewListOfCovNotificationsBuilder() ListOfCovNotificationsBuilder {
+	return &_ListOfCovNotificationsBuilder{_ListOfCovNotifications: new(_ListOfCovNotifications)}
+}
+
+type _ListOfCovNotificationsBuilder struct {
+	*_ListOfCovNotifications
+
+	err *utils.MultiError
+}
+
+var _ (ListOfCovNotificationsBuilder) = (*_ListOfCovNotificationsBuilder)(nil)
+
+func (b *_ListOfCovNotificationsBuilder) WithMandatoryFields(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) ListOfCovNotificationsBuilder {
+	return b.WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithOpeningTag(openingTag).WithListOfValues(listOfValues...).WithClosingTag(closingTag)
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) ListOfCovNotificationsBuilder {
+	b.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) ListOfCovNotificationsBuilder {
+	builder := builderSupplier(b.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.MonitoredObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) ListOfCovNotificationsBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) ListOfCovNotificationsBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithListOfValues(listOfValues ...ListOfCovNotificationsValue) ListOfCovNotificationsBuilder {
+	b.ListOfValues = listOfValues
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithClosingTag(closingTag BACnetClosingTag) ListOfCovNotificationsBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ListOfCovNotificationsBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsBuilder) Build() (ListOfCovNotifications, error) {
+	if b.MonitoredObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+	}
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ListOfCovNotifications.deepCopy(), nil
+}
+
+func (b *_ListOfCovNotificationsBuilder) MustBuild() ListOfCovNotifications {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ListOfCovNotificationsBuilder) DeepCopy() any {
+	_copy := b.CreateListOfCovNotificationsBuilder().(*_ListOfCovNotificationsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateListOfCovNotificationsBuilder creates a ListOfCovNotificationsBuilder
+func (b *_ListOfCovNotifications) CreateListOfCovNotificationsBuilder() ListOfCovNotificationsBuilder {
+	if b == nil {
+		return NewListOfCovNotificationsBuilder()
+	}
+	return &_ListOfCovNotificationsBuilder{_ListOfCovNotifications: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,20 +262,6 @@ func (m *_ListOfCovNotifications) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotifications factory function for _ListOfCovNotifications
-func NewListOfCovNotifications(monitoredObjectIdentifier BACnetContextTagObjectIdentifier, openingTag BACnetOpeningTag, listOfValues []ListOfCovNotificationsValue, closingTag BACnetClosingTag) *_ListOfCovNotifications {
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for ListOfCovNotifications must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ListOfCovNotifications must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ListOfCovNotifications must not be nil")
-	}
-	return &_ListOfCovNotifications{MonitoredObjectIdentifier: monitoredObjectIdentifier, OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotifications(structType any) ListOfCovNotifications {
@@ -156,7 +319,7 @@ func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ListOfCovNotifications) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__listOfCovNotifications ListOfCovNotifications, err error) {
@@ -240,13 +403,34 @@ func (m *_ListOfCovNotifications) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_ListOfCovNotifications) IsListOfCovNotifications() {}
 
+func (m *_ListOfCovNotifications) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotifications) deepCopy() *_ListOfCovNotifications {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsCopy := &_ListOfCovNotifications{
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[ListOfCovNotificationsValue, ListOfCovNotificationsValue](m.ListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _ListOfCovNotificationsCopy
+}
+
 func (m *_ListOfCovNotifications) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

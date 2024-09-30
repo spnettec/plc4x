@@ -38,6 +38,7 @@ type BACnetConstructedDataAbsenteeLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAbsenteeLimit returns AbsenteeLimit (property field)
 	GetAbsenteeLimit() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataAbsenteeLimit interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAbsenteeLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAbsenteeLimit()
+	// CreateBuilder creates a BACnetConstructedDataAbsenteeLimitBuilder
+	CreateBACnetConstructedDataAbsenteeLimitBuilder() BACnetConstructedDataAbsenteeLimitBuilder
 }
 
 // _BACnetConstructedDataAbsenteeLimit is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAbsenteeLimit struct {
 
 var _ BACnetConstructedDataAbsenteeLimit = (*_BACnetConstructedDataAbsenteeLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAbsenteeLimit)(nil)
+
+// NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
+func NewBACnetConstructedDataAbsenteeLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, absenteeLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
+	if absenteeLimit == nil {
+		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataAbsenteeLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AbsenteeLimit:                 absenteeLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAbsenteeLimitBuilder is a builder for BACnetConstructedDataAbsenteeLimit
+type BACnetConstructedDataAbsenteeLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(absenteeLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder
+	// WithAbsenteeLimit adds AbsenteeLimit (property field)
+	WithAbsenteeLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder
+	// WithAbsenteeLimitBuilder adds AbsenteeLimit (property field) which is build by the builder
+	WithAbsenteeLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAbsenteeLimitBuilder
+	// Build builds the BACnetConstructedDataAbsenteeLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataAbsenteeLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAbsenteeLimit
+}
+
+// NewBACnetConstructedDataAbsenteeLimitBuilder() creates a BACnetConstructedDataAbsenteeLimitBuilder
+func NewBACnetConstructedDataAbsenteeLimitBuilder() BACnetConstructedDataAbsenteeLimitBuilder {
+	return &_BACnetConstructedDataAbsenteeLimitBuilder{_BACnetConstructedDataAbsenteeLimit: new(_BACnetConstructedDataAbsenteeLimit)}
+}
+
+type _BACnetConstructedDataAbsenteeLimitBuilder struct {
+	*_BACnetConstructedDataAbsenteeLimit
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAbsenteeLimitBuilder) = (*_BACnetConstructedDataAbsenteeLimitBuilder)(nil)
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) WithMandatoryFields(absenteeLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder {
+	return b.WithAbsenteeLimit(absenteeLimit)
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) WithAbsenteeLimit(absenteeLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAbsenteeLimitBuilder {
+	b.AbsenteeLimit = absenteeLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) WithAbsenteeLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAbsenteeLimitBuilder {
+	builder := builderSupplier(b.AbsenteeLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.AbsenteeLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) Build() (BACnetConstructedDataAbsenteeLimit, error) {
+	if b.AbsenteeLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'absenteeLimit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAbsenteeLimit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) MustBuild() BACnetConstructedDataAbsenteeLimit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAbsenteeLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAbsenteeLimitBuilder().(*_BACnetConstructedDataAbsenteeLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAbsenteeLimitBuilder creates a BACnetConstructedDataAbsenteeLimitBuilder
+func (b *_BACnetConstructedDataAbsenteeLimit) CreateBACnetConstructedDataAbsenteeLimitBuilder() BACnetConstructedDataAbsenteeLimitBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAbsenteeLimitBuilder()
+	}
+	return &_BACnetConstructedDataAbsenteeLimitBuilder{_BACnetConstructedDataAbsenteeLimit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAbsenteeLimit) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAbsenteeLimit factory function for _BACnetConstructedDataAbsenteeLimit
-func NewBACnetConstructedDataAbsenteeLimit(absenteeLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAbsenteeLimit {
-	if absenteeLimit == nil {
-		panic("absenteeLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAbsenteeLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataAbsenteeLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AbsenteeLimit:                 absenteeLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAbsenteeLimit(structType any) BACnetConstructedDataAbsenteeLimit {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataAbsenteeLimit) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataAbsenteeLimit) IsBACnetConstructedDataAbsenteeLimit() {}
 
+func (m *_BACnetConstructedDataAbsenteeLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAbsenteeLimit) deepCopy() *_BACnetConstructedDataAbsenteeLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAbsenteeLimitCopy := &_BACnetConstructedDataAbsenteeLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AbsenteeLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAbsenteeLimitCopy
+}
+
 func (m *_BACnetConstructedDataAbsenteeLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

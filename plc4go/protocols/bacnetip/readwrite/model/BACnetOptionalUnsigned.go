@@ -40,8 +40,11 @@ type BACnetOptionalUnsigned interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
+	// CreateBuilder creates a BACnetOptionalUnsignedBuilder
+	CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder
 }
 
 // BACnetOptionalUnsignedContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetOptionalUnsignedContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetOptionalUnsigned is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalUnsigned()
+	// CreateBuilder creates a BACnetOptionalUnsignedBuilder
+	CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder
 }
 
 // BACnetOptionalUnsignedRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,187 @@ type _BACnetOptionalUnsigned struct {
 }
 
 var _ BACnetOptionalUnsignedContract = (*_BACnetOptionalUnsigned)(nil)
+
+// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
+func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
+	}
+	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOptionalUnsignedBuilder is a builder for BACnetOptionalUnsigned
+type BACnetOptionalUnsignedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetOptionalUnsignedBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalUnsignedBuilder
+	// AsBACnetOptionalUnsignedNull converts this build to a subType of BACnetOptionalUnsigned. It is always possible to return to current builder using Done()
+	AsBACnetOptionalUnsignedNull() interface {
+		BACnetOptionalUnsignedNullBuilder
+		Done() BACnetOptionalUnsignedBuilder
+	}
+	// AsBACnetOptionalUnsignedValue converts this build to a subType of BACnetOptionalUnsigned. It is always possible to return to current builder using Done()
+	AsBACnetOptionalUnsignedValue() interface {
+		BACnetOptionalUnsignedValueBuilder
+		Done() BACnetOptionalUnsignedBuilder
+	}
+	// Build builds the BACnetOptionalUnsigned or returns an error if something is wrong
+	PartialBuild() (BACnetOptionalUnsignedContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetOptionalUnsignedContract
+	// Build builds the BACnetOptionalUnsigned or returns an error if something is wrong
+	Build() (BACnetOptionalUnsigned, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalUnsigned
+}
+
+// NewBACnetOptionalUnsignedBuilder() creates a BACnetOptionalUnsignedBuilder
+func NewBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder {
+	return &_BACnetOptionalUnsignedBuilder{_BACnetOptionalUnsigned: new(_BACnetOptionalUnsigned)}
+}
+
+type _BACnetOptionalUnsignedChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetOptionalUnsignedContract)
+	buildForBACnetOptionalUnsigned() (BACnetOptionalUnsigned, error)
+}
+
+type _BACnetOptionalUnsignedBuilder struct {
+	*_BACnetOptionalUnsigned
+
+	childBuilder _BACnetOptionalUnsignedChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOptionalUnsignedBuilder) = (*_BACnetOptionalUnsignedBuilder)(nil)
+
+func (b *_BACnetOptionalUnsignedBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetOptionalUnsignedBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetOptionalUnsignedBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) PartialBuild() (BACnetOptionalUnsignedContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetOptionalUnsigned.deepCopy(), nil
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) PartialMustBuild() BACnetOptionalUnsignedContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedNull() interface {
+	BACnetOptionalUnsignedNullBuilder
+	Done() BACnetOptionalUnsignedBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalUnsignedNullBuilder
+		Done() BACnetOptionalUnsignedBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalUnsignedNullBuilder().(*_BACnetOptionalUnsignedNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) AsBACnetOptionalUnsignedValue() interface {
+	BACnetOptionalUnsignedValueBuilder
+	Done() BACnetOptionalUnsignedBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetOptionalUnsignedValueBuilder
+		Done() BACnetOptionalUnsignedBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetOptionalUnsignedValueBuilder().(*_BACnetOptionalUnsignedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) Build() (BACnetOptionalUnsigned, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetOptionalUnsigned()
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) MustBuild() BACnetOptionalUnsigned {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetOptionalUnsignedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalUnsignedBuilder().(*_BACnetOptionalUnsignedBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetOptionalUnsignedChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetOptionalUnsignedBuilder creates a BACnetOptionalUnsignedBuilder
+func (b *_BACnetOptionalUnsigned) CreateBACnetOptionalUnsignedBuilder() BACnetOptionalUnsignedBuilder {
+	if b == nil {
+		return NewBACnetOptionalUnsignedBuilder()
+	}
+	return &_BACnetOptionalUnsignedBuilder{_BACnetOptionalUnsigned: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +285,6 @@ func (pm *_BACnetOptionalUnsigned) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalUnsigned factory function for _BACnetOptionalUnsigned
-func NewBACnetOptionalUnsigned(peekedTagHeader BACnetTagHeader) *_BACnetOptionalUnsigned {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetOptionalUnsigned must not be nil")
-	}
-	return &_BACnetOptionalUnsigned{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalUnsigned(structType any) BACnetOptionalUnsigned {
@@ -146,7 +324,7 @@ func BACnetOptionalUnsignedParseWithBufferProducer[T BACnetOptionalUnsigned]() f
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +334,12 @@ func BACnetOptionalUnsignedParseWithBuffer[T BACnetOptionalUnsigned](ctx context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetOptionalUnsigned) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetOptionalUnsigned BACnetOptionalUnsigned, err error) {
@@ -184,11 +367,11 @@ func (m *_BACnetOptionalUnsigned) parse(ctx context.Context, readBuffer utils.Re
 	var _child BACnetOptionalUnsigned
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetOptionalUnsignedNull
-		if _child, err = (&_BACnetOptionalUnsignedNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedNull for type-switch of BACnetOptionalUnsigned")
 		}
 	case 0 == 0: // BACnetOptionalUnsignedValue
-		if _child, err = (&_BACnetOptionalUnsignedValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetOptionalUnsignedValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetOptionalUnsignedValue for type-switch of BACnetOptionalUnsigned")
 		}
 	default:
@@ -232,3 +415,18 @@ func (pm *_BACnetOptionalUnsigned) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_BACnetOptionalUnsigned) IsBACnetOptionalUnsigned() {}
+
+func (m *_BACnetOptionalUnsigned) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalUnsigned) deepCopy() *_BACnetOptionalUnsigned {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalUnsignedCopy := &_BACnetOptionalUnsigned{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetOptionalUnsignedCopy
+}

@@ -38,6 +38,7 @@ type AlarmMessageAckResponseType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFunctionId returns FunctionId (property field)
 	GetFunctionId() uint8
 	// GetNumberOfObjects returns NumberOfObjects (property field)
@@ -46,6 +47,8 @@ type AlarmMessageAckResponseType interface {
 	GetMessageObjects() []uint8
 	// IsAlarmMessageAckResponseType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlarmMessageAckResponseType()
+	// CreateBuilder creates a AlarmMessageAckResponseTypeBuilder
+	CreateAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder
 }
 
 // _AlarmMessageAckResponseType is the data-structure of this message
@@ -56,6 +59,101 @@ type _AlarmMessageAckResponseType struct {
 }
 
 var _ AlarmMessageAckResponseType = (*_AlarmMessageAckResponseType)(nil)
+
+// NewAlarmMessageAckResponseType factory function for _AlarmMessageAckResponseType
+func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *_AlarmMessageAckResponseType {
+	return &_AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlarmMessageAckResponseTypeBuilder is a builder for AlarmMessageAckResponseType
+type AlarmMessageAckResponseTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []uint8) AlarmMessageAckResponseTypeBuilder
+	// WithFunctionId adds FunctionId (property field)
+	WithFunctionId(uint8) AlarmMessageAckResponseTypeBuilder
+	// WithNumberOfObjects adds NumberOfObjects (property field)
+	WithNumberOfObjects(uint8) AlarmMessageAckResponseTypeBuilder
+	// WithMessageObjects adds MessageObjects (property field)
+	WithMessageObjects(...uint8) AlarmMessageAckResponseTypeBuilder
+	// Build builds the AlarmMessageAckResponseType or returns an error if something is wrong
+	Build() (AlarmMessageAckResponseType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AlarmMessageAckResponseType
+}
+
+// NewAlarmMessageAckResponseTypeBuilder() creates a AlarmMessageAckResponseTypeBuilder
+func NewAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder {
+	return &_AlarmMessageAckResponseTypeBuilder{_AlarmMessageAckResponseType: new(_AlarmMessageAckResponseType)}
+}
+
+type _AlarmMessageAckResponseTypeBuilder struct {
+	*_AlarmMessageAckResponseType
+
+	err *utils.MultiError
+}
+
+var _ (AlarmMessageAckResponseTypeBuilder) = (*_AlarmMessageAckResponseTypeBuilder)(nil)
+
+func (b *_AlarmMessageAckResponseTypeBuilder) WithMandatoryFields(functionId uint8, numberOfObjects uint8, messageObjects []uint8) AlarmMessageAckResponseTypeBuilder {
+	return b.WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckResponseTypeBuilder {
+	b.FunctionId = functionId
+	return b
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckResponseTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) WithMessageObjects(messageObjects ...uint8) AlarmMessageAckResponseTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) Build() (AlarmMessageAckResponseType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AlarmMessageAckResponseType.deepCopy(), nil
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) MustBuild() AlarmMessageAckResponseType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AlarmMessageAckResponseTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckResponseTypeBuilder().(*_AlarmMessageAckResponseTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAlarmMessageAckResponseTypeBuilder creates a AlarmMessageAckResponseTypeBuilder
+func (b *_AlarmMessageAckResponseType) CreateAlarmMessageAckResponseTypeBuilder() AlarmMessageAckResponseTypeBuilder {
+	if b == nil {
+		return NewAlarmMessageAckResponseTypeBuilder()
+	}
+	return &_AlarmMessageAckResponseTypeBuilder{_AlarmMessageAckResponseType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_AlarmMessageAckResponseType) GetMessageObjects() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckResponseType factory function for _AlarmMessageAckResponseType
-func NewAlarmMessageAckResponseType(functionId uint8, numberOfObjects uint8, messageObjects []uint8) *_AlarmMessageAckResponseType {
-	return &_AlarmMessageAckResponseType{FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckResponseType(structType any) AlarmMessageAckResponseType {
@@ -135,7 +228,7 @@ func AlarmMessageAckResponseTypeParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AlarmMessageAckResponseType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageAckResponseType AlarmMessageAckResponseType, err error) {
@@ -209,13 +302,33 @@ func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_AlarmMessageAckResponseType) IsAlarmMessageAckResponseType() {}
 
+func (m *_AlarmMessageAckResponseType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckResponseType) deepCopy() *_AlarmMessageAckResponseType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckResponseTypeCopy := &_AlarmMessageAckResponseType{
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[uint8, uint8](m.MessageObjects),
+	}
+	return _AlarmMessageAckResponseTypeCopy
+}
+
 func (m *_AlarmMessageAckResponseType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

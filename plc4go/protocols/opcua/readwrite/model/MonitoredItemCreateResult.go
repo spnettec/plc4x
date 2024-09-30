@@ -38,6 +38,7 @@ type MonitoredItemCreateResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -51,6 +52,8 @@ type MonitoredItemCreateResult interface {
 	GetFilterResult() ExtensionObject
 	// IsMonitoredItemCreateResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemCreateResult()
+	// CreateBuilder creates a MonitoredItemCreateResultBuilder
+	CreateMonitoredItemCreateResultBuilder() MonitoredItemCreateResultBuilder
 }
 
 // _MonitoredItemCreateResult is the data-structure of this message
@@ -65,6 +68,187 @@ type _MonitoredItemCreateResult struct {
 
 var _ MonitoredItemCreateResult = (*_MonitoredItemCreateResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateResult)(nil)
+
+// NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
+func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
+	}
+	if filterResult == nil {
+		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
+	}
+	_result := &_MonitoredItemCreateResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		MonitoredItemId:                   monitoredItemId,
+		RevisedSamplingInterval:           revisedSamplingInterval,
+		RevisedQueueSize:                  revisedQueueSize,
+		FilterResult:                      filterResult,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredItemCreateResultBuilder is a builder for MonitoredItemCreateResult
+type MonitoredItemCreateResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemCreateResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) MonitoredItemCreateResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemCreateResultBuilder
+	// WithMonitoredItemId adds MonitoredItemId (property field)
+	WithMonitoredItemId(uint32) MonitoredItemCreateResultBuilder
+	// WithRevisedSamplingInterval adds RevisedSamplingInterval (property field)
+	WithRevisedSamplingInterval(float64) MonitoredItemCreateResultBuilder
+	// WithRevisedQueueSize adds RevisedQueueSize (property field)
+	WithRevisedQueueSize(uint32) MonitoredItemCreateResultBuilder
+	// WithFilterResult adds FilterResult (property field)
+	WithFilterResult(ExtensionObject) MonitoredItemCreateResultBuilder
+	// WithFilterResultBuilder adds FilterResult (property field) which is build by the builder
+	WithFilterResultBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemCreateResultBuilder
+	// Build builds the MonitoredItemCreateResult or returns an error if something is wrong
+	Build() (MonitoredItemCreateResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredItemCreateResult
+}
+
+// NewMonitoredItemCreateResultBuilder() creates a MonitoredItemCreateResultBuilder
+func NewMonitoredItemCreateResultBuilder() MonitoredItemCreateResultBuilder {
+	return &_MonitoredItemCreateResultBuilder{_MonitoredItemCreateResult: new(_MonitoredItemCreateResult)}
+}
+
+type _MonitoredItemCreateResultBuilder struct {
+	*_MonitoredItemCreateResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredItemCreateResultBuilder) = (*_MonitoredItemCreateResultBuilder)(nil)
+
+func (b *_MonitoredItemCreateResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithMandatoryFields(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) MonitoredItemCreateResultBuilder {
+	return b.WithStatusCode(statusCode).WithMonitoredItemId(monitoredItemId).WithRevisedSamplingInterval(revisedSamplingInterval).WithRevisedQueueSize(revisedQueueSize).WithFilterResult(filterResult)
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithStatusCode(statusCode StatusCode) MonitoredItemCreateResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) MonitoredItemCreateResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	b.StatusCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithMonitoredItemId(monitoredItemId uint32) MonitoredItemCreateResultBuilder {
+	b.MonitoredItemId = monitoredItemId
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithRevisedSamplingInterval(revisedSamplingInterval float64) MonitoredItemCreateResultBuilder {
+	b.RevisedSamplingInterval = revisedSamplingInterval
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithRevisedQueueSize(revisedQueueSize uint32) MonitoredItemCreateResultBuilder {
+	b.RevisedQueueSize = revisedQueueSize
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithFilterResult(filterResult ExtensionObject) MonitoredItemCreateResultBuilder {
+	b.FilterResult = filterResult
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) WithFilterResultBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoredItemCreateResultBuilder {
+	builder := builderSupplier(b.FilterResult.CreateExtensionObjectBuilder())
+	var err error
+	b.FilterResult, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredItemCreateResultBuilder) Build() (MonitoredItemCreateResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if b.FilterResult == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filterResult' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredItemCreateResult.deepCopy(), nil
+}
+
+func (b *_MonitoredItemCreateResultBuilder) MustBuild() MonitoredItemCreateResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredItemCreateResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredItemCreateResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredItemCreateResultBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredItemCreateResultBuilder().(*_MonitoredItemCreateResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredItemCreateResultBuilder creates a MonitoredItemCreateResultBuilder
+func (b *_MonitoredItemCreateResult) CreateMonitoredItemCreateResultBuilder() MonitoredItemCreateResultBuilder {
+	if b == nil {
+		return NewMonitoredItemCreateResultBuilder()
+	}
+	return &_MonitoredItemCreateResultBuilder{_MonitoredItemCreateResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,26 +297,6 @@ func (m *_MonitoredItemCreateResult) GetFilterResult() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemCreateResult factory function for _MonitoredItemCreateResult
-func NewMonitoredItemCreateResult(statusCode StatusCode, monitoredItemId uint32, revisedSamplingInterval float64, revisedQueueSize uint32, filterResult ExtensionObject) *_MonitoredItemCreateResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for MonitoredItemCreateResult must not be nil")
-	}
-	if filterResult == nil {
-		panic("filterResult of type ExtensionObject for MonitoredItemCreateResult must not be nil")
-	}
-	_result := &_MonitoredItemCreateResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		MonitoredItemId:                   monitoredItemId,
-		RevisedSamplingInterval:           revisedSamplingInterval,
-		RevisedQueueSize:                  revisedQueueSize,
-		FilterResult:                      filterResult,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemCreateResult(structType any) MonitoredItemCreateResult {
@@ -270,13 +434,37 @@ func (m *_MonitoredItemCreateResult) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_MonitoredItemCreateResult) IsMonitoredItemCreateResult() {}
 
+func (m *_MonitoredItemCreateResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemCreateResult) deepCopy() *_MonitoredItemCreateResult {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemCreateResultCopy := &_MonitoredItemCreateResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.MonitoredItemId,
+		m.RevisedSamplingInterval,
+		m.RevisedQueueSize,
+		m.FilterResult.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemCreateResultCopy
+}
+
 func (m *_MonitoredItemCreateResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

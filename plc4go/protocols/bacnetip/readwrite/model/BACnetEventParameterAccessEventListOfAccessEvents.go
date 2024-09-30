@@ -38,6 +38,7 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfAccessEvents returns ListOfAccessEvents (property field)
@@ -46,6 +47,8 @@ type BACnetEventParameterAccessEventListOfAccessEvents interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventParameterAccessEventListOfAccessEvents is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterAccessEventListOfAccessEvents()
+	// CreateBuilder creates a BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	CreateBACnetEventParameterAccessEventListOfAccessEventsBuilder() BACnetEventParameterAccessEventListOfAccessEventsBuilder
 }
 
 // _BACnetEventParameterAccessEventListOfAccessEvents is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetEventParameterAccessEventListOfAccessEvents struct {
 }
 
 var _ BACnetEventParameterAccessEventListOfAccessEvents = (*_BACnetEventParameterAccessEventListOfAccessEvents)(nil)
+
+// NewBACnetEventParameterAccessEventListOfAccessEvents factory function for _BACnetEventParameterAccessEventListOfAccessEvents
+func NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterAccessEventListOfAccessEvents {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
+	}
+	return &_BACnetEventParameterAccessEventListOfAccessEvents{OpeningTag: openingTag, ListOfAccessEvents: listOfAccessEvents, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterAccessEventListOfAccessEventsBuilder is a builder for BACnetEventParameterAccessEventListOfAccessEvents
+type BACnetEventParameterAccessEventListOfAccessEventsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithListOfAccessEvents adds ListOfAccessEvents (property field)
+	WithListOfAccessEvents(...BACnetDeviceObjectPropertyReference) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder
+	// Build builds the BACnetEventParameterAccessEventListOfAccessEvents or returns an error if something is wrong
+	Build() (BACnetEventParameterAccessEventListOfAccessEvents, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterAccessEventListOfAccessEvents
+}
+
+// NewBACnetEventParameterAccessEventListOfAccessEventsBuilder() creates a BACnetEventParameterAccessEventListOfAccessEventsBuilder
+func NewBACnetEventParameterAccessEventListOfAccessEventsBuilder() BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	return &_BACnetEventParameterAccessEventListOfAccessEventsBuilder{_BACnetEventParameterAccessEventListOfAccessEvents: new(_BACnetEventParameterAccessEventListOfAccessEvents)}
+}
+
+type _BACnetEventParameterAccessEventListOfAccessEventsBuilder struct {
+	*_BACnetEventParameterAccessEventListOfAccessEvents
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterAccessEventListOfAccessEventsBuilder) = (*_BACnetEventParameterAccessEventListOfAccessEventsBuilder)(nil)
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfAccessEvents(listOfAccessEvents...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithListOfAccessEvents(listOfAccessEvents ...BACnetDeviceObjectPropertyReference) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	b.ListOfAccessEvents = listOfAccessEvents
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) Build() (BACnetEventParameterAccessEventListOfAccessEvents, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterAccessEventListOfAccessEvents.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) MustBuild() BACnetEventParameterAccessEventListOfAccessEvents {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterAccessEventListOfAccessEventsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterAccessEventListOfAccessEventsBuilder().(*_BACnetEventParameterAccessEventListOfAccessEventsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventParameterAccessEventListOfAccessEventsBuilder creates a BACnetEventParameterAccessEventListOfAccessEventsBuilder
+func (b *_BACnetEventParameterAccessEventListOfAccessEvents) CreateBACnetEventParameterAccessEventListOfAccessEventsBuilder() BACnetEventParameterAccessEventListOfAccessEventsBuilder {
+	if b == nil {
+		return NewBACnetEventParameterAccessEventListOfAccessEventsBuilder()
+	}
+	return &_BACnetEventParameterAccessEventListOfAccessEventsBuilder{_BACnetEventParameterAccessEventListOfAccessEvents: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetClosingTag() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterAccessEventListOfAccessEvents factory function for _BACnetEventParameterAccessEventListOfAccessEvents
-func NewBACnetEventParameterAccessEventListOfAccessEvents(openingTag BACnetOpeningTag, listOfAccessEvents []BACnetDeviceObjectPropertyReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterAccessEventListOfAccessEvents {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterAccessEventListOfAccessEvents must not be nil")
-	}
-	return &_BACnetEventParameterAccessEventListOfAccessEvents{OpeningTag: openingTag, ListOfAccessEvents: listOfAccessEvents, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterAccessEventListOfAccessEvents(structType any) BACnetEventParameterAccessEventListOfAccessEvents {
@@ -146,7 +281,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx contex
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterAccessEventListOfAccessEvents BACnetEventParameterAccessEventListOfAccessEvents, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetEventParameterAccessEventListOfAccessEvents) GetTagNumber() uint
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) IsBACnetEventParameterAccessEventListOfAccessEvents() {
 }
 
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterAccessEventListOfAccessEvents) deepCopy() *_BACnetEventParameterAccessEventListOfAccessEvents {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterAccessEventListOfAccessEventsCopy := &_BACnetEventParameterAccessEventListOfAccessEvents{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.ListOfAccessEvents),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterAccessEventListOfAccessEventsCopy
+}
+
 func (m *_BACnetEventParameterAccessEventListOfAccessEvents) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

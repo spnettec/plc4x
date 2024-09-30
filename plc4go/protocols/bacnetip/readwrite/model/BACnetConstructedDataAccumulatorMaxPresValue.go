@@ -38,6 +38,7 @@ type BACnetConstructedDataAccumulatorMaxPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataAccumulatorMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataAccumulatorMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccumulatorMaxPresValue()
+	// CreateBuilder creates a BACnetConstructedDataAccumulatorMaxPresValueBuilder
+	CreateBACnetConstructedDataAccumulatorMaxPresValueBuilder() BACnetConstructedDataAccumulatorMaxPresValueBuilder
 }
 
 // _BACnetConstructedDataAccumulatorMaxPresValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAccumulatorMaxPresValue struct {
 
 var _ BACnetConstructedDataAccumulatorMaxPresValue = (*_BACnetConstructedDataAccumulatorMaxPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccumulatorMaxPresValue)(nil)
+
+// NewBACnetConstructedDataAccumulatorMaxPresValue factory function for _BACnetConstructedDataAccumulatorMaxPresValue
+func NewBACnetConstructedDataAccumulatorMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorMaxPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccumulatorMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccumulatorMaxPresValueBuilder is a builder for BACnetConstructedDataAccumulatorMaxPresValue
+type BACnetConstructedDataAccumulatorMaxPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMaxPresValueBuilder
+	// WithMaxPresValue adds MaxPresValue (property field)
+	WithMaxPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMaxPresValueBuilder
+	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
+	WithMaxPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorMaxPresValueBuilder
+	// Build builds the BACnetConstructedDataAccumulatorMaxPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccumulatorMaxPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccumulatorMaxPresValue
+}
+
+// NewBACnetConstructedDataAccumulatorMaxPresValueBuilder() creates a BACnetConstructedDataAccumulatorMaxPresValueBuilder
+func NewBACnetConstructedDataAccumulatorMaxPresValueBuilder() BACnetConstructedDataAccumulatorMaxPresValueBuilder {
+	return &_BACnetConstructedDataAccumulatorMaxPresValueBuilder{_BACnetConstructedDataAccumulatorMaxPresValue: new(_BACnetConstructedDataAccumulatorMaxPresValue)}
+}
+
+type _BACnetConstructedDataAccumulatorMaxPresValueBuilder struct {
+	*_BACnetConstructedDataAccumulatorMaxPresValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccumulatorMaxPresValueBuilder) = (*_BACnetConstructedDataAccumulatorMaxPresValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMaxPresValueBuilder {
+	return b.WithMaxPresValue(maxPresValue)
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAccumulatorMaxPresValueBuilder {
+	b.MaxPresValue = maxPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAccumulatorMaxPresValueBuilder {
+	builder := builderSupplier(b.MaxPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.MaxPresValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) Build() (BACnetConstructedDataAccumulatorMaxPresValue, error) {
+	if b.MaxPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAccumulatorMaxPresValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) MustBuild() BACnetConstructedDataAccumulatorMaxPresValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccumulatorMaxPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccumulatorMaxPresValueBuilder().(*_BACnetConstructedDataAccumulatorMaxPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAccumulatorMaxPresValueBuilder creates a BACnetConstructedDataAccumulatorMaxPresValueBuilder
+func (b *_BACnetConstructedDataAccumulatorMaxPresValue) CreateBACnetConstructedDataAccumulatorMaxPresValueBuilder() BACnetConstructedDataAccumulatorMaxPresValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAccumulatorMaxPresValueBuilder()
+	}
+	return &_BACnetConstructedDataAccumulatorMaxPresValueBuilder{_BACnetConstructedDataAccumulatorMaxPresValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccumulatorMaxPresValue factory function for _BACnetConstructedDataAccumulatorMaxPresValue
-func NewBACnetConstructedDataAccumulatorMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccumulatorMaxPresValue {
-	if maxPresValue == nil {
-		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataAccumulatorMaxPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccumulatorMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxPresValue:                  maxPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccumulatorMaxPresValue(structType any) BACnetConstructedDataAccumulatorMaxPresValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataAccumulatorMaxPresValue) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataAccumulatorMaxPresValue) IsBACnetConstructedDataAccumulatorMaxPresValue() {
 }
 
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccumulatorMaxPresValue) deepCopy() *_BACnetConstructedDataAccumulatorMaxPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccumulatorMaxPresValueCopy := &_BACnetConstructedDataAccumulatorMaxPresValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccumulatorMaxPresValueCopy
+}
+
 func (m *_BACnetConstructedDataAccumulatorMaxPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

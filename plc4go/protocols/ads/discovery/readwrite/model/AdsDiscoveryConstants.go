@@ -41,8 +41,11 @@ type AdsDiscoveryConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsDiscoveryConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryConstants()
+	// CreateBuilder creates a AdsDiscoveryConstantsBuilder
+	CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder
 }
 
 // _AdsDiscoveryConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _AdsDiscoveryConstants struct {
 }
 
 var _ AdsDiscoveryConstants = (*_AdsDiscoveryConstants)(nil)
+
+// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
+func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
+	return &_AdsDiscoveryConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryConstantsBuilder is a builder for AdsDiscoveryConstants
+type AdsDiscoveryConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsDiscoveryConstantsBuilder
+	// Build builds the AdsDiscoveryConstants or returns an error if something is wrong
+	Build() (AdsDiscoveryConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryConstants
+}
+
+// NewAdsDiscoveryConstantsBuilder() creates a AdsDiscoveryConstantsBuilder
+func NewAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
+	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: new(_AdsDiscoveryConstants)}
+}
+
+type _AdsDiscoveryConstantsBuilder struct {
+	*_AdsDiscoveryConstants
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryConstantsBuilder) = (*_AdsDiscoveryConstantsBuilder)(nil)
+
+func (b *_AdsDiscoveryConstantsBuilder) WithMandatoryFields() AdsDiscoveryConstantsBuilder {
+	return b
+}
+
+func (b *_AdsDiscoveryConstantsBuilder) Build() (AdsDiscoveryConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDiscoveryConstants.deepCopy(), nil
+}
+
+func (b *_AdsDiscoveryConstantsBuilder) MustBuild() AdsDiscoveryConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDiscoveryConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryConstantsBuilder().(*_AdsDiscoveryConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDiscoveryConstantsBuilder creates a AdsDiscoveryConstantsBuilder
+func (b *_AdsDiscoveryConstants) CreateAdsDiscoveryConstantsBuilder() AdsDiscoveryConstantsBuilder {
+	if b == nil {
+		return NewAdsDiscoveryConstantsBuilder()
+	}
+	return &_AdsDiscoveryConstantsBuilder{_AdsDiscoveryConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_AdsDiscoveryConstants) GetAdsDiscoveryUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryConstants factory function for _AdsDiscoveryConstants
-func NewAdsDiscoveryConstants() *_AdsDiscoveryConstants {
-	return &_AdsDiscoveryConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryConstants(structType any) AdsDiscoveryConstants {
@@ -113,7 +185,7 @@ func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsDiscoveryConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDiscoveryConstants AdsDiscoveryConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_AdsDiscoveryConstants) IsAdsDiscoveryConstants() {}
 
+func (m *_AdsDiscoveryConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryConstants) deepCopy() *_AdsDiscoveryConstants {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryConstantsCopy := &_AdsDiscoveryConstants{}
+	return _AdsDiscoveryConstantsCopy
+}
+
 func (m *_AdsDiscoveryConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

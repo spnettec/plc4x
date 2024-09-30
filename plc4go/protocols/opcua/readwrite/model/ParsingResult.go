@@ -38,6 +38,7 @@ type ParsingResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -51,6 +52,8 @@ type ParsingResult interface {
 	GetDataDiagnosticInfos() []DiagnosticInfo
 	// IsParsingResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParsingResult()
+	// CreateBuilder creates a ParsingResultBuilder
+	CreateParsingResultBuilder() ParsingResultBuilder
 }
 
 // _ParsingResult is the data-structure of this message
@@ -65,6 +68,163 @@ type _ParsingResult struct {
 
 var _ ParsingResult = (*_ParsingResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ParsingResult)(nil)
+
+// NewParsingResult factory function for _ParsingResult
+func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for ParsingResult must not be nil")
+	}
+	_result := &_ParsingResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		NoOfDataStatusCodes:               noOfDataStatusCodes,
+		DataStatusCodes:                   dataStatusCodes,
+		NoOfDataDiagnosticInfos:           noOfDataDiagnosticInfos,
+		DataDiagnosticInfos:               dataDiagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParsingResultBuilder is a builder for ParsingResult
+type ParsingResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) ParsingResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder
+	// WithNoOfDataStatusCodes adds NoOfDataStatusCodes (property field)
+	WithNoOfDataStatusCodes(int32) ParsingResultBuilder
+	// WithDataStatusCodes adds DataStatusCodes (property field)
+	WithDataStatusCodes(...StatusCode) ParsingResultBuilder
+	// WithNoOfDataDiagnosticInfos adds NoOfDataDiagnosticInfos (property field)
+	WithNoOfDataDiagnosticInfos(int32) ParsingResultBuilder
+	// WithDataDiagnosticInfos adds DataDiagnosticInfos (property field)
+	WithDataDiagnosticInfos(...DiagnosticInfo) ParsingResultBuilder
+	// Build builds the ParsingResult or returns an error if something is wrong
+	Build() (ParsingResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParsingResult
+}
+
+// NewParsingResultBuilder() creates a ParsingResultBuilder
+func NewParsingResultBuilder() ParsingResultBuilder {
+	return &_ParsingResultBuilder{_ParsingResult: new(_ParsingResult)}
+}
+
+type _ParsingResultBuilder struct {
+	*_ParsingResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParsingResultBuilder) = (*_ParsingResultBuilder)(nil)
+
+func (b *_ParsingResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ParsingResultBuilder) WithMandatoryFields(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) ParsingResultBuilder {
+	return b.WithStatusCode(statusCode).WithNoOfDataStatusCodes(noOfDataStatusCodes).WithDataStatusCodes(dataStatusCodes...).WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos).WithDataDiagnosticInfos(dataDiagnosticInfos...)
+}
+
+func (b *_ParsingResultBuilder) WithStatusCode(statusCode StatusCode) ParsingResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) ParsingResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	b.StatusCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithNoOfDataStatusCodes(noOfDataStatusCodes int32) ParsingResultBuilder {
+	b.NoOfDataStatusCodes = noOfDataStatusCodes
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithDataStatusCodes(dataStatusCodes ...StatusCode) ParsingResultBuilder {
+	b.DataStatusCodes = dataStatusCodes
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithNoOfDataDiagnosticInfos(noOfDataDiagnosticInfos int32) ParsingResultBuilder {
+	b.NoOfDataDiagnosticInfos = noOfDataDiagnosticInfos
+	return b
+}
+
+func (b *_ParsingResultBuilder) WithDataDiagnosticInfos(dataDiagnosticInfos ...DiagnosticInfo) ParsingResultBuilder {
+	b.DataDiagnosticInfos = dataDiagnosticInfos
+	return b
+}
+
+func (b *_ParsingResultBuilder) Build() (ParsingResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParsingResult.deepCopy(), nil
+}
+
+func (b *_ParsingResultBuilder) MustBuild() ParsingResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParsingResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParsingResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ParsingResultBuilder) DeepCopy() any {
+	_copy := b.CreateParsingResultBuilder().(*_ParsingResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParsingResultBuilder creates a ParsingResultBuilder
+func (b *_ParsingResult) CreateParsingResultBuilder() ParsingResultBuilder {
+	if b == nil {
+		return NewParsingResultBuilder()
+	}
+	return &_ParsingResultBuilder{_ParsingResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_ParsingResult) GetDataDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParsingResult factory function for _ParsingResult
-func NewParsingResult(statusCode StatusCode, noOfDataStatusCodes int32, dataStatusCodes []StatusCode, noOfDataDiagnosticInfos int32, dataDiagnosticInfos []DiagnosticInfo) *_ParsingResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for ParsingResult must not be nil")
-	}
-	_result := &_ParsingResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		NoOfDataStatusCodes:               noOfDataStatusCodes,
-		DataStatusCodes:                   dataStatusCodes,
-		NoOfDataDiagnosticInfos:           noOfDataDiagnosticInfos,
-		DataDiagnosticInfos:               dataDiagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParsingResult(structType any) ParsingResult {
@@ -281,13 +424,37 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_ParsingResult) IsParsingResult() {}
 
+func (m *_ParsingResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParsingResult) deepCopy() *_ParsingResult {
+	if m == nil {
+		return nil
+	}
+	_ParsingResultCopy := &_ParsingResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.NoOfDataStatusCodes,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.DataStatusCodes),
+		m.NoOfDataDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DataDiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ParsingResultCopy
+}
+
 func (m *_ParsingResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetReadAccessResultListOfResults interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfReadAccessProperty returns ListOfReadAccessProperty (property field)
@@ -46,6 +47,8 @@ type BACnetReadAccessResultListOfResults interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetReadAccessResultListOfResults is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReadAccessResultListOfResults()
+	// CreateBuilder creates a BACnetReadAccessResultListOfResultsBuilder
+	CreateBACnetReadAccessResultListOfResultsBuilder() BACnetReadAccessResultListOfResultsBuilder
 }
 
 // _BACnetReadAccessResultListOfResults is the data-structure of this message
@@ -60,6 +63,149 @@ type _BACnetReadAccessResultListOfResults struct {
 }
 
 var _ BACnetReadAccessResultListOfResults = (*_BACnetReadAccessResultListOfResults)(nil)
+
+// NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
+func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
+	}
+	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReadAccessResultListOfResultsBuilder is a builder for BACnetReadAccessResultListOfResults
+type BACnetReadAccessResultListOfResultsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetReadAccessResultListOfResultsBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetReadAccessResultListOfResultsBuilder
+	// WithListOfReadAccessProperty adds ListOfReadAccessProperty (property field)
+	WithListOfReadAccessProperty(...BACnetReadAccessProperty) BACnetReadAccessResultListOfResultsBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessResultListOfResultsBuilder
+	// Build builds the BACnetReadAccessResultListOfResults or returns an error if something is wrong
+	Build() (BACnetReadAccessResultListOfResults, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReadAccessResultListOfResults
+}
+
+// NewBACnetReadAccessResultListOfResultsBuilder() creates a BACnetReadAccessResultListOfResultsBuilder
+func NewBACnetReadAccessResultListOfResultsBuilder() BACnetReadAccessResultListOfResultsBuilder {
+	return &_BACnetReadAccessResultListOfResultsBuilder{_BACnetReadAccessResultListOfResults: new(_BACnetReadAccessResultListOfResults)}
+}
+
+type _BACnetReadAccessResultListOfResultsBuilder struct {
+	*_BACnetReadAccessResultListOfResults
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReadAccessResultListOfResultsBuilder) = (*_BACnetReadAccessResultListOfResultsBuilder)(nil)
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfReadAccessProperty(listOfReadAccessProperty...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetReadAccessResultListOfResultsBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetReadAccessResultListOfResultsBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithListOfReadAccessProperty(listOfReadAccessProperty ...BACnetReadAccessProperty) BACnetReadAccessResultListOfResultsBuilder {
+	b.ListOfReadAccessProperty = listOfReadAccessProperty
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetReadAccessResultListOfResultsBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetReadAccessResultListOfResultsBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) Build() (BACnetReadAccessResultListOfResults, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetReadAccessResultListOfResults.deepCopy(), nil
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) MustBuild() BACnetReadAccessResultListOfResults {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetReadAccessResultListOfResultsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetReadAccessResultListOfResultsBuilder().(*_BACnetReadAccessResultListOfResultsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetReadAccessResultListOfResultsBuilder creates a BACnetReadAccessResultListOfResultsBuilder
+func (b *_BACnetReadAccessResultListOfResults) CreateBACnetReadAccessResultListOfResultsBuilder() BACnetReadAccessResultListOfResultsBuilder {
+	if b == nil {
+		return NewBACnetReadAccessResultListOfResultsBuilder()
+	}
+	return &_BACnetReadAccessResultListOfResultsBuilder{_BACnetReadAccessResultListOfResults: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -82,17 +228,6 @@ func (m *_BACnetReadAccessResultListOfResults) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessResultListOfResults factory function for _BACnetReadAccessResultListOfResults
-func NewBACnetReadAccessResultListOfResults(openingTag BACnetOpeningTag, listOfReadAccessProperty []BACnetReadAccessProperty, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetReadAccessResultListOfResults {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetReadAccessResultListOfResults must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetReadAccessResultListOfResults must not be nil")
-	}
-	return &_BACnetReadAccessResultListOfResults{OpeningTag: openingTag, ListOfReadAccessProperty: listOfReadAccessProperty, ClosingTag: closingTag, TagNumber: tagNumber, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessResultListOfResults(structType any) BACnetReadAccessResultListOfResults {
@@ -147,7 +282,7 @@ func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetReadAccessResultListOfResults) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType) (__bACnetReadAccessResultListOfResults BACnetReadAccessResultListOfResults, err error) {
@@ -234,13 +369,35 @@ func (m *_BACnetReadAccessResultListOfResults) GetObjectTypeArgument() BACnetObj
 
 func (m *_BACnetReadAccessResultListOfResults) IsBACnetReadAccessResultListOfResults() {}
 
+func (m *_BACnetReadAccessResultListOfResults) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessResultListOfResults) deepCopy() *_BACnetReadAccessResultListOfResults {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessResultListOfResultsCopy := &_BACnetReadAccessResultListOfResults{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetReadAccessProperty, BACnetReadAccessProperty](m.ListOfReadAccessProperty),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessResultListOfResultsCopy
+}
+
 func (m *_BACnetReadAccessResultListOfResults) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

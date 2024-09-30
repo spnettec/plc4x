@@ -38,11 +38,14 @@ type ApduDataOther interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetExtendedApdu returns ExtendedApdu (property field)
 	GetExtendedApdu() ApduDataExt
 	// IsApduDataOther is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataOther()
+	// CreateBuilder creates a ApduDataOtherBuilder
+	CreateApduDataOtherBuilder() ApduDataOtherBuilder
 }
 
 // _ApduDataOther is the data-structure of this message
@@ -53,6 +56,131 @@ type _ApduDataOther struct {
 
 var _ ApduDataOther = (*_ApduDataOther)(nil)
 var _ ApduDataRequirements = (*_ApduDataOther)(nil)
+
+// NewApduDataOther factory function for _ApduDataOther
+func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
+	if extendedApdu == nil {
+		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
+	}
+	_result := &_ApduDataOther{
+		ApduDataContract: NewApduData(dataLength),
+		ExtendedApdu:     extendedApdu,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataOtherBuilder is a builder for ApduDataOther
+type ApduDataOtherBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder
+	// WithExtendedApdu adds ExtendedApdu (property field)
+	WithExtendedApdu(ApduDataExt) ApduDataOtherBuilder
+	// WithExtendedApduBuilder adds ExtendedApdu (property field) which is build by the builder
+	WithExtendedApduBuilder(func(ApduDataExtBuilder) ApduDataExtBuilder) ApduDataOtherBuilder
+	// Build builds the ApduDataOther or returns an error if something is wrong
+	Build() (ApduDataOther, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataOther
+}
+
+// NewApduDataOtherBuilder() creates a ApduDataOtherBuilder
+func NewApduDataOtherBuilder() ApduDataOtherBuilder {
+	return &_ApduDataOtherBuilder{_ApduDataOther: new(_ApduDataOther)}
+}
+
+type _ApduDataOtherBuilder struct {
+	*_ApduDataOther
+
+	parentBuilder *_ApduDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataOtherBuilder) = (*_ApduDataOtherBuilder)(nil)
+
+func (b *_ApduDataOtherBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
+}
+
+func (b *_ApduDataOtherBuilder) WithMandatoryFields(extendedApdu ApduDataExt) ApduDataOtherBuilder {
+	return b.WithExtendedApdu(extendedApdu)
+}
+
+func (b *_ApduDataOtherBuilder) WithExtendedApdu(extendedApdu ApduDataExt) ApduDataOtherBuilder {
+	b.ExtendedApdu = extendedApdu
+	return b
+}
+
+func (b *_ApduDataOtherBuilder) WithExtendedApduBuilder(builderSupplier func(ApduDataExtBuilder) ApduDataExtBuilder) ApduDataOtherBuilder {
+	builder := builderSupplier(b.ExtendedApdu.CreateApduDataExtBuilder())
+	var err error
+	b.ExtendedApdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ApduDataExtBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApduDataOtherBuilder) Build() (ApduDataOther, error) {
+	if b.ExtendedApdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'extendedApdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataOther.deepCopy(), nil
+}
+
+func (b *_ApduDataOtherBuilder) MustBuild() ApduDataOther {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataOtherBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataOtherBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataOtherBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataOtherBuilder().(*_ApduDataOtherBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataOtherBuilder creates a ApduDataOtherBuilder
+func (b *_ApduDataOther) CreateApduDataOtherBuilder() ApduDataOtherBuilder {
+	if b == nil {
+		return NewApduDataOtherBuilder()
+	}
+	return &_ApduDataOtherBuilder{_ApduDataOther: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_ApduDataOther) GetExtendedApdu() ApduDataExt {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataOther factory function for _ApduDataOther
-func NewApduDataOther(extendedApdu ApduDataExt, dataLength uint8) *_ApduDataOther {
-	if extendedApdu == nil {
-		panic("extendedApdu of type ApduDataExt for ApduDataOther must not be nil")
-	}
-	_result := &_ApduDataOther{
-		ApduDataContract: NewApduData(dataLength),
-		ExtendedApdu:     extendedApdu,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataOther(structType any) ApduDataOther {
@@ -183,13 +298,33 @@ func (m *_ApduDataOther) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_ApduDataOther) IsApduDataOther() {}
 
+func (m *_ApduDataOther) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataOther) deepCopy() *_ApduDataOther {
+	if m == nil {
+		return nil
+	}
+	_ApduDataOtherCopy := &_ApduDataOther{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.ExtendedApdu.DeepCopy().(ApduDataExt),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataOtherCopy
+}
+
 func (m *_ApduDataOther) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

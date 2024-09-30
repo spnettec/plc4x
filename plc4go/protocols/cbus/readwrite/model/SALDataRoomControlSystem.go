@@ -36,9 +36,12 @@ type SALDataRoomControlSystem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataRoomControlSystem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataRoomControlSystem()
+	// CreateBuilder creates a SALDataRoomControlSystemBuilder
+	CreateSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder
 }
 
 // _SALDataRoomControlSystem is the data-structure of this message
@@ -48,6 +51,99 @@ type _SALDataRoomControlSystem struct {
 
 var _ SALDataRoomControlSystem = (*_SALDataRoomControlSystem)(nil)
 var _ SALDataRequirements = (*_SALDataRoomControlSystem)(nil)
+
+// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
+func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
+	_result := &_SALDataRoomControlSystem{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataRoomControlSystemBuilder is a builder for SALDataRoomControlSystem
+type SALDataRoomControlSystemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataRoomControlSystemBuilder
+	// Build builds the SALDataRoomControlSystem or returns an error if something is wrong
+	Build() (SALDataRoomControlSystem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataRoomControlSystem
+}
+
+// NewSALDataRoomControlSystemBuilder() creates a SALDataRoomControlSystemBuilder
+func NewSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder {
+	return &_SALDataRoomControlSystemBuilder{_SALDataRoomControlSystem: new(_SALDataRoomControlSystem)}
+}
+
+type _SALDataRoomControlSystemBuilder struct {
+	*_SALDataRoomControlSystem
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataRoomControlSystemBuilder) = (*_SALDataRoomControlSystemBuilder)(nil)
+
+func (b *_SALDataRoomControlSystemBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataRoomControlSystemBuilder) WithMandatoryFields() SALDataRoomControlSystemBuilder {
+	return b
+}
+
+func (b *_SALDataRoomControlSystemBuilder) Build() (SALDataRoomControlSystem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataRoomControlSystem.deepCopy(), nil
+}
+
+func (b *_SALDataRoomControlSystemBuilder) MustBuild() SALDataRoomControlSystem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataRoomControlSystemBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataRoomControlSystemBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataRoomControlSystemBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataRoomControlSystemBuilder().(*_SALDataRoomControlSystemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataRoomControlSystemBuilder creates a SALDataRoomControlSystemBuilder
+func (b *_SALDataRoomControlSystem) CreateSALDataRoomControlSystemBuilder() SALDataRoomControlSystemBuilder {
+	if b == nil {
+		return NewSALDataRoomControlSystemBuilder()
+	}
+	return &_SALDataRoomControlSystemBuilder{_SALDataRoomControlSystem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_SALDataRoomControlSystem) GetApplicationId() ApplicationId {
 
 func (m *_SALDataRoomControlSystem) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataRoomControlSystem factory function for _SALDataRoomControlSystem
-func NewSALDataRoomControlSystem(salData SALData) *_SALDataRoomControlSystem {
-	_result := &_SALDataRoomControlSystem{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -152,13 +239,32 @@ func (m *_SALDataRoomControlSystem) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_SALDataRoomControlSystem) IsSALDataRoomControlSystem() {}
 
+func (m *_SALDataRoomControlSystem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataRoomControlSystem) deepCopy() *_SALDataRoomControlSystem {
+	if m == nil {
+		return nil
+	}
+	_SALDataRoomControlSystemCopy := &_SALDataRoomControlSystem{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataRoomControlSystemCopy
+}
+
 func (m *_SALDataRoomControlSystem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

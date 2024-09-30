@@ -40,8 +40,11 @@ type BACnetEventParameterChangeOfValueCivCriteria interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfValueCivCriteria()
+	// CreateBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder() BACnetEventParameterChangeOfValueCivCriteriaBuilder
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type BACnetEventParameterChangeOfValueCivCriteriaContract interface {
 	GetTagNumber() uint8
 	// IsBACnetEventParameterChangeOfValueCivCriteria is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfValueCivCriteria()
+	// CreateBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder() BACnetEventParameterChangeOfValueCivCriteriaBuilder
 }
 
 // BACnetEventParameterChangeOfValueCivCriteriaRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,249 @@ type _BACnetEventParameterChangeOfValueCivCriteria struct {
 }
 
 var _ BACnetEventParameterChangeOfValueCivCriteriaContract = (*_BACnetEventParameterChangeOfValueCivCriteria)(nil)
+
+// NewBACnetEventParameterChangeOfValueCivCriteria factory function for _BACnetEventParameterChangeOfValueCivCriteria
+func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteria {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfValueCivCriteria{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterChangeOfValueCivCriteriaBuilder is a builder for BACnetEventParameterChangeOfValueCivCriteria
+type BACnetEventParameterChangeOfValueCivCriteriaBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	// AsBACnetEventParameterChangeOfValueCivCriteriaBitmask converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() interface {
+		BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
+		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	}
+	// AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement converts this build to a subType of BACnetEventParameterChangeOfValueCivCriteria. It is always possible to return to current builder using Done()
+	AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() interface {
+		BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	}
+	// Build builds the BACnetEventParameterChangeOfValueCivCriteria or returns an error if something is wrong
+	PartialBuild() (BACnetEventParameterChangeOfValueCivCriteriaContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetEventParameterChangeOfValueCivCriteriaContract
+	// Build builds the BACnetEventParameterChangeOfValueCivCriteria or returns an error if something is wrong
+	Build() (BACnetEventParameterChangeOfValueCivCriteria, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterChangeOfValueCivCriteria
+}
+
+// NewBACnetEventParameterChangeOfValueCivCriteriaBuilder() creates a BACnetEventParameterChangeOfValueCivCriteriaBuilder
+func NewBACnetEventParameterChangeOfValueCivCriteriaBuilder() BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	return &_BACnetEventParameterChangeOfValueCivCriteriaBuilder{_BACnetEventParameterChangeOfValueCivCriteria: new(_BACnetEventParameterChangeOfValueCivCriteria)}
+}
+
+type _BACnetEventParameterChangeOfValueCivCriteriaChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetEventParameterChangeOfValueCivCriteriaContract)
+	buildForBACnetEventParameterChangeOfValueCivCriteria() (BACnetEventParameterChangeOfValueCivCriteria, error)
+}
+
+type _BACnetEventParameterChangeOfValueCivCriteriaBuilder struct {
+	*_BACnetEventParameterChangeOfValueCivCriteria
+
+	childBuilder _BACnetEventParameterChangeOfValueCivCriteriaChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterChangeOfValueCivCriteriaBuilder) = (*_BACnetEventParameterChangeOfValueCivCriteriaBuilder)(nil)
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) PartialBuild() (BACnetEventParameterChangeOfValueCivCriteriaContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterChangeOfValueCivCriteria.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) PartialMustBuild() BACnetEventParameterChangeOfValueCivCriteriaContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaBitmask() interface {
+	BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
+	Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder
+		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaBitmaskBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) AsBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement() interface {
+	BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+	Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder
+		Done() BACnetEventParameterChangeOfValueCivCriteriaBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) Build() (BACnetEventParameterChangeOfValueCivCriteria, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetEventParameterChangeOfValueCivCriteria()
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) MustBuild() BACnetEventParameterChangeOfValueCivCriteria {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterChangeOfValueCivCriteriaBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder().(*_BACnetEventParameterChangeOfValueCivCriteriaBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetEventParameterChangeOfValueCivCriteriaChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder creates a BACnetEventParameterChangeOfValueCivCriteriaBuilder
+func (b *_BACnetEventParameterChangeOfValueCivCriteria) CreateBACnetEventParameterChangeOfValueCivCriteriaBuilder() BACnetEventParameterChangeOfValueCivCriteriaBuilder {
+	if b == nil {
+		return NewBACnetEventParameterChangeOfValueCivCriteriaBuilder()
+	}
+	return &_BACnetEventParameterChangeOfValueCivCriteriaBuilder{_BACnetEventParameterChangeOfValueCivCriteria: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,20 +366,6 @@ func (pm *_BACnetEventParameterChangeOfValueCivCriteria) GetPeekedTagNumber() ui
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfValueCivCriteria factory function for _BACnetEventParameterChangeOfValueCivCriteria
-func NewBACnetEventParameterChangeOfValueCivCriteria(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfValueCivCriteria {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfValueCivCriteria must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfValueCivCriteria{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfValueCivCriteria(structType any) BACnetEventParameterChangeOfValueCivCriteria {
@@ -177,7 +411,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBufferProducer[T BACne
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -187,7 +421,12 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer[T BACnetEventPa
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfValueCivCriteria BACnetEventParameterChangeOfValueCivCriteria, err error) {
@@ -221,11 +460,11 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) parse(ctx context.Contex
 	var _child BACnetEventParameterChangeOfValueCivCriteria
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventParameterChangeOfValueCivCriteriaBitmask
-		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaBitmask{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfValueCivCriteriaBitmask).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaBitmask for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement
-		if _child, err = (&_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement for type-switch of BACnetEventParameterChangeOfValueCivCriteria")
 		}
 	default:
@@ -293,4 +532,22 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) IsBACnetEventParameterChangeOfValueCivCriteria() {
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) deepCopy() *_BACnetEventParameterChangeOfValueCivCriteria {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfValueCivCriteriaCopy := &_BACnetEventParameterChangeOfValueCivCriteria{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfValueCivCriteriaCopy
 }

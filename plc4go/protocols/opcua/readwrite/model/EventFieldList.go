@@ -38,6 +38,7 @@ type EventFieldList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -47,6 +48,8 @@ type EventFieldList interface {
 	GetEventFields() []Variant
 	// IsEventFieldList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEventFieldList()
+	// CreateBuilder creates a EventFieldListBuilder
+	CreateEventFieldListBuilder() EventFieldListBuilder
 }
 
 // _EventFieldList is the data-structure of this message
@@ -59,6 +62,123 @@ type _EventFieldList struct {
 
 var _ EventFieldList = (*_EventFieldList)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EventFieldList)(nil)
+
+// NewEventFieldList factory function for _EventFieldList
+func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields []Variant) *_EventFieldList {
+	_result := &_EventFieldList{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		NoOfEventFields:                   noOfEventFields,
+		EventFields:                       eventFields,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EventFieldListBuilder is a builder for EventFieldList
+type EventFieldListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder
+	// WithClientHandle adds ClientHandle (property field)
+	WithClientHandle(uint32) EventFieldListBuilder
+	// WithNoOfEventFields adds NoOfEventFields (property field)
+	WithNoOfEventFields(int32) EventFieldListBuilder
+	// WithEventFields adds EventFields (property field)
+	WithEventFields(...Variant) EventFieldListBuilder
+	// Build builds the EventFieldList or returns an error if something is wrong
+	Build() (EventFieldList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EventFieldList
+}
+
+// NewEventFieldListBuilder() creates a EventFieldListBuilder
+func NewEventFieldListBuilder() EventFieldListBuilder {
+	return &_EventFieldListBuilder{_EventFieldList: new(_EventFieldList)}
+}
+
+type _EventFieldListBuilder struct {
+	*_EventFieldList
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EventFieldListBuilder) = (*_EventFieldListBuilder)(nil)
+
+func (b *_EventFieldListBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EventFieldListBuilder) WithMandatoryFields(clientHandle uint32, noOfEventFields int32, eventFields []Variant) EventFieldListBuilder {
+	return b.WithClientHandle(clientHandle).WithNoOfEventFields(noOfEventFields).WithEventFields(eventFields...)
+}
+
+func (b *_EventFieldListBuilder) WithClientHandle(clientHandle uint32) EventFieldListBuilder {
+	b.ClientHandle = clientHandle
+	return b
+}
+
+func (b *_EventFieldListBuilder) WithNoOfEventFields(noOfEventFields int32) EventFieldListBuilder {
+	b.NoOfEventFields = noOfEventFields
+	return b
+}
+
+func (b *_EventFieldListBuilder) WithEventFields(eventFields ...Variant) EventFieldListBuilder {
+	b.EventFields = eventFields
+	return b
+}
+
+func (b *_EventFieldListBuilder) Build() (EventFieldList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EventFieldList.deepCopy(), nil
+}
+
+func (b *_EventFieldListBuilder) MustBuild() EventFieldList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EventFieldListBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EventFieldListBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EventFieldListBuilder) DeepCopy() any {
+	_copy := b.CreateEventFieldListBuilder().(*_EventFieldListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEventFieldListBuilder creates a EventFieldListBuilder
+func (b *_EventFieldList) CreateEventFieldListBuilder() EventFieldListBuilder {
+	if b == nil {
+		return NewEventFieldListBuilder()
+	}
+	return &_EventFieldListBuilder{_EventFieldList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +219,6 @@ func (m *_EventFieldList) GetEventFields() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEventFieldList factory function for _EventFieldList
-func NewEventFieldList(clientHandle uint32, noOfEventFields int32, eventFields []Variant) *_EventFieldList {
-	_result := &_EventFieldList{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		NoOfEventFields:                   noOfEventFields,
-		EventFields:                       eventFields,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEventFieldList(structType any) EventFieldList {
@@ -229,13 +337,35 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_EventFieldList) IsEventFieldList() {}
 
+func (m *_EventFieldList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EventFieldList) deepCopy() *_EventFieldList {
+	if m == nil {
+		return nil
+	}
+	_EventFieldListCopy := &_EventFieldList{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ClientHandle,
+		m.NoOfEventFields,
+		utils.DeepCopySlice[Variant, Variant](m.EventFields),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EventFieldListCopy
+}
+
 func (m *_EventFieldList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

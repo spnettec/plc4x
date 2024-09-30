@@ -40,6 +40,7 @@ type AdsDataTypeArrayInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLowerBound returns LowerBound (property field)
 	GetLowerBound() uint32
 	// GetNumElements returns NumElements (property field)
@@ -48,6 +49,8 @@ type AdsDataTypeArrayInfo interface {
 	GetUpperBound() uint32
 	// IsAdsDataTypeArrayInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeArrayInfo()
+	// CreateBuilder creates a AdsDataTypeArrayInfoBuilder
+	CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder
 }
 
 // _AdsDataTypeArrayInfo is the data-structure of this message
@@ -57,6 +60,94 @@ type _AdsDataTypeArrayInfo struct {
 }
 
 var _ AdsDataTypeArrayInfo = (*_AdsDataTypeArrayInfo)(nil)
+
+// NewAdsDataTypeArrayInfo factory function for _AdsDataTypeArrayInfo
+func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTypeArrayInfo {
+	return &_AdsDataTypeArrayInfo{LowerBound: lowerBound, NumElements: numElements}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDataTypeArrayInfoBuilder is a builder for AdsDataTypeArrayInfo
+type AdsDataTypeArrayInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder
+	// WithLowerBound adds LowerBound (property field)
+	WithLowerBound(uint32) AdsDataTypeArrayInfoBuilder
+	// WithNumElements adds NumElements (property field)
+	WithNumElements(uint32) AdsDataTypeArrayInfoBuilder
+	// Build builds the AdsDataTypeArrayInfo or returns an error if something is wrong
+	Build() (AdsDataTypeArrayInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDataTypeArrayInfo
+}
+
+// NewAdsDataTypeArrayInfoBuilder() creates a AdsDataTypeArrayInfoBuilder
+func NewAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
+	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: new(_AdsDataTypeArrayInfo)}
+}
+
+type _AdsDataTypeArrayInfoBuilder struct {
+	*_AdsDataTypeArrayInfo
+
+	err *utils.MultiError
+}
+
+var _ (AdsDataTypeArrayInfoBuilder) = (*_AdsDataTypeArrayInfoBuilder)(nil)
+
+func (b *_AdsDataTypeArrayInfoBuilder) WithMandatoryFields(lowerBound uint32, numElements uint32) AdsDataTypeArrayInfoBuilder {
+	return b.WithLowerBound(lowerBound).WithNumElements(numElements)
+}
+
+func (b *_AdsDataTypeArrayInfoBuilder) WithLowerBound(lowerBound uint32) AdsDataTypeArrayInfoBuilder {
+	b.LowerBound = lowerBound
+	return b
+}
+
+func (b *_AdsDataTypeArrayInfoBuilder) WithNumElements(numElements uint32) AdsDataTypeArrayInfoBuilder {
+	b.NumElements = numElements
+	return b
+}
+
+func (b *_AdsDataTypeArrayInfoBuilder) Build() (AdsDataTypeArrayInfo, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDataTypeArrayInfo.deepCopy(), nil
+}
+
+func (b *_AdsDataTypeArrayInfoBuilder) MustBuild() AdsDataTypeArrayInfo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDataTypeArrayInfoBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDataTypeArrayInfoBuilder().(*_AdsDataTypeArrayInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDataTypeArrayInfoBuilder creates a AdsDataTypeArrayInfoBuilder
+func (b *_AdsDataTypeArrayInfo) CreateAdsDataTypeArrayInfoBuilder() AdsDataTypeArrayInfoBuilder {
+	if b == nil {
+		return NewAdsDataTypeArrayInfoBuilder()
+	}
+	return &_AdsDataTypeArrayInfoBuilder{_AdsDataTypeArrayInfo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,11 +181,6 @@ func (m *_AdsDataTypeArrayInfo) GetUpperBound() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDataTypeArrayInfo factory function for _AdsDataTypeArrayInfo
-func NewAdsDataTypeArrayInfo(lowerBound uint32, numElements uint32) *_AdsDataTypeArrayInfo {
-	return &_AdsDataTypeArrayInfo{LowerBound: lowerBound, NumElements: numElements}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDataTypeArrayInfo(structType any) AdsDataTypeArrayInfo {
@@ -144,7 +230,7 @@ func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsDataTypeArrayInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeArrayInfo AdsDataTypeArrayInfo, err error) {
@@ -220,13 +306,32 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_AdsDataTypeArrayInfo) IsAdsDataTypeArrayInfo() {}
 
+func (m *_AdsDataTypeArrayInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDataTypeArrayInfo) deepCopy() *_AdsDataTypeArrayInfo {
+	if m == nil {
+		return nil
+	}
+	_AdsDataTypeArrayInfoCopy := &_AdsDataTypeArrayInfo{
+		m.LowerBound,
+		m.NumElements,
+	}
+	return _AdsDataTypeArrayInfoCopy
+}
+
 func (m *_AdsDataTypeArrayInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

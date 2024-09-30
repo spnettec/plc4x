@@ -40,10 +40,13 @@ type Dummy interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDummy returns Dummy (property field)
 	GetDummy() uint16
 	// IsDummy is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDummy()
+	// CreateBuilder creates a DummyBuilder
+	CreateDummyBuilder() DummyBuilder
 }
 
 // _Dummy is the data-structure of this message
@@ -52,6 +55,87 @@ type _Dummy struct {
 }
 
 var _ Dummy = (*_Dummy)(nil)
+
+// NewDummy factory function for _Dummy
+func NewDummy(dummy uint16) *_Dummy {
+	return &_Dummy{Dummy: dummy}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DummyBuilder is a builder for Dummy
+type DummyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dummy uint16) DummyBuilder
+	// WithDummy adds Dummy (property field)
+	WithDummy(uint16) DummyBuilder
+	// Build builds the Dummy or returns an error if something is wrong
+	Build() (Dummy, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Dummy
+}
+
+// NewDummyBuilder() creates a DummyBuilder
+func NewDummyBuilder() DummyBuilder {
+	return &_DummyBuilder{_Dummy: new(_Dummy)}
+}
+
+type _DummyBuilder struct {
+	*_Dummy
+
+	err *utils.MultiError
+}
+
+var _ (DummyBuilder) = (*_DummyBuilder)(nil)
+
+func (b *_DummyBuilder) WithMandatoryFields(dummy uint16) DummyBuilder {
+	return b.WithDummy(dummy)
+}
+
+func (b *_DummyBuilder) WithDummy(dummy uint16) DummyBuilder {
+	b.Dummy = dummy
+	return b
+}
+
+func (b *_DummyBuilder) Build() (Dummy, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Dummy.deepCopy(), nil
+}
+
+func (b *_DummyBuilder) MustBuild() Dummy {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DummyBuilder) DeepCopy() any {
+	_copy := b.CreateDummyBuilder().(*_DummyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDummyBuilder creates a DummyBuilder
+func (b *_Dummy) CreateDummyBuilder() DummyBuilder {
+	if b == nil {
+		return NewDummyBuilder()
+	}
+	return &_DummyBuilder{_Dummy: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,11 +150,6 @@ func (m *_Dummy) GetDummy() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDummy factory function for _Dummy
-func NewDummy(dummy uint16) *_Dummy {
-	return &_Dummy{Dummy: dummy}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDummy(structType any) Dummy {
@@ -115,7 +194,7 @@ func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dum
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Dummy) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dummy Dummy, err error) {
@@ -169,13 +248,31 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 func (m *_Dummy) IsDummy() {}
 
+func (m *_Dummy) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Dummy) deepCopy() *_Dummy {
+	if m == nil {
+		return nil
+	}
+	_DummyCopy := &_Dummy{
+		m.Dummy,
+	}
+	return _DummyCopy
+}
+
 func (m *_Dummy) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

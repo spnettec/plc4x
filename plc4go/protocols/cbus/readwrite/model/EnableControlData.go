@@ -38,6 +38,7 @@ type EnableControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() EnableControlCommandTypeContainer
 	// GetEnableNetworkVariable returns EnableNetworkVariable (property field)
@@ -48,6 +49,8 @@ type EnableControlData interface {
 	GetCommandType() EnableControlCommandType
 	// IsEnableControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEnableControlData()
+	// CreateBuilder creates a EnableControlDataBuilder
+	CreateEnableControlDataBuilder() EnableControlDataBuilder
 }
 
 // _EnableControlData is the data-structure of this message
@@ -58,6 +61,101 @@ type _EnableControlData struct {
 }
 
 var _ EnableControlData = (*_EnableControlData)(nil)
+
+// NewEnableControlData factory function for _EnableControlData
+func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
+	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EnableControlDataBuilder is a builder for EnableControlData
+type EnableControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(EnableControlCommandTypeContainer) EnableControlDataBuilder
+	// WithEnableNetworkVariable adds EnableNetworkVariable (property field)
+	WithEnableNetworkVariable(byte) EnableControlDataBuilder
+	// WithValue adds Value (property field)
+	WithValue(byte) EnableControlDataBuilder
+	// Build builds the EnableControlData or returns an error if something is wrong
+	Build() (EnableControlData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EnableControlData
+}
+
+// NewEnableControlDataBuilder() creates a EnableControlDataBuilder
+func NewEnableControlDataBuilder() EnableControlDataBuilder {
+	return &_EnableControlDataBuilder{_EnableControlData: new(_EnableControlData)}
+}
+
+type _EnableControlDataBuilder struct {
+	*_EnableControlData
+
+	err *utils.MultiError
+}
+
+var _ (EnableControlDataBuilder) = (*_EnableControlDataBuilder)(nil)
+
+func (b *_EnableControlDataBuilder) WithMandatoryFields(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) EnableControlDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithEnableNetworkVariable(enableNetworkVariable).WithValue(value)
+}
+
+func (b *_EnableControlDataBuilder) WithCommandTypeContainer(commandTypeContainer EnableControlCommandTypeContainer) EnableControlDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_EnableControlDataBuilder) WithEnableNetworkVariable(enableNetworkVariable byte) EnableControlDataBuilder {
+	b.EnableNetworkVariable = enableNetworkVariable
+	return b
+}
+
+func (b *_EnableControlDataBuilder) WithValue(value byte) EnableControlDataBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_EnableControlDataBuilder) Build() (EnableControlData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EnableControlData.deepCopy(), nil
+}
+
+func (b *_EnableControlDataBuilder) MustBuild() EnableControlData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_EnableControlDataBuilder) DeepCopy() any {
+	_copy := b.CreateEnableControlDataBuilder().(*_EnableControlDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEnableControlDataBuilder creates a EnableControlDataBuilder
+func (b *_EnableControlData) CreateEnableControlDataBuilder() EnableControlDataBuilder {
+	if b == nil {
+		return NewEnableControlDataBuilder()
+	}
+	return &_EnableControlDataBuilder{_EnableControlData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,11 +193,6 @@ func (m *_EnableControlData) GetCommandType() EnableControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEnableControlData factory function for _EnableControlData
-func NewEnableControlData(commandTypeContainer EnableControlCommandTypeContainer, enableNetworkVariable byte, value byte) *_EnableControlData {
-	return &_EnableControlData{CommandTypeContainer: commandTypeContainer, EnableNetworkVariable: enableNetworkVariable, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastEnableControlData(structType any) EnableControlData {
@@ -152,7 +245,7 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_EnableControlData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__enableControlData EnableControlData, err error) {
@@ -243,13 +336,33 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_EnableControlData) IsEnableControlData() {}
 
+func (m *_EnableControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnableControlData) deepCopy() *_EnableControlData {
+	if m == nil {
+		return nil
+	}
+	_EnableControlDataCopy := &_EnableControlData{
+		m.CommandTypeContainer,
+		m.EnableNetworkVariable,
+		m.Value,
+	}
+	return _EnableControlDataCopy
+}
+
 func (m *_EnableControlData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

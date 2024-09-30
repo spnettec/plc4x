@@ -38,12 +38,15 @@ type BACnetProgramRequestTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetProgramRequest
 	// IsBACnetProgramRequestTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProgramRequestTagged()
+	// CreateBuilder creates a BACnetProgramRequestTaggedBuilder
+	CreateBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder
 }
 
 // _BACnetProgramRequestTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetProgramRequestTagged struct {
 }
 
 var _ BACnetProgramRequestTagged = (*_BACnetProgramRequestTagged)(nil)
+
+// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
+func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
+	}
+	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProgramRequestTaggedBuilder is a builder for BACnetProgramRequestTagged
+type BACnetProgramRequestTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetProgramRequestTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramRequestTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetProgramRequest) BACnetProgramRequestTaggedBuilder
+	// Build builds the BACnetProgramRequestTagged or returns an error if something is wrong
+	Build() (BACnetProgramRequestTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProgramRequestTagged
+}
+
+// NewBACnetProgramRequestTaggedBuilder() creates a BACnetProgramRequestTaggedBuilder
+func NewBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder {
+	return &_BACnetProgramRequestTaggedBuilder{_BACnetProgramRequestTagged: new(_BACnetProgramRequestTagged)}
+}
+
+type _BACnetProgramRequestTaggedBuilder struct {
+	*_BACnetProgramRequestTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProgramRequestTaggedBuilder) = (*_BACnetProgramRequestTaggedBuilder)(nil)
+
+func (b *_BACnetProgramRequestTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetProgramRequestTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramRequestTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) WithValue(value BACnetProgramRequest) BACnetProgramRequestTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) Build() (BACnetProgramRequestTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetProgramRequestTagged.deepCopy(), nil
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) MustBuild() BACnetProgramRequestTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetProgramRequestTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProgramRequestTaggedBuilder().(*_BACnetProgramRequestTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetProgramRequestTaggedBuilder creates a BACnetProgramRequestTaggedBuilder
+func (b *_BACnetProgramRequestTagged) CreateBACnetProgramRequestTaggedBuilder() BACnetProgramRequestTaggedBuilder {
+	if b == nil {
+		return NewBACnetProgramRequestTaggedBuilder()
+	}
+	return &_BACnetProgramRequestTaggedBuilder{_BACnetProgramRequestTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetProgramRequestTagged) GetValue() BACnetProgramRequest {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramRequestTagged factory function for _BACnetProgramRequestTagged
-func NewBACnetProgramRequestTagged(header BACnetTagHeader, value BACnetProgramRequest, tagNumber uint8, tagClass TagClass) *_BACnetProgramRequestTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramRequestTagged must not be nil")
-	}
-	return &_BACnetProgramRequestTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramRequestTagged(structType any) BACnetProgramRequestTagged {
@@ -130,7 +237,7 @@ func BACnetProgramRequestTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetProgramRequestTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetProgramRequestTagged BACnetProgramRequestTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetProgramRequestTagged) GetTagClass() TagClass {
 
 func (m *_BACnetProgramRequestTagged) IsBACnetProgramRequestTagged() {}
 
+func (m *_BACnetProgramRequestTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramRequestTagged) deepCopy() *_BACnetProgramRequestTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramRequestTaggedCopy := &_BACnetProgramRequestTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramRequestTaggedCopy
+}
+
 func (m *_BACnetProgramRequestTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

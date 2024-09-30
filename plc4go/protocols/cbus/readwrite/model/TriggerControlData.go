@@ -40,8 +40,11 @@ type TriggerControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
+	// CreateBuilder creates a TriggerControlDataBuilder
+	CreateTriggerControlDataBuilder() TriggerControlDataBuilder
 }
 
 // TriggerControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type TriggerControlDataContract interface {
 	GetIsUnused() bool
 	// IsTriggerControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlData()
+	// CreateBuilder creates a TriggerControlDataBuilder
+	CreateTriggerControlDataBuilder() TriggerControlDataBuilder
 }
 
 // TriggerControlDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +79,233 @@ type _TriggerControlData struct {
 }
 
 var _ TriggerControlDataContract = (*_TriggerControlData)(nil)
+
+// NewTriggerControlData factory function for _TriggerControlData
+func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
+	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataBuilder is a builder for TriggerControlData
+type TriggerControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) TriggerControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(TriggerControlCommandTypeContainer) TriggerControlDataBuilder
+	// WithTriggerGroup adds TriggerGroup (property field)
+	WithTriggerGroup(byte) TriggerControlDataBuilder
+	// AsTriggerControlDataTriggerEvent converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
+	AsTriggerControlDataTriggerEvent() interface {
+		TriggerControlDataTriggerEventBuilder
+		Done() TriggerControlDataBuilder
+	}
+	// AsTriggerControlDataTriggerMin converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
+	AsTriggerControlDataTriggerMin() interface {
+		TriggerControlDataTriggerMinBuilder
+		Done() TriggerControlDataBuilder
+	}
+	// AsTriggerControlDataTriggerMax converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
+	AsTriggerControlDataTriggerMax() interface {
+		TriggerControlDataTriggerMaxBuilder
+		Done() TriggerControlDataBuilder
+	}
+	// AsTriggerControlDataIndicatorKill converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
+	AsTriggerControlDataIndicatorKill() interface {
+		TriggerControlDataIndicatorKillBuilder
+		Done() TriggerControlDataBuilder
+	}
+	// AsTriggerControlDataLabel converts this build to a subType of TriggerControlData. It is always possible to return to current builder using Done()
+	AsTriggerControlDataLabel() interface {
+		TriggerControlDataLabelBuilder
+		Done() TriggerControlDataBuilder
+	}
+	// Build builds the TriggerControlData or returns an error if something is wrong
+	PartialBuild() (TriggerControlDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() TriggerControlDataContract
+	// Build builds the TriggerControlData or returns an error if something is wrong
+	Build() (TriggerControlData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlData
+}
+
+// NewTriggerControlDataBuilder() creates a TriggerControlDataBuilder
+func NewTriggerControlDataBuilder() TriggerControlDataBuilder {
+	return &_TriggerControlDataBuilder{_TriggerControlData: new(_TriggerControlData)}
+}
+
+type _TriggerControlDataChildBuilder interface {
+	utils.Copyable
+	setParent(TriggerControlDataContract)
+	buildForTriggerControlData() (TriggerControlData, error)
+}
+
+type _TriggerControlDataBuilder struct {
+	*_TriggerControlData
+
+	childBuilder _TriggerControlDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataBuilder) = (*_TriggerControlDataBuilder)(nil)
+
+func (b *_TriggerControlDataBuilder) WithMandatoryFields(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) TriggerControlDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithTriggerGroup(triggerGroup)
+}
+
+func (b *_TriggerControlDataBuilder) WithCommandTypeContainer(commandTypeContainer TriggerControlCommandTypeContainer) TriggerControlDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_TriggerControlDataBuilder) WithTriggerGroup(triggerGroup byte) TriggerControlDataBuilder {
+	b.TriggerGroup = triggerGroup
+	return b
+}
+
+func (b *_TriggerControlDataBuilder) PartialBuild() (TriggerControlDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TriggerControlData.deepCopy(), nil
+}
+
+func (b *_TriggerControlDataBuilder) PartialMustBuild() TriggerControlDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerEvent() interface {
+	TriggerControlDataTriggerEventBuilder
+	Done() TriggerControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TriggerControlDataTriggerEventBuilder
+		Done() TriggerControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTriggerControlDataTriggerEventBuilder().(*_TriggerControlDataTriggerEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMin() interface {
+	TriggerControlDataTriggerMinBuilder
+	Done() TriggerControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TriggerControlDataTriggerMinBuilder
+		Done() TriggerControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTriggerControlDataTriggerMinBuilder().(*_TriggerControlDataTriggerMinBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataTriggerMax() interface {
+	TriggerControlDataTriggerMaxBuilder
+	Done() TriggerControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TriggerControlDataTriggerMaxBuilder
+		Done() TriggerControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTriggerControlDataTriggerMaxBuilder().(*_TriggerControlDataTriggerMaxBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataIndicatorKill() interface {
+	TriggerControlDataIndicatorKillBuilder
+	Done() TriggerControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TriggerControlDataIndicatorKillBuilder
+		Done() TriggerControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTriggerControlDataIndicatorKillBuilder().(*_TriggerControlDataIndicatorKillBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TriggerControlDataBuilder) AsTriggerControlDataLabel() interface {
+	TriggerControlDataLabelBuilder
+	Done() TriggerControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		TriggerControlDataLabelBuilder
+		Done() TriggerControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewTriggerControlDataLabelBuilder().(*_TriggerControlDataLabelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_TriggerControlDataBuilder) Build() (TriggerControlData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForTriggerControlData()
+}
+
+func (b *_TriggerControlDataBuilder) MustBuild() TriggerControlData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TriggerControlDataBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataBuilder().(*_TriggerControlDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_TriggerControlDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTriggerControlDataBuilder creates a TriggerControlDataBuilder
+func (b *_TriggerControlData) CreateTriggerControlDataBuilder() TriggerControlDataBuilder {
+	if b == nil {
+		return NewTriggerControlDataBuilder()
+	}
+	return &_TriggerControlDataBuilder{_TriggerControlData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,11 +347,6 @@ func (pm *_TriggerControlData) GetIsUnused() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlData factory function for _TriggerControlData
-func NewTriggerControlData(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlData {
-	return &_TriggerControlData{CommandTypeContainer: commandTypeContainer, TriggerGroup: triggerGroup}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlData(structType any) TriggerControlData {
@@ -167,7 +394,7 @@ func TriggerControlDataParseWithBufferProducer[T TriggerControlData]() func(ctx 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -177,7 +404,12 @@ func TriggerControlDataParseWithBuffer[T TriggerControlData](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_TriggerControlData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__triggerControlData TriggerControlData, err error) {
@@ -222,23 +454,23 @@ func (m *_TriggerControlData) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child TriggerControlData
 	switch {
 	case commandType == TriggerControlCommandType_TRIGGER_EVENT: // TriggerControlDataTriggerEvent
-		if _child, err = (&_TriggerControlDataTriggerEvent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerEvent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerEvent for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MIN: // TriggerControlDataTriggerMin
-		if _child, err = (&_TriggerControlDataTriggerMin{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMin).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMin for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_TRIGGER_MAX: // TriggerControlDataTriggerMax
-		if _child, err = (&_TriggerControlDataTriggerMax{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataTriggerMax).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataTriggerMax for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_INDICATOR_KILL: // TriggerControlDataIndicatorKill
-		if _child, err = (&_TriggerControlDataIndicatorKill{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_TriggerControlDataIndicatorKill).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataIndicatorKill for type-switch of TriggerControlData")
 		}
 	case commandType == TriggerControlCommandType_LABEL: // TriggerControlDataLabel
-		if _child, err = (&_TriggerControlDataLabel{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_TriggerControlDataLabel).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type TriggerControlDataLabel for type-switch of TriggerControlData")
 		}
 	default:
@@ -296,3 +528,19 @@ func (pm *_TriggerControlData) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_TriggerControlData) IsTriggerControlData() {}
+
+func (m *_TriggerControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlData) deepCopy() *_TriggerControlData {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataCopy := &_TriggerControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.TriggerGroup,
+	}
+	return _TriggerControlDataCopy
+}

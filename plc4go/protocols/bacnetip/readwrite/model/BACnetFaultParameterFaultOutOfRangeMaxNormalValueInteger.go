@@ -38,11 +38,14 @@ type BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameterFaultOutOfRangeMaxNormalValue
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetApplicationTagSignedInteger
 	// IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger()
+	// CreateBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
 }
 
 // _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger struct {
 
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger)(nil)
 var _ BACnetFaultParameterFaultOutOfRangeMaxNormalValueRequirements = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger)(nil)
+
+// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integerValue BACnetApplicationTagSignedInteger, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+	if integerValue == nil {
+		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
+		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		IntegerValue: integerValue,
+	}
+	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder is a builder for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+type BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+	// Build builds the BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+}
+
+// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger: new(_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger)}
+}
+
+type _BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder struct {
+	*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
+
+	parentBuilder *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) = (*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder)(nil)
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) setParent(contract BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract) {
+	b.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract = contract
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithMandatoryFields(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	return b.WithIntegerValue(integerValue)
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	b.IntegerValue = integerValue
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	builder := builderSupplier(b.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.IntegerValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) Build() (BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger, error) {
+	if b.IntegerValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger.deepCopy(), nil
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) MustBuild() BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) Done() BACnetFaultParameterFaultOutOfRangeMaxNormalValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) buildForBACnetFaultParameterFaultOutOfRangeMaxNormalValue() (BACnetFaultParameterFaultOutOfRangeMaxNormalValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder().(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder creates a BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder
+func (b *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) CreateBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder() BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder {
+	if b == nil {
+		return NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder()
+	}
+	return &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerBuilder{_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) GetIntegerVa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger factory function for _BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger
-func NewBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(integerValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
-	if integerValue == nil {
-		panic("integerValue of type BACnetApplicationTagSignedInteger for BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
-		BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract: NewBACnetFaultParameterFaultOutOfRangeMaxNormalValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		IntegerValue: integerValue,
-	}
-	_result.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger(structType any) BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
@@ -180,13 +295,33 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) SerializeWit
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) IsBACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger() {
 }
 
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) deepCopy() *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerCopy := &_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger{
+		m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetFaultParameterFaultOutOfRangeMaxNormalValueContract.(*_BACnetFaultParameterFaultOutOfRangeMaxNormalValue)._SubType = m
+	return _BACnetFaultParameterFaultOutOfRangeMaxNormalValueIntegerCopy
+}
+
 func (m *_BACnetFaultParameterFaultOutOfRangeMaxNormalValueInteger) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

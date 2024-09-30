@@ -38,6 +38,7 @@ type BuildInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetProductUri returns ProductUri (property field)
 	GetProductUri() PascalString
@@ -53,6 +54,8 @@ type BuildInfo interface {
 	GetBuildDate() int64
 	// IsBuildInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBuildInfo()
+	// CreateBuilder creates a BuildInfoBuilder
+	CreateBuildInfoBuilder() BuildInfoBuilder
 }
 
 // _BuildInfo is the data-structure of this message
@@ -68,6 +71,267 @@ type _BuildInfo struct {
 
 var _ BuildInfo = (*_BuildInfo)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BuildInfo)(nil)
+
+// NewBuildInfo factory function for _BuildInfo
+func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
+	if productUri == nil {
+		panic("productUri of type PascalString for BuildInfo must not be nil")
+	}
+	if manufacturerName == nil {
+		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
+	}
+	if productName == nil {
+		panic("productName of type PascalString for BuildInfo must not be nil")
+	}
+	if softwareVersion == nil {
+		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
+	}
+	if buildNumber == nil {
+		panic("buildNumber of type PascalString for BuildInfo must not be nil")
+	}
+	_result := &_BuildInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ProductUri:                        productUri,
+		ManufacturerName:                  manufacturerName,
+		ProductName:                       productName,
+		SoftwareVersion:                   softwareVersion,
+		BuildNumber:                       buildNumber,
+		BuildDate:                         buildDate,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BuildInfoBuilder is a builder for BuildInfo
+type BuildInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) BuildInfoBuilder
+	// WithProductUri adds ProductUri (property field)
+	WithProductUri(PascalString) BuildInfoBuilder
+	// WithProductUriBuilder adds ProductUri (property field) which is build by the builder
+	WithProductUriBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
+	// WithManufacturerName adds ManufacturerName (property field)
+	WithManufacturerName(PascalString) BuildInfoBuilder
+	// WithManufacturerNameBuilder adds ManufacturerName (property field) which is build by the builder
+	WithManufacturerNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
+	// WithProductName adds ProductName (property field)
+	WithProductName(PascalString) BuildInfoBuilder
+	// WithProductNameBuilder adds ProductName (property field) which is build by the builder
+	WithProductNameBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
+	// WithSoftwareVersion adds SoftwareVersion (property field)
+	WithSoftwareVersion(PascalString) BuildInfoBuilder
+	// WithSoftwareVersionBuilder adds SoftwareVersion (property field) which is build by the builder
+	WithSoftwareVersionBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
+	// WithBuildNumber adds BuildNumber (property field)
+	WithBuildNumber(PascalString) BuildInfoBuilder
+	// WithBuildNumberBuilder adds BuildNumber (property field) which is build by the builder
+	WithBuildNumberBuilder(func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder
+	// WithBuildDate adds BuildDate (property field)
+	WithBuildDate(int64) BuildInfoBuilder
+	// Build builds the BuildInfo or returns an error if something is wrong
+	Build() (BuildInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BuildInfo
+}
+
+// NewBuildInfoBuilder() creates a BuildInfoBuilder
+func NewBuildInfoBuilder() BuildInfoBuilder {
+	return &_BuildInfoBuilder{_BuildInfo: new(_BuildInfo)}
+}
+
+type _BuildInfoBuilder struct {
+	*_BuildInfo
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BuildInfoBuilder) = (*_BuildInfoBuilder)(nil)
+
+func (b *_BuildInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BuildInfoBuilder) WithMandatoryFields(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) BuildInfoBuilder {
+	return b.WithProductUri(productUri).WithManufacturerName(manufacturerName).WithProductName(productName).WithSoftwareVersion(softwareVersion).WithBuildNumber(buildNumber).WithBuildDate(buildDate)
+}
+
+func (b *_BuildInfoBuilder) WithProductUri(productUri PascalString) BuildInfoBuilder {
+	b.ProductUri = productUri
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithProductUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ProductUri.CreatePascalStringBuilder())
+	var err error
+	b.ProductUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithManufacturerName(manufacturerName PascalString) BuildInfoBuilder {
+	b.ManufacturerName = manufacturerName
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithManufacturerNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ManufacturerName.CreatePascalStringBuilder())
+	var err error
+	b.ManufacturerName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithProductName(productName PascalString) BuildInfoBuilder {
+	b.ProductName = productName
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithProductNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.ProductName.CreatePascalStringBuilder())
+	var err error
+	b.ProductName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithSoftwareVersion(softwareVersion PascalString) BuildInfoBuilder {
+	b.SoftwareVersion = softwareVersion
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithSoftwareVersionBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.SoftwareVersion.CreatePascalStringBuilder())
+	var err error
+	b.SoftwareVersion, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithBuildNumber(buildNumber PascalString) BuildInfoBuilder {
+	b.BuildNumber = buildNumber
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithBuildNumberBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) BuildInfoBuilder {
+	builder := builderSupplier(b.BuildNumber.CreatePascalStringBuilder())
+	var err error
+	b.BuildNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BuildInfoBuilder) WithBuildDate(buildDate int64) BuildInfoBuilder {
+	b.BuildDate = buildDate
+	return b
+}
+
+func (b *_BuildInfoBuilder) Build() (BuildInfo, error) {
+	if b.ProductUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'productUri' not set"))
+	}
+	if b.ManufacturerName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'manufacturerName' not set"))
+	}
+	if b.ProductName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'productName' not set"))
+	}
+	if b.SoftwareVersion == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'softwareVersion' not set"))
+	}
+	if b.BuildNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'buildNumber' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BuildInfo.deepCopy(), nil
+}
+
+func (b *_BuildInfoBuilder) MustBuild() BuildInfo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BuildInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BuildInfoBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BuildInfoBuilder) DeepCopy() any {
+	_copy := b.CreateBuildInfoBuilder().(*_BuildInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBuildInfoBuilder creates a BuildInfoBuilder
+func (b *_BuildInfo) CreateBuildInfoBuilder() BuildInfoBuilder {
+	if b == nil {
+		return NewBuildInfoBuilder()
+	}
+	return &_BuildInfoBuilder{_BuildInfo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,36 +384,6 @@ func (m *_BuildInfo) GetBuildDate() int64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBuildInfo factory function for _BuildInfo
-func NewBuildInfo(productUri PascalString, manufacturerName PascalString, productName PascalString, softwareVersion PascalString, buildNumber PascalString, buildDate int64) *_BuildInfo {
-	if productUri == nil {
-		panic("productUri of type PascalString for BuildInfo must not be nil")
-	}
-	if manufacturerName == nil {
-		panic("manufacturerName of type PascalString for BuildInfo must not be nil")
-	}
-	if productName == nil {
-		panic("productName of type PascalString for BuildInfo must not be nil")
-	}
-	if softwareVersion == nil {
-		panic("softwareVersion of type PascalString for BuildInfo must not be nil")
-	}
-	if buildNumber == nil {
-		panic("buildNumber of type PascalString for BuildInfo must not be nil")
-	}
-	_result := &_BuildInfo{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ProductUri:                        productUri,
-		ManufacturerName:                  manufacturerName,
-		ProductName:                       productName,
-		SoftwareVersion:                   softwareVersion,
-		BuildNumber:                       buildNumber,
-		BuildDate:                         buildDate,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBuildInfo(structType any) BuildInfo {
@@ -300,13 +534,38 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_BuildInfo) IsBuildInfo() {}
 
+func (m *_BuildInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BuildInfo) deepCopy() *_BuildInfo {
+	if m == nil {
+		return nil
+	}
+	_BuildInfoCopy := &_BuildInfo{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ProductUri.DeepCopy().(PascalString),
+		m.ManufacturerName.DeepCopy().(PascalString),
+		m.ProductName.DeepCopy().(PascalString),
+		m.SoftwareVersion.DeepCopy().(PascalString),
+		m.BuildNumber.DeepCopy().(PascalString),
+		m.BuildDate,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BuildInfoCopy
+}
+
 func (m *_BuildInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

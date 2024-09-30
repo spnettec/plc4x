@@ -38,12 +38,15 @@ type ExtensionHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetXmlbody returns Xmlbody (property field)
 	GetXmlbody() bool
 	// GetBinaryBody returns BinaryBody (property field)
 	GetBinaryBody() bool
 	// IsExtensionHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExtensionHeader()
+	// CreateBuilder creates a ExtensionHeaderBuilder
+	CreateExtensionHeaderBuilder() ExtensionHeaderBuilder
 }
 
 // _ExtensionHeader is the data-structure of this message
@@ -55,6 +58,94 @@ type _ExtensionHeader struct {
 }
 
 var _ ExtensionHeader = (*_ExtensionHeader)(nil)
+
+// NewExtensionHeader factory function for _ExtensionHeader
+func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
+	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ExtensionHeaderBuilder is a builder for ExtensionHeader
+type ExtensionHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(xmlbody bool, binaryBody bool) ExtensionHeaderBuilder
+	// WithXmlbody adds Xmlbody (property field)
+	WithXmlbody(bool) ExtensionHeaderBuilder
+	// WithBinaryBody adds BinaryBody (property field)
+	WithBinaryBody(bool) ExtensionHeaderBuilder
+	// Build builds the ExtensionHeader or returns an error if something is wrong
+	Build() (ExtensionHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ExtensionHeader
+}
+
+// NewExtensionHeaderBuilder() creates a ExtensionHeaderBuilder
+func NewExtensionHeaderBuilder() ExtensionHeaderBuilder {
+	return &_ExtensionHeaderBuilder{_ExtensionHeader: new(_ExtensionHeader)}
+}
+
+type _ExtensionHeaderBuilder struct {
+	*_ExtensionHeader
+
+	err *utils.MultiError
+}
+
+var _ (ExtensionHeaderBuilder) = (*_ExtensionHeaderBuilder)(nil)
+
+func (b *_ExtensionHeaderBuilder) WithMandatoryFields(xmlbody bool, binaryBody bool) ExtensionHeaderBuilder {
+	return b.WithXmlbody(xmlbody).WithBinaryBody(binaryBody)
+}
+
+func (b *_ExtensionHeaderBuilder) WithXmlbody(xmlbody bool) ExtensionHeaderBuilder {
+	b.Xmlbody = xmlbody
+	return b
+}
+
+func (b *_ExtensionHeaderBuilder) WithBinaryBody(binaryBody bool) ExtensionHeaderBuilder {
+	b.BinaryBody = binaryBody
+	return b
+}
+
+func (b *_ExtensionHeaderBuilder) Build() (ExtensionHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ExtensionHeader.deepCopy(), nil
+}
+
+func (b *_ExtensionHeaderBuilder) MustBuild() ExtensionHeader {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ExtensionHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateExtensionHeaderBuilder().(*_ExtensionHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateExtensionHeaderBuilder creates a ExtensionHeaderBuilder
+func (b *_ExtensionHeader) CreateExtensionHeaderBuilder() ExtensionHeaderBuilder {
+	if b == nil {
+		return NewExtensionHeaderBuilder()
+	}
+	return &_ExtensionHeaderBuilder{_ExtensionHeader: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,11 +164,6 @@ func (m *_ExtensionHeader) GetBinaryBody() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExtensionHeader factory function for _ExtensionHeader
-func NewExtensionHeader(xmlbody bool, binaryBody bool) *_ExtensionHeader {
-	return &_ExtensionHeader{Xmlbody: xmlbody, BinaryBody: binaryBody}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExtensionHeader(structType any) ExtensionHeader {
@@ -128,7 +214,7 @@ func ExtensionHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ExtensionHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__extensionHeader ExtensionHeader, err error) {
@@ -202,13 +288,33 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ExtensionHeader) IsExtensionHeader() {}
 
+func (m *_ExtensionHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExtensionHeader) deepCopy() *_ExtensionHeader {
+	if m == nil {
+		return nil
+	}
+	_ExtensionHeaderCopy := &_ExtensionHeader{
+		m.Xmlbody,
+		m.BinaryBody,
+		m.reservedField0,
+	}
+	return _ExtensionHeaderCopy
+}
+
 func (m *_ExtensionHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

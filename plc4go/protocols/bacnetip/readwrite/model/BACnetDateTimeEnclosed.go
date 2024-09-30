@@ -38,6 +38,7 @@ type BACnetDateTimeEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDateTimeValue returns DateTimeValue (property field)
@@ -46,6 +47,8 @@ type BACnetDateTimeEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetDateTimeEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDateTimeEnclosed()
+	// CreateBuilder creates a BACnetDateTimeEnclosedBuilder
+	CreateBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder
 }
 
 // _BACnetDateTimeEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _BACnetDateTimeEnclosed struct {
 }
 
 var _ BACnetDateTimeEnclosed = (*_BACnetDateTimeEnclosed)(nil)
+
+// NewBACnetDateTimeEnclosed factory function for _BACnetDateTimeEnclosed
+func NewBACnetDateTimeEnclosed(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateTimeEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDateTimeEnclosed must not be nil")
+	}
+	if dateTimeValue == nil {
+		panic("dateTimeValue of type BACnetDateTime for BACnetDateTimeEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDateTimeEnclosed must not be nil")
+	}
+	return &_BACnetDateTimeEnclosed{OpeningTag: openingTag, DateTimeValue: dateTimeValue, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDateTimeEnclosedBuilder is a builder for BACnetDateTimeEnclosed
+type BACnetDateTimeEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetDateTimeEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateTimeEnclosedBuilder
+	// WithDateTimeValue adds DateTimeValue (property field)
+	WithDateTimeValue(BACnetDateTime) BACnetDateTimeEnclosedBuilder
+	// WithDateTimeValueBuilder adds DateTimeValue (property field) which is build by the builder
+	WithDateTimeValueBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetDateTimeEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetDateTimeEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateTimeEnclosedBuilder
+	// Build builds the BACnetDateTimeEnclosed or returns an error if something is wrong
+	Build() (BACnetDateTimeEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDateTimeEnclosed
+}
+
+// NewBACnetDateTimeEnclosedBuilder() creates a BACnetDateTimeEnclosedBuilder
+func NewBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder {
+	return &_BACnetDateTimeEnclosedBuilder{_BACnetDateTimeEnclosed: new(_BACnetDateTimeEnclosed)}
+}
+
+type _BACnetDateTimeEnclosedBuilder struct {
+	*_BACnetDateTimeEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDateTimeEnclosedBuilder) = (*_BACnetDateTimeEnclosedBuilder)(nil)
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithDateTimeValue(dateTimeValue).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDateTimeEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithDateTimeValue(dateTimeValue BACnetDateTime) BACnetDateTimeEnclosedBuilder {
+	b.DateTimeValue = dateTimeValue
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithDateTimeValueBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(b.DateTimeValue.CreateBACnetDateTimeBuilder())
+	var err error
+	b.DateTimeValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDateTimeEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateTimeEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) Build() (BACnetDateTimeEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.DateTimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateTimeValue' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDateTimeEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) MustBuild() BACnetDateTimeEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDateTimeEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDateTimeEnclosedBuilder().(*_BACnetDateTimeEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDateTimeEnclosedBuilder creates a BACnetDateTimeEnclosedBuilder
+func (b *_BACnetDateTimeEnclosed) CreateBACnetDateTimeEnclosedBuilder() BACnetDateTimeEnclosedBuilder {
+	if b == nil {
+		return NewBACnetDateTimeEnclosedBuilder()
+	}
+	return &_BACnetDateTimeEnclosedBuilder{_BACnetDateTimeEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_BACnetDateTimeEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDateTimeEnclosed factory function for _BACnetDateTimeEnclosed
-func NewBACnetDateTimeEnclosed(openingTag BACnetOpeningTag, dateTimeValue BACnetDateTime, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateTimeEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDateTimeEnclosed must not be nil")
-	}
-	if dateTimeValue == nil {
-		panic("dateTimeValue of type BACnetDateTime for BACnetDateTimeEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDateTimeEnclosed must not be nil")
-	}
-	return &_BACnetDateTimeEnclosed{OpeningTag: openingTag, DateTimeValue: dateTimeValue, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDateTimeEnclosed(structType any) BACnetDateTimeEnclosed {
@@ -145,7 +301,7 @@ func BACnetDateTimeEnclosedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDateTimeEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetDateTimeEnclosed BACnetDateTimeEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_BACnetDateTimeEnclosed) GetTagNumber() uint8 {
 
 func (m *_BACnetDateTimeEnclosed) IsBACnetDateTimeEnclosed() {}
 
+func (m *_BACnetDateTimeEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateTimeEnclosed) deepCopy() *_BACnetDateTimeEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateTimeEnclosedCopy := &_BACnetDateTimeEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.DateTimeValue.DeepCopy().(BACnetDateTime),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDateTimeEnclosedCopy
+}
+
 func (m *_BACnetDateTimeEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

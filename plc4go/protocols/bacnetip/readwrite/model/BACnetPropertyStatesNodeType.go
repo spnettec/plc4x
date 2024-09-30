@@ -38,11 +38,14 @@ type BACnetPropertyStatesNodeType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNodeType returns NodeType (property field)
 	GetNodeType() BACnetNodeTypeTagged
 	// IsBACnetPropertyStatesNodeType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesNodeType()
+	// CreateBuilder creates a BACnetPropertyStatesNodeTypeBuilder
+	CreateBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilder
 }
 
 // _BACnetPropertyStatesNodeType is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesNodeType struct {
 
 var _ BACnetPropertyStatesNodeType = (*_BACnetPropertyStatesNodeType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNodeType)(nil)
+
+// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
+func NewBACnetPropertyStatesNodeType(peekedTagHeader BACnetTagHeader, nodeType BACnetNodeTypeTagged) *_BACnetPropertyStatesNodeType {
+	if nodeType == nil {
+		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNodeType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NodeType:                     nodeType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesNodeTypeBuilder is a builder for BACnetPropertyStatesNodeType
+type BACnetPropertyStatesNodeTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder
+	// WithNodeType adds NodeType (property field)
+	WithNodeType(BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder
+	// WithNodeTypeBuilder adds NodeType (property field) which is build by the builder
+	WithNodeTypeBuilder(func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetPropertyStatesNodeTypeBuilder
+	// Build builds the BACnetPropertyStatesNodeType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesNodeType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesNodeType
+}
+
+// NewBACnetPropertyStatesNodeTypeBuilder() creates a BACnetPropertyStatesNodeTypeBuilder
+func NewBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilder {
+	return &_BACnetPropertyStatesNodeTypeBuilder{_BACnetPropertyStatesNodeType: new(_BACnetPropertyStatesNodeType)}
+}
+
+type _BACnetPropertyStatesNodeTypeBuilder struct {
+	*_BACnetPropertyStatesNodeType
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesNodeTypeBuilder) = (*_BACnetPropertyStatesNodeTypeBuilder)(nil)
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithMandatoryFields(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
+	return b.WithNodeType(nodeType)
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithNodeType(nodeType BACnetNodeTypeTagged) BACnetPropertyStatesNodeTypeBuilder {
+	b.NodeType = nodeType
+	return b
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) WithNodeTypeBuilder(builderSupplier func(BACnetNodeTypeTaggedBuilder) BACnetNodeTypeTaggedBuilder) BACnetPropertyStatesNodeTypeBuilder {
+	builder := builderSupplier(b.NodeType.CreateBACnetNodeTypeTaggedBuilder())
+	var err error
+	b.NodeType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetNodeTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) Build() (BACnetPropertyStatesNodeType, error) {
+	if b.NodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesNodeType.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) MustBuild() BACnetPropertyStatesNodeType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNodeTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNodeTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNodeTypeBuilder().(*_BACnetPropertyStatesNodeTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesNodeTypeBuilder creates a BACnetPropertyStatesNodeTypeBuilder
+func (b *_BACnetPropertyStatesNodeType) CreateBACnetPropertyStatesNodeTypeBuilder() BACnetPropertyStatesNodeTypeBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesNodeTypeBuilder()
+	}
+	return &_BACnetPropertyStatesNodeTypeBuilder{_BACnetPropertyStatesNodeType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesNodeType) GetNodeType() BACnetNodeTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNodeType factory function for _BACnetPropertyStatesNodeType
-func NewBACnetPropertyStatesNodeType(nodeType BACnetNodeTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNodeType {
-	if nodeType == nil {
-		panic("nodeType of type BACnetNodeTypeTagged for BACnetPropertyStatesNodeType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNodeType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NodeType:                     nodeType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNodeType(structType any) BACnetPropertyStatesNodeType {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesNodeType) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetPropertyStatesNodeType) IsBACnetPropertyStatesNodeType() {}
 
+func (m *_BACnetPropertyStatesNodeType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNodeType) deepCopy() *_BACnetPropertyStatesNodeType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNodeTypeCopy := &_BACnetPropertyStatesNodeType{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.NodeType.DeepCopy().(BACnetNodeTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNodeTypeCopy
+}
+
 func (m *_BACnetPropertyStatesNodeType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

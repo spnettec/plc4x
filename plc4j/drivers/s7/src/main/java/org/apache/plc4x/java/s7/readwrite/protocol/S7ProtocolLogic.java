@@ -34,24 +34,20 @@ import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.s7.events.S7CyclicEvent;
 import org.apache.plc4x.java.s7.events.S7Event;
 import org.apache.plc4x.java.s7.readwrite.*;
-import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
-import org.apache.plc4x.java.s7.readwrite.optimizer.LargeTagPlcReadRequest;
 import org.apache.plc4x.java.s7.readwrite.tag.*;
 import org.apache.plc4x.java.s7.readwrite.types.S7SubscriptionType;
 import org.apache.plc4x.java.s7.readwrite.utils.S7PlcSubscriptionHandle;
 import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
-import org.apache.plc4x.java.spi.configuration.HasConfiguration;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
 import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
-import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
-import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
 import org.apache.plc4x.java.spi.values.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -805,9 +801,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             }
             // This seems to be the case if we're trying to do a subscription on a device that doesn't support that.
             else if((errorClass == 0) && (errorCode == (short) 0x8104)) {
-                logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
+                logger.warn("Got an error response from the PLC. Error Class: {}, Error Code {}. This particular response code usually indicates " +
                     "that a given service is not implemented on the PLC. Most probably you tried to subscribe to " +
-                    "data on a PLC that doesn't support subsciptions (S7-1200 or S7-1500)",
+                    "data on a PLC that doesn't support subscriptions (S7-1200 or S7-1500)",
                     errorClass, errorCode);
                 for (String tagName : plcSubscriptionRequest.getTagNames()) {
                     values.put(tagName, new ResponseItem<>(PlcResponseCode.UNSUPPORTED, null));
@@ -869,7 +865,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                 (S7PayloadUserDataItemCpuFunctionAlarmAckResponse)
                     payloadItems.get(0);
             //String tagName = (String) plcSubscriptionRequest.getTagNames().toArray()[0];
-            //TODO: Chequear si tagName es el correcto
+            //TODO: Chequear si tagName es el correcto           
             //logger.info("strTagName: " + strTagName);
             values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, null));
             for (short s : items.getMessageObjects()) {
@@ -964,7 +960,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
         } else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesSubscribeResponse) {
-            //S7ParameterUserData parameter = (S7ParameterUserData) responseMessage.getParameter();
+            //S7ParameterUserData parameter = (S7ParameterUserData) responseMessage.getParameter();  
             //logger.info("Aqui debe responder a Cyclic transfer");
             S7ParameterUserDataItemCPUFunctions msgParameter = (S7ParameterUserDataItemCPUFunctions)
                 parameter.getItems().get(0);
@@ -974,7 +970,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             S7CyclicEvent cycEvent = new S7CyclicEvent(plcSubscriptionRequest,
                 msgParameter.getSequenceNumber(),
                 (S7PayloadUserDataItemCyclicServicesSubscribeResponse) payloadItems.get(0));
-
+            
             if (plcSubscriptionRequest.getTags().get(0).getPlcSubscriptionType() == PlcSubscriptionType.CHANGE_OF_STATE) {
                 cycChangeValueEvents.put(msgParameter.getSequenceNumber(), cycEvent);
             }
@@ -1162,7 +1158,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
 //            PlcTag plctag = ((DefaultPlcSubscriptionTag) tag).getTag();
             S7SubscriptionTag s7tag = (S7SubscriptionTag) ((DefaultPlcSubscriptionTag) tag).getTag();
-//
+//            
             for (S7Tag userField : s7tag.getS7Tags()) {
                 items.add(new CycServiceItemAnyType(
                     (short) 0x0a,
@@ -1178,21 +1174,21 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
         S7SubscriptionTag s7tag_base = (S7SubscriptionTag) ((DefaultPlcSubscriptionTag) (request.getTags().get(0))).getTag();
 
-//
+//        
 //        int i=0;
 //        for (S7Tag userfield:s7tag.getS7Tags()) {
 //            items.add(new CycServiceItemAnyType(
 //                    (short) 0x0a,
 //                    (short) 0x10, //S7ANY
 //                    userfield.getDataType(),
-//                    userfield.getNumberOfElements(),
+//                    userfield.getNumberOfElements(),                    
 //                    userfield.getBlockNumber(),
 //                    userfield.getMemoryArea(),
-//                    (long) (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))
+//                    (long) (((userfield.getByteOffset() << 3) | (userfield.getBitOffset() & 0x0007)))                    
 //            ));
 //            i++;
 //        }
-//
+//        
 //        //Length in bytes
 //        //4+12*items.legth
         int lengthInBytes = 4 + items.size() * 12;
@@ -1306,7 +1302,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
         List<PlcSubscriptionHandle> handles = request.getSubscriptionHandles();
 
-        //PlcField field = ((DefaultPlcSubscriptionField) plcfield).getPlcField();
+        //PlcField field = ((DefaultPlcSubscriptionField) plcfield).getPlcField(); 
         //S7SubscriptionField s7field = (S7SubscriptionField) field;
 
         payloadItems.clear();
@@ -1458,9 +1454,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> context.sendRequest(tpktPacket)
-            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
-            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
+            .onTimeout(new TransactionErrorCallback<>(future, transaction))
+            .onError(new TransactionErrorCallback<>(future, transaction))
+            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)
@@ -1477,59 +1473,59 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
 
     /**
      * DECODE:
-     * This method is called when there is no handler for the message.
-     * By default it must correspond to asynchronous events, which if so,
+     * This method is called when there is no handler for the message. 
+     * By default it must correspond to asynchronous events, which if so, 
      * must be transferred to the event queue.
-     *
+     * 
      * The event's own information is encapsulated in the parameters and payload
      * field. From this it is abstracted to the corresponding event model.
-     *
+     * 
      * 01. S7ModeEvent:
      * 02. S7UserEvent:
      * 03. S7SysEvent:
      * 04. S7AlarmEvent
      * 05. S7CyclicEvent:
      * 06. S7CyclicEvent:
-     *
-     * TODO: Use mspec to generate types that allow better interpretation of
+     * 
+     * TODO: Use mspec to generate types that allow better interpretation of 
      * the code using "instanceof".
      */
     @Override
     protected void decode(ConversationContext<TPKTPacket> context, TPKTPacket msg) throws Exception {
-
+        
         final S7Message s7msg = msg.getPayload().getPayload();
         final S7Parameter parameter = s7msg.getParameter();
-        final S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();
-
-        if (parameter instanceof S7ParameterModeTransition) {  //(01)
-
+        final S7PayloadUserData payload = (S7PayloadUserData) s7msg.getPayload();       
+        
+        if (parameter instanceof S7ParameterModeTransition) {  //(01)  
+            
             S7ModeEvent modeEvent = new S7ModeEvent((S7ParameterModeTransition) parameter);
             eventQueue.add(modeEvent);
-
+            
         } else if (parameter instanceof S7ParameterUserData) {
-
+            
             S7ParameterUserData parameterUD = (S7ParameterUserData) parameter;
             List<S7ParameterUserDataItem> parameterUDItems = parameterUD.getItems();
-
+            
             for (S7ParameterUserDataItem parameterUDItem : parameterUDItems) {
-
+                
                 if (parameterUDItem instanceof S7ParameterUserDataItemCPUFunctions) {
-
+                    
                     S7ParameterUserDataItemCPUFunctions myParameter = (S7ParameterUserDataItemCPUFunctions) parameterUDItem;
-
-                    if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x03)) { //(02)
-
+                    
+                    if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x03)) { //(02)                      
+                        
                         payload.getItems().forEach(item ->{
                             if (item instanceof S7PayloadDiagnosticMessage) {
-                                final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item;
+                                final S7PayloadDiagnosticMessage pload = (S7PayloadDiagnosticMessage) item; 
                                 if ((pload.getEventId() >= 0x0A000) & (pload.getEventId() <= 0x0BFFF)) {
                                     S7UserEvent userEvent = new S7UserEvent(pload);
-                                    eventQueue.add(userEvent);
+                                    eventQueue.add(userEvent);                                
                                 } else {
                                     S7SysEvent sysEvent = new S7SysEvent(pload);
-                                    eventQueue.add(sysEvent);
+                                    eventQueue.add(sysEvent);                                        
                                 }
-                            }
+                            } 
                         });
 
                     } else if ((myParameter.getCpuFunctionType() == 0x00) &&
@@ -1540,13 +1536,13 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                             (myParameter.getCpuSubfunction() == 0x12) ||
                             (myParameter.getCpuSubfunction() == 0x13) ||
                             (myParameter.getCpuSubfunction() == 0x16))) { //(04)
-
+                        
                         payload.getItems().forEach(item ->{
                             S7AlarmEvent alrmEvent = new S7AlarmEvent(item);
-                            eventQueue.add(alrmEvent);
+                            eventQueue.add(alrmEvent);                                
                         });
-
-
+                        
+                                                
                     } else if ((myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x13)) {
                         //TODO: Requires reverse engineering.
                     } else if (((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x01))) { //(05)
@@ -1562,20 +1558,20 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         S7CyclicEvent cycEvent = new S7CyclicEvent(cycRequests.get(parameterItem.getSequenceNumber()),
                             parameterItem.getSequenceNumber(),
                             payloadItem);
-
+                        
                         if (cycChangeValueEvents.containsKey(parameterItem.getSequenceNumber())){
                             S7CyclicEvent lastCycEvent = cycChangeValueEvents.get(parameterItem.getSequenceNumber());
-                            if (cycEvent.equals(lastCycEvent ) == false) {
+                            if (!cycEvent.equals(lastCycEvent)) {
                                 cycChangeValueEvents.replace(parameterItem.getSequenceNumber(), cycEvent);
-                                eventQueue.add(cycEvent);
+                                eventQueue.add(cycEvent);                                
                             }
-
+                            
                         } else {
                             eventQueue.add(cycEvent);
                         }
 
                     } else if ((myParameter.getCpuFunctionGroup() == 0x02) && (myParameter.getCpuFunctionType() == 0x00) && (myParameter.getCpuSubfunction() == 0x05)) { //(06)
-
+                        
                         S7ParameterUserDataItemCPUFunctions parameterItem =
                             (S7ParameterUserDataItemCPUFunctions)
                                 ((S7ParameterUserData) parameter).getItems().get(0);
@@ -1942,10 +1938,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             responseCode = decodeResponseCode(payloadItem.getReturnCode());
             plcValue = null;
 
-            ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
             if (responseCode == PlcResponseCode.OK) {
                 try {
-                    plcValue = parsePlcValue(tag, data);
+                    plcValue = parsePlcValue(tag, payloadItem.getData());
                 } catch (Exception e) {
                     throw new PlcProtocolException("Error decoding PlcValue", e);
                 }
@@ -2275,7 +2270,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         return future;
     }
 
-    //TODO: S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest to S7PayloadUserDataItemCpuFunctionAlarmQueryNoDataRequest
+    //TODO: S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest to S7PayloadUserDataItemCpuFunctionAlarmQueryNoDataRequest 
     private TPKTPacket createAlarmQueryReassembledRequest(int tpduId, short sequenceNumber) {
         S7MessageUserData identifyRemoteMessage = new S7MessageUserData(tpduId, new S7ParameterUserData(List.of(
             new S7ParameterUserDataItemCPUFunctions((short) 0x12, (byte) 0x4, (byte) 0x4, (short) 0x13, sequenceNumber, (short) 0x00, (short) 0x00, 0)
@@ -2351,6 +2346,12 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
             int curItemIndex = 0;
             for (S7StringVarLengthTag varLengthStringTag : varLengthStringTags) {
                 S7VarPayloadDataItem s7VarPayloadDataItem = getLengthsResponse.getItems().get(curItemIndex);
+                // Something went wrong.
+                // We simply don't save the length information, and then we'll treat it as INVALID_ADDRESS later on
+                // in the code.
+                if(s7VarPayloadDataItem.getReturnCode() != DataTransportErrorCode.OK) {
+                    continue;
+                }
                 ReadBufferByteBased readBuffer = new ReadBufferByteBased(s7VarPayloadDataItem.getData());
                 try {
                     if (varLengthStringTag.getDataType() == TransportSize.STRING) {
@@ -2365,7 +2366,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
                         throw new PlcInvalidTagException("Only STRING and WSTRING allowed here.");
                     }
                 } catch (ParseException e) {
-                    throw new PlcInvalidTagException("Error reading var-length string actual lengths.");
+                    throw new PlcInvalidTagException("Error parsing var-length string actual lengths.");
                 }
             }
 

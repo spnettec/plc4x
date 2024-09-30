@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSubscription returns Subscription (property field)
 	GetSubscription() uint8
@@ -49,6 +50,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest interface {
 	GetReserve() *uint8
 	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest is the data-structure of this message
@@ -64,6 +67,131 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest struct {
 
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Subscription:                  subscription,
+		MagicKey:                      magicKey,
+		Alarmtype:                     alarmtype,
+		Reserve:                       reserve,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder is a builder for S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscription uint8, magicKey string) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// WithSubscription adds Subscription (property field)
+	WithSubscription(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// WithMagicKey adds MagicKey (property field)
+	WithMagicKey(string) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// WithAlarmtype adds Alarmtype (property field)
+	WithOptionalAlarmtype(AlarmStateType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// WithReserve adds Reserve (property field)
+	WithOptionalReserve(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+}
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder() creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest: new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithMandatoryFields(subscription uint8, magicKey string) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	return b.WithSubscription(subscription).WithMagicKey(magicKey)
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithSubscription(subscription uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	b.Subscription = subscription
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithMagicKey(magicKey string) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	b.MagicKey = magicKey
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithOptionalAlarmtype(alarmtype AlarmStateType) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	b.Alarmtype = &alarmtype
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) WithOptionalReserve(reserve uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	b.Reserve = &reserve
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,19 +244,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) GetReserve() *
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(subscription uint8, magicKey string, alarmtype *AlarmStateType, reserve *uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Subscription:                  subscription,
-		MagicKey:                      magicKey,
-		Alarmtype:                     alarmtype,
-		Reserve:                       reserve,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
@@ -273,13 +388,37 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest() {
 }
 
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Subscription,
+		m.MagicKey,
+		utils.CopyPtr[AlarmStateType](m.Alarmtype),
+		utils.CopyPtr[uint8](m.Reserve),
+		m.reservedField0,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestCopy
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetLiftCarCallListFloorList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetFloorNumbers returns FloorNumbers (property field)
@@ -46,6 +47,8 @@ type BACnetLiftCarCallListFloorList interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetLiftCarCallListFloorList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLiftCarCallListFloorList()
+	// CreateBuilder creates a BACnetLiftCarCallListFloorListBuilder
+	CreateBACnetLiftCarCallListFloorListBuilder() BACnetLiftCarCallListFloorListBuilder
 }
 
 // _BACnetLiftCarCallListFloorList is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetLiftCarCallListFloorList struct {
 }
 
 var _ BACnetLiftCarCallListFloorList = (*_BACnetLiftCarCallListFloorList)(nil)
+
+// NewBACnetLiftCarCallListFloorList factory function for _BACnetLiftCarCallListFloorList
+func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLiftCarCallListFloorList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLiftCarCallListFloorList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLiftCarCallListFloorList must not be nil")
+	}
+	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLiftCarCallListFloorListBuilder is a builder for BACnetLiftCarCallListFloorList
+type BACnetLiftCarCallListFloorListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetLiftCarCallListFloorListBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLiftCarCallListFloorListBuilder
+	// WithFloorNumbers adds FloorNumbers (property field)
+	WithFloorNumbers(...BACnetApplicationTagUnsignedInteger) BACnetLiftCarCallListFloorListBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLiftCarCallListFloorListBuilder
+	// Build builds the BACnetLiftCarCallListFloorList or returns an error if something is wrong
+	Build() (BACnetLiftCarCallListFloorList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLiftCarCallListFloorList
+}
+
+// NewBACnetLiftCarCallListFloorListBuilder() creates a BACnetLiftCarCallListFloorListBuilder
+func NewBACnetLiftCarCallListFloorListBuilder() BACnetLiftCarCallListFloorListBuilder {
+	return &_BACnetLiftCarCallListFloorListBuilder{_BACnetLiftCarCallListFloorList: new(_BACnetLiftCarCallListFloorList)}
+}
+
+type _BACnetLiftCarCallListFloorListBuilder struct {
+	*_BACnetLiftCarCallListFloorList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLiftCarCallListFloorListBuilder) = (*_BACnetLiftCarCallListFloorListBuilder)(nil)
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
+	return b.WithOpeningTag(openingTag).WithFloorNumbers(floorNumbers...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLiftCarCallListFloorListBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLiftCarCallListFloorListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithFloorNumbers(floorNumbers ...BACnetApplicationTagUnsignedInteger) BACnetLiftCarCallListFloorListBuilder {
+	b.FloorNumbers = floorNumbers
+	return b
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLiftCarCallListFloorListBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLiftCarCallListFloorListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) Build() (BACnetLiftCarCallListFloorList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLiftCarCallListFloorList.deepCopy(), nil
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) MustBuild() BACnetLiftCarCallListFloorList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLiftCarCallListFloorListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarCallListFloorListBuilder().(*_BACnetLiftCarCallListFloorListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLiftCarCallListFloorListBuilder creates a BACnetLiftCarCallListFloorListBuilder
+func (b *_BACnetLiftCarCallListFloorList) CreateBACnetLiftCarCallListFloorListBuilder() BACnetLiftCarCallListFloorListBuilder {
+	if b == nil {
+		return NewBACnetLiftCarCallListFloorListBuilder()
+	}
+	return &_BACnetLiftCarCallListFloorListBuilder{_BACnetLiftCarCallListFloorList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetLiftCarCallListFloorList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarCallListFloorList factory function for _BACnetLiftCarCallListFloorList
-func NewBACnetLiftCarCallListFloorList(openingTag BACnetOpeningTag, floorNumbers []BACnetApplicationTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLiftCarCallListFloorList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLiftCarCallListFloorList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLiftCarCallListFloorList must not be nil")
-	}
-	return &_BACnetLiftCarCallListFloorList{OpeningTag: openingTag, FloorNumbers: floorNumbers, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarCallListFloorList(structType any) BACnetLiftCarCallListFloorList {
@@ -146,7 +281,7 @@ func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLiftCarCallListFloorList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetLiftCarCallListFloorList BACnetLiftCarCallListFloorList, err error) {
@@ -230,13 +365,34 @@ func (m *_BACnetLiftCarCallListFloorList) GetTagNumber() uint8 {
 
 func (m *_BACnetLiftCarCallListFloorList) IsBACnetLiftCarCallListFloorList() {}
 
+func (m *_BACnetLiftCarCallListFloorList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarCallListFloorList) deepCopy() *_BACnetLiftCarCallListFloorList {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarCallListFloorListCopy := &_BACnetLiftCarCallListFloorList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FloorNumbers),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLiftCarCallListFloorListCopy
+}
+
 func (m *_BACnetLiftCarCallListFloorList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

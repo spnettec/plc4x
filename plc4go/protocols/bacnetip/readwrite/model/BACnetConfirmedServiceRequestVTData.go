@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestVTData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetVtSessionIdentifier returns VtSessionIdentifier (property field)
 	GetVtSessionIdentifier() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConfirmedServiceRequestVTData interface {
 	GetVtDataFlag() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConfirmedServiceRequestVTData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestVTData()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestVTDataBuilder
+	CreateBACnetConfirmedServiceRequestVTDataBuilder() BACnetConfirmedServiceRequestVTDataBuilder
 }
 
 // _BACnetConfirmedServiceRequestVTData is the data-structure of this message
@@ -59,6 +62,195 @@ type _BACnetConfirmedServiceRequestVTData struct {
 
 var _ BACnetConfirmedServiceRequestVTData = (*_BACnetConfirmedServiceRequestVTData)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestVTData)(nil)
+
+// NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
+func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
+	if vtSessionIdentifier == nil {
+		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
+	if vtNewData == nil {
+		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
+	if vtDataFlag == nil {
+		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestVTData{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		VtSessionIdentifier:                   vtSessionIdentifier,
+		VtNewData:                             vtNewData,
+		VtDataFlag:                            vtDataFlag,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestVTDataBuilder is a builder for BACnetConfirmedServiceRequestVTData
+type BACnetConfirmedServiceRequestVTDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtSessionIdentifier adds VtSessionIdentifier (property field)
+	WithVtSessionIdentifier(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtSessionIdentifierBuilder adds VtSessionIdentifier (property field) which is build by the builder
+	WithVtSessionIdentifierBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtNewData adds VtNewData (property field)
+	WithVtNewData(BACnetApplicationTagOctetString) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtNewDataBuilder adds VtNewData (property field) which is build by the builder
+	WithVtNewDataBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtDataFlag adds VtDataFlag (property field)
+	WithVtDataFlag(BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder
+	// WithVtDataFlagBuilder adds VtDataFlag (property field) which is build by the builder
+	WithVtDataFlagBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTDataBuilder
+	// Build builds the BACnetConfirmedServiceRequestVTData or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestVTData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestVTData
+}
+
+// NewBACnetConfirmedServiceRequestVTDataBuilder() creates a BACnetConfirmedServiceRequestVTDataBuilder
+func NewBACnetConfirmedServiceRequestVTDataBuilder() BACnetConfirmedServiceRequestVTDataBuilder {
+	return &_BACnetConfirmedServiceRequestVTDataBuilder{_BACnetConfirmedServiceRequestVTData: new(_BACnetConfirmedServiceRequestVTData)}
+}
+
+type _BACnetConfirmedServiceRequestVTDataBuilder struct {
+	*_BACnetConfirmedServiceRequestVTData
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestVTDataBuilder) = (*_BACnetConfirmedServiceRequestVTDataBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithMandatoryFields(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder {
+	return b.WithVtSessionIdentifier(vtSessionIdentifier).WithVtNewData(vtNewData).WithVtDataFlag(vtDataFlag)
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtSessionIdentifier(vtSessionIdentifier BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder {
+	b.VtSessionIdentifier = vtSessionIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtSessionIdentifierBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTDataBuilder {
+	builder := builderSupplier(b.VtSessionIdentifier.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.VtSessionIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtNewData(vtNewData BACnetApplicationTagOctetString) BACnetConfirmedServiceRequestVTDataBuilder {
+	b.VtNewData = vtNewData
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtNewDataBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConfirmedServiceRequestVTDataBuilder {
+	builder := builderSupplier(b.VtNewData.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.VtNewData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtDataFlag(vtDataFlag BACnetApplicationTagUnsignedInteger) BACnetConfirmedServiceRequestVTDataBuilder {
+	b.VtDataFlag = vtDataFlag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) WithVtDataFlagBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestVTDataBuilder {
+	builder := builderSupplier(b.VtDataFlag.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.VtDataFlag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) Build() (BACnetConfirmedServiceRequestVTData, error) {
+	if b.VtSessionIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vtSessionIdentifier' not set"))
+	}
+	if b.VtNewData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vtNewData' not set"))
+	}
+	if b.VtDataFlag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vtDataFlag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestVTData.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) MustBuild() BACnetConfirmedServiceRequestVTData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestVTDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestVTDataBuilder().(*_BACnetConfirmedServiceRequestVTDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestVTDataBuilder creates a BACnetConfirmedServiceRequestVTDataBuilder
+func (b *_BACnetConfirmedServiceRequestVTData) CreateBACnetConfirmedServiceRequestVTDataBuilder() BACnetConfirmedServiceRequestVTDataBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestVTDataBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestVTDataBuilder{_BACnetConfirmedServiceRequestVTData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +291,6 @@ func (m *_BACnetConfirmedServiceRequestVTData) GetVtDataFlag() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestVTData factory function for _BACnetConfirmedServiceRequestVTData
-func NewBACnetConfirmedServiceRequestVTData(vtSessionIdentifier BACnetApplicationTagUnsignedInteger, vtNewData BACnetApplicationTagOctetString, vtDataFlag BACnetApplicationTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestVTData {
-	if vtSessionIdentifier == nil {
-		panic("vtSessionIdentifier of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
-	}
-	if vtNewData == nil {
-		panic("vtNewData of type BACnetApplicationTagOctetString for BACnetConfirmedServiceRequestVTData must not be nil")
-	}
-	if vtDataFlag == nil {
-		panic("vtDataFlag of type BACnetApplicationTagUnsignedInteger for BACnetConfirmedServiceRequestVTData must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestVTData{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		VtSessionIdentifier:                   vtSessionIdentifier,
-		VtNewData:                             vtNewData,
-		VtDataFlag:                            vtDataFlag,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestVTData(structType any) BACnetConfirmedServiceRequestVTData {
@@ -231,13 +402,35 @@ func (m *_BACnetConfirmedServiceRequestVTData) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConfirmedServiceRequestVTData) IsBACnetConfirmedServiceRequestVTData() {}
 
+func (m *_BACnetConfirmedServiceRequestVTData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestVTData) deepCopy() *_BACnetConfirmedServiceRequestVTData {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestVTDataCopy := &_BACnetConfirmedServiceRequestVTData{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.VtSessionIdentifier.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.VtNewData.DeepCopy().(BACnetApplicationTagOctetString),
+		m.VtDataFlag.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestVTDataCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestVTData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

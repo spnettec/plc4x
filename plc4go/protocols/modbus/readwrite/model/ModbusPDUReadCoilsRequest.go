@@ -38,6 +38,7 @@ type ModbusPDUReadCoilsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetStartingAddress returns StartingAddress (property field)
 	GetStartingAddress() uint16
@@ -45,6 +46,8 @@ type ModbusPDUReadCoilsRequest interface {
 	GetQuantity() uint16
 	// IsModbusPDUReadCoilsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadCoilsRequest()
+	// CreateBuilder creates a ModbusPDUReadCoilsRequestBuilder
+	CreateModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder
 }
 
 // _ModbusPDUReadCoilsRequest is the data-structure of this message
@@ -56,6 +59,115 @@ type _ModbusPDUReadCoilsRequest struct {
 
 var _ ModbusPDUReadCoilsRequest = (*_ModbusPDUReadCoilsRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadCoilsRequest)(nil)
+
+// NewModbusPDUReadCoilsRequest factory function for _ModbusPDUReadCoilsRequest
+func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadCoilsRequest {
+	_result := &_ModbusPDUReadCoilsRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		StartingAddress:   startingAddress,
+		Quantity:          quantity,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadCoilsRequestBuilder is a builder for ModbusPDUReadCoilsRequest
+type ModbusPDUReadCoilsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadCoilsRequestBuilder
+	// WithStartingAddress adds StartingAddress (property field)
+	WithStartingAddress(uint16) ModbusPDUReadCoilsRequestBuilder
+	// WithQuantity adds Quantity (property field)
+	WithQuantity(uint16) ModbusPDUReadCoilsRequestBuilder
+	// Build builds the ModbusPDUReadCoilsRequest or returns an error if something is wrong
+	Build() (ModbusPDUReadCoilsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadCoilsRequest
+}
+
+// NewModbusPDUReadCoilsRequestBuilder() creates a ModbusPDUReadCoilsRequestBuilder
+func NewModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder {
+	return &_ModbusPDUReadCoilsRequestBuilder{_ModbusPDUReadCoilsRequest: new(_ModbusPDUReadCoilsRequest)}
+}
+
+type _ModbusPDUReadCoilsRequestBuilder struct {
+	*_ModbusPDUReadCoilsRequest
+
+	parentBuilder *_ModbusPDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadCoilsRequestBuilder) = (*_ModbusPDUReadCoilsRequestBuilder)(nil)
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithMandatoryFields(startingAddress uint16, quantity uint16) ModbusPDUReadCoilsRequestBuilder {
+	return b.WithStartingAddress(startingAddress).WithQuantity(quantity)
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithStartingAddress(startingAddress uint16) ModbusPDUReadCoilsRequestBuilder {
+	b.StartingAddress = startingAddress
+	return b
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) WithQuantity(quantity uint16) ModbusPDUReadCoilsRequestBuilder {
+	b.Quantity = quantity
+	return b
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) Build() (ModbusPDUReadCoilsRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusPDUReadCoilsRequest.deepCopy(), nil
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) MustBuild() ModbusPDUReadCoilsRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadCoilsRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadCoilsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadCoilsRequestBuilder().(*_ModbusPDUReadCoilsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusPDUReadCoilsRequestBuilder creates a ModbusPDUReadCoilsRequestBuilder
+func (b *_ModbusPDUReadCoilsRequest) CreateModbusPDUReadCoilsRequestBuilder() ModbusPDUReadCoilsRequestBuilder {
+	if b == nil {
+		return NewModbusPDUReadCoilsRequestBuilder()
+	}
+	return &_ModbusPDUReadCoilsRequestBuilder{_ModbusPDUReadCoilsRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +212,6 @@ func (m *_ModbusPDUReadCoilsRequest) GetQuantity() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadCoilsRequest factory function for _ModbusPDUReadCoilsRequest
-func NewModbusPDUReadCoilsRequest(startingAddress uint16, quantity uint16) *_ModbusPDUReadCoilsRequest {
-	_result := &_ModbusPDUReadCoilsRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		StartingAddress:   startingAddress,
-		Quantity:          quantity,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadCoilsRequest(structType any) ModbusPDUReadCoilsRequest {
@@ -209,13 +310,34 @@ func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_ModbusPDUReadCoilsRequest) IsModbusPDUReadCoilsRequest() {}
 
+func (m *_ModbusPDUReadCoilsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadCoilsRequest) deepCopy() *_ModbusPDUReadCoilsRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadCoilsRequestCopy := &_ModbusPDUReadCoilsRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.StartingAddress,
+		m.Quantity,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadCoilsRequestCopy
+}
+
 func (m *_ModbusPDUReadCoilsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

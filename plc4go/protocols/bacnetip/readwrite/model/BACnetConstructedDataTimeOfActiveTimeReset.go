@@ -38,6 +38,7 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTimeOfActiveTimeReset returns TimeOfActiveTimeReset (property field)
 	GetTimeOfActiveTimeReset() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataTimeOfActiveTimeReset interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataTimeOfActiveTimeReset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimeOfActiveTimeReset()
+	// CreateBuilder creates a BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	CreateBACnetConstructedDataTimeOfActiveTimeResetBuilder() BACnetConstructedDataTimeOfActiveTimeResetBuilder
 }
 
 // _BACnetConstructedDataTimeOfActiveTimeReset is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataTimeOfActiveTimeReset struct {
 
 var _ BACnetConstructedDataTimeOfActiveTimeReset = (*_BACnetConstructedDataTimeOfActiveTimeReset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimeOfActiveTimeReset)(nil)
+
+// NewBACnetConstructedDataTimeOfActiveTimeReset factory function for _BACnetConstructedDataTimeOfActiveTimeReset
+func NewBACnetConstructedDataTimeOfActiveTimeReset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeOfActiveTimeReset BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfActiveTimeReset {
+	if timeOfActiveTimeReset == nil {
+		panic("timeOfActiveTimeReset of type BACnetDateTime for BACnetConstructedDataTimeOfActiveTimeReset must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimeOfActiveTimeReset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TimeOfActiveTimeReset:         timeOfActiveTimeReset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimeOfActiveTimeResetBuilder is a builder for BACnetConstructedDataTimeOfActiveTimeReset
+type BACnetConstructedDataTimeOfActiveTimeResetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeOfActiveTimeReset BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	// WithTimeOfActiveTimeReset adds TimeOfActiveTimeReset (property field)
+	WithTimeOfActiveTimeReset(BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	// WithTimeOfActiveTimeResetBuilder adds TimeOfActiveTimeReset (property field) which is build by the builder
+	WithTimeOfActiveTimeResetBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfActiveTimeResetBuilder
+	// Build builds the BACnetConstructedDataTimeOfActiveTimeReset or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimeOfActiveTimeReset, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimeOfActiveTimeReset
+}
+
+// NewBACnetConstructedDataTimeOfActiveTimeResetBuilder() creates a BACnetConstructedDataTimeOfActiveTimeResetBuilder
+func NewBACnetConstructedDataTimeOfActiveTimeResetBuilder() BACnetConstructedDataTimeOfActiveTimeResetBuilder {
+	return &_BACnetConstructedDataTimeOfActiveTimeResetBuilder{_BACnetConstructedDataTimeOfActiveTimeReset: new(_BACnetConstructedDataTimeOfActiveTimeReset)}
+}
+
+type _BACnetConstructedDataTimeOfActiveTimeResetBuilder struct {
+	*_BACnetConstructedDataTimeOfActiveTimeReset
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimeOfActiveTimeResetBuilder) = (*_BACnetConstructedDataTimeOfActiveTimeResetBuilder)(nil)
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) WithMandatoryFields(timeOfActiveTimeReset BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder {
+	return b.WithTimeOfActiveTimeReset(timeOfActiveTimeReset)
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) WithTimeOfActiveTimeReset(timeOfActiveTimeReset BACnetDateTime) BACnetConstructedDataTimeOfActiveTimeResetBuilder {
+	b.TimeOfActiveTimeReset = timeOfActiveTimeReset
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) WithTimeOfActiveTimeResetBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataTimeOfActiveTimeResetBuilder {
+	builder := builderSupplier(b.TimeOfActiveTimeReset.CreateBACnetDateTimeBuilder())
+	var err error
+	b.TimeOfActiveTimeReset, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) Build() (BACnetConstructedDataTimeOfActiveTimeReset, error) {
+	if b.TimeOfActiveTimeReset == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeOfActiveTimeReset' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTimeOfActiveTimeReset.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) MustBuild() BACnetConstructedDataTimeOfActiveTimeReset {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimeOfActiveTimeResetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimeOfActiveTimeResetBuilder().(*_BACnetConstructedDataTimeOfActiveTimeResetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTimeOfActiveTimeResetBuilder creates a BACnetConstructedDataTimeOfActiveTimeResetBuilder
+func (b *_BACnetConstructedDataTimeOfActiveTimeReset) CreateBACnetConstructedDataTimeOfActiveTimeResetBuilder() BACnetConstructedDataTimeOfActiveTimeResetBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTimeOfActiveTimeResetBuilder()
+	}
+	return &_BACnetConstructedDataTimeOfActiveTimeResetBuilder{_BACnetConstructedDataTimeOfActiveTimeReset: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) GetActualValue() BACnetDat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimeOfActiveTimeReset factory function for _BACnetConstructedDataTimeOfActiveTimeReset
-func NewBACnetConstructedDataTimeOfActiveTimeReset(timeOfActiveTimeReset BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimeOfActiveTimeReset {
-	if timeOfActiveTimeReset == nil {
-		panic("timeOfActiveTimeReset of type BACnetDateTime for BACnetConstructedDataTimeOfActiveTimeReset must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimeOfActiveTimeReset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TimeOfActiveTimeReset:         timeOfActiveTimeReset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimeOfActiveTimeReset(structType any) BACnetConstructedDataTimeOfActiveTimeReset {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataTimeOfActiveTimeReset) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) IsBACnetConstructedDataTimeOfActiveTimeReset() {
 }
 
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimeOfActiveTimeReset) deepCopy() *_BACnetConstructedDataTimeOfActiveTimeReset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimeOfActiveTimeResetCopy := &_BACnetConstructedDataTimeOfActiveTimeReset{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TimeOfActiveTimeReset.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimeOfActiveTimeResetCopy
+}
+
 func (m *_BACnetConstructedDataTimeOfActiveTimeReset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type BACnetBDTEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBbmdAddress returns BbmdAddress (property field)
 	GetBbmdAddress() BACnetHostNPortEnclosed
 	// GetBroadcastMask returns BroadcastMask (property field)
 	GetBroadcastMask() BACnetContextTagOctetString
 	// IsBACnetBDTEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetBDTEntry()
+	// CreateBuilder creates a BACnetBDTEntryBuilder
+	CreateBACnetBDTEntryBuilder() BACnetBDTEntryBuilder
 }
 
 // _BACnetBDTEntry is the data-structure of this message
@@ -53,6 +56,133 @@ type _BACnetBDTEntry struct {
 }
 
 var _ BACnetBDTEntry = (*_BACnetBDTEntry)(nil)
+
+// NewBACnetBDTEntry factory function for _BACnetBDTEntry
+func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
+	if bbmdAddress == nil {
+		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
+	}
+	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetBDTEntryBuilder is a builder for BACnetBDTEntry
+type BACnetBDTEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder
+	// WithBbmdAddress adds BbmdAddress (property field)
+	WithBbmdAddress(BACnetHostNPortEnclosed) BACnetBDTEntryBuilder
+	// WithBbmdAddressBuilder adds BbmdAddress (property field) which is build by the builder
+	WithBbmdAddressBuilder(func(BACnetHostNPortEnclosedBuilder) BACnetHostNPortEnclosedBuilder) BACnetBDTEntryBuilder
+	// WithBroadcastMask adds BroadcastMask (property field)
+	WithOptionalBroadcastMask(BACnetContextTagOctetString) BACnetBDTEntryBuilder
+	// WithOptionalBroadcastMaskBuilder adds BroadcastMask (property field) which is build by the builder
+	WithOptionalBroadcastMaskBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetBDTEntryBuilder
+	// Build builds the BACnetBDTEntry or returns an error if something is wrong
+	Build() (BACnetBDTEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetBDTEntry
+}
+
+// NewBACnetBDTEntryBuilder() creates a BACnetBDTEntryBuilder
+func NewBACnetBDTEntryBuilder() BACnetBDTEntryBuilder {
+	return &_BACnetBDTEntryBuilder{_BACnetBDTEntry: new(_BACnetBDTEntry)}
+}
+
+type _BACnetBDTEntryBuilder struct {
+	*_BACnetBDTEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetBDTEntryBuilder) = (*_BACnetBDTEntryBuilder)(nil)
+
+func (b *_BACnetBDTEntryBuilder) WithMandatoryFields(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
+	return b.WithBbmdAddress(bbmdAddress)
+}
+
+func (b *_BACnetBDTEntryBuilder) WithBbmdAddress(bbmdAddress BACnetHostNPortEnclosed) BACnetBDTEntryBuilder {
+	b.BbmdAddress = bbmdAddress
+	return b
+}
+
+func (b *_BACnetBDTEntryBuilder) WithBbmdAddressBuilder(builderSupplier func(BACnetHostNPortEnclosedBuilder) BACnetHostNPortEnclosedBuilder) BACnetBDTEntryBuilder {
+	builder := builderSupplier(b.BbmdAddress.CreateBACnetHostNPortEnclosedBuilder())
+	var err error
+	b.BbmdAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetBDTEntryBuilder) WithOptionalBroadcastMask(broadcastMask BACnetContextTagOctetString) BACnetBDTEntryBuilder {
+	b.BroadcastMask = broadcastMask
+	return b
+}
+
+func (b *_BACnetBDTEntryBuilder) WithOptionalBroadcastMaskBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetBDTEntryBuilder {
+	builder := builderSupplier(b.BroadcastMask.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	b.BroadcastMask, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetBDTEntryBuilder) Build() (BACnetBDTEntry, error) {
+	if b.BbmdAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bbmdAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetBDTEntry.deepCopy(), nil
+}
+
+func (b *_BACnetBDTEntryBuilder) MustBuild() BACnetBDTEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetBDTEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetBDTEntryBuilder().(*_BACnetBDTEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetBDTEntryBuilder creates a BACnetBDTEntryBuilder
+func (b *_BACnetBDTEntry) CreateBACnetBDTEntryBuilder() BACnetBDTEntryBuilder {
+	if b == nil {
+		return NewBACnetBDTEntryBuilder()
+	}
+	return &_BACnetBDTEntryBuilder{_BACnetBDTEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +201,6 @@ func (m *_BACnetBDTEntry) GetBroadcastMask() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetBDTEntry factory function for _BACnetBDTEntry
-func NewBACnetBDTEntry(bbmdAddress BACnetHostNPortEnclosed, broadcastMask BACnetContextTagOctetString) *_BACnetBDTEntry {
-	if bbmdAddress == nil {
-		panic("bbmdAddress of type BACnetHostNPortEnclosed for BACnetBDTEntry must not be nil")
-	}
-	return &_BACnetBDTEntry{BbmdAddress: bbmdAddress, BroadcastMask: broadcastMask}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetBDTEntry(structType any) BACnetBDTEntry {
@@ -128,7 +250,7 @@ func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetBDTEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetBDTEntry BACnetBDTEntry, err error) {
@@ -196,13 +318,32 @@ func (m *_BACnetBDTEntry) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_BACnetBDTEntry) IsBACnetBDTEntry() {}
 
+func (m *_BACnetBDTEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetBDTEntry) deepCopy() *_BACnetBDTEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetBDTEntryCopy := &_BACnetBDTEntry{
+		m.BbmdAddress.DeepCopy().(BACnetHostNPortEnclosed),
+		m.BroadcastMask.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetBDTEntryCopy
+}
+
 func (m *_BACnetBDTEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

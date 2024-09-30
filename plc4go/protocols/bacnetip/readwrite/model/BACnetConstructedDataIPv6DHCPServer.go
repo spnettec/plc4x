@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDhcpServer returns DhcpServer (property field)
 	GetDhcpServer() BACnetApplicationTagOctetString
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPv6DHCPServer interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPv6DHCPServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6DHCPServer()
+	// CreateBuilder creates a BACnetConstructedDataIPv6DHCPServerBuilder
+	CreateBACnetConstructedDataIPv6DHCPServerBuilder() BACnetConstructedDataIPv6DHCPServerBuilder
 }
 
 // _BACnetConstructedDataIPv6DHCPServer is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPv6DHCPServer struct {
 
 var _ BACnetConstructedDataIPv6DHCPServer = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DHCPServer)(nil)
+
+// NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
+func NewBACnetConstructedDataIPv6DHCPServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dhcpServer BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
+	if dhcpServer == nil {
+		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6DHCPServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DhcpServer:                    dhcpServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPv6DHCPServerBuilder is a builder for BACnetConstructedDataIPv6DHCPServer
+type BACnetConstructedDataIPv6DHCPServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DHCPServerBuilder
+	// WithDhcpServer adds DhcpServer (property field)
+	WithDhcpServer(BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DHCPServerBuilder
+	// WithDhcpServerBuilder adds DhcpServer (property field) which is build by the builder
+	WithDhcpServerBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DHCPServerBuilder
+	// Build builds the BACnetConstructedDataIPv6DHCPServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPv6DHCPServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPv6DHCPServer
+}
+
+// NewBACnetConstructedDataIPv6DHCPServerBuilder() creates a BACnetConstructedDataIPv6DHCPServerBuilder
+func NewBACnetConstructedDataIPv6DHCPServerBuilder() BACnetConstructedDataIPv6DHCPServerBuilder {
+	return &_BACnetConstructedDataIPv6DHCPServerBuilder{_BACnetConstructedDataIPv6DHCPServer: new(_BACnetConstructedDataIPv6DHCPServer)}
+}
+
+type _BACnetConstructedDataIPv6DHCPServerBuilder struct {
+	*_BACnetConstructedDataIPv6DHCPServer
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPv6DHCPServerBuilder) = (*_BACnetConstructedDataIPv6DHCPServerBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) WithMandatoryFields(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DHCPServerBuilder {
+	return b.WithDhcpServer(dhcpServer)
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) WithDhcpServer(dhcpServer BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DHCPServerBuilder {
+	b.DhcpServer = dhcpServer
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) WithDhcpServerBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DHCPServerBuilder {
+	builder := builderSupplier(b.DhcpServer.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.DhcpServer, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) Build() (BACnetConstructedDataIPv6DHCPServer, error) {
+	if b.DhcpServer == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dhcpServer' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPv6DHCPServer.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) MustBuild() BACnetConstructedDataIPv6DHCPServer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6DHCPServerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6DHCPServerBuilder().(*_BACnetConstructedDataIPv6DHCPServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPv6DHCPServerBuilder creates a BACnetConstructedDataIPv6DHCPServerBuilder
+func (b *_BACnetConstructedDataIPv6DHCPServer) CreateBACnetConstructedDataIPv6DHCPServerBuilder() BACnetConstructedDataIPv6DHCPServerBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPv6DHCPServerBuilder()
+	}
+	return &_BACnetConstructedDataIPv6DHCPServerBuilder{_BACnetConstructedDataIPv6DHCPServer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6DHCPServer factory function for _BACnetConstructedDataIPv6DHCPServer
-func NewBACnetConstructedDataIPv6DHCPServer(dhcpServer BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DHCPServer {
-	if dhcpServer == nil {
-		panic("dhcpServer of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DHCPServer must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6DHCPServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DhcpServer:                    dhcpServer,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6DHCPServer(structType any) BACnetConstructedDataIPv6DHCPServer {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPv6DHCPServer) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataIPv6DHCPServer) IsBACnetConstructedDataIPv6DHCPServer() {}
 
+func (m *_BACnetConstructedDataIPv6DHCPServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6DHCPServer) deepCopy() *_BACnetConstructedDataIPv6DHCPServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6DHCPServerCopy := &_BACnetConstructedDataIPv6DHCPServer{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DhcpServer.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6DHCPServerCopy
+}
+
 func (m *_BACnetConstructedDataIPv6DHCPServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

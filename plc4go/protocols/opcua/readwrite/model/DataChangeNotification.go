@@ -38,6 +38,7 @@ type DataChangeNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfMonitoredItems returns NoOfMonitoredItems (property field)
 	GetNoOfMonitoredItems() int32
@@ -49,6 +50,8 @@ type DataChangeNotification interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDataChangeNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDataChangeNotification()
+	// CreateBuilder creates a DataChangeNotificationBuilder
+	CreateDataChangeNotificationBuilder() DataChangeNotificationBuilder
 }
 
 // _DataChangeNotification is the data-structure of this message
@@ -62,6 +65,131 @@ type _DataChangeNotification struct {
 
 var _ DataChangeNotification = (*_DataChangeNotification)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DataChangeNotification)(nil)
+
+// NewDataChangeNotification factory function for _DataChangeNotification
+func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
+	_result := &_DataChangeNotification{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfMonitoredItems:                noOfMonitoredItems,
+		MonitoredItems:                    monitoredItems,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DataChangeNotificationBuilder is a builder for DataChangeNotification
+type DataChangeNotificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder
+	// WithNoOfMonitoredItems adds NoOfMonitoredItems (property field)
+	WithNoOfMonitoredItems(int32) DataChangeNotificationBuilder
+	// WithMonitoredItems adds MonitoredItems (property field)
+	WithMonitoredItems(...ExtensionObjectDefinition) DataChangeNotificationBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) DataChangeNotificationBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) DataChangeNotificationBuilder
+	// Build builds the DataChangeNotification or returns an error if something is wrong
+	Build() (DataChangeNotification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DataChangeNotification
+}
+
+// NewDataChangeNotificationBuilder() creates a DataChangeNotificationBuilder
+func NewDataChangeNotificationBuilder() DataChangeNotificationBuilder {
+	return &_DataChangeNotificationBuilder{_DataChangeNotification: new(_DataChangeNotification)}
+}
+
+type _DataChangeNotificationBuilder struct {
+	*_DataChangeNotification
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DataChangeNotificationBuilder) = (*_DataChangeNotificationBuilder)(nil)
+
+func (b *_DataChangeNotificationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DataChangeNotificationBuilder) WithMandatoryFields(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DataChangeNotificationBuilder {
+	return b.WithNoOfMonitoredItems(noOfMonitoredItems).WithMonitoredItems(monitoredItems...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_DataChangeNotificationBuilder) WithNoOfMonitoredItems(noOfMonitoredItems int32) DataChangeNotificationBuilder {
+	b.NoOfMonitoredItems = noOfMonitoredItems
+	return b
+}
+
+func (b *_DataChangeNotificationBuilder) WithMonitoredItems(monitoredItems ...ExtensionObjectDefinition) DataChangeNotificationBuilder {
+	b.MonitoredItems = monitoredItems
+	return b
+}
+
+func (b *_DataChangeNotificationBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DataChangeNotificationBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_DataChangeNotificationBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DataChangeNotificationBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_DataChangeNotificationBuilder) Build() (DataChangeNotification, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DataChangeNotification.deepCopy(), nil
+}
+
+func (b *_DataChangeNotificationBuilder) MustBuild() DataChangeNotification {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DataChangeNotificationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DataChangeNotificationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DataChangeNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateDataChangeNotificationBuilder().(*_DataChangeNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDataChangeNotificationBuilder creates a DataChangeNotificationBuilder
+func (b *_DataChangeNotification) CreateDataChangeNotificationBuilder() DataChangeNotificationBuilder {
+	if b == nil {
+		return NewDataChangeNotificationBuilder()
+	}
+	return &_DataChangeNotificationBuilder{_DataChangeNotification: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_DataChangeNotification) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDataChangeNotification factory function for _DataChangeNotification
-func NewDataChangeNotification(noOfMonitoredItems int32, monitoredItems []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DataChangeNotification {
-	_result := &_DataChangeNotification{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfMonitoredItems:                noOfMonitoredItems,
-		MonitoredItems:                    monitoredItems,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDataChangeNotification(structType any) DataChangeNotification {
@@ -270,13 +385,36 @@ func (m *_DataChangeNotification) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_DataChangeNotification) IsDataChangeNotification() {}
 
+func (m *_DataChangeNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DataChangeNotification) deepCopy() *_DataChangeNotification {
+	if m == nil {
+		return nil
+	}
+	_DataChangeNotificationCopy := &_DataChangeNotification{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfMonitoredItems,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.MonitoredItems),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DataChangeNotificationCopy
+}
+
 func (m *_DataChangeNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

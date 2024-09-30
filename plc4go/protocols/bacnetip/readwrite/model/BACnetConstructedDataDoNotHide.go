@@ -38,6 +38,7 @@ type BACnetConstructedDataDoNotHide interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDoNotHide returns DoNotHide (property field)
 	GetDoNotHide() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataDoNotHide interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataDoNotHide is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDoNotHide()
+	// CreateBuilder creates a BACnetConstructedDataDoNotHideBuilder
+	CreateBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBuilder
 }
 
 // _BACnetConstructedDataDoNotHide is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDoNotHide struct {
 
 var _ BACnetConstructedDataDoNotHide = (*_BACnetConstructedDataDoNotHide)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDoNotHide)(nil)
+
+// NewBACnetConstructedDataDoNotHide factory function for _BACnetConstructedDataDoNotHide
+func NewBACnetConstructedDataDoNotHide(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, doNotHide BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
+	if doNotHide == nil {
+		panic("doNotHide of type BACnetApplicationTagBoolean for BACnetConstructedDataDoNotHide must not be nil")
+	}
+	_result := &_BACnetConstructedDataDoNotHide{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DoNotHide:                     doNotHide,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDoNotHideBuilder is a builder for BACnetConstructedDataDoNotHide
+type BACnetConstructedDataDoNotHideBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder
+	// WithDoNotHide adds DoNotHide (property field)
+	WithDoNotHide(BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder
+	// WithDoNotHideBuilder adds DoNotHide (property field) which is build by the builder
+	WithDoNotHideBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDoNotHideBuilder
+	// Build builds the BACnetConstructedDataDoNotHide or returns an error if something is wrong
+	Build() (BACnetConstructedDataDoNotHide, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDoNotHide
+}
+
+// NewBACnetConstructedDataDoNotHideBuilder() creates a BACnetConstructedDataDoNotHideBuilder
+func NewBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBuilder {
+	return &_BACnetConstructedDataDoNotHideBuilder{_BACnetConstructedDataDoNotHide: new(_BACnetConstructedDataDoNotHide)}
+}
+
+type _BACnetConstructedDataDoNotHideBuilder struct {
+	*_BACnetConstructedDataDoNotHide
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDoNotHideBuilder) = (*_BACnetConstructedDataDoNotHideBuilder)(nil)
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithMandatoryFields(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
+	return b.WithDoNotHide(doNotHide)
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHide(doNotHide BACnetApplicationTagBoolean) BACnetConstructedDataDoNotHideBuilder {
+	b.DoNotHide = doNotHide
+	return b
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) WithDoNotHideBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataDoNotHideBuilder {
+	builder := builderSupplier(b.DoNotHide.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.DoNotHide, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) Build() (BACnetConstructedDataDoNotHide, error) {
+	if b.DoNotHide == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'doNotHide' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDoNotHide.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) MustBuild() BACnetConstructedDataDoNotHide {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDoNotHideBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDoNotHideBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDoNotHideBuilder().(*_BACnetConstructedDataDoNotHideBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDoNotHideBuilder creates a BACnetConstructedDataDoNotHideBuilder
+func (b *_BACnetConstructedDataDoNotHide) CreateBACnetConstructedDataDoNotHideBuilder() BACnetConstructedDataDoNotHideBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDoNotHideBuilder()
+	}
+	return &_BACnetConstructedDataDoNotHideBuilder{_BACnetConstructedDataDoNotHide: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDoNotHide) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDoNotHide factory function for _BACnetConstructedDataDoNotHide
-func NewBACnetConstructedDataDoNotHide(doNotHide BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDoNotHide {
-	if doNotHide == nil {
-		panic("doNotHide of type BACnetApplicationTagBoolean for BACnetConstructedDataDoNotHide must not be nil")
-	}
-	_result := &_BACnetConstructedDataDoNotHide{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DoNotHide:                     doNotHide,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDoNotHide(structType any) BACnetConstructedDataDoNotHide {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataDoNotHide) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetConstructedDataDoNotHide) IsBACnetConstructedDataDoNotHide() {}
 
+func (m *_BACnetConstructedDataDoNotHide) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDoNotHide) deepCopy() *_BACnetConstructedDataDoNotHide {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDoNotHideCopy := &_BACnetConstructedDataDoNotHide{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DoNotHide.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDoNotHideCopy
+}
+
 func (m *_BACnetConstructedDataDoNotHide) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

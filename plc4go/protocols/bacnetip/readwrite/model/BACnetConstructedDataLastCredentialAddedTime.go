@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCredentialAddedTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCredentialAddedTime returns LastCredentialAddedTime (property field)
 	GetLastCredentialAddedTime() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataLastCredentialAddedTime interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataLastCredentialAddedTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastCredentialAddedTime()
+	// CreateBuilder creates a BACnetConstructedDataLastCredentialAddedTimeBuilder
+	CreateBACnetConstructedDataLastCredentialAddedTimeBuilder() BACnetConstructedDataLastCredentialAddedTimeBuilder
 }
 
 // _BACnetConstructedDataLastCredentialAddedTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLastCredentialAddedTime struct {
 
 var _ BACnetConstructedDataLastCredentialAddedTime = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCredentialAddedTime)(nil)
+
+// NewBACnetConstructedDataLastCredentialAddedTime factory function for _BACnetConstructedDataLastCredentialAddedTime
+func NewBACnetConstructedDataLastCredentialAddedTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCredentialAddedTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAddedTime {
+	if lastCredentialAddedTime == nil {
+		panic("lastCredentialAddedTime of type BACnetDateTime for BACnetConstructedDataLastCredentialAddedTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastCredentialAddedTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCredentialAddedTime:       lastCredentialAddedTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastCredentialAddedTimeBuilder is a builder for BACnetConstructedDataLastCredentialAddedTime
+type BACnetConstructedDataLastCredentialAddedTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastCredentialAddedTime BACnetDateTime) BACnetConstructedDataLastCredentialAddedTimeBuilder
+	// WithLastCredentialAddedTime adds LastCredentialAddedTime (property field)
+	WithLastCredentialAddedTime(BACnetDateTime) BACnetConstructedDataLastCredentialAddedTimeBuilder
+	// WithLastCredentialAddedTimeBuilder adds LastCredentialAddedTime (property field) which is build by the builder
+	WithLastCredentialAddedTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastCredentialAddedTimeBuilder
+	// Build builds the BACnetConstructedDataLastCredentialAddedTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastCredentialAddedTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastCredentialAddedTime
+}
+
+// NewBACnetConstructedDataLastCredentialAddedTimeBuilder() creates a BACnetConstructedDataLastCredentialAddedTimeBuilder
+func NewBACnetConstructedDataLastCredentialAddedTimeBuilder() BACnetConstructedDataLastCredentialAddedTimeBuilder {
+	return &_BACnetConstructedDataLastCredentialAddedTimeBuilder{_BACnetConstructedDataLastCredentialAddedTime: new(_BACnetConstructedDataLastCredentialAddedTime)}
+}
+
+type _BACnetConstructedDataLastCredentialAddedTimeBuilder struct {
+	*_BACnetConstructedDataLastCredentialAddedTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastCredentialAddedTimeBuilder) = (*_BACnetConstructedDataLastCredentialAddedTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) WithMandatoryFields(lastCredentialAddedTime BACnetDateTime) BACnetConstructedDataLastCredentialAddedTimeBuilder {
+	return b.WithLastCredentialAddedTime(lastCredentialAddedTime)
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) WithLastCredentialAddedTime(lastCredentialAddedTime BACnetDateTime) BACnetConstructedDataLastCredentialAddedTimeBuilder {
+	b.LastCredentialAddedTime = lastCredentialAddedTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) WithLastCredentialAddedTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataLastCredentialAddedTimeBuilder {
+	builder := builderSupplier(b.LastCredentialAddedTime.CreateBACnetDateTimeBuilder())
+	var err error
+	b.LastCredentialAddedTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) Build() (BACnetConstructedDataLastCredentialAddedTime, error) {
+	if b.LastCredentialAddedTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lastCredentialAddedTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLastCredentialAddedTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) MustBuild() BACnetConstructedDataLastCredentialAddedTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastCredentialAddedTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastCredentialAddedTimeBuilder().(*_BACnetConstructedDataLastCredentialAddedTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLastCredentialAddedTimeBuilder creates a BACnetConstructedDataLastCredentialAddedTimeBuilder
+func (b *_BACnetConstructedDataLastCredentialAddedTime) CreateBACnetConstructedDataLastCredentialAddedTimeBuilder() BACnetConstructedDataLastCredentialAddedTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLastCredentialAddedTimeBuilder()
+	}
+	return &_BACnetConstructedDataLastCredentialAddedTimeBuilder{_BACnetConstructedDataLastCredentialAddedTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) GetActualValue() BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastCredentialAddedTime factory function for _BACnetConstructedDataLastCredentialAddedTime
-func NewBACnetConstructedDataLastCredentialAddedTime(lastCredentialAddedTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCredentialAddedTime {
-	if lastCredentialAddedTime == nil {
-		panic("lastCredentialAddedTime of type BACnetDateTime for BACnetConstructedDataLastCredentialAddedTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastCredentialAddedTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastCredentialAddedTime:       lastCredentialAddedTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastCredentialAddedTime(structType any) BACnetConstructedDataLastCredentialAddedTime {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLastCredentialAddedTime) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataLastCredentialAddedTime) IsBACnetConstructedDataLastCredentialAddedTime() {
 }
 
+func (m *_BACnetConstructedDataLastCredentialAddedTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCredentialAddedTime) deepCopy() *_BACnetConstructedDataLastCredentialAddedTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCredentialAddedTimeCopy := &_BACnetConstructedDataLastCredentialAddedTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastCredentialAddedTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCredentialAddedTimeCopy
+}
+
 func (m *_BACnetConstructedDataLastCredentialAddedTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -41,8 +41,11 @@ type ModbusConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsModbusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusConstants()
+	// CreateBuilder creates a ModbusConstantsBuilder
+	CreateModbusConstantsBuilder() ModbusConstantsBuilder
 }
 
 // _ModbusConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _ModbusConstants struct {
 }
 
 var _ ModbusConstants = (*_ModbusConstants)(nil)
+
+// NewModbusConstants factory function for _ModbusConstants
+func NewModbusConstants() *_ModbusConstants {
+	return &_ModbusConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusConstantsBuilder is a builder for ModbusConstants
+type ModbusConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ModbusConstantsBuilder
+	// Build builds the ModbusConstants or returns an error if something is wrong
+	Build() (ModbusConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusConstants
+}
+
+// NewModbusConstantsBuilder() creates a ModbusConstantsBuilder
+func NewModbusConstantsBuilder() ModbusConstantsBuilder {
+	return &_ModbusConstantsBuilder{_ModbusConstants: new(_ModbusConstants)}
+}
+
+type _ModbusConstantsBuilder struct {
+	*_ModbusConstants
+
+	err *utils.MultiError
+}
+
+var _ (ModbusConstantsBuilder) = (*_ModbusConstantsBuilder)(nil)
+
+func (b *_ModbusConstantsBuilder) WithMandatoryFields() ModbusConstantsBuilder {
+	return b
+}
+
+func (b *_ModbusConstantsBuilder) Build() (ModbusConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusConstants.deepCopy(), nil
+}
+
+func (b *_ModbusConstantsBuilder) MustBuild() ModbusConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ModbusConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateModbusConstantsBuilder().(*_ModbusConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusConstantsBuilder creates a ModbusConstantsBuilder
+func (b *_ModbusConstants) CreateModbusConstantsBuilder() ModbusConstantsBuilder {
+	if b == nil {
+		return NewModbusConstantsBuilder()
+	}
+	return &_ModbusConstantsBuilder{_ModbusConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_ModbusConstants) GetModbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusConstants factory function for _ModbusConstants
-func NewModbusConstants() *_ModbusConstants {
-	return &_ModbusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusConstants(structType any) ModbusConstants {
@@ -113,7 +185,7 @@ func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ModbusConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__modbusConstants ModbusConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_ModbusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ModbusConstants) IsModbusConstants() {}
 
+func (m *_ModbusConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusConstants) deepCopy() *_ModbusConstants {
+	if m == nil {
+		return nil
+	}
+	_ModbusConstantsCopy := &_ModbusConstants{}
+	return _ModbusConstantsCopy
+}
+
 func (m *_ModbusConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

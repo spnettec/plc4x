@@ -42,11 +42,14 @@ type MultipleServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetData returns Data (property field)
 	GetData() Services
 	// IsMultipleServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMultipleServiceRequest()
+	// CreateBuilder creates a MultipleServiceRequestBuilder
+	CreateMultipleServiceRequestBuilder() MultipleServiceRequestBuilder
 }
 
 // _MultipleServiceRequest is the data-structure of this message
@@ -57,6 +60,131 @@ type _MultipleServiceRequest struct {
 
 var _ MultipleServiceRequest = (*_MultipleServiceRequest)(nil)
 var _ CipServiceRequirements = (*_MultipleServiceRequest)(nil)
+
+// NewMultipleServiceRequest factory function for _MultipleServiceRequest
+func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
+	if data == nil {
+		panic("data of type Services for MultipleServiceRequest must not be nil")
+	}
+	_result := &_MultipleServiceRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MultipleServiceRequestBuilder is a builder for MultipleServiceRequest
+type MultipleServiceRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data Services) MultipleServiceRequestBuilder
+	// WithData adds Data (property field)
+	WithData(Services) MultipleServiceRequestBuilder
+	// WithDataBuilder adds Data (property field) which is build by the builder
+	WithDataBuilder(func(ServicesBuilder) ServicesBuilder) MultipleServiceRequestBuilder
+	// Build builds the MultipleServiceRequest or returns an error if something is wrong
+	Build() (MultipleServiceRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MultipleServiceRequest
+}
+
+// NewMultipleServiceRequestBuilder() creates a MultipleServiceRequestBuilder
+func NewMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
+	return &_MultipleServiceRequestBuilder{_MultipleServiceRequest: new(_MultipleServiceRequest)}
+}
+
+type _MultipleServiceRequestBuilder struct {
+	*_MultipleServiceRequest
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MultipleServiceRequestBuilder) = (*_MultipleServiceRequestBuilder)(nil)
+
+func (b *_MultipleServiceRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_MultipleServiceRequestBuilder) WithMandatoryFields(data Services) MultipleServiceRequestBuilder {
+	return b.WithData(data)
+}
+
+func (b *_MultipleServiceRequestBuilder) WithData(data Services) MultipleServiceRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_MultipleServiceRequestBuilder) WithDataBuilder(builderSupplier func(ServicesBuilder) ServicesBuilder) MultipleServiceRequestBuilder {
+	builder := builderSupplier(b.Data.CreateServicesBuilder())
+	var err error
+	b.Data, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ServicesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MultipleServiceRequestBuilder) Build() (MultipleServiceRequest, error) {
+	if b.Data == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'data' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MultipleServiceRequest.deepCopy(), nil
+}
+
+func (b *_MultipleServiceRequestBuilder) MustBuild() MultipleServiceRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MultipleServiceRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MultipleServiceRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_MultipleServiceRequestBuilder) DeepCopy() any {
+	_copy := b.CreateMultipleServiceRequestBuilder().(*_MultipleServiceRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMultipleServiceRequestBuilder creates a MultipleServiceRequestBuilder
+func (b *_MultipleServiceRequest) CreateMultipleServiceRequestBuilder() MultipleServiceRequestBuilder {
+	if b == nil {
+		return NewMultipleServiceRequestBuilder()
+	}
+	return &_MultipleServiceRequestBuilder{_MultipleServiceRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,19 +242,6 @@ func (m *_MultipleServiceRequest) GetRequestPath() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMultipleServiceRequest factory function for _MultipleServiceRequest
-func NewMultipleServiceRequest(data Services, serviceLen uint16) *_MultipleServiceRequest {
-	if data == nil {
-		panic("data of type Services for MultipleServiceRequest must not be nil")
-	}
-	_result := &_MultipleServiceRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMultipleServiceRequest(structType any) MultipleServiceRequest {
@@ -238,13 +353,33 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_MultipleServiceRequest) IsMultipleServiceRequest() {}
 
+func (m *_MultipleServiceRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MultipleServiceRequest) deepCopy() *_MultipleServiceRequest {
+	if m == nil {
+		return nil
+	}
+	_MultipleServiceRequestCopy := &_MultipleServiceRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Data.DeepCopy().(Services),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _MultipleServiceRequestCopy
+}
+
 func (m *_MultipleServiceRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

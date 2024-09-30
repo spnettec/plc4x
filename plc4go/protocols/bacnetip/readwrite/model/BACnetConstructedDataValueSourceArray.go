@@ -38,6 +38,7 @@ type BACnetConstructedDataValueSourceArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataValueSourceArray interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataValueSourceArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueSourceArray()
+	// CreateBuilder creates a BACnetConstructedDataValueSourceArrayBuilder
+	CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder
 }
 
 // _BACnetConstructedDataValueSourceArray is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataValueSourceArray struct {
 
 var _ BACnetConstructedDataValueSourceArray = (*_BACnetConstructedDataValueSourceArray)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSourceArray)(nil)
+
+// NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
+func NewBACnetConstructedDataValueSourceArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
+	_result := &_BACnetConstructedDataValueSourceArray{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		VtClassesSupported:            vtClassesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueSourceArrayBuilder is a builder for BACnetConstructedDataValueSourceArray
+type BACnetConstructedDataValueSourceArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder
+	// WithVtClassesSupported adds VtClassesSupported (property field)
+	WithVtClassesSupported(...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder
+	// Build builds the BACnetConstructedDataValueSourceArray or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueSourceArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueSourceArray
+}
+
+// NewBACnetConstructedDataValueSourceArrayBuilder() creates a BACnetConstructedDataValueSourceArrayBuilder
+func NewBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
+	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: new(_BACnetConstructedDataValueSourceArray)}
+}
+
+type _BACnetConstructedDataValueSourceArrayBuilder struct {
+	*_BACnetConstructedDataValueSourceArray
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueSourceArrayBuilder) = (*_BACnetConstructedDataValueSourceArrayBuilder)(nil)
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithMandatoryFields(vtClassesSupported []BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	return b.WithVtClassesSupported(vtClassesSupported...)
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataValueSourceArrayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataValueSourceArrayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetValueSource) BACnetConstructedDataValueSourceArrayBuilder {
+	b.VtClassesSupported = vtClassesSupported
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) Build() (BACnetConstructedDataValueSourceArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataValueSourceArray.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) MustBuild() BACnetConstructedDataValueSourceArray {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataValueSourceArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataValueSourceArrayBuilder().(*_BACnetConstructedDataValueSourceArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataValueSourceArrayBuilder creates a BACnetConstructedDataValueSourceArrayBuilder
+func (b *_BACnetConstructedDataValueSourceArray) CreateBACnetConstructedDataValueSourceArrayBuilder() BACnetConstructedDataValueSourceArrayBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataValueSourceArrayBuilder()
+	}
+	return &_BACnetConstructedDataValueSourceArrayBuilder{_BACnetConstructedDataValueSourceArray: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataValueSourceArray) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueSourceArray factory function for _BACnetConstructedDataValueSourceArray
-func NewBACnetConstructedDataValueSourceArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, vtClassesSupported []BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSourceArray {
-	_result := &_BACnetConstructedDataValueSourceArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		VtClassesSupported:            vtClassesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueSourceArray(structType any) BACnetConstructedDataValueSourceArray {
@@ -253,13 +369,34 @@ func (m *_BACnetConstructedDataValueSourceArray) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataValueSourceArray) IsBACnetConstructedDataValueSourceArray() {}
 
+func (m *_BACnetConstructedDataValueSourceArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueSourceArray) deepCopy() *_BACnetConstructedDataValueSourceArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueSourceArrayCopy := &_BACnetConstructedDataValueSourceArray{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetValueSource, BACnetValueSource](m.VtClassesSupported),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueSourceArrayCopy
+}
+
 func (m *_BACnetConstructedDataValueSourceArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

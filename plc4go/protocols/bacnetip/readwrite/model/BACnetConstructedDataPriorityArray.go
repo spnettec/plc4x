@@ -38,6 +38,7 @@ type BACnetConstructedDataPriorityArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPriorityArray returns PriorityArray (property field)
 	GetPriorityArray() BACnetPriorityArray
@@ -45,6 +46,8 @@ type BACnetConstructedDataPriorityArray interface {
 	GetActualValue() BACnetPriorityArray
 	// IsBACnetConstructedDataPriorityArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPriorityArray()
+	// CreateBuilder creates a BACnetConstructedDataPriorityArrayBuilder
+	CreateBACnetConstructedDataPriorityArrayBuilder() BACnetConstructedDataPriorityArrayBuilder
 }
 
 // _BACnetConstructedDataPriorityArray is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataPriorityArray struct {
 
 var _ BACnetConstructedDataPriorityArray = (*_BACnetConstructedDataPriorityArray)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriorityArray)(nil)
+
+// NewBACnetConstructedDataPriorityArray factory function for _BACnetConstructedDataPriorityArray
+func NewBACnetConstructedDataPriorityArray(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityArray BACnetPriorityArray, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityArray {
+	if priorityArray == nil {
+		panic("priorityArray of type BACnetPriorityArray for BACnetConstructedDataPriorityArray must not be nil")
+	}
+	_result := &_BACnetConstructedDataPriorityArray{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PriorityArray:                 priorityArray,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPriorityArrayBuilder is a builder for BACnetConstructedDataPriorityArray
+type BACnetConstructedDataPriorityArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(priorityArray BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder
+	// WithPriorityArray adds PriorityArray (property field)
+	WithPriorityArray(BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder
+	// WithPriorityArrayBuilder adds PriorityArray (property field) which is build by the builder
+	WithPriorityArrayBuilder(func(BACnetPriorityArrayBuilder) BACnetPriorityArrayBuilder) BACnetConstructedDataPriorityArrayBuilder
+	// Build builds the BACnetConstructedDataPriorityArray or returns an error if something is wrong
+	Build() (BACnetConstructedDataPriorityArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPriorityArray
+}
+
+// NewBACnetConstructedDataPriorityArrayBuilder() creates a BACnetConstructedDataPriorityArrayBuilder
+func NewBACnetConstructedDataPriorityArrayBuilder() BACnetConstructedDataPriorityArrayBuilder {
+	return &_BACnetConstructedDataPriorityArrayBuilder{_BACnetConstructedDataPriorityArray: new(_BACnetConstructedDataPriorityArray)}
+}
+
+type _BACnetConstructedDataPriorityArrayBuilder struct {
+	*_BACnetConstructedDataPriorityArray
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPriorityArrayBuilder) = (*_BACnetConstructedDataPriorityArrayBuilder)(nil)
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) WithMandatoryFields(priorityArray BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder {
+	return b.WithPriorityArray(priorityArray)
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) WithPriorityArray(priorityArray BACnetPriorityArray) BACnetConstructedDataPriorityArrayBuilder {
+	b.PriorityArray = priorityArray
+	return b
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) WithPriorityArrayBuilder(builderSupplier func(BACnetPriorityArrayBuilder) BACnetPriorityArrayBuilder) BACnetConstructedDataPriorityArrayBuilder {
+	builder := builderSupplier(b.PriorityArray.CreateBACnetPriorityArrayBuilder())
+	var err error
+	b.PriorityArray, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPriorityArrayBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) Build() (BACnetConstructedDataPriorityArray, error) {
+	if b.PriorityArray == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'priorityArray' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataPriorityArray.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) MustBuild() BACnetConstructedDataPriorityArray {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPriorityArrayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPriorityArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPriorityArrayBuilder().(*_BACnetConstructedDataPriorityArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataPriorityArrayBuilder creates a BACnetConstructedDataPriorityArrayBuilder
+func (b *_BACnetConstructedDataPriorityArray) CreateBACnetConstructedDataPriorityArrayBuilder() BACnetConstructedDataPriorityArrayBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataPriorityArrayBuilder()
+	}
+	return &_BACnetConstructedDataPriorityArrayBuilder{_BACnetConstructedDataPriorityArray: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataPriorityArray) GetActualValue() BACnetPriorityArr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPriorityArray factory function for _BACnetConstructedDataPriorityArray
-func NewBACnetConstructedDataPriorityArray(priorityArray BACnetPriorityArray, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityArray {
-	if priorityArray == nil {
-		panic("priorityArray of type BACnetPriorityArray for BACnetConstructedDataPriorityArray must not be nil")
-	}
-	_result := &_BACnetConstructedDataPriorityArray{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PriorityArray:                 priorityArray,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPriorityArray(structType any) BACnetConstructedDataPriorityArray {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataPriorityArray) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataPriorityArray) IsBACnetConstructedDataPriorityArray() {}
 
+func (m *_BACnetConstructedDataPriorityArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriorityArray) deepCopy() *_BACnetConstructedDataPriorityArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityArrayCopy := &_BACnetConstructedDataPriorityArray{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PriorityArray.DeepCopy().(BACnetPriorityArray),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityArrayCopy
+}
+
 func (m *_BACnetConstructedDataPriorityArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -36,9 +36,12 @@ type GetAttributeListRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsGetAttributeListRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGetAttributeListRequest()
+	// CreateBuilder creates a GetAttributeListRequestBuilder
+	CreateGetAttributeListRequestBuilder() GetAttributeListRequestBuilder
 }
 
 // _GetAttributeListRequest is the data-structure of this message
@@ -48,6 +51,99 @@ type _GetAttributeListRequest struct {
 
 var _ GetAttributeListRequest = (*_GetAttributeListRequest)(nil)
 var _ CipServiceRequirements = (*_GetAttributeListRequest)(nil)
+
+// NewGetAttributeListRequest factory function for _GetAttributeListRequest
+func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
+	_result := &_GetAttributeListRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GetAttributeListRequestBuilder is a builder for GetAttributeListRequest
+type GetAttributeListRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() GetAttributeListRequestBuilder
+	// Build builds the GetAttributeListRequest or returns an error if something is wrong
+	Build() (GetAttributeListRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GetAttributeListRequest
+}
+
+// NewGetAttributeListRequestBuilder() creates a GetAttributeListRequestBuilder
+func NewGetAttributeListRequestBuilder() GetAttributeListRequestBuilder {
+	return &_GetAttributeListRequestBuilder{_GetAttributeListRequest: new(_GetAttributeListRequest)}
+}
+
+type _GetAttributeListRequestBuilder struct {
+	*_GetAttributeListRequest
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (GetAttributeListRequestBuilder) = (*_GetAttributeListRequestBuilder)(nil)
+
+func (b *_GetAttributeListRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_GetAttributeListRequestBuilder) WithMandatoryFields() GetAttributeListRequestBuilder {
+	return b
+}
+
+func (b *_GetAttributeListRequestBuilder) Build() (GetAttributeListRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GetAttributeListRequest.deepCopy(), nil
+}
+
+func (b *_GetAttributeListRequestBuilder) MustBuild() GetAttributeListRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GetAttributeListRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GetAttributeListRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_GetAttributeListRequestBuilder) DeepCopy() any {
+	_copy := b.CreateGetAttributeListRequestBuilder().(*_GetAttributeListRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateGetAttributeListRequestBuilder creates a GetAttributeListRequestBuilder
+func (b *_GetAttributeListRequest) CreateGetAttributeListRequestBuilder() GetAttributeListRequestBuilder {
+	if b == nil {
+		return NewGetAttributeListRequestBuilder()
+	}
+	return &_GetAttributeListRequestBuilder{_GetAttributeListRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +169,6 @@ func (m *_GetAttributeListRequest) GetConnected() bool {
 
 func (m *_GetAttributeListRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewGetAttributeListRequest factory function for _GetAttributeListRequest
-func NewGetAttributeListRequest(serviceLen uint16) *_GetAttributeListRequest {
-	_result := &_GetAttributeListRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,13 +242,32 @@ func (m *_GetAttributeListRequest) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_GetAttributeListRequest) IsGetAttributeListRequest() {}
 
+func (m *_GetAttributeListRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GetAttributeListRequest) deepCopy() *_GetAttributeListRequest {
+	if m == nil {
+		return nil
+	}
+	_GetAttributeListRequestCopy := &_GetAttributeListRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _GetAttributeListRequestCopy
+}
+
 func (m *_GetAttributeListRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

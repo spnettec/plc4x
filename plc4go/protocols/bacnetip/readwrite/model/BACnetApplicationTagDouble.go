@@ -38,6 +38,7 @@ type BACnetApplicationTagDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDouble
@@ -45,6 +46,8 @@ type BACnetApplicationTagDouble interface {
 	GetActualValue() float64
 	// IsBACnetApplicationTagDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagDouble()
+	// CreateBuilder creates a BACnetApplicationTagDoubleBuilder
+	CreateBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder
 }
 
 // _BACnetApplicationTagDouble is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetApplicationTagDouble struct {
 
 var _ BACnetApplicationTagDouble = (*_BACnetApplicationTagDouble)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagDouble)(nil)
+
+// NewBACnetApplicationTagDouble factory function for _BACnetApplicationTagDouble
+func NewBACnetApplicationTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble) *_BACnetApplicationTagDouble {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDouble for BACnetApplicationTagDouble must not be nil")
+	}
+	_result := &_BACnetApplicationTagDouble{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetApplicationTagDoubleBuilder is a builder for BACnetApplicationTagDouble
+type BACnetApplicationTagDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetApplicationTagDoubleBuilder
+	// Build builds the BACnetApplicationTagDouble or returns an error if something is wrong
+	Build() (BACnetApplicationTagDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetApplicationTagDouble
+}
+
+// NewBACnetApplicationTagDoubleBuilder() creates a BACnetApplicationTagDoubleBuilder
+func NewBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder {
+	return &_BACnetApplicationTagDoubleBuilder{_BACnetApplicationTagDouble: new(_BACnetApplicationTagDouble)}
+}
+
+type _BACnetApplicationTagDoubleBuilder struct {
+	*_BACnetApplicationTagDouble
+
+	parentBuilder *_BACnetApplicationTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetApplicationTagDoubleBuilder) = (*_BACnetApplicationTagDoubleBuilder)(nil)
+
+func (b *_BACnetApplicationTagDoubleBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetApplicationTagDoubleBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetApplicationTagDoubleBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadDoubleBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) Build() (BACnetApplicationTagDouble, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetApplicationTagDouble.deepCopy(), nil
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) MustBuild() BACnetApplicationTagDouble {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagDoubleBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagDoubleBuilder().(*_BACnetApplicationTagDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetApplicationTagDoubleBuilder creates a BACnetApplicationTagDoubleBuilder
+func (b *_BACnetApplicationTagDouble) CreateBACnetApplicationTagDoubleBuilder() BACnetApplicationTagDoubleBuilder {
+	if b == nil {
+		return NewBACnetApplicationTagDoubleBuilder()
+	}
+	return &_BACnetApplicationTagDoubleBuilder{_BACnetApplicationTagDouble: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +226,6 @@ func (m *_BACnetApplicationTagDouble) GetActualValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagDouble factory function for _BACnetApplicationTagDouble
-func NewBACnetApplicationTagDouble(payload BACnetTagPayloadDouble, header BACnetTagHeader) *_BACnetApplicationTagDouble {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDouble for BACnetApplicationTagDouble must not be nil")
-	}
-	_result := &_BACnetApplicationTagDouble{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagDouble(structType any) BACnetApplicationTagDouble {
@@ -210,13 +325,33 @@ func (m *_BACnetApplicationTagDouble) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_BACnetApplicationTagDouble) IsBACnetApplicationTagDouble() {}
 
+func (m *_BACnetApplicationTagDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagDouble) deepCopy() *_BACnetApplicationTagDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagDoubleCopy := &_BACnetApplicationTagDouble{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagDoubleCopy
+}
+
 func (m *_BACnetApplicationTagDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

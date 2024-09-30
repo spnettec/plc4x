@@ -38,6 +38,7 @@ type HVACModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -66,6 +67,8 @@ type HVACModeAndFlags interface {
 	GetIsLevelRaw() bool
 	// IsHVACModeAndFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACModeAndFlags()
+	// CreateBuilder creates a HVACModeAndFlagsBuilder
+	CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder
 }
 
 // _HVACModeAndFlags is the data-structure of this message
@@ -80,6 +83,115 @@ type _HVACModeAndFlags struct {
 }
 
 var _ HVACModeAndFlags = (*_HVACModeAndFlags)(nil)
+
+// NewHVACModeAndFlags factory function for _HVACModeAndFlags
+func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
+	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACModeAndFlagsBuilder is a builder for HVACModeAndFlags
+type HVACModeAndFlagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder
+	// WithAuxiliaryLevel adds AuxiliaryLevel (property field)
+	WithAuxiliaryLevel(bool) HVACModeAndFlagsBuilder
+	// WithGuard adds Guard (property field)
+	WithGuard(bool) HVACModeAndFlagsBuilder
+	// WithSetback adds Setback (property field)
+	WithSetback(bool) HVACModeAndFlagsBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(bool) HVACModeAndFlagsBuilder
+	// WithMode adds Mode (property field)
+	WithMode(HVACModeAndFlagsMode) HVACModeAndFlagsBuilder
+	// Build builds the HVACModeAndFlags or returns an error if something is wrong
+	Build() (HVACModeAndFlags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACModeAndFlags
+}
+
+// NewHVACModeAndFlagsBuilder() creates a HVACModeAndFlagsBuilder
+func NewHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
+	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: new(_HVACModeAndFlags)}
+}
+
+type _HVACModeAndFlagsBuilder struct {
+	*_HVACModeAndFlags
+
+	err *utils.MultiError
+}
+
+var _ (HVACModeAndFlagsBuilder) = (*_HVACModeAndFlagsBuilder)(nil)
+
+func (b *_HVACModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	return b.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
+}
+
+func (b *_HVACModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACModeAndFlagsBuilder {
+	b.AuxiliaryLevel = auxiliaryLevel
+	return b
+}
+
+func (b *_HVACModeAndFlagsBuilder) WithGuard(guard bool) HVACModeAndFlagsBuilder {
+	b.Guard = guard
+	return b
+}
+
+func (b *_HVACModeAndFlagsBuilder) WithSetback(setback bool) HVACModeAndFlagsBuilder {
+	b.Setback = setback
+	return b
+}
+
+func (b *_HVACModeAndFlagsBuilder) WithLevel(level bool) HVACModeAndFlagsBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_HVACModeAndFlagsBuilder) WithMode(mode HVACModeAndFlagsMode) HVACModeAndFlagsBuilder {
+	b.Mode = mode
+	return b
+}
+
+func (b *_HVACModeAndFlagsBuilder) Build() (HVACModeAndFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACModeAndFlags.deepCopy(), nil
+}
+
+func (b *_HVACModeAndFlagsBuilder) MustBuild() HVACModeAndFlags {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACModeAndFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACModeAndFlagsBuilder().(*_HVACModeAndFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACModeAndFlagsBuilder creates a HVACModeAndFlagsBuilder
+func (b *_HVACModeAndFlags) CreateHVACModeAndFlagsBuilder() HVACModeAndFlagsBuilder {
+	if b == nil {
+		return NewHVACModeAndFlagsBuilder()
+	}
+	return &_HVACModeAndFlagsBuilder{_HVACModeAndFlags: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -168,11 +280,6 @@ func (m *_HVACModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewHVACModeAndFlags factory function for _HVACModeAndFlags
-func NewHVACModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACModeAndFlagsMode) *_HVACModeAndFlags {
-	return &_HVACModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
-
 // Deprecated: use the interface for direct cast
 func CastHVACModeAndFlags(structType any) HVACModeAndFlags {
 	if casted, ok := structType.(HVACModeAndFlags); ok {
@@ -247,7 +354,7 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACModeAndFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACModeAndFlags HVACModeAndFlags, err error) {
@@ -447,13 +554,36 @@ func (m *_HVACModeAndFlags) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_HVACModeAndFlags) IsHVACModeAndFlags() {}
 
+func (m *_HVACModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACModeAndFlags) deepCopy() *_HVACModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACModeAndFlagsCopy := &_HVACModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACModeAndFlagsCopy
+}
+
 func (m *_HVACModeAndFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

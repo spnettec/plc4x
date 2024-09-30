@@ -38,11 +38,14 @@ type BinaryPayload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Payload
 	// GetPayload returns Payload (property field)
 	GetPayload() []byte
 	// IsBinaryPayload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBinaryPayload()
+	// CreateBuilder creates a BinaryPayloadBuilder
+	CreateBinaryPayloadBuilder() BinaryPayloadBuilder
 }
 
 // _BinaryPayload is the data-structure of this message
@@ -53,6 +56,107 @@ type _BinaryPayload struct {
 
 var _ BinaryPayload = (*_BinaryPayload)(nil)
 var _ PayloadRequirements = (*_BinaryPayload)(nil)
+
+// NewBinaryPayload factory function for _BinaryPayload
+func NewBinaryPayload(sequenceHeader SequenceHeader, payload []byte, byteCount uint32) *_BinaryPayload {
+	_result := &_BinaryPayload{
+		PayloadContract: NewPayload(sequenceHeader, byteCount),
+		Payload:         payload,
+	}
+	_result.PayloadContract.(*_Payload)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BinaryPayloadBuilder is a builder for BinaryPayload
+type BinaryPayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload []byte) BinaryPayloadBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(...byte) BinaryPayloadBuilder
+	// Build builds the BinaryPayload or returns an error if something is wrong
+	Build() (BinaryPayload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BinaryPayload
+}
+
+// NewBinaryPayloadBuilder() creates a BinaryPayloadBuilder
+func NewBinaryPayloadBuilder() BinaryPayloadBuilder {
+	return &_BinaryPayloadBuilder{_BinaryPayload: new(_BinaryPayload)}
+}
+
+type _BinaryPayloadBuilder struct {
+	*_BinaryPayload
+
+	parentBuilder *_PayloadBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BinaryPayloadBuilder) = (*_BinaryPayloadBuilder)(nil)
+
+func (b *_BinaryPayloadBuilder) setParent(contract PayloadContract) {
+	b.PayloadContract = contract
+}
+
+func (b *_BinaryPayloadBuilder) WithMandatoryFields(payload []byte) BinaryPayloadBuilder {
+	return b.WithPayload(payload...)
+}
+
+func (b *_BinaryPayloadBuilder) WithPayload(payload ...byte) BinaryPayloadBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BinaryPayloadBuilder) Build() (BinaryPayload, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BinaryPayload.deepCopy(), nil
+}
+
+func (b *_BinaryPayloadBuilder) MustBuild() BinaryPayload {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BinaryPayloadBuilder) Done() PayloadBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BinaryPayloadBuilder) buildForPayload() (Payload, error) {
+	return b.Build()
+}
+
+func (b *_BinaryPayloadBuilder) DeepCopy() any {
+	_copy := b.CreateBinaryPayloadBuilder().(*_BinaryPayloadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBinaryPayloadBuilder creates a BinaryPayloadBuilder
+func (b *_BinaryPayload) CreateBinaryPayloadBuilder() BinaryPayloadBuilder {
+	if b == nil {
+		return NewBinaryPayloadBuilder()
+	}
+	return &_BinaryPayloadBuilder{_BinaryPayload: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_BinaryPayload) GetPayload() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBinaryPayload factory function for _BinaryPayload
-func NewBinaryPayload(payload []byte, sequenceHeader SequenceHeader, byteCount uint32) *_BinaryPayload {
-	_result := &_BinaryPayload{
-		PayloadContract: NewPayload(sequenceHeader, byteCount),
-		Payload:         payload,
-	}
-	_result.PayloadContract.(*_Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBinaryPayload(structType any) BinaryPayload {
@@ -182,13 +276,33 @@ func (m *_BinaryPayload) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_BinaryPayload) IsBinaryPayload() {}
 
+func (m *_BinaryPayload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BinaryPayload) deepCopy() *_BinaryPayload {
+	if m == nil {
+		return nil
+	}
+	_BinaryPayloadCopy := &_BinaryPayload{
+		m.PayloadContract.(*_Payload).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Payload),
+	}
+	m.PayloadContract.(*_Payload)._SubType = m
+	return _BinaryPayloadCopy
+}
+
 func (m *_BinaryPayload) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

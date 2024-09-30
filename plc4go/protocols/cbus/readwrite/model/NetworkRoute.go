@@ -38,12 +38,15 @@ type NetworkRoute interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkPCI returns NetworkPCI (property field)
 	GetNetworkPCI() NetworkProtocolControlInformation
 	// GetAdditionalBridgeAddresses returns AdditionalBridgeAddresses (property field)
 	GetAdditionalBridgeAddresses() []BridgeAddress
 	// IsNetworkRoute is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkRoute()
+	// CreateBuilder creates a NetworkRouteBuilder
+	CreateNetworkRouteBuilder() NetworkRouteBuilder
 }
 
 // _NetworkRoute is the data-structure of this message
@@ -53,6 +56,118 @@ type _NetworkRoute struct {
 }
 
 var _ NetworkRoute = (*_NetworkRoute)(nil)
+
+// NewNetworkRoute factory function for _NetworkRoute
+func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) *_NetworkRoute {
+	if networkPCI == nil {
+		panic("networkPCI of type NetworkProtocolControlInformation for NetworkRoute must not be nil")
+	}
+	return &_NetworkRoute{NetworkPCI: networkPCI, AdditionalBridgeAddresses: additionalBridgeAddresses}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NetworkRouteBuilder is a builder for NetworkRoute
+type NetworkRouteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder
+	// WithNetworkPCI adds NetworkPCI (property field)
+	WithNetworkPCI(NetworkProtocolControlInformation) NetworkRouteBuilder
+	// WithNetworkPCIBuilder adds NetworkPCI (property field) which is build by the builder
+	WithNetworkPCIBuilder(func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder
+	// WithAdditionalBridgeAddresses adds AdditionalBridgeAddresses (property field)
+	WithAdditionalBridgeAddresses(...BridgeAddress) NetworkRouteBuilder
+	// Build builds the NetworkRoute or returns an error if something is wrong
+	Build() (NetworkRoute, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NetworkRoute
+}
+
+// NewNetworkRouteBuilder() creates a NetworkRouteBuilder
+func NewNetworkRouteBuilder() NetworkRouteBuilder {
+	return &_NetworkRouteBuilder{_NetworkRoute: new(_NetworkRoute)}
+}
+
+type _NetworkRouteBuilder struct {
+	*_NetworkRoute
+
+	err *utils.MultiError
+}
+
+var _ (NetworkRouteBuilder) = (*_NetworkRouteBuilder)(nil)
+
+func (b *_NetworkRouteBuilder) WithMandatoryFields(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) NetworkRouteBuilder {
+	return b.WithNetworkPCI(networkPCI).WithAdditionalBridgeAddresses(additionalBridgeAddresses...)
+}
+
+func (b *_NetworkRouteBuilder) WithNetworkPCI(networkPCI NetworkProtocolControlInformation) NetworkRouteBuilder {
+	b.NetworkPCI = networkPCI
+	return b
+}
+
+func (b *_NetworkRouteBuilder) WithNetworkPCIBuilder(builderSupplier func(NetworkProtocolControlInformationBuilder) NetworkProtocolControlInformationBuilder) NetworkRouteBuilder {
+	builder := builderSupplier(b.NetworkPCI.CreateNetworkProtocolControlInformationBuilder())
+	var err error
+	b.NetworkPCI, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NetworkProtocolControlInformationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NetworkRouteBuilder) WithAdditionalBridgeAddresses(additionalBridgeAddresses ...BridgeAddress) NetworkRouteBuilder {
+	b.AdditionalBridgeAddresses = additionalBridgeAddresses
+	return b
+}
+
+func (b *_NetworkRouteBuilder) Build() (NetworkRoute, error) {
+	if b.NetworkPCI == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'networkPCI' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NetworkRoute.deepCopy(), nil
+}
+
+func (b *_NetworkRouteBuilder) MustBuild() NetworkRoute {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NetworkRouteBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkRouteBuilder().(*_NetworkRouteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNetworkRouteBuilder creates a NetworkRouteBuilder
+func (b *_NetworkRoute) CreateNetworkRouteBuilder() NetworkRouteBuilder {
+	if b == nil {
+		return NewNetworkRouteBuilder()
+	}
+	return &_NetworkRouteBuilder{_NetworkRoute: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +186,6 @@ func (m *_NetworkRoute) GetAdditionalBridgeAddresses() []BridgeAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkRoute factory function for _NetworkRoute
-func NewNetworkRoute(networkPCI NetworkProtocolControlInformation, additionalBridgeAddresses []BridgeAddress) *_NetworkRoute {
-	if networkPCI == nil {
-		panic("networkPCI of type NetworkProtocolControlInformation for NetworkRoute must not be nil")
-	}
-	return &_NetworkRoute{NetworkPCI: networkPCI, AdditionalBridgeAddresses: additionalBridgeAddresses}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkRoute(structType any) NetworkRoute {
@@ -133,7 +240,7 @@ func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NetworkRoute) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__networkRoute NetworkRoute, err error) {
@@ -197,13 +304,32 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_NetworkRoute) IsNetworkRoute() {}
 
+func (m *_NetworkRoute) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkRoute) deepCopy() *_NetworkRoute {
+	if m == nil {
+		return nil
+	}
+	_NetworkRouteCopy := &_NetworkRoute{
+		m.NetworkPCI.DeepCopy().(NetworkProtocolControlInformation),
+		utils.DeepCopySlice[BridgeAddress, BridgeAddress](m.AdditionalBridgeAddresses),
+	}
+	return _NetworkRouteCopy
+}
+
 func (m *_NetworkRoute) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

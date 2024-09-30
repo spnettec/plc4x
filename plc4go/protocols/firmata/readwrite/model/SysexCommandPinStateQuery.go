@@ -38,11 +38,14 @@ type SysexCommandPinStateQuery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
 	// IsSysexCommandPinStateQuery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandPinStateQuery()
+	// CreateBuilder creates a SysexCommandPinStateQueryBuilder
+	CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder
 }
 
 // _SysexCommandPinStateQuery is the data-structure of this message
@@ -53,6 +56,107 @@ type _SysexCommandPinStateQuery struct {
 
 var _ SysexCommandPinStateQuery = (*_SysexCommandPinStateQuery)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateQuery)(nil)
+
+// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
+func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
+	_result := &_SysexCommandPinStateQuery{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandPinStateQueryBuilder is a builder for SysexCommandPinStateQuery
+type SysexCommandPinStateQueryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) SysexCommandPinStateQueryBuilder
+	// Build builds the SysexCommandPinStateQuery or returns an error if something is wrong
+	Build() (SysexCommandPinStateQuery, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandPinStateQuery
+}
+
+// NewSysexCommandPinStateQueryBuilder() creates a SysexCommandPinStateQueryBuilder
+func NewSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
+	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: new(_SysexCommandPinStateQuery)}
+}
+
+type _SysexCommandPinStateQueryBuilder struct {
+	*_SysexCommandPinStateQuery
+
+	parentBuilder *_SysexCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandPinStateQueryBuilder) = (*_SysexCommandPinStateQueryBuilder)(nil)
+
+func (b *_SysexCommandPinStateQueryBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) WithMandatoryFields(pin uint8) SysexCommandPinStateQueryBuilder {
+	return b.WithPin(pin)
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) WithPin(pin uint8) SysexCommandPinStateQueryBuilder {
+	b.Pin = pin
+	return b
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) Build() (SysexCommandPinStateQuery, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SysexCommandPinStateQuery.deepCopy(), nil
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) MustBuild() SysexCommandPinStateQuery {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandPinStateQueryBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandPinStateQueryBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandPinStateQueryBuilder().(*_SysexCommandPinStateQueryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSysexCommandPinStateQueryBuilder creates a SysexCommandPinStateQueryBuilder
+func (b *_SysexCommandPinStateQuery) CreateSysexCommandPinStateQueryBuilder() SysexCommandPinStateQueryBuilder {
+	if b == nil {
+		return NewSysexCommandPinStateQueryBuilder()
+	}
+	return &_SysexCommandPinStateQueryBuilder{_SysexCommandPinStateQuery: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_SysexCommandPinStateQuery) GetPin() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateQuery factory function for _SysexCommandPinStateQuery
-func NewSysexCommandPinStateQuery(pin uint8) *_SysexCommandPinStateQuery {
-	_result := &_SysexCommandPinStateQuery{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateQuery(structType any) SysexCommandPinStateQuery {
@@ -184,13 +278,33 @@ func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_SysexCommandPinStateQuery) IsSysexCommandPinStateQuery() {}
 
+func (m *_SysexCommandPinStateQuery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateQuery) deepCopy() *_SysexCommandPinStateQuery {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateQueryCopy := &_SysexCommandPinStateQuery{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+		m.Pin,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateQueryCopy
+}
+
 func (m *_SysexCommandPinStateQuery) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

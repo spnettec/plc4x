@@ -36,9 +36,12 @@ type SecurityDataDropTamper interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataDropTamper is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataDropTamper()
+	// CreateBuilder creates a SecurityDataDropTamperBuilder
+	CreateSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder
 }
 
 // _SecurityDataDropTamper is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataDropTamper struct {
 
 var _ SecurityDataDropTamper = (*_SecurityDataDropTamper)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
+
+// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
+func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
+	_result := &_SecurityDataDropTamper{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataDropTamperBuilder is a builder for SecurityDataDropTamper
+type SecurityDataDropTamperBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataDropTamperBuilder
+	// Build builds the SecurityDataDropTamper or returns an error if something is wrong
+	Build() (SecurityDataDropTamper, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataDropTamper
+}
+
+// NewSecurityDataDropTamperBuilder() creates a SecurityDataDropTamperBuilder
+func NewSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder {
+	return &_SecurityDataDropTamperBuilder{_SecurityDataDropTamper: new(_SecurityDataDropTamper)}
+}
+
+type _SecurityDataDropTamperBuilder struct {
+	*_SecurityDataDropTamper
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataDropTamperBuilder) = (*_SecurityDataDropTamperBuilder)(nil)
+
+func (b *_SecurityDataDropTamperBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataDropTamperBuilder) WithMandatoryFields() SecurityDataDropTamperBuilder {
+	return b
+}
+
+func (b *_SecurityDataDropTamperBuilder) Build() (SecurityDataDropTamper, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataDropTamper.deepCopy(), nil
+}
+
+func (b *_SecurityDataDropTamperBuilder) MustBuild() SecurityDataDropTamper {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataDropTamperBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataDropTamperBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataDropTamperBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataDropTamperBuilder().(*_SecurityDataDropTamperBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataDropTamperBuilder creates a SecurityDataDropTamperBuilder
+func (b *_SecurityDataDropTamper) CreateSecurityDataDropTamperBuilder() SecurityDataDropTamperBuilder {
+	if b == nil {
+		return NewSecurityDataDropTamperBuilder()
+	}
+	return &_SecurityDataDropTamperBuilder{_SecurityDataDropTamper: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataDropTamper)(nil)
 
 func (m *_SecurityDataDropTamper) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataDropTamper factory function for _SecurityDataDropTamper
-func NewSecurityDataDropTamper(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDropTamper {
-	_result := &_SecurityDataDropTamper{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataDropTamper) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_SecurityDataDropTamper) IsSecurityDataDropTamper() {}
 
+func (m *_SecurityDataDropTamper) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDropTamper) deepCopy() *_SecurityDataDropTamper {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDropTamperCopy := &_SecurityDataDropTamper{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDropTamperCopy
+}
+
 func (m *_SecurityDataDropTamper) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -36,9 +36,12 @@ type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse is the data-structure of this message
@@ -48,6 +51,99 @@ type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+type S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: new(_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) CreateS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder() S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseBuilder{_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +169,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetCpuSubfuncti
 
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse factory function for _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse
-func NewS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) SerializeWithWr
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) IsS7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse() {
 }
 
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy := &_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponseCopy
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckErrorResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

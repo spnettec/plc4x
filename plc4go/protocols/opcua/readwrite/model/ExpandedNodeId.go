@@ -38,6 +38,7 @@ type ExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceURISpecified returns NamespaceURISpecified (property field)
 	GetNamespaceURISpecified() bool
 	// GetServerIndexSpecified returns ServerIndexSpecified (property field)
@@ -52,6 +53,8 @@ type ExpandedNodeId interface {
 	GetIdentifier() string
 	// IsExpandedNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsExpandedNodeId()
+	// CreateBuilder creates a ExpandedNodeIdBuilder
+	CreateExpandedNodeIdBuilder() ExpandedNodeIdBuilder
 }
 
 // _ExpandedNodeId is the data-structure of this message
@@ -64,6 +67,154 @@ type _ExpandedNodeId struct {
 }
 
 var _ ExpandedNodeId = (*_ExpandedNodeId)(nil)
+
+// NewExpandedNodeId factory function for _ExpandedNodeId
+func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
+	}
+	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ExpandedNodeIdBuilder is a builder for ExpandedNodeId
+type ExpandedNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition) ExpandedNodeIdBuilder
+	// WithNamespaceURISpecified adds NamespaceURISpecified (property field)
+	WithNamespaceURISpecified(bool) ExpandedNodeIdBuilder
+	// WithServerIndexSpecified adds ServerIndexSpecified (property field)
+	WithServerIndexSpecified(bool) ExpandedNodeIdBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeIdTypeDefinition) ExpandedNodeIdBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) ExpandedNodeIdBuilder
+	// WithNamespaceURI adds NamespaceURI (property field)
+	WithOptionalNamespaceURI(PascalString) ExpandedNodeIdBuilder
+	// WithOptionalNamespaceURIBuilder adds NamespaceURI (property field) which is build by the builder
+	WithOptionalNamespaceURIBuilder(func(PascalStringBuilder) PascalStringBuilder) ExpandedNodeIdBuilder
+	// WithServerIndex adds ServerIndex (property field)
+	WithOptionalServerIndex(uint32) ExpandedNodeIdBuilder
+	// Build builds the ExpandedNodeId or returns an error if something is wrong
+	Build() (ExpandedNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ExpandedNodeId
+}
+
+// NewExpandedNodeIdBuilder() creates a ExpandedNodeIdBuilder
+func NewExpandedNodeIdBuilder() ExpandedNodeIdBuilder {
+	return &_ExpandedNodeIdBuilder{_ExpandedNodeId: new(_ExpandedNodeId)}
+}
+
+type _ExpandedNodeIdBuilder struct {
+	*_ExpandedNodeId
+
+	err *utils.MultiError
+}
+
+var _ (ExpandedNodeIdBuilder) = (*_ExpandedNodeIdBuilder)(nil)
+
+func (b *_ExpandedNodeIdBuilder) WithMandatoryFields(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition) ExpandedNodeIdBuilder {
+	return b.WithNamespaceURISpecified(namespaceURISpecified).WithServerIndexSpecified(serverIndexSpecified).WithNodeId(nodeId)
+}
+
+func (b *_ExpandedNodeIdBuilder) WithNamespaceURISpecified(namespaceURISpecified bool) ExpandedNodeIdBuilder {
+	b.NamespaceURISpecified = namespaceURISpecified
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithServerIndexSpecified(serverIndexSpecified bool) ExpandedNodeIdBuilder {
+	b.ServerIndexSpecified = serverIndexSpecified
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithNodeId(nodeId NodeIdTypeDefinition) ExpandedNodeIdBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) ExpandedNodeIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdTypeDefinitionBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdTypeDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithOptionalNamespaceURI(namespaceURI PascalString) ExpandedNodeIdBuilder {
+	b.NamespaceURI = namespaceURI
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithOptionalNamespaceURIBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ExpandedNodeIdBuilder {
+	builder := builderSupplier(b.NamespaceURI.CreatePascalStringBuilder())
+	var err error
+	b.NamespaceURI, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) WithOptionalServerIndex(serverIndex uint32) ExpandedNodeIdBuilder {
+	b.ServerIndex = &serverIndex
+	return b
+}
+
+func (b *_ExpandedNodeIdBuilder) Build() (ExpandedNodeId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ExpandedNodeId.deepCopy(), nil
+}
+
+func (b *_ExpandedNodeIdBuilder) MustBuild() ExpandedNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ExpandedNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateExpandedNodeIdBuilder().(*_ExpandedNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateExpandedNodeIdBuilder creates a ExpandedNodeIdBuilder
+func (b *_ExpandedNodeId) CreateExpandedNodeIdBuilder() ExpandedNodeIdBuilder {
+	if b == nil {
+		return NewExpandedNodeIdBuilder()
+	}
+	return &_ExpandedNodeIdBuilder{_ExpandedNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,14 +264,6 @@ func (m *_ExpandedNodeId) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewExpandedNodeId factory function for _ExpandedNodeId
-func NewExpandedNodeId(namespaceURISpecified bool, serverIndexSpecified bool, nodeId NodeIdTypeDefinition, namespaceURI PascalString, serverIndex *uint32) *_ExpandedNodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for ExpandedNodeId must not be nil")
-	}
-	return &_ExpandedNodeId{NamespaceURISpecified: namespaceURISpecified, ServerIndexSpecified: serverIndexSpecified, NodeId: nodeId, NamespaceURI: namespaceURI, ServerIndex: serverIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastExpandedNodeId(structType any) ExpandedNodeId {
@@ -183,7 +326,7 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ExpandedNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__expandedNodeId ExpandedNodeId, err error) {
@@ -294,13 +437,35 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_ExpandedNodeId) IsExpandedNodeId() {}
 
+func (m *_ExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ExpandedNodeId) deepCopy() *_ExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_ExpandedNodeIdCopy := &_ExpandedNodeId{
+		m.NamespaceURISpecified,
+		m.ServerIndexSpecified,
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.NamespaceURI.DeepCopy().(PascalString),
+		utils.CopyPtr[uint32](m.ServerIndex),
+	}
+	return _ExpandedNodeIdCopy
+}
+
 func (m *_ExpandedNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

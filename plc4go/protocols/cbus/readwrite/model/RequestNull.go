@@ -41,9 +41,12 @@ type RequestNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestNull()
+	// CreateBuilder creates a RequestNullBuilder
+	CreateRequestNullBuilder() RequestNullBuilder
 }
 
 // _RequestNull is the data-structure of this message
@@ -53,6 +56,99 @@ type _RequestNull struct {
 
 var _ RequestNull = (*_RequestNull)(nil)
 var _ RequestRequirements = (*_RequestNull)(nil)
+
+// NewRequestNull factory function for _RequestNull
+func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
+	_result := &_RequestNull{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestNullBuilder is a builder for RequestNull
+type RequestNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RequestNullBuilder
+	// Build builds the RequestNull or returns an error if something is wrong
+	Build() (RequestNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestNull
+}
+
+// NewRequestNullBuilder() creates a RequestNullBuilder
+func NewRequestNullBuilder() RequestNullBuilder {
+	return &_RequestNullBuilder{_RequestNull: new(_RequestNull)}
+}
+
+type _RequestNullBuilder struct {
+	*_RequestNull
+
+	parentBuilder *_RequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RequestNullBuilder) = (*_RequestNullBuilder)(nil)
+
+func (b *_RequestNullBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
+}
+
+func (b *_RequestNullBuilder) WithMandatoryFields() RequestNullBuilder {
+	return b
+}
+
+func (b *_RequestNullBuilder) Build() (RequestNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestNull.deepCopy(), nil
+}
+
+func (b *_RequestNullBuilder) MustBuild() RequestNull {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestNullBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestNullBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestNullBuilder) DeepCopy() any {
+	_copy := b.CreateRequestNullBuilder().(*_RequestNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestNullBuilder creates a RequestNullBuilder
+func (b *_RequestNull) CreateRequestNullBuilder() RequestNullBuilder {
+	if b == nil {
+		return NewRequestNullBuilder()
+	}
+	return &_RequestNullBuilder{_RequestNull: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,15 +177,6 @@ func (m *_RequestNull) GetNullIndicator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestNull factory function for _RequestNull
-func NewRequestNull(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestNull {
-	_result := &_RequestNull{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestNull(structType any) RequestNull {
@@ -175,13 +262,32 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_RequestNull) IsRequestNull() {}
 
+func (m *_RequestNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestNull) deepCopy() *_RequestNull {
+	if m == nil {
+		return nil
+	}
+	_RequestNullCopy := &_RequestNull{
+		m.RequestContract.(*_Request).deepCopy(),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestNullCopy
+}
+
 func (m *_RequestNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

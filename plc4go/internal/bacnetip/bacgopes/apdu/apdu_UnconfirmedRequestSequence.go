@@ -46,34 +46,43 @@ type UnconfirmedRequestSequence struct {
 	_contract UnconfirmedRequestSequenceContract
 }
 
-func NewUnconfirmedRequestSequence(serviceRequest /*TODO: breaks a bit the consistency, maybe we just convert it to args to be flexible*/ model.BACnetUnconfirmedServiceRequest, kwArgs KWArgs, opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
+func NewUnconfirmedRequestSequence(args Args, kwArgs KWArgs, options ...Option) (*UnconfirmedRequestSequence, error) {
 	u := &UnconfirmedRequestSequence{}
-	for _, opt := range opts {
-		opt(u)
+	ApplyAppliers(options, u)
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
 	}
 	if u._contract == nil {
 		u._contract = u
 	} else {
 		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
 	}
+	options = AddSharedSuperIfAbundant[_APCI](options)
+	options = AddLeafTypeIfAbundant(options, u)
 	var err error
-	u.APCISequence, err = NewAPCISequence(NA(model.NewAPDUUnconfirmedRequest(serviceRequest, 0)), kwArgs, WithAPCISequenceExtension(u._contract))
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating _APCISequence")
-	}
-	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(serviceRequest)
+	kwArgs[KWUnconfirmedServiceChoice] = u._contract.GetServiceChoice()
+	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
 	}
-	// We need to set the APCI to the same objects...
-	u.APCISequence._APCI = u.UnconfirmedRequestPDU._APCI
+	//TODO: the sequence is usually init first but seems upstream does a init on the same level first before going deeper
+	u.APCISequence, err = NewAPCISequence(args, kwArgs, Combine(options, WithAPCISequenceExtension(u._contract))...)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
+	if u.GetRootMessage() == nil {
+		panic("this should be set by NewConfirmedRequestPDU")
+		serviceRequest, _ := GAO[model.BACnetConfirmedServiceRequest](args, 0, nil)
+		if serviceRequest != nil {
+			apduConfirmedRequest := model.NewAPDUConfirmedRequest(false, false, false, model.MaxSegmentsAccepted_MORE_THAN_64_SEGMENTS, model.MaxApduLengthAccepted_NUM_OCTETS_1476, 0, nil, nil, serviceRequest, nil, nil, 0)
+			u.SetRootMessage(apduConfirmedRequest)
+		}
+	}
 	return u, nil
 }
 
-func WithUnconfirmedRequestSequenceExtension(contract UnconfirmedRequestSequenceContractRequirement) func(*UnconfirmedRequestSequence) {
-	return func(a *UnconfirmedRequestSequence) {
-		a._contract = contract
-	}
+func WithUnconfirmedRequestSequenceExtension(contract UnconfirmedRequestSequenceContractRequirement) GenericApplier[*UnconfirmedRequestSequence] {
+	return WrapGenericApplier(func(a *UnconfirmedRequestSequence) { a._contract = contract })
 }
 
 func (u *UnconfirmedRequestSequence) SetAPCISequence(a *APCISequence) {

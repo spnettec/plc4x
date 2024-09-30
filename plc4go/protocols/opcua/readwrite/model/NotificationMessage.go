@@ -38,6 +38,7 @@ type NotificationMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() uint32
@@ -49,6 +50,8 @@ type NotificationMessage interface {
 	GetNotificationData() []ExtensionObject
 	// IsNotificationMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNotificationMessage()
+	// CreateBuilder creates a NotificationMessageBuilder
+	CreateNotificationMessageBuilder() NotificationMessageBuilder
 }
 
 // _NotificationMessage is the data-structure of this message
@@ -62,6 +65,131 @@ type _NotificationMessage struct {
 
 var _ NotificationMessage = (*_NotificationMessage)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NotificationMessage)(nil)
+
+// NewNotificationMessage factory function for _NotificationMessage
+func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
+	_result := &_NotificationMessage{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SequenceNumber:                    sequenceNumber,
+		PublishTime:                       publishTime,
+		NoOfNotificationData:              noOfNotificationData,
+		NotificationData:                  notificationData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NotificationMessageBuilder is a builder for NotificationMessage
+type NotificationMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint32) NotificationMessageBuilder
+	// WithPublishTime adds PublishTime (property field)
+	WithPublishTime(int64) NotificationMessageBuilder
+	// WithNoOfNotificationData adds NoOfNotificationData (property field)
+	WithNoOfNotificationData(int32) NotificationMessageBuilder
+	// WithNotificationData adds NotificationData (property field)
+	WithNotificationData(...ExtensionObject) NotificationMessageBuilder
+	// Build builds the NotificationMessage or returns an error if something is wrong
+	Build() (NotificationMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NotificationMessage
+}
+
+// NewNotificationMessageBuilder() creates a NotificationMessageBuilder
+func NewNotificationMessageBuilder() NotificationMessageBuilder {
+	return &_NotificationMessageBuilder{_NotificationMessage: new(_NotificationMessage)}
+}
+
+type _NotificationMessageBuilder struct {
+	*_NotificationMessage
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NotificationMessageBuilder) = (*_NotificationMessageBuilder)(nil)
+
+func (b *_NotificationMessageBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_NotificationMessageBuilder) WithMandatoryFields(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) NotificationMessageBuilder {
+	return b.WithSequenceNumber(sequenceNumber).WithPublishTime(publishTime).WithNoOfNotificationData(noOfNotificationData).WithNotificationData(notificationData...)
+}
+
+func (b *_NotificationMessageBuilder) WithSequenceNumber(sequenceNumber uint32) NotificationMessageBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_NotificationMessageBuilder) WithPublishTime(publishTime int64) NotificationMessageBuilder {
+	b.PublishTime = publishTime
+	return b
+}
+
+func (b *_NotificationMessageBuilder) WithNoOfNotificationData(noOfNotificationData int32) NotificationMessageBuilder {
+	b.NoOfNotificationData = noOfNotificationData
+	return b
+}
+
+func (b *_NotificationMessageBuilder) WithNotificationData(notificationData ...ExtensionObject) NotificationMessageBuilder {
+	b.NotificationData = notificationData
+	return b
+}
+
+func (b *_NotificationMessageBuilder) Build() (NotificationMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NotificationMessage.deepCopy(), nil
+}
+
+func (b *_NotificationMessageBuilder) MustBuild() NotificationMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NotificationMessageBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NotificationMessageBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NotificationMessageBuilder) DeepCopy() any {
+	_copy := b.CreateNotificationMessageBuilder().(*_NotificationMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNotificationMessageBuilder creates a NotificationMessageBuilder
+func (b *_NotificationMessage) CreateNotificationMessageBuilder() NotificationMessageBuilder {
+	if b == nil {
+		return NewNotificationMessageBuilder()
+	}
+	return &_NotificationMessageBuilder{_NotificationMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_NotificationMessage) GetNotificationData() []ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNotificationMessage factory function for _NotificationMessage
-func NewNotificationMessage(sequenceNumber uint32, publishTime int64, noOfNotificationData int32, notificationData []ExtensionObject) *_NotificationMessage {
-	_result := &_NotificationMessage{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SequenceNumber:                    sequenceNumber,
-		PublishTime:                       publishTime,
-		NoOfNotificationData:              noOfNotificationData,
-		NotificationData:                  notificationData,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNotificationMessage(structType any) NotificationMessage {
@@ -250,13 +365,36 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_NotificationMessage) IsNotificationMessage() {}
 
+func (m *_NotificationMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NotificationMessage) deepCopy() *_NotificationMessage {
+	if m == nil {
+		return nil
+	}
+	_NotificationMessageCopy := &_NotificationMessage{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SequenceNumber,
+		m.PublishTime,
+		m.NoOfNotificationData,
+		utils.DeepCopySlice[ExtensionObject, ExtensionObject](m.NotificationData),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NotificationMessageCopy
+}
+
 func (m *_NotificationMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

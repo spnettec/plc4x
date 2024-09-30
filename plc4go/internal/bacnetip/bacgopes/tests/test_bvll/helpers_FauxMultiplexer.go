@@ -32,9 +32,9 @@ import (
 
 //go:generate plc4xGenerator -type=FauxMultiplexer -prefix=helpers_
 type FauxMultiplexer struct {
-	*DefaultRFormatter `ignore:"true"`
 	ClientContract
 	ServerContract
+	*DefaultRFormatter `ignore:"true"`
 
 	address        *Address
 	unicastTuple   *AddressTuple[string, uint16]
@@ -144,5 +144,5 @@ func (s *FauxMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 		dest = pdu.GetPDUDestination()
 	}
 
-	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCompRootMessage, pdu, KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
+	return s.Response(NA(NewPDU(NA(pdu), NKW(KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
 }

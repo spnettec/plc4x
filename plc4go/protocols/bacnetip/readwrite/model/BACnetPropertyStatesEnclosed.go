@@ -38,6 +38,7 @@ type BACnetPropertyStatesEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPropertyState returns PropertyState (property field)
@@ -46,6 +47,8 @@ type BACnetPropertyStatesEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetPropertyStatesEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesEnclosed()
+	// CreateBuilder creates a BACnetPropertyStatesEnclosedBuilder
+	CreateBACnetPropertyStatesEnclosedBuilder() BACnetPropertyStatesEnclosedBuilder
 }
 
 // _BACnetPropertyStatesEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _BACnetPropertyStatesEnclosed struct {
 }
 
 var _ BACnetPropertyStatesEnclosed = (*_BACnetPropertyStatesEnclosed)(nil)
+
+// NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
+func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if propertyState == nil {
+		panic("propertyState of type BACnetPropertyStates for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
+	}
+	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesEnclosedBuilder is a builder for BACnetPropertyStatesEnclosed
+type BACnetPropertyStatesEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag) BACnetPropertyStatesEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetPropertyStatesEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyStatesEnclosedBuilder
+	// WithPropertyState adds PropertyState (property field)
+	WithPropertyState(BACnetPropertyStates) BACnetPropertyStatesEnclosedBuilder
+	// WithPropertyStateBuilder adds PropertyState (property field) which is build by the builder
+	WithPropertyStateBuilder(func(BACnetPropertyStatesBuilder) BACnetPropertyStatesBuilder) BACnetPropertyStatesEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetPropertyStatesEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyStatesEnclosedBuilder
+	// Build builds the BACnetPropertyStatesEnclosed or returns an error if something is wrong
+	Build() (BACnetPropertyStatesEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesEnclosed
+}
+
+// NewBACnetPropertyStatesEnclosedBuilder() creates a BACnetPropertyStatesEnclosedBuilder
+func NewBACnetPropertyStatesEnclosedBuilder() BACnetPropertyStatesEnclosedBuilder {
+	return &_BACnetPropertyStatesEnclosedBuilder{_BACnetPropertyStatesEnclosed: new(_BACnetPropertyStatesEnclosed)}
+}
+
+type _BACnetPropertyStatesEnclosedBuilder struct {
+	*_BACnetPropertyStatesEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesEnclosedBuilder) = (*_BACnetPropertyStatesEnclosedBuilder)(nil)
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag) BACnetPropertyStatesEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithPropertyState(propertyState).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetPropertyStatesEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetPropertyStatesEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithPropertyState(propertyState BACnetPropertyStates) BACnetPropertyStatesEnclosedBuilder {
+	b.PropertyState = propertyState
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithPropertyStateBuilder(builderSupplier func(BACnetPropertyStatesBuilder) BACnetPropertyStatesBuilder) BACnetPropertyStatesEnclosedBuilder {
+	builder := builderSupplier(b.PropertyState.CreateBACnetPropertyStatesBuilder())
+	var err error
+	b.PropertyState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyStatesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetPropertyStatesEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetPropertyStatesEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) Build() (BACnetPropertyStatesEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PropertyState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyState' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) MustBuild() BACnetPropertyStatesEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPropertyStatesEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesEnclosedBuilder().(*_BACnetPropertyStatesEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesEnclosedBuilder creates a BACnetPropertyStatesEnclosedBuilder
+func (b *_BACnetPropertyStatesEnclosed) CreateBACnetPropertyStatesEnclosedBuilder() BACnetPropertyStatesEnclosedBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesEnclosedBuilder()
+	}
+	return &_BACnetPropertyStatesEnclosedBuilder{_BACnetPropertyStatesEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_BACnetPropertyStatesEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEnclosed factory function for _BACnetPropertyStatesEnclosed
-func NewBACnetPropertyStatesEnclosed(openingTag BACnetOpeningTag, propertyState BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetPropertyStatesEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	if propertyState == nil {
-		panic("propertyState of type BACnetPropertyStates for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetPropertyStatesEnclosed must not be nil")
-	}
-	return &_BACnetPropertyStatesEnclosed{OpeningTag: openingTag, PropertyState: propertyState, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEnclosed(structType any) BACnetPropertyStatesEnclosed {
@@ -145,7 +301,7 @@ func BACnetPropertyStatesEnclosedParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPropertyStatesEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetPropertyStatesEnclosed BACnetPropertyStatesEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_BACnetPropertyStatesEnclosed) GetTagNumber() uint8 {
 
 func (m *_BACnetPropertyStatesEnclosed) IsBACnetPropertyStatesEnclosed() {}
 
+func (m *_BACnetPropertyStatesEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEnclosed) deepCopy() *_BACnetPropertyStatesEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEnclosedCopy := &_BACnetPropertyStatesEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PropertyState.DeepCopy().(BACnetPropertyStates),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetPropertyStatesEnclosedCopy
+}
+
 func (m *_BACnetPropertyStatesEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

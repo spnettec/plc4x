@@ -40,11 +40,14 @@ type DescriptionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiControlEndpoint returns HpaiControlEndpoint (property field)
 	GetHpaiControlEndpoint() HPAIControlEndpoint
 	// IsDescriptionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDescriptionRequest()
+	// CreateBuilder creates a DescriptionRequestBuilder
+	CreateDescriptionRequestBuilder() DescriptionRequestBuilder
 }
 
 // _DescriptionRequest is the data-structure of this message
@@ -55,6 +58,131 @@ type _DescriptionRequest struct {
 
 var _ DescriptionRequest = (*_DescriptionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_DescriptionRequest)(nil)
+
+// NewDescriptionRequest factory function for _DescriptionRequest
+func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
+	if hpaiControlEndpoint == nil {
+		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
+	}
+	_result := &_DescriptionRequest{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		HpaiControlEndpoint:     hpaiControlEndpoint,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DescriptionRequestBuilder is a builder for DescriptionRequest
+type DescriptionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint) DescriptionRequestBuilder
+	// WithHpaiControlEndpoint adds HpaiControlEndpoint (property field)
+	WithHpaiControlEndpoint(HPAIControlEndpoint) DescriptionRequestBuilder
+	// WithHpaiControlEndpointBuilder adds HpaiControlEndpoint (property field) which is build by the builder
+	WithHpaiControlEndpointBuilder(func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DescriptionRequestBuilder
+	// Build builds the DescriptionRequest or returns an error if something is wrong
+	Build() (DescriptionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DescriptionRequest
+}
+
+// NewDescriptionRequestBuilder() creates a DescriptionRequestBuilder
+func NewDescriptionRequestBuilder() DescriptionRequestBuilder {
+	return &_DescriptionRequestBuilder{_DescriptionRequest: new(_DescriptionRequest)}
+}
+
+type _DescriptionRequestBuilder struct {
+	*_DescriptionRequest
+
+	parentBuilder *_KnxNetIpMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DescriptionRequestBuilder) = (*_DescriptionRequestBuilder)(nil)
+
+func (b *_DescriptionRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
+}
+
+func (b *_DescriptionRequestBuilder) WithMandatoryFields(hpaiControlEndpoint HPAIControlEndpoint) DescriptionRequestBuilder {
+	return b.WithHpaiControlEndpoint(hpaiControlEndpoint)
+}
+
+func (b *_DescriptionRequestBuilder) WithHpaiControlEndpoint(hpaiControlEndpoint HPAIControlEndpoint) DescriptionRequestBuilder {
+	b.HpaiControlEndpoint = hpaiControlEndpoint
+	return b
+}
+
+func (b *_DescriptionRequestBuilder) WithHpaiControlEndpointBuilder(builderSupplier func(HPAIControlEndpointBuilder) HPAIControlEndpointBuilder) DescriptionRequestBuilder {
+	builder := builderSupplier(b.HpaiControlEndpoint.CreateHPAIControlEndpointBuilder())
+	var err error
+	b.HpaiControlEndpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HPAIControlEndpointBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DescriptionRequestBuilder) Build() (DescriptionRequest, error) {
+	if b.HpaiControlEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hpaiControlEndpoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DescriptionRequest.deepCopy(), nil
+}
+
+func (b *_DescriptionRequestBuilder) MustBuild() DescriptionRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DescriptionRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DescriptionRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DescriptionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDescriptionRequestBuilder().(*_DescriptionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDescriptionRequestBuilder creates a DescriptionRequestBuilder
+func (b *_DescriptionRequest) CreateDescriptionRequestBuilder() DescriptionRequestBuilder {
+	if b == nil {
+		return NewDescriptionRequestBuilder()
+	}
+	return &_DescriptionRequestBuilder{_DescriptionRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,19 +215,6 @@ func (m *_DescriptionRequest) GetHpaiControlEndpoint() HPAIControlEndpoint {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDescriptionRequest factory function for _DescriptionRequest
-func NewDescriptionRequest(hpaiControlEndpoint HPAIControlEndpoint) *_DescriptionRequest {
-	if hpaiControlEndpoint == nil {
-		panic("hpaiControlEndpoint of type HPAIControlEndpoint for DescriptionRequest must not be nil")
-	}
-	_result := &_DescriptionRequest{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		HpaiControlEndpoint:     hpaiControlEndpoint,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDescriptionRequest(structType any) DescriptionRequest {
@@ -185,13 +300,33 @@ func (m *_DescriptionRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_DescriptionRequest) IsDescriptionRequest() {}
 
+func (m *_DescriptionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionRequest) deepCopy() *_DescriptionRequest {
+	if m == nil {
+		return nil
+	}
+	_DescriptionRequestCopy := &_DescriptionRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiControlEndpoint.DeepCopy().(HPAIControlEndpoint),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionRequestCopy
+}
+
 func (m *_DescriptionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

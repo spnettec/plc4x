@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetFaultParameter
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
@@ -47,6 +48,8 @@ type BACnetFaultParameterFaultCharacterString interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetFaultParameterFaultCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultCharacterString()
+	// CreateBuilder creates a BACnetFaultParameterFaultCharacterStringBuilder
+	CreateBACnetFaultParameterFaultCharacterStringBuilder() BACnetFaultParameterFaultCharacterStringBuilder
 }
 
 // _BACnetFaultParameterFaultCharacterString is the data-structure of this message
@@ -59,6 +62,195 @@ type _BACnetFaultParameterFaultCharacterString struct {
 
 var _ BACnetFaultParameterFaultCharacterString = (*_BACnetFaultParameterFaultCharacterString)(nil)
 var _ BACnetFaultParameterRequirements = (*_BACnetFaultParameterFaultCharacterString)(nil)
+
+// NewBACnetFaultParameterFaultCharacterString factory function for _BACnetFaultParameterFaultCharacterString
+func NewBACnetFaultParameterFaultCharacterString(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag) *_BACnetFaultParameterFaultCharacterString {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultCharacterString must not be nil")
+	}
+	if listOfFaultValues == nil {
+		panic("listOfFaultValues of type BACnetFaultParameterFaultCharacterStringListOfFaultValues for BACnetFaultParameterFaultCharacterString must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultCharacterString must not be nil")
+	}
+	_result := &_BACnetFaultParameterFaultCharacterString{
+		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
+		OpeningTag:                   openingTag,
+		ListOfFaultValues:            listOfFaultValues,
+		ClosingTag:                   closingTag,
+	}
+	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultCharacterStringBuilder is a builder for BACnetFaultParameterFaultCharacterString
+type BACnetFaultParameterFaultCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithListOfFaultValues adds ListOfFaultValues (property field)
+	WithListOfFaultValues(BACnetFaultParameterFaultCharacterStringListOfFaultValues) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithListOfFaultValuesBuilder adds ListOfFaultValues (property field) which is build by the builder
+	WithListOfFaultValuesBuilder(func(BACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder) BACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultCharacterStringBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultCharacterStringBuilder
+	// Build builds the BACnetFaultParameterFaultCharacterString or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultCharacterString
+}
+
+// NewBACnetFaultParameterFaultCharacterStringBuilder() creates a BACnetFaultParameterFaultCharacterStringBuilder
+func NewBACnetFaultParameterFaultCharacterStringBuilder() BACnetFaultParameterFaultCharacterStringBuilder {
+	return &_BACnetFaultParameterFaultCharacterStringBuilder{_BACnetFaultParameterFaultCharacterString: new(_BACnetFaultParameterFaultCharacterString)}
+}
+
+type _BACnetFaultParameterFaultCharacterStringBuilder struct {
+	*_BACnetFaultParameterFaultCharacterString
+
+	parentBuilder *_BACnetFaultParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultCharacterStringBuilder) = (*_BACnetFaultParameterFaultCharacterStringBuilder)(nil)
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) setParent(contract BACnetFaultParameterContract) {
+	b.BACnetFaultParameterContract = contract
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag) BACnetFaultParameterFaultCharacterStringBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfFaultValues(listOfFaultValues).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultCharacterStringBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultCharacterStringBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithListOfFaultValues(listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues) BACnetFaultParameterFaultCharacterStringBuilder {
+	b.ListOfFaultValues = listOfFaultValues
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithListOfFaultValuesBuilder(builderSupplier func(BACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder) BACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder) BACnetFaultParameterFaultCharacterStringBuilder {
+	builder := builderSupplier(b.ListOfFaultValues.CreateBACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder())
+	var err error
+	b.ListOfFaultValues, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetFaultParameterFaultCharacterStringListOfFaultValuesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultCharacterStringBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultCharacterStringBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) Build() (BACnetFaultParameterFaultCharacterString, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ListOfFaultValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'listOfFaultValues' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultParameterFaultCharacterString.deepCopy(), nil
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) MustBuild() BACnetFaultParameterFaultCharacterString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) Done() BACnetFaultParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) buildForBACnetFaultParameter() (BACnetFaultParameter, error) {
+	return b.Build()
+}
+
+func (b *_BACnetFaultParameterFaultCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultCharacterStringBuilder().(*_BACnetFaultParameterFaultCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetFaultParameterFaultCharacterStringBuilder creates a BACnetFaultParameterFaultCharacterStringBuilder
+func (b *_BACnetFaultParameterFaultCharacterString) CreateBACnetFaultParameterFaultCharacterStringBuilder() BACnetFaultParameterFaultCharacterStringBuilder {
+	if b == nil {
+		return NewBACnetFaultParameterFaultCharacterStringBuilder()
+	}
+	return &_BACnetFaultParameterFaultCharacterStringBuilder{_BACnetFaultParameterFaultCharacterString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +287,6 @@ func (m *_BACnetFaultParameterFaultCharacterString) GetClosingTag() BACnetClosin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultCharacterString factory function for _BACnetFaultParameterFaultCharacterString
-func NewBACnetFaultParameterFaultCharacterString(openingTag BACnetOpeningTag, listOfFaultValues BACnetFaultParameterFaultCharacterStringListOfFaultValues, closingTag BACnetClosingTag, peekedTagHeader BACnetTagHeader) *_BACnetFaultParameterFaultCharacterString {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultCharacterString must not be nil")
-	}
-	if listOfFaultValues == nil {
-		panic("listOfFaultValues of type BACnetFaultParameterFaultCharacterStringListOfFaultValues for BACnetFaultParameterFaultCharacterString must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultCharacterString must not be nil")
-	}
-	_result := &_BACnetFaultParameterFaultCharacterString{
-		BACnetFaultParameterContract: NewBACnetFaultParameter(peekedTagHeader),
-		OpeningTag:                   openingTag,
-		ListOfFaultValues:            listOfFaultValues,
-		ClosingTag:                   closingTag,
-	}
-	_result.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultCharacterString(structType any) BACnetFaultParameterFaultCharacterString {
@@ -227,13 +398,35 @@ func (m *_BACnetFaultParameterFaultCharacterString) SerializeWithWriteBuffer(ctx
 
 func (m *_BACnetFaultParameterFaultCharacterString) IsBACnetFaultParameterFaultCharacterString() {}
 
+func (m *_BACnetFaultParameterFaultCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultCharacterString) deepCopy() *_BACnetFaultParameterFaultCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultCharacterStringCopy := &_BACnetFaultParameterFaultCharacterString{
+		m.BACnetFaultParameterContract.(*_BACnetFaultParameter).deepCopy(),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ListOfFaultValues.DeepCopy().(BACnetFaultParameterFaultCharacterStringListOfFaultValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetFaultParameterContract.(*_BACnetFaultParameter)._SubType = m
+	return _BACnetFaultParameterFaultCharacterStringCopy
+}
+
 func (m *_BACnetFaultParameterFaultCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

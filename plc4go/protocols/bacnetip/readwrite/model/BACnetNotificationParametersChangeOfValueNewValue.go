@@ -40,8 +40,11 @@ type BACnetNotificationParametersChangeOfValueNewValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetNotificationParametersChangeOfValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfValueNewValue()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
+	CreateBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder
 }
 
 // BACnetNotificationParametersChangeOfValueNewValueContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type BACnetNotificationParametersChangeOfValueNewValueContract interface {
 	GetTagNumber() uint8
 	// IsBACnetNotificationParametersChangeOfValueNewValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfValueNewValue()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
+	CreateBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder
 }
 
 // BACnetNotificationParametersChangeOfValueNewValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,249 @@ type _BACnetNotificationParametersChangeOfValueNewValue struct {
 }
 
 var _ BACnetNotificationParametersChangeOfValueNewValueContract = (*_BACnetNotificationParametersChangeOfValueNewValue)(nil)
+
+// NewBACnetNotificationParametersChangeOfValueNewValue factory function for _BACnetNotificationParametersChangeOfValueNewValue
+func NewBACnetNotificationParametersChangeOfValueNewValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
+	}
+	return &_BACnetNotificationParametersChangeOfValueNewValue{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfValueNewValueBuilder is a builder for BACnetNotificationParametersChangeOfValueNewValue
+type BACnetNotificationParametersChangeOfValueNewValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder
+	// AsBACnetNotificationParametersChangeOfValueNewValueChangedBits converts this build to a subType of BACnetNotificationParametersChangeOfValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfValueNewValueChangedBits() interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}
+	// AsBACnetNotificationParametersChangeOfValueNewValueChangedValue converts this build to a subType of BACnetNotificationParametersChangeOfValueNewValue. It is always possible to return to current builder using Done()
+	AsBACnetNotificationParametersChangeOfValueNewValueChangedValue() interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}
+	// Build builds the BACnetNotificationParametersChangeOfValueNewValue or returns an error if something is wrong
+	PartialBuild() (BACnetNotificationParametersChangeOfValueNewValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetNotificationParametersChangeOfValueNewValueContract
+	// Build builds the BACnetNotificationParametersChangeOfValueNewValue or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfValueNewValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfValueNewValue
+}
+
+// NewBACnetNotificationParametersChangeOfValueNewValueBuilder() creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
+func NewBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	return &_BACnetNotificationParametersChangeOfValueNewValueBuilder{_BACnetNotificationParametersChangeOfValueNewValue: new(_BACnetNotificationParametersChangeOfValueNewValue)}
+}
+
+type _BACnetNotificationParametersChangeOfValueNewValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetNotificationParametersChangeOfValueNewValueContract)
+	buildForBACnetNotificationParametersChangeOfValueNewValue() (BACnetNotificationParametersChangeOfValueNewValue, error)
+}
+
+type _BACnetNotificationParametersChangeOfValueNewValueBuilder struct {
+	*_BACnetNotificationParametersChangeOfValueNewValue
+
+	childBuilder _BACnetNotificationParametersChangeOfValueNewValueChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfValueNewValueBuilder) = (*_BACnetNotificationParametersChangeOfValueNewValueBuilder)(nil)
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) PartialBuild() (BACnetNotificationParametersChangeOfValueNewValueContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfValueNewValue.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) PartialMustBuild() BACnetNotificationParametersChangeOfValueNewValueContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) AsBACnetNotificationParametersChangeOfValueNewValueChangedBits() interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+	Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueChangedBitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) AsBACnetNotificationParametersChangeOfValueNewValueChangedValue() interface {
+	BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+	Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder
+		Done() BACnetNotificationParametersChangeOfValueNewValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueChangedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) Build() (BACnetNotificationParametersChangeOfValueNewValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetNotificationParametersChangeOfValueNewValue()
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) MustBuild() BACnetNotificationParametersChangeOfValueNewValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotificationParametersChangeOfValueNewValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfValueNewValueBuilder().(*_BACnetNotificationParametersChangeOfValueNewValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetNotificationParametersChangeOfValueNewValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersChangeOfValueNewValueBuilder creates a BACnetNotificationParametersChangeOfValueNewValueBuilder
+func (b *_BACnetNotificationParametersChangeOfValueNewValue) CreateBACnetNotificationParametersChangeOfValueNewValueBuilder() BACnetNotificationParametersChangeOfValueNewValueBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersChangeOfValueNewValueBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfValueNewValueBuilder{_BACnetNotificationParametersChangeOfValueNewValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,20 +366,6 @@ func (pm *_BACnetNotificationParametersChangeOfValueNewValue) GetPeekedTagNumber
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfValueNewValue factory function for _BACnetNotificationParametersChangeOfValueNewValue
-func NewBACnetNotificationParametersChangeOfValueNewValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfValueNewValue {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetNotificationParametersChangeOfValueNewValue must not be nil")
-	}
-	return &_BACnetNotificationParametersChangeOfValueNewValue{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfValueNewValue(structType any) BACnetNotificationParametersChangeOfValueNewValue {
@@ -177,7 +411,7 @@ func BACnetNotificationParametersChangeOfValueNewValueParseWithBufferProducer[T 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -187,7 +421,12 @@ func BACnetNotificationParametersChangeOfValueNewValueParseWithBuffer[T BACnetNo
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetNotificationParametersChangeOfValueNewValue BACnetNotificationParametersChangeOfValueNewValue, err error) {
@@ -221,11 +460,11 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) parse(ctx context.C
 	var _child BACnetNotificationParametersChangeOfValueNewValue
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetNotificationParametersChangeOfValueNewValueChangedBits
-		if _child, err = (&_BACnetNotificationParametersChangeOfValueNewValueChangedBits{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfValueNewValueChangedBits).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfValueNewValueChangedBits for type-switch of BACnetNotificationParametersChangeOfValueNewValue")
 		}
 	case peekedTagNumber == uint8(1): // BACnetNotificationParametersChangeOfValueNewValueChangedValue
-		if _child, err = (&_BACnetNotificationParametersChangeOfValueNewValueChangedValue{}).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
+		if _child, err = new(_BACnetNotificationParametersChangeOfValueNewValueChangedValue).parse(ctx, readBuffer, m, peekedTagNumber, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetNotificationParametersChangeOfValueNewValueChangedValue for type-switch of BACnetNotificationParametersChangeOfValueNewValue")
 		}
 	default:
@@ -293,4 +532,22 @@ func (m *_BACnetNotificationParametersChangeOfValueNewValue) GetTagNumber() uint
 ////
 
 func (m *_BACnetNotificationParametersChangeOfValueNewValue) IsBACnetNotificationParametersChangeOfValueNewValue() {
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfValueNewValue) deepCopy() *_BACnetNotificationParametersChangeOfValueNewValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfValueNewValueCopy := &_BACnetNotificationParametersChangeOfValueNewValue{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetNotificationParametersChangeOfValueNewValueCopy
 }

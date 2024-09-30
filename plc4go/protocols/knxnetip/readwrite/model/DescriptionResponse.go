@@ -40,6 +40,7 @@ type DescriptionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetDibDeviceInfo returns DibDeviceInfo (property field)
 	GetDibDeviceInfo() DIBDeviceInfo
@@ -47,6 +48,8 @@ type DescriptionResponse interface {
 	GetDibSuppSvcFamilies() DIBSuppSvcFamilies
 	// IsDescriptionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDescriptionResponse()
+	// CreateBuilder creates a DescriptionResponseBuilder
+	CreateDescriptionResponseBuilder() DescriptionResponseBuilder
 }
 
 // _DescriptionResponse is the data-structure of this message
@@ -58,6 +61,163 @@ type _DescriptionResponse struct {
 
 var _ DescriptionResponse = (*_DescriptionResponse)(nil)
 var _ KnxNetIpMessageRequirements = (*_DescriptionResponse)(nil)
+
+// NewDescriptionResponse factory function for _DescriptionResponse
+func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
+	if dibDeviceInfo == nil {
+		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
+	}
+	if dibSuppSvcFamilies == nil {
+		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
+	}
+	_result := &_DescriptionResponse{
+		KnxNetIpMessageContract: NewKnxNetIpMessage(),
+		DibDeviceInfo:           dibDeviceInfo,
+		DibSuppSvcFamilies:      dibSuppSvcFamilies,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DescriptionResponseBuilder is a builder for DescriptionResponse
+type DescriptionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) DescriptionResponseBuilder
+	// WithDibDeviceInfo adds DibDeviceInfo (property field)
+	WithDibDeviceInfo(DIBDeviceInfo) DescriptionResponseBuilder
+	// WithDibDeviceInfoBuilder adds DibDeviceInfo (property field) which is build by the builder
+	WithDibDeviceInfoBuilder(func(DIBDeviceInfoBuilder) DIBDeviceInfoBuilder) DescriptionResponseBuilder
+	// WithDibSuppSvcFamilies adds DibSuppSvcFamilies (property field)
+	WithDibSuppSvcFamilies(DIBSuppSvcFamilies) DescriptionResponseBuilder
+	// WithDibSuppSvcFamiliesBuilder adds DibSuppSvcFamilies (property field) which is build by the builder
+	WithDibSuppSvcFamiliesBuilder(func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) DescriptionResponseBuilder
+	// Build builds the DescriptionResponse or returns an error if something is wrong
+	Build() (DescriptionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DescriptionResponse
+}
+
+// NewDescriptionResponseBuilder() creates a DescriptionResponseBuilder
+func NewDescriptionResponseBuilder() DescriptionResponseBuilder {
+	return &_DescriptionResponseBuilder{_DescriptionResponse: new(_DescriptionResponse)}
+}
+
+type _DescriptionResponseBuilder struct {
+	*_DescriptionResponse
+
+	parentBuilder *_KnxNetIpMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DescriptionResponseBuilder) = (*_DescriptionResponseBuilder)(nil)
+
+func (b *_DescriptionResponseBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
+}
+
+func (b *_DescriptionResponseBuilder) WithMandatoryFields(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) DescriptionResponseBuilder {
+	return b.WithDibDeviceInfo(dibDeviceInfo).WithDibSuppSvcFamilies(dibSuppSvcFamilies)
+}
+
+func (b *_DescriptionResponseBuilder) WithDibDeviceInfo(dibDeviceInfo DIBDeviceInfo) DescriptionResponseBuilder {
+	b.DibDeviceInfo = dibDeviceInfo
+	return b
+}
+
+func (b *_DescriptionResponseBuilder) WithDibDeviceInfoBuilder(builderSupplier func(DIBDeviceInfoBuilder) DIBDeviceInfoBuilder) DescriptionResponseBuilder {
+	builder := builderSupplier(b.DibDeviceInfo.CreateDIBDeviceInfoBuilder())
+	var err error
+	b.DibDeviceInfo, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DIBDeviceInfoBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DescriptionResponseBuilder) WithDibSuppSvcFamilies(dibSuppSvcFamilies DIBSuppSvcFamilies) DescriptionResponseBuilder {
+	b.DibSuppSvcFamilies = dibSuppSvcFamilies
+	return b
+}
+
+func (b *_DescriptionResponseBuilder) WithDibSuppSvcFamiliesBuilder(builderSupplier func(DIBSuppSvcFamiliesBuilder) DIBSuppSvcFamiliesBuilder) DescriptionResponseBuilder {
+	builder := builderSupplier(b.DibSuppSvcFamilies.CreateDIBSuppSvcFamiliesBuilder())
+	var err error
+	b.DibSuppSvcFamilies, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DIBSuppSvcFamiliesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DescriptionResponseBuilder) Build() (DescriptionResponse, error) {
+	if b.DibDeviceInfo == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dibDeviceInfo' not set"))
+	}
+	if b.DibSuppSvcFamilies == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dibSuppSvcFamilies' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DescriptionResponse.deepCopy(), nil
+}
+
+func (b *_DescriptionResponseBuilder) MustBuild() DescriptionResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DescriptionResponseBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DescriptionResponseBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_DescriptionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDescriptionResponseBuilder().(*_DescriptionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDescriptionResponseBuilder creates a DescriptionResponseBuilder
+func (b *_DescriptionResponse) CreateDescriptionResponseBuilder() DescriptionResponseBuilder {
+	if b == nil {
+		return NewDescriptionResponseBuilder()
+	}
+	return &_DescriptionResponseBuilder{_DescriptionResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,23 +254,6 @@ func (m *_DescriptionResponse) GetDibSuppSvcFamilies() DIBSuppSvcFamilies {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDescriptionResponse factory function for _DescriptionResponse
-func NewDescriptionResponse(dibDeviceInfo DIBDeviceInfo, dibSuppSvcFamilies DIBSuppSvcFamilies) *_DescriptionResponse {
-	if dibDeviceInfo == nil {
-		panic("dibDeviceInfo of type DIBDeviceInfo for DescriptionResponse must not be nil")
-	}
-	if dibSuppSvcFamilies == nil {
-		panic("dibSuppSvcFamilies of type DIBSuppSvcFamilies for DescriptionResponse must not be nil")
-	}
-	_result := &_DescriptionResponse{
-		KnxNetIpMessageContract: NewKnxNetIpMessage(),
-		DibDeviceInfo:           dibDeviceInfo,
-		DibSuppSvcFamilies:      dibSuppSvcFamilies,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDescriptionResponse(structType any) DescriptionResponse {
@@ -209,13 +352,34 @@ func (m *_DescriptionResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_DescriptionResponse) IsDescriptionResponse() {}
 
+func (m *_DescriptionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DescriptionResponse) deepCopy() *_DescriptionResponse {
+	if m == nil {
+		return nil
+	}
+	_DescriptionResponseCopy := &_DescriptionResponse{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.DibDeviceInfo.DeepCopy().(DIBDeviceInfo),
+		m.DibSuppSvcFamilies.DeepCopy().(DIBSuppSvcFamilies),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _DescriptionResponseCopy
+}
+
 func (m *_DescriptionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

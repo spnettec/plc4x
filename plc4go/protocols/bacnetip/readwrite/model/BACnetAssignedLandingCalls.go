@@ -38,10 +38,13 @@ type BACnetAssignedLandingCalls interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLandingCalls returns LandingCalls (property field)
 	GetLandingCalls() BACnetAssignedLandingCallsLandingCallsList
 	// IsBACnetAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAssignedLandingCalls()
+	// CreateBuilder creates a BACnetAssignedLandingCallsBuilder
+	CreateBACnetAssignedLandingCallsBuilder() BACnetAssignedLandingCallsBuilder
 }
 
 // _BACnetAssignedLandingCalls is the data-structure of this message
@@ -50,6 +53,111 @@ type _BACnetAssignedLandingCalls struct {
 }
 
 var _ BACnetAssignedLandingCalls = (*_BACnetAssignedLandingCalls)(nil)
+
+// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
+func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
+	if landingCalls == nil {
+		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
+	}
+	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAssignedLandingCallsBuilder is a builder for BACnetAssignedLandingCalls
+type BACnetAssignedLandingCallsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder
+	// WithLandingCalls adds LandingCalls (property field)
+	WithLandingCalls(BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder
+	// WithLandingCallsBuilder adds LandingCalls (property field) which is build by the builder
+	WithLandingCallsBuilder(func(BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsBuilder
+	// Build builds the BACnetAssignedLandingCalls or returns an error if something is wrong
+	Build() (BACnetAssignedLandingCalls, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAssignedLandingCalls
+}
+
+// NewBACnetAssignedLandingCallsBuilder() creates a BACnetAssignedLandingCallsBuilder
+func NewBACnetAssignedLandingCallsBuilder() BACnetAssignedLandingCallsBuilder {
+	return &_BACnetAssignedLandingCallsBuilder{_BACnetAssignedLandingCalls: new(_BACnetAssignedLandingCalls)}
+}
+
+type _BACnetAssignedLandingCallsBuilder struct {
+	*_BACnetAssignedLandingCalls
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAssignedLandingCallsBuilder) = (*_BACnetAssignedLandingCallsBuilder)(nil)
+
+func (b *_BACnetAssignedLandingCallsBuilder) WithMandatoryFields(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
+	return b.WithLandingCalls(landingCalls)
+}
+
+func (b *_BACnetAssignedLandingCallsBuilder) WithLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) BACnetAssignedLandingCallsBuilder {
+	b.LandingCalls = landingCalls
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsBuilder) WithLandingCallsBuilder(builderSupplier func(BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder) BACnetAssignedLandingCallsBuilder {
+	builder := builderSupplier(b.LandingCalls.CreateBACnetAssignedLandingCallsLandingCallsListBuilder())
+	var err error
+	b.LandingCalls, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAssignedLandingCallsLandingCallsListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsBuilder) Build() (BACnetAssignedLandingCalls, error) {
+	if b.LandingCalls == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'landingCalls' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAssignedLandingCalls.deepCopy(), nil
+}
+
+func (b *_BACnetAssignedLandingCallsBuilder) MustBuild() BACnetAssignedLandingCalls {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAssignedLandingCallsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedLandingCallsBuilder().(*_BACnetAssignedLandingCallsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAssignedLandingCallsBuilder creates a BACnetAssignedLandingCallsBuilder
+func (b *_BACnetAssignedLandingCalls) CreateBACnetAssignedLandingCallsBuilder() BACnetAssignedLandingCallsBuilder {
+	if b == nil {
+		return NewBACnetAssignedLandingCallsBuilder()
+	}
+	return &_BACnetAssignedLandingCallsBuilder{_BACnetAssignedLandingCalls: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +172,6 @@ func (m *_BACnetAssignedLandingCalls) GetLandingCalls() BACnetAssignedLandingCal
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedLandingCalls factory function for _BACnetAssignedLandingCalls
-func NewBACnetAssignedLandingCalls(landingCalls BACnetAssignedLandingCallsLandingCallsList) *_BACnetAssignedLandingCalls {
-	if landingCalls == nil {
-		panic("landingCalls of type BACnetAssignedLandingCallsLandingCallsList for BACnetAssignedLandingCalls must not be nil")
-	}
-	return &_BACnetAssignedLandingCalls{LandingCalls: landingCalls}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedLandingCalls(structType any) BACnetAssignedLandingCalls {
@@ -116,7 +216,7 @@ func BACnetAssignedLandingCallsParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAssignedLandingCalls) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAssignedLandingCalls BACnetAssignedLandingCalls, err error) {
@@ -170,13 +270,31 @@ func (m *_BACnetAssignedLandingCalls) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_BACnetAssignedLandingCalls) IsBACnetAssignedLandingCalls() {}
 
+func (m *_BACnetAssignedLandingCalls) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCalls) deepCopy() *_BACnetAssignedLandingCalls {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsCopy := &_BACnetAssignedLandingCalls{
+		m.LandingCalls.DeepCopy().(BACnetAssignedLandingCallsLandingCallsList),
+	}
+	return _BACnetAssignedLandingCallsCopy
+}
+
 func (m *_BACnetAssignedLandingCalls) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

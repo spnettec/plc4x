@@ -38,11 +38,14 @@ type ApduControlContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetControlApdu returns ControlApdu (property field)
 	GetControlApdu() ApduControl
 	// IsApduControlContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControlContainer()
+	// CreateBuilder creates a ApduControlContainerBuilder
+	CreateApduControlContainerBuilder() ApduControlContainerBuilder
 }
 
 // _ApduControlContainer is the data-structure of this message
@@ -53,6 +56,131 @@ type _ApduControlContainer struct {
 
 var _ ApduControlContainer = (*_ApduControlContainer)(nil)
 var _ ApduRequirements = (*_ApduControlContainer)(nil)
+
+// NewApduControlContainer factory function for _ApduControlContainer
+func NewApduControlContainer(numbered bool, counter uint8, controlApdu ApduControl, dataLength uint8) *_ApduControlContainer {
+	if controlApdu == nil {
+		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
+	}
+	_result := &_ApduControlContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		ControlApdu:  controlApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduControlContainerBuilder is a builder for ApduControlContainer
+type ApduControlContainerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(controlApdu ApduControl) ApduControlContainerBuilder
+	// WithControlApdu adds ControlApdu (property field)
+	WithControlApdu(ApduControl) ApduControlContainerBuilder
+	// WithControlApduBuilder adds ControlApdu (property field) which is build by the builder
+	WithControlApduBuilder(func(ApduControlBuilder) ApduControlBuilder) ApduControlContainerBuilder
+	// Build builds the ApduControlContainer or returns an error if something is wrong
+	Build() (ApduControlContainer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduControlContainer
+}
+
+// NewApduControlContainerBuilder() creates a ApduControlContainerBuilder
+func NewApduControlContainerBuilder() ApduControlContainerBuilder {
+	return &_ApduControlContainerBuilder{_ApduControlContainer: new(_ApduControlContainer)}
+}
+
+type _ApduControlContainerBuilder struct {
+	*_ApduControlContainer
+
+	parentBuilder *_ApduBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduControlContainerBuilder) = (*_ApduControlContainerBuilder)(nil)
+
+func (b *_ApduControlContainerBuilder) setParent(contract ApduContract) {
+	b.ApduContract = contract
+}
+
+func (b *_ApduControlContainerBuilder) WithMandatoryFields(controlApdu ApduControl) ApduControlContainerBuilder {
+	return b.WithControlApdu(controlApdu)
+}
+
+func (b *_ApduControlContainerBuilder) WithControlApdu(controlApdu ApduControl) ApduControlContainerBuilder {
+	b.ControlApdu = controlApdu
+	return b
+}
+
+func (b *_ApduControlContainerBuilder) WithControlApduBuilder(builderSupplier func(ApduControlBuilder) ApduControlBuilder) ApduControlContainerBuilder {
+	builder := builderSupplier(b.ControlApdu.CreateApduControlBuilder())
+	var err error
+	b.ControlApdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ApduControlBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApduControlContainerBuilder) Build() (ApduControlContainer, error) {
+	if b.ControlApdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'controlApdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduControlContainer.deepCopy(), nil
+}
+
+func (b *_ApduControlContainerBuilder) MustBuild() ApduControlContainer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduControlContainerBuilder) Done() ApduBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduControlContainerBuilder) buildForApdu() (Apdu, error) {
+	return b.Build()
+}
+
+func (b *_ApduControlContainerBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlContainerBuilder().(*_ApduControlContainerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduControlContainerBuilder creates a ApduControlContainerBuilder
+func (b *_ApduControlContainer) CreateApduControlContainerBuilder() ApduControlContainerBuilder {
+	if b == nil {
+		return NewApduControlContainerBuilder()
+	}
+	return &_ApduControlContainerBuilder{_ApduControlContainer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_ApduControlContainer) GetControlApdu() ApduControl {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduControlContainer factory function for _ApduControlContainer
-func NewApduControlContainer(controlApdu ApduControl, numbered bool, counter uint8, dataLength uint8) *_ApduControlContainer {
-	if controlApdu == nil {
-		panic("controlApdu of type ApduControl for ApduControlContainer must not be nil")
-	}
-	_result := &_ApduControlContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
-		ControlApdu:  controlApdu,
-	}
-	_result.ApduContract.(*_Apdu)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduControlContainer(structType any) ApduControlContainer {
@@ -183,13 +298,33 @@ func (m *_ApduControlContainer) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_ApduControlContainer) IsApduControlContainer() {}
 
+func (m *_ApduControlContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControlContainer) deepCopy() *_ApduControlContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduControlContainerCopy := &_ApduControlContainer{
+		m.ApduContract.(*_Apdu).deepCopy(),
+		m.ControlApdu.DeepCopy().(ApduControl),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduControlContainerCopy
+}
+
 func (m *_ApduControlContainer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

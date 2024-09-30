@@ -38,6 +38,7 @@ type ContentFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfElements returns NoOfElements (property field)
 	GetNoOfElements() int32
@@ -45,6 +46,8 @@ type ContentFilter interface {
 	GetElements() []ExtensionObjectDefinition
 	// IsContentFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsContentFilter()
+	// CreateBuilder creates a ContentFilterBuilder
+	CreateContentFilterBuilder() ContentFilterBuilder
 }
 
 // _ContentFilter is the data-structure of this message
@@ -56,6 +59,115 @@ type _ContentFilter struct {
 
 var _ ContentFilter = (*_ContentFilter)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ContentFilter)(nil)
+
+// NewContentFilter factory function for _ContentFilter
+func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) *_ContentFilter {
+	_result := &_ContentFilter{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfElements:                      noOfElements,
+		Elements:                          elements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ContentFilterBuilder is a builder for ContentFilter
+type ContentFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder
+	// WithNoOfElements adds NoOfElements (property field)
+	WithNoOfElements(int32) ContentFilterBuilder
+	// WithElements adds Elements (property field)
+	WithElements(...ExtensionObjectDefinition) ContentFilterBuilder
+	// Build builds the ContentFilter or returns an error if something is wrong
+	Build() (ContentFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ContentFilter
+}
+
+// NewContentFilterBuilder() creates a ContentFilterBuilder
+func NewContentFilterBuilder() ContentFilterBuilder {
+	return &_ContentFilterBuilder{_ContentFilter: new(_ContentFilter)}
+}
+
+type _ContentFilterBuilder struct {
+	*_ContentFilter
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ContentFilterBuilder) = (*_ContentFilterBuilder)(nil)
+
+func (b *_ContentFilterBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ContentFilterBuilder) WithMandatoryFields(noOfElements int32, elements []ExtensionObjectDefinition) ContentFilterBuilder {
+	return b.WithNoOfElements(noOfElements).WithElements(elements...)
+}
+
+func (b *_ContentFilterBuilder) WithNoOfElements(noOfElements int32) ContentFilterBuilder {
+	b.NoOfElements = noOfElements
+	return b
+}
+
+func (b *_ContentFilterBuilder) WithElements(elements ...ExtensionObjectDefinition) ContentFilterBuilder {
+	b.Elements = elements
+	return b
+}
+
+func (b *_ContentFilterBuilder) Build() (ContentFilter, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ContentFilter.deepCopy(), nil
+}
+
+func (b *_ContentFilterBuilder) MustBuild() ContentFilter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ContentFilterBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ContentFilterBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ContentFilterBuilder) DeepCopy() any {
+	_copy := b.CreateContentFilterBuilder().(*_ContentFilterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateContentFilterBuilder creates a ContentFilterBuilder
+func (b *_ContentFilter) CreateContentFilterBuilder() ContentFilterBuilder {
+	if b == nil {
+		return NewContentFilterBuilder()
+	}
+	return &_ContentFilterBuilder{_ContentFilter: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ContentFilter) GetElements() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewContentFilter factory function for _ContentFilter
-func NewContentFilter(noOfElements int32, elements []ExtensionObjectDefinition) *_ContentFilter {
-	_result := &_ContentFilter{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfElements:                      noOfElements,
-		Elements:                          elements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastContentFilter(structType any) ContentFilter {
@@ -208,13 +309,34 @@ func (m *_ContentFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_ContentFilter) IsContentFilter() {}
 
+func (m *_ContentFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ContentFilter) deepCopy() *_ContentFilter {
+	if m == nil {
+		return nil
+	}
+	_ContentFilterCopy := &_ContentFilter{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfElements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Elements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ContentFilterCopy
+}
+
 func (m *_ContentFilter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

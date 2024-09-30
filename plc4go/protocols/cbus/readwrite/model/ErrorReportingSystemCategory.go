@@ -38,6 +38,7 @@ type ErrorReportingSystemCategory interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSystemCategoryClass returns SystemCategoryClass (property field)
 	GetSystemCategoryClass() ErrorReportingSystemCategoryClass
 	// GetSystemCategoryType returns SystemCategoryType (property field)
@@ -46,6 +47,8 @@ type ErrorReportingSystemCategory interface {
 	GetSystemCategoryVariant() ErrorReportingSystemCategoryVariant
 	// IsErrorReportingSystemCategory is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategory()
+	// CreateBuilder creates a ErrorReportingSystemCategoryBuilder
+	CreateErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilder
 }
 
 // _ErrorReportingSystemCategory is the data-structure of this message
@@ -56,6 +59,125 @@ type _ErrorReportingSystemCategory struct {
 }
 
 var _ ErrorReportingSystemCategory = (*_ErrorReportingSystemCategory)(nil)
+
+// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
+func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
+	if systemCategoryType == nil {
+		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
+	}
+	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingSystemCategoryBuilder is a builder for ErrorReportingSystemCategory
+type ErrorReportingSystemCategoryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder
+	// WithSystemCategoryClass adds SystemCategoryClass (property field)
+	WithSystemCategoryClass(ErrorReportingSystemCategoryClass) ErrorReportingSystemCategoryBuilder
+	// WithSystemCategoryType adds SystemCategoryType (property field)
+	WithSystemCategoryType(ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryBuilder
+	// WithSystemCategoryTypeBuilder adds SystemCategoryType (property field) which is build by the builder
+	WithSystemCategoryTypeBuilder(func(ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryBuilder
+	// WithSystemCategoryVariant adds SystemCategoryVariant (property field)
+	WithSystemCategoryVariant(ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder
+	// Build builds the ErrorReportingSystemCategory or returns an error if something is wrong
+	Build() (ErrorReportingSystemCategory, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingSystemCategory
+}
+
+// NewErrorReportingSystemCategoryBuilder() creates a ErrorReportingSystemCategoryBuilder
+func NewErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilder {
+	return &_ErrorReportingSystemCategoryBuilder{_ErrorReportingSystemCategory: new(_ErrorReportingSystemCategory)}
+}
+
+type _ErrorReportingSystemCategoryBuilder struct {
+	*_ErrorReportingSystemCategory
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingSystemCategoryBuilder) = (*_ErrorReportingSystemCategoryBuilder)(nil)
+
+func (b *_ErrorReportingSystemCategoryBuilder) WithMandatoryFields(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
+	return b.WithSystemCategoryClass(systemCategoryClass).WithSystemCategoryType(systemCategoryType).WithSystemCategoryVariant(systemCategoryVariant)
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryClass(systemCategoryClass ErrorReportingSystemCategoryClass) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryClass = systemCategoryClass
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryType(systemCategoryType ErrorReportingSystemCategoryType) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryType = systemCategoryType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryTypeBuilder(builderSupplier func(ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryTypeBuilder) ErrorReportingSystemCategoryBuilder {
+	builder := builderSupplier(b.SystemCategoryType.CreateErrorReportingSystemCategoryTypeBuilder())
+	var err error
+	b.SystemCategoryType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) WithSystemCategoryVariant(systemCategoryVariant ErrorReportingSystemCategoryVariant) ErrorReportingSystemCategoryBuilder {
+	b.SystemCategoryVariant = systemCategoryVariant
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) Build() (ErrorReportingSystemCategory, error) {
+	if b.SystemCategoryType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'systemCategoryType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingSystemCategory.deepCopy(), nil
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) MustBuild() ErrorReportingSystemCategory {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorReportingSystemCategoryBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryBuilder().(*_ErrorReportingSystemCategoryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorReportingSystemCategoryBuilder creates a ErrorReportingSystemCategoryBuilder
+func (b *_ErrorReportingSystemCategory) CreateErrorReportingSystemCategoryBuilder() ErrorReportingSystemCategoryBuilder {
+	if b == nil {
+		return NewErrorReportingSystemCategoryBuilder()
+	}
+	return &_ErrorReportingSystemCategoryBuilder{_ErrorReportingSystemCategory: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +200,6 @@ func (m *_ErrorReportingSystemCategory) GetSystemCategoryVariant() ErrorReportin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategory factory function for _ErrorReportingSystemCategory
-func NewErrorReportingSystemCategory(systemCategoryClass ErrorReportingSystemCategoryClass, systemCategoryType ErrorReportingSystemCategoryType, systemCategoryVariant ErrorReportingSystemCategoryVariant) *_ErrorReportingSystemCategory {
-	if systemCategoryType == nil {
-		panic("systemCategoryType of type ErrorReportingSystemCategoryType for ErrorReportingSystemCategory must not be nil")
-	}
-	return &_ErrorReportingSystemCategory{SystemCategoryClass: systemCategoryClass, SystemCategoryType: systemCategoryType, SystemCategoryVariant: systemCategoryVariant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategory(structType any) ErrorReportingSystemCategory {
@@ -136,7 +250,7 @@ func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ErrorReportingSystemCategory) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__errorReportingSystemCategory ErrorReportingSystemCategory, err error) {
@@ -210,13 +324,33 @@ func (m *_ErrorReportingSystemCategory) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_ErrorReportingSystemCategory) IsErrorReportingSystemCategory() {}
 
+func (m *_ErrorReportingSystemCategory) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategory) deepCopy() *_ErrorReportingSystemCategory {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryCopy := &_ErrorReportingSystemCategory{
+		m.SystemCategoryClass,
+		m.SystemCategoryType.DeepCopy().(ErrorReportingSystemCategoryType),
+		m.SystemCategoryVariant,
+	}
+	return _ErrorReportingSystemCategoryCopy
+}
+
 func (m *_ErrorReportingSystemCategory) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

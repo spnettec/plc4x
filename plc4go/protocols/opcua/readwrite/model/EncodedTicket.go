@@ -36,8 +36,11 @@ type EncodedTicket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsEncodedTicket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedTicket()
+	// CreateBuilder creates a EncodedTicketBuilder
+	CreateEncodedTicketBuilder() EncodedTicketBuilder
 }
 
 // _EncodedTicket is the data-structure of this message
@@ -50,6 +53,75 @@ var _ EncodedTicket = (*_EncodedTicket)(nil)
 func NewEncodedTicket() *_EncodedTicket {
 	return &_EncodedTicket{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EncodedTicketBuilder is a builder for EncodedTicket
+type EncodedTicketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EncodedTicketBuilder
+	// Build builds the EncodedTicket or returns an error if something is wrong
+	Build() (EncodedTicket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EncodedTicket
+}
+
+// NewEncodedTicketBuilder() creates a EncodedTicketBuilder
+func NewEncodedTicketBuilder() EncodedTicketBuilder {
+	return &_EncodedTicketBuilder{_EncodedTicket: new(_EncodedTicket)}
+}
+
+type _EncodedTicketBuilder struct {
+	*_EncodedTicket
+
+	err *utils.MultiError
+}
+
+var _ (EncodedTicketBuilder) = (*_EncodedTicketBuilder)(nil)
+
+func (b *_EncodedTicketBuilder) WithMandatoryFields() EncodedTicketBuilder {
+	return b
+}
+
+func (b *_EncodedTicketBuilder) Build() (EncodedTicket, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EncodedTicket.deepCopy(), nil
+}
+
+func (b *_EncodedTicketBuilder) MustBuild() EncodedTicket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_EncodedTicketBuilder) DeepCopy() any {
+	_copy := b.CreateEncodedTicketBuilder().(*_EncodedTicketBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEncodedTicketBuilder creates a EncodedTicketBuilder
+func (b *_EncodedTicket) CreateEncodedTicketBuilder() EncodedTicketBuilder {
+	if b == nil {
+		return NewEncodedTicketBuilder()
+	}
+	return &_EncodedTicketBuilder{_EncodedTicket: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastEncodedTicket(structType any) EncodedTicket {
@@ -91,7 +163,7 @@ func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_EncodedTicket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__encodedTicket EncodedTicket, err error) {
@@ -135,13 +207,29 @@ func (m *_EncodedTicket) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_EncodedTicket) IsEncodedTicket() {}
 
+func (m *_EncodedTicket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedTicket) deepCopy() *_EncodedTicket {
+	if m == nil {
+		return nil
+	}
+	_EncodedTicketCopy := &_EncodedTicket{}
+	return _EncodedTicketCopy
+}
+
 func (m *_EncodedTicket) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

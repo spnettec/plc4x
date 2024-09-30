@@ -40,8 +40,11 @@ type LevelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
+	// CreateBuilder creates a LevelInformationBuilder
+	CreateLevelInformationBuilder() LevelInformationBuilder
 }
 
 // LevelInformationContract provides a set of functions which can be overwritten by a sub struct
@@ -66,6 +69,8 @@ type LevelInformationContract interface {
 	GetIsCorrupted() bool
 	// IsLevelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformation()
+	// CreateBuilder creates a LevelInformationBuilder
+	CreateLevelInformationBuilder() LevelInformationBuilder
 }
 
 // LevelInformationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -85,6 +90,184 @@ type _LevelInformation struct {
 }
 
 var _ LevelInformationContract = (*_LevelInformation)(nil)
+
+// NewLevelInformation factory function for _LevelInformation
+func NewLevelInformation(raw uint16) *_LevelInformation {
+	return &_LevelInformation{Raw: raw}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LevelInformationBuilder is a builder for LevelInformation
+type LevelInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(raw uint16) LevelInformationBuilder
+	// WithRaw adds Raw (property field)
+	WithRaw(uint16) LevelInformationBuilder
+	// AsLevelInformationAbsent converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
+	AsLevelInformationAbsent() interface {
+		LevelInformationAbsentBuilder
+		Done() LevelInformationBuilder
+	}
+	// AsLevelInformationCorrupted converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
+	AsLevelInformationCorrupted() interface {
+		LevelInformationCorruptedBuilder
+		Done() LevelInformationBuilder
+	}
+	// AsLevelInformationNormal converts this build to a subType of LevelInformation. It is always possible to return to current builder using Done()
+	AsLevelInformationNormal() interface {
+		LevelInformationNormalBuilder
+		Done() LevelInformationBuilder
+	}
+	// Build builds the LevelInformation or returns an error if something is wrong
+	PartialBuild() (LevelInformationContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() LevelInformationContract
+	// Build builds the LevelInformation or returns an error if something is wrong
+	Build() (LevelInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LevelInformation
+}
+
+// NewLevelInformationBuilder() creates a LevelInformationBuilder
+func NewLevelInformationBuilder() LevelInformationBuilder {
+	return &_LevelInformationBuilder{_LevelInformation: new(_LevelInformation)}
+}
+
+type _LevelInformationChildBuilder interface {
+	utils.Copyable
+	setParent(LevelInformationContract)
+	buildForLevelInformation() (LevelInformation, error)
+}
+
+type _LevelInformationBuilder struct {
+	*_LevelInformation
+
+	childBuilder _LevelInformationChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LevelInformationBuilder) = (*_LevelInformationBuilder)(nil)
+
+func (b *_LevelInformationBuilder) WithMandatoryFields(raw uint16) LevelInformationBuilder {
+	return b.WithRaw(raw)
+}
+
+func (b *_LevelInformationBuilder) WithRaw(raw uint16) LevelInformationBuilder {
+	b.Raw = raw
+	return b
+}
+
+func (b *_LevelInformationBuilder) PartialBuild() (LevelInformationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LevelInformation.deepCopy(), nil
+}
+
+func (b *_LevelInformationBuilder) PartialMustBuild() LevelInformationContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LevelInformationBuilder) AsLevelInformationAbsent() interface {
+	LevelInformationAbsentBuilder
+	Done() LevelInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LevelInformationAbsentBuilder
+		Done() LevelInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLevelInformationAbsentBuilder().(*_LevelInformationAbsentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LevelInformationBuilder) AsLevelInformationCorrupted() interface {
+	LevelInformationCorruptedBuilder
+	Done() LevelInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LevelInformationCorruptedBuilder
+		Done() LevelInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLevelInformationCorruptedBuilder().(*_LevelInformationCorruptedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LevelInformationBuilder) AsLevelInformationNormal() interface {
+	LevelInformationNormalBuilder
+	Done() LevelInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LevelInformationNormalBuilder
+		Done() LevelInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLevelInformationNormalBuilder().(*_LevelInformationNormalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LevelInformationBuilder) Build() (LevelInformation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForLevelInformation()
+}
+
+func (b *_LevelInformationBuilder) MustBuild() LevelInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LevelInformationBuilder) DeepCopy() any {
+	_copy := b.CreateLevelInformationBuilder().(*_LevelInformationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_LevelInformationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLevelInformationBuilder creates a LevelInformationBuilder
+func (b *_LevelInformation) CreateLevelInformationBuilder() LevelInformationBuilder {
+	if b == nil {
+		return NewLevelInformationBuilder()
+	}
+	return &_LevelInformationBuilder{_LevelInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -165,11 +348,6 @@ func (pm *_LevelInformation) GetIsCorrupted() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewLevelInformation factory function for _LevelInformation
-func NewLevelInformation(raw uint16) *_LevelInformation {
-	return &_LevelInformation{Raw: raw}
-}
-
 // Deprecated: use the interface for direct cast
 func CastLevelInformation(structType any) LevelInformation {
 	if casted, ok := structType.(LevelInformation); ok {
@@ -222,7 +400,7 @@ func LevelInformationParseWithBufferProducer[T LevelInformation]() func(ctx cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -232,7 +410,12 @@ func LevelInformationParseWithBuffer[T LevelInformation](ctx context.Context, re
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__levelInformation LevelInformation, err error) {
@@ -302,15 +485,15 @@ func (m *_LevelInformation) parse(ctx context.Context, readBuffer utils.ReadBuff
 	var _child LevelInformation
 	switch {
 	case isAbsent == bool(true): // LevelInformationAbsent
-		if _child, err = (&_LevelInformationAbsent{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationAbsent).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationAbsent for type-switch of LevelInformation")
 		}
 	case 0 == 0 && isCorrupted == bool(true): // LevelInformationCorrupted
-		if _child, err = (&_LevelInformationCorrupted{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationCorrupted).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationCorrupted for type-switch of LevelInformation")
 		}
 	case 0 == 0: // LevelInformationNormal
-		if _child, err = (&_LevelInformationNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LevelInformationNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LevelInformationNormal for type-switch of LevelInformation")
 		}
 	default:
@@ -396,3 +579,18 @@ func (pm *_LevelInformation) serializeParent(ctx context.Context, writeBuffer ut
 }
 
 func (m *_LevelInformation) IsLevelInformation() {}
+
+func (m *_LevelInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformation) deepCopy() *_LevelInformation {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationCopy := &_LevelInformation{
+		nil, // will be set by child
+		m.Raw,
+	}
+	return _LevelInformationCopy
+}

@@ -38,6 +38,7 @@ type BACnetConstructedDataSystemStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSystemStatus returns SystemStatus (property field)
 	GetSystemStatus() BACnetDeviceStatusTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataSystemStatus interface {
 	GetActualValue() BACnetDeviceStatusTagged
 	// IsBACnetConstructedDataSystemStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSystemStatus()
+	// CreateBuilder creates a BACnetConstructedDataSystemStatusBuilder
+	CreateBACnetConstructedDataSystemStatusBuilder() BACnetConstructedDataSystemStatusBuilder
 }
 
 // _BACnetConstructedDataSystemStatus is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataSystemStatus struct {
 
 var _ BACnetConstructedDataSystemStatus = (*_BACnetConstructedDataSystemStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSystemStatus)(nil)
+
+// NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
+func NewBACnetConstructedDataSystemStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, systemStatus BACnetDeviceStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
+	if systemStatus == nil {
+		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataSystemStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SystemStatus:                  systemStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSystemStatusBuilder is a builder for BACnetConstructedDataSystemStatus
+type BACnetConstructedDataSystemStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(systemStatus BACnetDeviceStatusTagged) BACnetConstructedDataSystemStatusBuilder
+	// WithSystemStatus adds SystemStatus (property field)
+	WithSystemStatus(BACnetDeviceStatusTagged) BACnetConstructedDataSystemStatusBuilder
+	// WithSystemStatusBuilder adds SystemStatus (property field) which is build by the builder
+	WithSystemStatusBuilder(func(BACnetDeviceStatusTaggedBuilder) BACnetDeviceStatusTaggedBuilder) BACnetConstructedDataSystemStatusBuilder
+	// Build builds the BACnetConstructedDataSystemStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataSystemStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSystemStatus
+}
+
+// NewBACnetConstructedDataSystemStatusBuilder() creates a BACnetConstructedDataSystemStatusBuilder
+func NewBACnetConstructedDataSystemStatusBuilder() BACnetConstructedDataSystemStatusBuilder {
+	return &_BACnetConstructedDataSystemStatusBuilder{_BACnetConstructedDataSystemStatus: new(_BACnetConstructedDataSystemStatus)}
+}
+
+type _BACnetConstructedDataSystemStatusBuilder struct {
+	*_BACnetConstructedDataSystemStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSystemStatusBuilder) = (*_BACnetConstructedDataSystemStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) WithMandatoryFields(systemStatus BACnetDeviceStatusTagged) BACnetConstructedDataSystemStatusBuilder {
+	return b.WithSystemStatus(systemStatus)
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) WithSystemStatus(systemStatus BACnetDeviceStatusTagged) BACnetConstructedDataSystemStatusBuilder {
+	b.SystemStatus = systemStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) WithSystemStatusBuilder(builderSupplier func(BACnetDeviceStatusTaggedBuilder) BACnetDeviceStatusTaggedBuilder) BACnetConstructedDataSystemStatusBuilder {
+	builder := builderSupplier(b.SystemStatus.CreateBACnetDeviceStatusTaggedBuilder())
+	var err error
+	b.SystemStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) Build() (BACnetConstructedDataSystemStatus, error) {
+	if b.SystemStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'systemStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataSystemStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) MustBuild() BACnetConstructedDataSystemStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSystemStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSystemStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSystemStatusBuilder().(*_BACnetConstructedDataSystemStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataSystemStatusBuilder creates a BACnetConstructedDataSystemStatusBuilder
+func (b *_BACnetConstructedDataSystemStatus) CreateBACnetConstructedDataSystemStatusBuilder() BACnetConstructedDataSystemStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataSystemStatusBuilder()
+	}
+	return &_BACnetConstructedDataSystemStatusBuilder{_BACnetConstructedDataSystemStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataSystemStatus) GetActualValue() BACnetDeviceStatus
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSystemStatus factory function for _BACnetConstructedDataSystemStatus
-func NewBACnetConstructedDataSystemStatus(systemStatus BACnetDeviceStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSystemStatus {
-	if systemStatus == nil {
-		panic("systemStatus of type BACnetDeviceStatusTagged for BACnetConstructedDataSystemStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataSystemStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SystemStatus:                  systemStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSystemStatus(structType any) BACnetConstructedDataSystemStatus {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataSystemStatus) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetConstructedDataSystemStatus) IsBACnetConstructedDataSystemStatus() {}
 
+func (m *_BACnetConstructedDataSystemStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSystemStatus) deepCopy() *_BACnetConstructedDataSystemStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSystemStatusCopy := &_BACnetConstructedDataSystemStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.SystemStatus.DeepCopy().(BACnetDeviceStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSystemStatusCopy
+}
+
 func (m *_BACnetConstructedDataSystemStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

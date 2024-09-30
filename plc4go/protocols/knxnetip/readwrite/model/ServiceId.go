@@ -40,14 +40,19 @@ type ServiceId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
+	// CreateBuilder creates a ServiceIdBuilder
+	CreateServiceIdBuilder() ServiceIdBuilder
 }
 
 // ServiceIdContract provides a set of functions which can be overwritten by a sub struct
 type ServiceIdContract interface {
 	// IsServiceId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServiceId()
+	// CreateBuilder creates a ServiceIdBuilder
+	CreateServiceIdBuilder() ServiceIdBuilder
 }
 
 // ServiceIdRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,256 @@ var _ ServiceIdContract = (*_ServiceId)(nil)
 func NewServiceId() *_ServiceId {
 	return &_ServiceId{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServiceIdBuilder is a builder for ServiceId
+type ServiceIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ServiceIdBuilder
+	// AsKnxNetIpCore converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetIpCore() interface {
+		KnxNetIpCoreBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetIpDeviceManagement converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetIpDeviceManagement() interface {
+		KnxNetIpDeviceManagementBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetIpTunneling converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetIpTunneling() interface {
+		KnxNetIpTunnelingBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetIpRouting converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetIpRouting() interface {
+		KnxNetIpRoutingBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetRemoteLogging converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetRemoteLogging() interface {
+		KnxNetRemoteLoggingBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetRemoteConfigurationAndDiagnosis converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetRemoteConfigurationAndDiagnosis() interface {
+		KnxNetRemoteConfigurationAndDiagnosisBuilder
+		Done() ServiceIdBuilder
+	}
+	// AsKnxNetObjectServer converts this build to a subType of ServiceId. It is always possible to return to current builder using Done()
+	AsKnxNetObjectServer() interface {
+		KnxNetObjectServerBuilder
+		Done() ServiceIdBuilder
+	}
+	// Build builds the ServiceId or returns an error if something is wrong
+	PartialBuild() (ServiceIdContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ServiceIdContract
+	// Build builds the ServiceId or returns an error if something is wrong
+	Build() (ServiceId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ServiceId
+}
+
+// NewServiceIdBuilder() creates a ServiceIdBuilder
+func NewServiceIdBuilder() ServiceIdBuilder {
+	return &_ServiceIdBuilder{_ServiceId: new(_ServiceId)}
+}
+
+type _ServiceIdChildBuilder interface {
+	utils.Copyable
+	setParent(ServiceIdContract)
+	buildForServiceId() (ServiceId, error)
+}
+
+type _ServiceIdBuilder struct {
+	*_ServiceId
+
+	childBuilder _ServiceIdChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ServiceIdBuilder) = (*_ServiceIdBuilder)(nil)
+
+func (b *_ServiceIdBuilder) WithMandatoryFields() ServiceIdBuilder {
+	return b
+}
+
+func (b *_ServiceIdBuilder) PartialBuild() (ServiceIdContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ServiceId.deepCopy(), nil
+}
+
+func (b *_ServiceIdBuilder) PartialMustBuild() ServiceIdContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetIpCore() interface {
+	KnxNetIpCoreBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetIpCoreBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetIpCoreBuilder().(*_KnxNetIpCoreBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetIpDeviceManagement() interface {
+	KnxNetIpDeviceManagementBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetIpDeviceManagementBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetIpDeviceManagementBuilder().(*_KnxNetIpDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetIpTunneling() interface {
+	KnxNetIpTunnelingBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetIpTunnelingBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetIpTunnelingBuilder().(*_KnxNetIpTunnelingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetIpRouting() interface {
+	KnxNetIpRoutingBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetIpRoutingBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetIpRoutingBuilder().(*_KnxNetIpRoutingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetRemoteLogging() interface {
+	KnxNetRemoteLoggingBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetRemoteLoggingBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetRemoteLoggingBuilder().(*_KnxNetRemoteLoggingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetRemoteConfigurationAndDiagnosis() interface {
+	KnxNetRemoteConfigurationAndDiagnosisBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetRemoteConfigurationAndDiagnosisBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetRemoteConfigurationAndDiagnosisBuilder().(*_KnxNetRemoteConfigurationAndDiagnosisBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) AsKnxNetObjectServer() interface {
+	KnxNetObjectServerBuilder
+	Done() ServiceIdBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxNetObjectServerBuilder
+		Done() ServiceIdBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxNetObjectServerBuilder().(*_KnxNetObjectServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ServiceIdBuilder) Build() (ServiceId, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForServiceId()
+}
+
+func (b *_ServiceIdBuilder) MustBuild() ServiceId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ServiceIdBuilder) DeepCopy() any {
+	_copy := b.CreateServiceIdBuilder().(*_ServiceIdBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ServiceIdChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateServiceIdBuilder creates a ServiceIdBuilder
+func (b *_ServiceId) CreateServiceIdBuilder() ServiceIdBuilder {
+	if b == nil {
+		return NewServiceIdBuilder()
+	}
+	return &_ServiceIdBuilder{_ServiceId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastServiceId(structType any) ServiceId {
@@ -108,7 +363,7 @@ func ServiceIdParseWithBufferProducer[T ServiceId]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +373,12 @@ func ServiceIdParseWithBuffer[T ServiceId](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ServiceId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__serviceId ServiceId, err error) {
@@ -139,31 +399,31 @@ func (m *_ServiceId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child ServiceId
 	switch {
 	case serviceType == 0x02: // KnxNetIpCore
-		if _child, err = (&_KnxNetIpCore{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpCore).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpCore for type-switch of ServiceId")
 		}
 	case serviceType == 0x03: // KnxNetIpDeviceManagement
-		if _child, err = (&_KnxNetIpDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpDeviceManagement for type-switch of ServiceId")
 		}
 	case serviceType == 0x04: // KnxNetIpTunneling
-		if _child, err = (&_KnxNetIpTunneling{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpTunneling).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpTunneling for type-switch of ServiceId")
 		}
 	case serviceType == 0x05: // KnxNetIpRouting
-		if _child, err = (&_KnxNetIpRouting{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetIpRouting).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetIpRouting for type-switch of ServiceId")
 		}
 	case serviceType == 0x06: // KnxNetRemoteLogging
-		if _child, err = (&_KnxNetRemoteLogging{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetRemoteLogging).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetRemoteLogging for type-switch of ServiceId")
 		}
 	case serviceType == 0x07: // KnxNetRemoteConfigurationAndDiagnosis
-		if _child, err = (&_KnxNetRemoteConfigurationAndDiagnosis{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetRemoteConfigurationAndDiagnosis).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetRemoteConfigurationAndDiagnosis for type-switch of ServiceId")
 		}
 	case serviceType == 0x08: // KnxNetObjectServer
-		if _child, err = (&_KnxNetObjectServer{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_KnxNetObjectServer).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxNetObjectServer for type-switch of ServiceId")
 		}
 	default:
@@ -205,3 +465,17 @@ func (pm *_ServiceId) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_ServiceId) IsServiceId() {}
+
+func (m *_ServiceId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ServiceId) deepCopy() *_ServiceId {
+	if m == nil {
+		return nil
+	}
+	_ServiceIdCopy := &_ServiceId{
+		nil, // will be set by child
+	}
+	return _ServiceIdCopy
+}

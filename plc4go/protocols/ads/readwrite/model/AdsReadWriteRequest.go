@@ -38,6 +38,7 @@ type AdsReadWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetIndexGroup returns IndexGroup (property field)
 	GetIndexGroup() uint32
@@ -51,6 +52,8 @@ type AdsReadWriteRequest interface {
 	GetData() []byte
 	// IsAdsReadWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadWriteRequest()
+	// CreateBuilder creates a AdsReadWriteRequestBuilder
+	CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder
 }
 
 // _AdsReadWriteRequest is the data-structure of this message
@@ -65,6 +68,139 @@ type _AdsReadWriteRequest struct {
 
 var _ AdsReadWriteRequest = (*_AdsReadWriteRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsReadWriteRequest)(nil)
+
+// NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
+func NewAdsReadWriteRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) *_AdsReadWriteRequest {
+	_result := &_AdsReadWriteRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		IndexGroup:        indexGroup,
+		IndexOffset:       indexOffset,
+		ReadLength:        readLength,
+		Items:             items,
+		Data:              data,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadWriteRequestBuilder is a builder for AdsReadWriteRequest
+type AdsReadWriteRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder
+	// WithIndexGroup adds IndexGroup (property field)
+	WithIndexGroup(uint32) AdsReadWriteRequestBuilder
+	// WithIndexOffset adds IndexOffset (property field)
+	WithIndexOffset(uint32) AdsReadWriteRequestBuilder
+	// WithReadLength adds ReadLength (property field)
+	WithReadLength(uint32) AdsReadWriteRequestBuilder
+	// WithItems adds Items (property field)
+	WithItems(...AdsMultiRequestItem) AdsReadWriteRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsReadWriteRequestBuilder
+	// Build builds the AdsReadWriteRequest or returns an error if something is wrong
+	Build() (AdsReadWriteRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadWriteRequest
+}
+
+// NewAdsReadWriteRequestBuilder() creates a AdsReadWriteRequestBuilder
+func NewAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
+	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: new(_AdsReadWriteRequest)}
+}
+
+type _AdsReadWriteRequestBuilder struct {
+	*_AdsReadWriteRequest
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadWriteRequestBuilder) = (*_AdsReadWriteRequestBuilder)(nil)
+
+func (b *_AdsReadWriteRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithMandatoryFields(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte) AdsReadWriteRequestBuilder {
+	return b.WithIndexGroup(indexGroup).WithIndexOffset(indexOffset).WithReadLength(readLength).WithItems(items...).WithData(data...)
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithIndexGroup(indexGroup uint32) AdsReadWriteRequestBuilder {
+	b.IndexGroup = indexGroup
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithIndexOffset(indexOffset uint32) AdsReadWriteRequestBuilder {
+	b.IndexOffset = indexOffset
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithReadLength(readLength uint32) AdsReadWriteRequestBuilder {
+	b.ReadLength = readLength
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithItems(items ...AdsMultiRequestItem) AdsReadWriteRequestBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) WithData(data ...byte) AdsReadWriteRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsReadWriteRequestBuilder) Build() (AdsReadWriteRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsReadWriteRequest.deepCopy(), nil
+}
+
+func (b *_AdsReadWriteRequestBuilder) MustBuild() AdsReadWriteRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadWriteRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadWriteRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadWriteRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadWriteRequestBuilder().(*_AdsReadWriteRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsReadWriteRequestBuilder creates a AdsReadWriteRequestBuilder
+func (b *_AdsReadWriteRequest) CreateAdsReadWriteRequestBuilder() AdsReadWriteRequestBuilder {
+	if b == nil {
+		return NewAdsReadWriteRequestBuilder()
+	}
+	return &_AdsReadWriteRequestBuilder{_AdsReadWriteRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -117,20 +253,6 @@ func (m *_AdsReadWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadWriteRequest factory function for _AdsReadWriteRequest
-func NewAdsReadWriteRequest(indexGroup uint32, indexOffset uint32, readLength uint32, items []AdsMultiRequestItem, data []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadWriteRequest {
-	_result := &_AdsReadWriteRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		IndexGroup:        indexGroup,
-		IndexOffset:       indexOffset,
-		ReadLength:        readLength,
-		Items:             items,
-		Data:              data,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadWriteRequest(structType any) AdsReadWriteRequest {
@@ -290,13 +412,37 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_AdsReadWriteRequest) IsAdsReadWriteRequest() {}
 
+func (m *_AdsReadWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadWriteRequest) deepCopy() *_AdsReadWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsReadWriteRequestCopy := &_AdsReadWriteRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.IndexGroup,
+		m.IndexOffset,
+		m.ReadLength,
+		utils.DeepCopySlice[AdsMultiRequestItem, AdsMultiRequestItem](m.Items),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadWriteRequestCopy
+}
+
 func (m *_AdsReadWriteRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

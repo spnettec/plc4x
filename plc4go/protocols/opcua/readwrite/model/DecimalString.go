@@ -36,8 +36,11 @@ type DecimalString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDecimalString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDecimalString()
+	// CreateBuilder creates a DecimalStringBuilder
+	CreateDecimalStringBuilder() DecimalStringBuilder
 }
 
 // _DecimalString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ DecimalString = (*_DecimalString)(nil)
 func NewDecimalString() *_DecimalString {
 	return &_DecimalString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DecimalStringBuilder is a builder for DecimalString
+type DecimalStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DecimalStringBuilder
+	// Build builds the DecimalString or returns an error if something is wrong
+	Build() (DecimalString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DecimalString
+}
+
+// NewDecimalStringBuilder() creates a DecimalStringBuilder
+func NewDecimalStringBuilder() DecimalStringBuilder {
+	return &_DecimalStringBuilder{_DecimalString: new(_DecimalString)}
+}
+
+type _DecimalStringBuilder struct {
+	*_DecimalString
+
+	err *utils.MultiError
+}
+
+var _ (DecimalStringBuilder) = (*_DecimalStringBuilder)(nil)
+
+func (b *_DecimalStringBuilder) WithMandatoryFields() DecimalStringBuilder {
+	return b
+}
+
+func (b *_DecimalStringBuilder) Build() (DecimalString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DecimalString.deepCopy(), nil
+}
+
+func (b *_DecimalStringBuilder) MustBuild() DecimalString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DecimalStringBuilder) DeepCopy() any {
+	_copy := b.CreateDecimalStringBuilder().(*_DecimalStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDecimalStringBuilder creates a DecimalStringBuilder
+func (b *_DecimalString) CreateDecimalStringBuilder() DecimalStringBuilder {
+	if b == nil {
+		return NewDecimalStringBuilder()
+	}
+	return &_DecimalStringBuilder{_DecimalString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDecimalString(structType any) DecimalString {
@@ -91,7 +163,7 @@ func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DecimalString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__decimalString DecimalString, err error) {
@@ -135,13 +207,29 @@ func (m *_DecimalString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_DecimalString) IsDecimalString() {}
 
+func (m *_DecimalString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DecimalString) deepCopy() *_DecimalString {
+	if m == nil {
+		return nil
+	}
+	_DecimalStringCopy := &_DecimalString{}
+	return _DecimalStringCopy
+}
+
 func (m *_DecimalString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

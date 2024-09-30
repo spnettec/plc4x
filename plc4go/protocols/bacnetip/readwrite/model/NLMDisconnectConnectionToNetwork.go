@@ -38,11 +38,14 @@ type NLMDisconnectConnectionToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddress returns DestinationNetworkAddress (property field)
 	GetDestinationNetworkAddress() uint16
 	// IsNLMDisconnectConnectionToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMDisconnectConnectionToNetwork()
+	// CreateBuilder creates a NLMDisconnectConnectionToNetworkBuilder
+	CreateNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetworkBuilder
 }
 
 // _NLMDisconnectConnectionToNetwork is the data-structure of this message
@@ -53,6 +56,107 @@ type _NLMDisconnectConnectionToNetwork struct {
 
 var _ NLMDisconnectConnectionToNetwork = (*_NLMDisconnectConnectionToNetwork)(nil)
 var _ NLMRequirements = (*_NLMDisconnectConnectionToNetwork)(nil)
+
+// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
+func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
+	_result := &_NLMDisconnectConnectionToNetwork{
+		NLMContract:               NewNLM(apduLength),
+		DestinationNetworkAddress: destinationNetworkAddress,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMDisconnectConnectionToNetworkBuilder is a builder for NLMDisconnectConnectionToNetwork
+type NLMDisconnectConnectionToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder
+	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
+	WithDestinationNetworkAddress(uint16) NLMDisconnectConnectionToNetworkBuilder
+	// Build builds the NLMDisconnectConnectionToNetwork or returns an error if something is wrong
+	Build() (NLMDisconnectConnectionToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMDisconnectConnectionToNetwork
+}
+
+// NewNLMDisconnectConnectionToNetworkBuilder() creates a NLMDisconnectConnectionToNetworkBuilder
+func NewNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetworkBuilder {
+	return &_NLMDisconnectConnectionToNetworkBuilder{_NLMDisconnectConnectionToNetwork: new(_NLMDisconnectConnectionToNetwork)}
+}
+
+type _NLMDisconnectConnectionToNetworkBuilder struct {
+	*_NLMDisconnectConnectionToNetwork
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMDisconnectConnectionToNetworkBuilder) = (*_NLMDisconnectConnectionToNetworkBuilder)(nil)
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) WithMandatoryFields(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
+	return b.WithDestinationNetworkAddress(destinationNetworkAddress)
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) WithDestinationNetworkAddress(destinationNetworkAddress uint16) NLMDisconnectConnectionToNetworkBuilder {
+	b.DestinationNetworkAddress = destinationNetworkAddress
+	return b
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) Build() (NLMDisconnectConnectionToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMDisconnectConnectionToNetwork.deepCopy(), nil
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) MustBuild() NLMDisconnectConnectionToNetwork {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMDisconnectConnectionToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMDisconnectConnectionToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMDisconnectConnectionToNetworkBuilder().(*_NLMDisconnectConnectionToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMDisconnectConnectionToNetworkBuilder creates a NLMDisconnectConnectionToNetworkBuilder
+func (b *_NLMDisconnectConnectionToNetwork) CreateNLMDisconnectConnectionToNetworkBuilder() NLMDisconnectConnectionToNetworkBuilder {
+	if b == nil {
+		return NewNLMDisconnectConnectionToNetworkBuilder()
+	}
+	return &_NLMDisconnectConnectionToNetworkBuilder{_NLMDisconnectConnectionToNetwork: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_NLMDisconnectConnectionToNetwork) GetDestinationNetworkAddress() uint1
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMDisconnectConnectionToNetwork factory function for _NLMDisconnectConnectionToNetwork
-func NewNLMDisconnectConnectionToNetwork(destinationNetworkAddress uint16, apduLength uint16) *_NLMDisconnectConnectionToNetwork {
-	_result := &_NLMDisconnectConnectionToNetwork{
-		NLMContract:               NewNLM(apduLength),
-		DestinationNetworkAddress: destinationNetworkAddress,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMDisconnectConnectionToNetwork(structType any) NLMDisconnectConnectionToNetwork {
@@ -180,13 +274,33 @@ func (m *_NLMDisconnectConnectionToNetwork) SerializeWithWriteBuffer(ctx context
 
 func (m *_NLMDisconnectConnectionToNetwork) IsNLMDisconnectConnectionToNetwork() {}
 
+func (m *_NLMDisconnectConnectionToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMDisconnectConnectionToNetwork) deepCopy() *_NLMDisconnectConnectionToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMDisconnectConnectionToNetworkCopy := &_NLMDisconnectConnectionToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.DestinationNetworkAddress,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMDisconnectConnectionToNetworkCopy
+}
+
 func (m *_NLMDisconnectConnectionToNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

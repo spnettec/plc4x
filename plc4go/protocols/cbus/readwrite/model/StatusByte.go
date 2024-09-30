@@ -38,6 +38,7 @@ type StatusByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetGav3 returns Gav3 (property field)
 	GetGav3() GAVState
 	// GetGav2 returns Gav2 (property field)
@@ -48,6 +49,8 @@ type StatusByte interface {
 	GetGav0() GAVState
 	// IsStatusByte is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusByte()
+	// CreateBuilder creates a StatusByteBuilder
+	CreateStatusByteBuilder() StatusByteBuilder
 }
 
 // _StatusByte is the data-structure of this message
@@ -59,6 +62,108 @@ type _StatusByte struct {
 }
 
 var _ StatusByte = (*_StatusByte)(nil)
+
+// NewStatusByte factory function for _StatusByte
+func NewStatusByte(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) *_StatusByte {
+	return &_StatusByte{Gav3: gav3, Gav2: gav2, Gav1: gav1, Gav0: gav0}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StatusByteBuilder is a builder for StatusByte
+type StatusByteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) StatusByteBuilder
+	// WithGav3 adds Gav3 (property field)
+	WithGav3(GAVState) StatusByteBuilder
+	// WithGav2 adds Gav2 (property field)
+	WithGav2(GAVState) StatusByteBuilder
+	// WithGav1 adds Gav1 (property field)
+	WithGav1(GAVState) StatusByteBuilder
+	// WithGav0 adds Gav0 (property field)
+	WithGav0(GAVState) StatusByteBuilder
+	// Build builds the StatusByte or returns an error if something is wrong
+	Build() (StatusByte, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusByte
+}
+
+// NewStatusByteBuilder() creates a StatusByteBuilder
+func NewStatusByteBuilder() StatusByteBuilder {
+	return &_StatusByteBuilder{_StatusByte: new(_StatusByte)}
+}
+
+type _StatusByteBuilder struct {
+	*_StatusByte
+
+	err *utils.MultiError
+}
+
+var _ (StatusByteBuilder) = (*_StatusByteBuilder)(nil)
+
+func (b *_StatusByteBuilder) WithMandatoryFields(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) StatusByteBuilder {
+	return b.WithGav3(gav3).WithGav2(gav2).WithGav1(gav1).WithGav0(gav0)
+}
+
+func (b *_StatusByteBuilder) WithGav3(gav3 GAVState) StatusByteBuilder {
+	b.Gav3 = gav3
+	return b
+}
+
+func (b *_StatusByteBuilder) WithGav2(gav2 GAVState) StatusByteBuilder {
+	b.Gav2 = gav2
+	return b
+}
+
+func (b *_StatusByteBuilder) WithGav1(gav1 GAVState) StatusByteBuilder {
+	b.Gav1 = gav1
+	return b
+}
+
+func (b *_StatusByteBuilder) WithGav0(gav0 GAVState) StatusByteBuilder {
+	b.Gav0 = gav0
+	return b
+}
+
+func (b *_StatusByteBuilder) Build() (StatusByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._StatusByte.deepCopy(), nil
+}
+
+func (b *_StatusByteBuilder) MustBuild() StatusByte {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_StatusByteBuilder) DeepCopy() any {
+	_copy := b.CreateStatusByteBuilder().(*_StatusByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStatusByteBuilder creates a StatusByteBuilder
+func (b *_StatusByte) CreateStatusByteBuilder() StatusByteBuilder {
+	if b == nil {
+		return NewStatusByteBuilder()
+	}
+	return &_StatusByteBuilder{_StatusByte: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +190,6 @@ func (m *_StatusByte) GetGav0() GAVState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusByte factory function for _StatusByte
-func NewStatusByte(gav3 GAVState, gav2 GAVState, gav1 GAVState, gav0 GAVState) *_StatusByte {
-	return &_StatusByte{Gav3: gav3, Gav2: gav2, Gav1: gav1, Gav0: gav0}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusByte(structType any) StatusByte {
@@ -143,7 +243,7 @@ func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_StatusByte) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__statusByte StatusByte, err error) {
@@ -227,13 +327,34 @@ func (m *_StatusByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_StatusByte) IsStatusByte() {}
 
+func (m *_StatusByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusByte) deepCopy() *_StatusByte {
+	if m == nil {
+		return nil
+	}
+	_StatusByteCopy := &_StatusByte{
+		m.Gav3,
+		m.Gav2,
+		m.Gav1,
+		m.Gav0,
+	}
+	return _StatusByteCopy
+}
+
 func (m *_StatusByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type ApduDataContainer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Apdu
 	// GetDataApdu returns DataApdu (property field)
 	GetDataApdu() ApduData
 	// IsApduDataContainer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataContainer()
+	// CreateBuilder creates a ApduDataContainerBuilder
+	CreateApduDataContainerBuilder() ApduDataContainerBuilder
 }
 
 // _ApduDataContainer is the data-structure of this message
@@ -53,6 +56,131 @@ type _ApduDataContainer struct {
 
 var _ ApduDataContainer = (*_ApduDataContainer)(nil)
 var _ ApduRequirements = (*_ApduDataContainer)(nil)
+
+// NewApduDataContainer factory function for _ApduDataContainer
+func NewApduDataContainer(numbered bool, counter uint8, dataApdu ApduData, dataLength uint8) *_ApduDataContainer {
+	if dataApdu == nil {
+		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
+	}
+	_result := &_ApduDataContainer{
+		ApduContract: NewApdu(numbered, counter, dataLength),
+		DataApdu:     dataApdu,
+	}
+	_result.ApduContract.(*_Apdu)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataContainerBuilder is a builder for ApduDataContainer
+type ApduDataContainerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder
+	// WithDataApdu adds DataApdu (property field)
+	WithDataApdu(ApduData) ApduDataContainerBuilder
+	// WithDataApduBuilder adds DataApdu (property field) which is build by the builder
+	WithDataApduBuilder(func(ApduDataBuilder) ApduDataBuilder) ApduDataContainerBuilder
+	// Build builds the ApduDataContainer or returns an error if something is wrong
+	Build() (ApduDataContainer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataContainer
+}
+
+// NewApduDataContainerBuilder() creates a ApduDataContainerBuilder
+func NewApduDataContainerBuilder() ApduDataContainerBuilder {
+	return &_ApduDataContainerBuilder{_ApduDataContainer: new(_ApduDataContainer)}
+}
+
+type _ApduDataContainerBuilder struct {
+	*_ApduDataContainer
+
+	parentBuilder *_ApduBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataContainerBuilder) = (*_ApduDataContainerBuilder)(nil)
+
+func (b *_ApduDataContainerBuilder) setParent(contract ApduContract) {
+	b.ApduContract = contract
+}
+
+func (b *_ApduDataContainerBuilder) WithMandatoryFields(dataApdu ApduData) ApduDataContainerBuilder {
+	return b.WithDataApdu(dataApdu)
+}
+
+func (b *_ApduDataContainerBuilder) WithDataApdu(dataApdu ApduData) ApduDataContainerBuilder {
+	b.DataApdu = dataApdu
+	return b
+}
+
+func (b *_ApduDataContainerBuilder) WithDataApduBuilder(builderSupplier func(ApduDataBuilder) ApduDataBuilder) ApduDataContainerBuilder {
+	builder := builderSupplier(b.DataApdu.CreateApduDataBuilder())
+	var err error
+	b.DataApdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ApduDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ApduDataContainerBuilder) Build() (ApduDataContainer, error) {
+	if b.DataApdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataApdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataContainer.deepCopy(), nil
+}
+
+func (b *_ApduDataContainerBuilder) MustBuild() ApduDataContainer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataContainerBuilder) Done() ApduBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataContainerBuilder) buildForApdu() (Apdu, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataContainerBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataContainerBuilder().(*_ApduDataContainerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataContainerBuilder creates a ApduDataContainerBuilder
+func (b *_ApduDataContainer) CreateApduDataContainerBuilder() ApduDataContainerBuilder {
+	if b == nil {
+		return NewApduDataContainerBuilder()
+	}
+	return &_ApduDataContainerBuilder{_ApduDataContainer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_ApduDataContainer) GetDataApdu() ApduData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataContainer factory function for _ApduDataContainer
-func NewApduDataContainer(dataApdu ApduData, numbered bool, counter uint8, dataLength uint8) *_ApduDataContainer {
-	if dataApdu == nil {
-		panic("dataApdu of type ApduData for ApduDataContainer must not be nil")
-	}
-	_result := &_ApduDataContainer{
-		ApduContract: NewApdu(numbered, counter, dataLength),
-		DataApdu:     dataApdu,
-	}
-	_result.ApduContract.(*_Apdu)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataContainer(structType any) ApduDataContainer {
@@ -183,13 +298,33 @@ func (m *_ApduDataContainer) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_ApduDataContainer) IsApduDataContainer() {}
 
+func (m *_ApduDataContainer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataContainer) deepCopy() *_ApduDataContainer {
+	if m == nil {
+		return nil
+	}
+	_ApduDataContainerCopy := &_ApduDataContainer{
+		m.ApduContract.(*_Apdu).deepCopy(),
+		m.DataApdu.DeepCopy().(ApduData),
+	}
+	m.ApduContract.(*_Apdu)._SubType = m
+	return _ApduDataContainerCopy
+}
+
 func (m *_ApduDataContainer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

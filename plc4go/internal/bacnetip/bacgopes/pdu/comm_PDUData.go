@@ -33,7 +33,6 @@ import (
 // Note: upstream this belongs to comm but that would create a circular dependency
 
 type PDUData interface {
-	fmt.Stringer
 	Copyable
 	SetPduData([]byte)
 	GetPduData() []byte
@@ -54,7 +53,7 @@ type _PDUData struct {
 
 var _ PDUData = (*_PDUData)(nil)
 
-func NewPDUData(args Args, kwArgs KWArgs) PDUData {
+func NewPDUData(args Args, kwArgs KWArgs, _ ...Option) PDUData {
 	data, ok := GAO[any](args, 0, nil)
 	if ok {
 		args = args[1:]
@@ -170,11 +169,4 @@ func (d *_PDUData) PrintDebugContents(indent int, file io.Writer, _ids []uintptr
 		hexed = Btox(d.data, ".")
 	}
 	_, _ = fmt.Fprintf(file, "%spduData = x'%s'\n", strings.Repeat("    ", indent), hexed)
-}
-
-func (d *_PDUData) String() string {
-	if d == nil {
-		return ""
-	}
-	return Btox(d.data, ".")
 }

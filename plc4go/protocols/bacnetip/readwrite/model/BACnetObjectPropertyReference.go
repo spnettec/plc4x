@@ -38,6 +38,7 @@ type BACnetObjectPropertyReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
@@ -46,6 +47,8 @@ type BACnetObjectPropertyReference interface {
 	GetArrayIndex() BACnetContextTagUnsignedInteger
 	// IsBACnetObjectPropertyReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetObjectPropertyReference()
+	// CreateBuilder creates a BACnetObjectPropertyReferenceBuilder
+	CreateBACnetObjectPropertyReferenceBuilder() BACnetObjectPropertyReferenceBuilder
 }
 
 // _BACnetObjectPropertyReference is the data-structure of this message
@@ -56,6 +59,164 @@ type _BACnetObjectPropertyReference struct {
 }
 
 var _ BACnetObjectPropertyReference = (*_BACnetObjectPropertyReference)(nil)
+
+// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
+func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
+	}
+	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetObjectPropertyReferenceBuilder is a builder for BACnetObjectPropertyReference
+type BACnetObjectPropertyReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetObjectPropertyReferenceBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetObjectPropertyReferenceBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetObjectPropertyReferenceBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetObjectPropertyReferenceBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetObjectPropertyReferenceBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) BACnetObjectPropertyReferenceBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetObjectPropertyReferenceBuilder
+	// Build builds the BACnetObjectPropertyReference or returns an error if something is wrong
+	Build() (BACnetObjectPropertyReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetObjectPropertyReference
+}
+
+// NewBACnetObjectPropertyReferenceBuilder() creates a BACnetObjectPropertyReferenceBuilder
+func NewBACnetObjectPropertyReferenceBuilder() BACnetObjectPropertyReferenceBuilder {
+	return &_BACnetObjectPropertyReferenceBuilder{_BACnetObjectPropertyReference: new(_BACnetObjectPropertyReference)}
+}
+
+type _BACnetObjectPropertyReferenceBuilder struct {
+	*_BACnetObjectPropertyReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetObjectPropertyReferenceBuilder) = (*_BACnetObjectPropertyReferenceBuilder)(nil)
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetObjectPropertyReferenceBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetObjectPropertyReferenceBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetObjectPropertyReferenceBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetObjectPropertyReferenceBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetObjectPropertyReferenceBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetObjectPropertyReferenceBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetObjectPropertyReferenceBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) Build() (BACnetObjectPropertyReference, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetObjectPropertyReference.deepCopy(), nil
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) MustBuild() BACnetObjectPropertyReference {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetObjectPropertyReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetObjectPropertyReferenceBuilder().(*_BACnetObjectPropertyReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetObjectPropertyReferenceBuilder creates a BACnetObjectPropertyReferenceBuilder
+func (b *_BACnetObjectPropertyReference) CreateBACnetObjectPropertyReferenceBuilder() BACnetObjectPropertyReferenceBuilder {
+	if b == nil {
+		return NewBACnetObjectPropertyReferenceBuilder()
+	}
+	return &_BACnetObjectPropertyReferenceBuilder{_BACnetObjectPropertyReference: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +239,6 @@ func (m *_BACnetObjectPropertyReference) GetArrayIndex() BACnetContextTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetObjectPropertyReference factory function for _BACnetObjectPropertyReference
-func NewBACnetObjectPropertyReference(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger) *_BACnetObjectPropertyReference {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetObjectPropertyReference must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetObjectPropertyReference must not be nil")
-	}
-	return &_BACnetObjectPropertyReference{ObjectIdentifier: objectIdentifier, PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetObjectPropertyReference(structType any) BACnetObjectPropertyReference {
@@ -141,7 +291,7 @@ func BACnetObjectPropertyReferenceParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetObjectPropertyReference) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetObjectPropertyReference BACnetObjectPropertyReference, err error) {
@@ -219,13 +369,33 @@ func (m *_BACnetObjectPropertyReference) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetObjectPropertyReference) IsBACnetObjectPropertyReference() {}
 
+func (m *_BACnetObjectPropertyReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetObjectPropertyReference) deepCopy() *_BACnetObjectPropertyReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetObjectPropertyReferenceCopy := &_BACnetObjectPropertyReference{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetObjectPropertyReferenceCopy
+}
+
 func (m *_BACnetObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

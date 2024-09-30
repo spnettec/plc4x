@@ -38,11 +38,14 @@ type CloseSecureChannelResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsCloseSecureChannelResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCloseSecureChannelResponse()
+	// CreateBuilder creates a CloseSecureChannelResponseBuilder
+	CreateCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder
 }
 
 // _CloseSecureChannelResponse is the data-structure of this message
@@ -53,6 +56,131 @@ type _CloseSecureChannelResponse struct {
 
 var _ CloseSecureChannelResponse = (*_CloseSecureChannelResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CloseSecureChannelResponse)(nil)
+
+// NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
+func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
+	}
+	_result := &_CloseSecureChannelResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CloseSecureChannelResponseBuilder is a builder for CloseSecureChannelResponse
+type CloseSecureChannelResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CloseSecureChannelResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelResponseBuilder
+	// Build builds the CloseSecureChannelResponse or returns an error if something is wrong
+	Build() (CloseSecureChannelResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CloseSecureChannelResponse
+}
+
+// NewCloseSecureChannelResponseBuilder() creates a CloseSecureChannelResponseBuilder
+func NewCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder {
+	return &_CloseSecureChannelResponseBuilder{_CloseSecureChannelResponse: new(_CloseSecureChannelResponse)}
+}
+
+type _CloseSecureChannelResponseBuilder struct {
+	*_CloseSecureChannelResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CloseSecureChannelResponseBuilder) = (*_CloseSecureChannelResponseBuilder)(nil)
+
+func (b *_CloseSecureChannelResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_CloseSecureChannelResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+	return b.WithResponseHeader(responseHeader)
+}
+
+func (b *_CloseSecureChannelResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CloseSecureChannelResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_CloseSecureChannelResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CloseSecureChannelResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CloseSecureChannelResponseBuilder) Build() (CloseSecureChannelResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CloseSecureChannelResponse.deepCopy(), nil
+}
+
+func (b *_CloseSecureChannelResponseBuilder) MustBuild() CloseSecureChannelResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CloseSecureChannelResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CloseSecureChannelResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CloseSecureChannelResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCloseSecureChannelResponseBuilder().(*_CloseSecureChannelResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCloseSecureChannelResponseBuilder creates a CloseSecureChannelResponseBuilder
+func (b *_CloseSecureChannelResponse) CreateCloseSecureChannelResponseBuilder() CloseSecureChannelResponseBuilder {
+	if b == nil {
+		return NewCloseSecureChannelResponseBuilder()
+	}
+	return &_CloseSecureChannelResponseBuilder{_CloseSecureChannelResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_CloseSecureChannelResponse) GetResponseHeader() ExtensionObjectDefinit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCloseSecureChannelResponse factory function for _CloseSecureChannelResponse
-func NewCloseSecureChannelResponse(responseHeader ExtensionObjectDefinition) *_CloseSecureChannelResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CloseSecureChannelResponse must not be nil")
-	}
-	_result := &_CloseSecureChannelResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCloseSecureChannelResponse(structType any) CloseSecureChannelResponse {
@@ -183,13 +298,33 @@ func (m *_CloseSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_CloseSecureChannelResponse) IsCloseSecureChannelResponse() {}
 
+func (m *_CloseSecureChannelResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CloseSecureChannelResponse) deepCopy() *_CloseSecureChannelResponse {
+	if m == nil {
+		return nil
+	}
+	_CloseSecureChannelResponseCopy := &_CloseSecureChannelResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CloseSecureChannelResponseCopy
+}
+
 func (m *_CloseSecureChannelResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

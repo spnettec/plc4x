@@ -38,6 +38,7 @@ type CALDataStatusExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetCoding returns Coding (property field)
 	GetCoding() StatusCoding
@@ -55,6 +56,8 @@ type CALDataStatusExtended interface {
 	GetNumberOfLevelInformation() uint8
 	// IsCALDataStatusExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataStatusExtended()
+	// CreateBuilder creates a CALDataStatusExtendedBuilder
+	CreateCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder
 }
 
 // _CALDataStatusExtended is the data-structure of this message
@@ -69,6 +72,139 @@ type _CALDataStatusExtended struct {
 
 var _ CALDataStatusExtended = (*_CALDataStatusExtended)(nil)
 var _ CALDataRequirements = (*_CALDataStatusExtended)(nil)
+
+// NewCALDataStatusExtended factory function for _CALDataStatusExtended
+func NewCALDataStatusExtended(commandTypeContainer CALCommandTypeContainer, additionalData CALData, coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, requestContext RequestContext) *_CALDataStatusExtended {
+	_result := &_CALDataStatusExtended{
+		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
+		Coding:           coding,
+		Application:      application,
+		BlockStart:       blockStart,
+		StatusBytes:      statusBytes,
+		LevelInformation: levelInformation,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataStatusExtendedBuilder is a builder for CALDataStatusExtended
+type CALDataStatusExtendedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) CALDataStatusExtendedBuilder
+	// WithCoding adds Coding (property field)
+	WithCoding(StatusCoding) CALDataStatusExtendedBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) CALDataStatusExtendedBuilder
+	// WithBlockStart adds BlockStart (property field)
+	WithBlockStart(uint8) CALDataStatusExtendedBuilder
+	// WithStatusBytes adds StatusBytes (property field)
+	WithStatusBytes(...StatusByte) CALDataStatusExtendedBuilder
+	// WithLevelInformation adds LevelInformation (property field)
+	WithLevelInformation(...LevelInformation) CALDataStatusExtendedBuilder
+	// Build builds the CALDataStatusExtended or returns an error if something is wrong
+	Build() (CALDataStatusExtended, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataStatusExtended
+}
+
+// NewCALDataStatusExtendedBuilder() creates a CALDataStatusExtendedBuilder
+func NewCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder {
+	return &_CALDataStatusExtendedBuilder{_CALDataStatusExtended: new(_CALDataStatusExtended)}
+}
+
+type _CALDataStatusExtendedBuilder struct {
+	*_CALDataStatusExtended
+
+	parentBuilder *_CALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CALDataStatusExtendedBuilder) = (*_CALDataStatusExtendedBuilder)(nil)
+
+func (b *_CALDataStatusExtendedBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithMandatoryFields(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation) CALDataStatusExtendedBuilder {
+	return b.WithCoding(coding).WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...).WithLevelInformation(levelInformation...)
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithCoding(coding StatusCoding) CALDataStatusExtendedBuilder {
+	b.Coding = coding
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusExtendedBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithBlockStart(blockStart uint8) CALDataStatusExtendedBuilder {
+	b.BlockStart = blockStart
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusExtendedBuilder {
+	b.StatusBytes = statusBytes
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) WithLevelInformation(levelInformation ...LevelInformation) CALDataStatusExtendedBuilder {
+	b.LevelInformation = levelInformation
+	return b
+}
+
+func (b *_CALDataStatusExtendedBuilder) Build() (CALDataStatusExtended, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataStatusExtended.deepCopy(), nil
+}
+
+func (b *_CALDataStatusExtendedBuilder) MustBuild() CALDataStatusExtended {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataStatusExtendedBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataStatusExtendedBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataStatusExtendedBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataStatusExtendedBuilder().(*_CALDataStatusExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCALDataStatusExtendedBuilder creates a CALDataStatusExtendedBuilder
+func (b *_CALDataStatusExtended) CreateCALDataStatusExtendedBuilder() CALDataStatusExtendedBuilder {
+	if b == nil {
+		return NewCALDataStatusExtendedBuilder()
+	}
+	return &_CALDataStatusExtendedBuilder{_CALDataStatusExtended: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,20 +272,6 @@ func (m *_CALDataStatusExtended) GetNumberOfLevelInformation() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatusExtended factory function for _CALDataStatusExtended
-func NewCALDataStatusExtended(coding StatusCoding, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, levelInformation []LevelInformation, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatusExtended {
-	_result := &_CALDataStatusExtended{
-		CALDataContract:  NewCALData(commandTypeContainer, additionalData, requestContext),
-		Coding:           coding,
-		Application:      application,
-		BlockStart:       blockStart,
-		StatusBytes:      statusBytes,
-		LevelInformation: levelInformation,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatusExtended(structType any) CALDataStatusExtended {
@@ -331,13 +453,37 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_CALDataStatusExtended) IsCALDataStatusExtended() {}
 
+func (m *_CALDataStatusExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatusExtended) deepCopy() *_CALDataStatusExtended {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusExtendedCopy := &_CALDataStatusExtended{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Coding,
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+		utils.DeepCopySlice[LevelInformation, LevelInformation](m.LevelInformation),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusExtendedCopy
+}
+
 func (m *_CALDataStatusExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

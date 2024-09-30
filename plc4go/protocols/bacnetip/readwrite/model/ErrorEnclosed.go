@@ -38,6 +38,7 @@ type ErrorEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetError returns Error (property field)
@@ -46,6 +47,8 @@ type ErrorEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsErrorEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorEnclosed()
+	// CreateBuilder creates a ErrorEnclosedBuilder
+	CreateErrorEnclosedBuilder() ErrorEnclosedBuilder
 }
 
 // _ErrorEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _ErrorEnclosed struct {
 }
 
 var _ ErrorEnclosed = (*_ErrorEnclosed)(nil)
+
+// NewErrorEnclosed factory function for _ErrorEnclosed
+func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
+	}
+	if error == nil {
+		panic("error of type Error for ErrorEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
+	}
+	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorEnclosedBuilder is a builder for ErrorEnclosed
+type ErrorEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag) ErrorEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) ErrorEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) ErrorEnclosedBuilder
+	// WithError adds Error (property field)
+	WithError(Error) ErrorEnclosedBuilder
+	// WithErrorBuilder adds Error (property field) which is build by the builder
+	WithErrorBuilder(func(ErrorBuilder) ErrorBuilder) ErrorEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) ErrorEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ErrorEnclosedBuilder
+	// Build builds the ErrorEnclosed or returns an error if something is wrong
+	Build() (ErrorEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorEnclosed
+}
+
+// NewErrorEnclosedBuilder() creates a ErrorEnclosedBuilder
+func NewErrorEnclosedBuilder() ErrorEnclosedBuilder {
+	return &_ErrorEnclosedBuilder{_ErrorEnclosed: new(_ErrorEnclosed)}
+}
+
+type _ErrorEnclosedBuilder struct {
+	*_ErrorEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (ErrorEnclosedBuilder) = (*_ErrorEnclosedBuilder)(nil)
+
+func (b *_ErrorEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag) ErrorEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithError(error).WithClosingTag(closingTag)
+}
+
+func (b *_ErrorEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) ErrorEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) ErrorEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithError(error Error) ErrorEnclosedBuilder {
+	b.Error = error
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithErrorBuilder(builderSupplier func(ErrorBuilder) ErrorBuilder) ErrorEnclosedBuilder {
+	builder := builderSupplier(b.Error.CreateErrorBuilder())
+	var err error
+	b.Error, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) ErrorEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) ErrorEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorEnclosedBuilder) Build() (ErrorEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.Error == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'error' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorEnclosed.deepCopy(), nil
+}
+
+func (b *_ErrorEnclosedBuilder) MustBuild() ErrorEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateErrorEnclosedBuilder().(*_ErrorEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorEnclosedBuilder creates a ErrorEnclosedBuilder
+func (b *_ErrorEnclosed) CreateErrorEnclosedBuilder() ErrorEnclosedBuilder {
+	if b == nil {
+		return NewErrorEnclosedBuilder()
+	}
+	return &_ErrorEnclosedBuilder{_ErrorEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_ErrorEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorEnclosed factory function for _ErrorEnclosed
-func NewErrorEnclosed(openingTag BACnetOpeningTag, error Error, closingTag BACnetClosingTag, tagNumber uint8) *_ErrorEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for ErrorEnclosed must not be nil")
-	}
-	if error == nil {
-		panic("error of type Error for ErrorEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for ErrorEnclosed must not be nil")
-	}
-	return &_ErrorEnclosed{OpeningTag: openingTag, Error: error, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorEnclosed(structType any) ErrorEnclosed {
@@ -145,7 +301,7 @@ func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ErrorEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__errorEnclosed ErrorEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_ErrorEnclosed) GetTagNumber() uint8 {
 
 func (m *_ErrorEnclosed) IsErrorEnclosed() {}
 
+func (m *_ErrorEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorEnclosed) deepCopy() *_ErrorEnclosed {
+	if m == nil {
+		return nil
+	}
+	_ErrorEnclosedCopy := &_ErrorEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.Error.DeepCopy().(Error),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _ErrorEnclosedCopy
+}
+
 func (m *_ErrorEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

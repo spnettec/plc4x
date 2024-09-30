@@ -40,8 +40,11 @@ type BACnetConfirmedServiceRequestReadRangeRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRange()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	CreateBACnetConfirmedServiceRequestReadRangeRangeBuilder() BACnetConfirmedServiceRequestReadRangeRangeBuilder
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type BACnetConfirmedServiceRequestReadRangeRangeContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetConfirmedServiceRequestReadRangeRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReadRangeRange()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	CreateBACnetConfirmedServiceRequestReadRangeRangeBuilder() BACnetConfirmedServiceRequestReadRangeRangeBuilder
 }
 
 // BACnetConfirmedServiceRequestReadRangeRangeRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +80,270 @@ type _BACnetConfirmedServiceRequestReadRangeRange struct {
 }
 
 var _ BACnetConfirmedServiceRequestReadRangeRangeContract = (*_BACnetConfirmedServiceRequestReadRangeRange)(nil)
+
+// NewBACnetConfirmedServiceRequestReadRangeRange factory function for _BACnetConfirmedServiceRequestReadRangeRange
+func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRange {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestReadRangeRange{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReadRangeRangeBuilder is a builder for BACnetConfirmedServiceRequestReadRangeRange
+type BACnetConfirmedServiceRequestReadRangeRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	// AsBACnetConfirmedServiceRequestReadRangeRangeByPosition converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() interface {
+		BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() interface {
+		BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}
+	// AsBACnetConfirmedServiceRequestReadRangeRangeByTime converts this build to a subType of BACnetConfirmedServiceRequestReadRangeRange. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestReadRangeRangeByTime() interface {
+		BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}
+	// Build builds the BACnetConfirmedServiceRequestReadRangeRange or returns an error if something is wrong
+	PartialBuild() (BACnetConfirmedServiceRequestReadRangeRangeContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetConfirmedServiceRequestReadRangeRangeContract
+	// Build builds the BACnetConfirmedServiceRequestReadRangeRange or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReadRangeRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReadRangeRange
+}
+
+// NewBACnetConfirmedServiceRequestReadRangeRangeBuilder() creates a BACnetConfirmedServiceRequestReadRangeRangeBuilder
+func NewBACnetConfirmedServiceRequestReadRangeRangeBuilder() BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	return &_BACnetConfirmedServiceRequestReadRangeRangeBuilder{_BACnetConfirmedServiceRequestReadRangeRange: new(_BACnetConfirmedServiceRequestReadRangeRange)}
+}
+
+type _BACnetConfirmedServiceRequestReadRangeRangeChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetConfirmedServiceRequestReadRangeRangeContract)
+	buildForBACnetConfirmedServiceRequestReadRangeRange() (BACnetConfirmedServiceRequestReadRangeRange, error)
+}
+
+type _BACnetConfirmedServiceRequestReadRangeRangeBuilder struct {
+	*_BACnetConfirmedServiceRequestReadRangeRange
+
+	childBuilder _BACnetConfirmedServiceRequestReadRangeRangeChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReadRangeRangeBuilder) = (*_BACnetConfirmedServiceRequestReadRangeRangeBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader).WithOpeningTag(openingTag).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) PartialBuild() (BACnetConfirmedServiceRequestReadRangeRangeContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestReadRangeRange.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) PartialMustBuild() BACnetConfirmedServiceRequestReadRangeRangeContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByPosition() interface {
+	BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeByPositionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber() interface {
+	BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) AsBACnetConfirmedServiceRequestReadRangeRangeByTime() interface {
+	BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+	Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder
+		Done() BACnetConfirmedServiceRequestReadRangeRangeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeByTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) Build() (BACnetConfirmedServiceRequestReadRangeRange, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetConfirmedServiceRequestReadRangeRange()
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) MustBuild() BACnetConfirmedServiceRequestReadRangeRange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestReadRangeRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestReadRangeRangeBuilder().(*_BACnetConfirmedServiceRequestReadRangeRangeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetConfirmedServiceRequestReadRangeRangeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestReadRangeRangeBuilder creates a BACnetConfirmedServiceRequestReadRangeRangeBuilder
+func (b *_BACnetConfirmedServiceRequestReadRangeRange) CreateBACnetConfirmedServiceRequestReadRangeRangeBuilder() BACnetConfirmedServiceRequestReadRangeRangeBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestReadRangeRangeBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReadRangeRangeBuilder{_BACnetConfirmedServiceRequestReadRangeRange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +382,6 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) GetPeekedTagNumber() uin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReadRangeRange factory function for _BACnetConfirmedServiceRequestReadRangeRange
-func NewBACnetConfirmedServiceRequestReadRangeRange(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetConfirmedServiceRequestReadRangeRange {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestReadRangeRange must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestReadRangeRange{PeekedTagHeader: peekedTagHeader, OpeningTag: openingTag, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReadRangeRange(structType any) BACnetConfirmedServiceRequestReadRangeRange {
@@ -172,7 +427,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBufferProducer[T BACnet
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -182,7 +437,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer[T BACnetConfirme
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetConfirmedServiceRequestReadRangeRange BACnetConfirmedServiceRequestReadRangeRange, err error) {
@@ -216,15 +476,15 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) parse(ctx context.Context
 	var _child BACnetConfirmedServiceRequestReadRangeRange
 	switch {
 	case peekedTagNumber == 0x3: // BACnetConfirmedServiceRequestReadRangeRangeByPosition
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByPosition{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByPosition).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByPosition for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x6: // BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	case peekedTagNumber == 0x7: // BACnetConfirmedServiceRequestReadRangeRangeByTime
-		if _child, err = (&_BACnetConfirmedServiceRequestReadRangeRangeByTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestReadRangeRangeByTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestReadRangeRangeByTime for type-switch of BACnetConfirmedServiceRequestReadRangeRange")
 		}
 	default:
@@ -282,4 +542,21 @@ func (pm *_BACnetConfirmedServiceRequestReadRangeRange) serializeParent(ctx cont
 }
 
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) IsBACnetConfirmedServiceRequestReadRangeRange() {
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) deepCopy() *_BACnetConfirmedServiceRequestReadRangeRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReadRangeRangeCopy := &_BACnetConfirmedServiceRequestReadRangeRange{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetConfirmedServiceRequestReadRangeRangeCopy
 }

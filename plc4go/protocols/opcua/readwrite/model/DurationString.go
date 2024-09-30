@@ -36,8 +36,11 @@ type DurationString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDurationString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDurationString()
+	// CreateBuilder creates a DurationStringBuilder
+	CreateDurationStringBuilder() DurationStringBuilder
 }
 
 // _DurationString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ DurationString = (*_DurationString)(nil)
 func NewDurationString() *_DurationString {
 	return &_DurationString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DurationStringBuilder is a builder for DurationString
+type DurationStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DurationStringBuilder
+	// Build builds the DurationString or returns an error if something is wrong
+	Build() (DurationString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DurationString
+}
+
+// NewDurationStringBuilder() creates a DurationStringBuilder
+func NewDurationStringBuilder() DurationStringBuilder {
+	return &_DurationStringBuilder{_DurationString: new(_DurationString)}
+}
+
+type _DurationStringBuilder struct {
+	*_DurationString
+
+	err *utils.MultiError
+}
+
+var _ (DurationStringBuilder) = (*_DurationStringBuilder)(nil)
+
+func (b *_DurationStringBuilder) WithMandatoryFields() DurationStringBuilder {
+	return b
+}
+
+func (b *_DurationStringBuilder) Build() (DurationString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DurationString.deepCopy(), nil
+}
+
+func (b *_DurationStringBuilder) MustBuild() DurationString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DurationStringBuilder) DeepCopy() any {
+	_copy := b.CreateDurationStringBuilder().(*_DurationStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDurationStringBuilder creates a DurationStringBuilder
+func (b *_DurationString) CreateDurationStringBuilder() DurationStringBuilder {
+	if b == nil {
+		return NewDurationStringBuilder()
+	}
+	return &_DurationStringBuilder{_DurationString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDurationString(structType any) DurationString {
@@ -91,7 +163,7 @@ func DurationStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DurationString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__durationString DurationString, err error) {
@@ -135,13 +207,29 @@ func (m *_DurationString) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_DurationString) IsDurationString() {}
 
+func (m *_DurationString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DurationString) deepCopy() *_DurationString {
+	if m == nil {
+		return nil
+	}
+	_DurationStringCopy := &_DurationString{}
+	return _DurationStringCopy
+}
+
 func (m *_DurationString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

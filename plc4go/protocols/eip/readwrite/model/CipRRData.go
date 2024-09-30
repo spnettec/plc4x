@@ -38,6 +38,7 @@ type CipRRData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetInterfaceHandle returns InterfaceHandle (property field)
 	GetInterfaceHandle() uint32
@@ -47,6 +48,8 @@ type CipRRData interface {
 	GetTypeIds() []TypeId
 	// IsCipRRData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipRRData()
+	// CreateBuilder creates a CipRRDataBuilder
+	CreateCipRRDataBuilder() CipRRDataBuilder
 }
 
 // _CipRRData is the data-structure of this message
@@ -59,6 +62,123 @@ type _CipRRData struct {
 
 var _ CipRRData = (*_CipRRData)(nil)
 var _ EipPacketRequirements = (*_CipRRData)(nil)
+
+// NewCipRRData factory function for _CipRRData
+func NewCipRRData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, interfaceHandle uint32, timeout uint16, typeIds []TypeId) *_CipRRData {
+	_result := &_CipRRData{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		InterfaceHandle:   interfaceHandle,
+		Timeout:           timeout,
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipRRDataBuilder is a builder for CipRRData
+type CipRRDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceHandle uint32, timeout uint16, typeIds []TypeId) CipRRDataBuilder
+	// WithInterfaceHandle adds InterfaceHandle (property field)
+	WithInterfaceHandle(uint32) CipRRDataBuilder
+	// WithTimeout adds Timeout (property field)
+	WithTimeout(uint16) CipRRDataBuilder
+	// WithTypeIds adds TypeIds (property field)
+	WithTypeIds(...TypeId) CipRRDataBuilder
+	// Build builds the CipRRData or returns an error if something is wrong
+	Build() (CipRRData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipRRData
+}
+
+// NewCipRRDataBuilder() creates a CipRRDataBuilder
+func NewCipRRDataBuilder() CipRRDataBuilder {
+	return &_CipRRDataBuilder{_CipRRData: new(_CipRRData)}
+}
+
+type _CipRRDataBuilder struct {
+	*_CipRRData
+
+	parentBuilder *_EipPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipRRDataBuilder) = (*_CipRRDataBuilder)(nil)
+
+func (b *_CipRRDataBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
+}
+
+func (b *_CipRRDataBuilder) WithMandatoryFields(interfaceHandle uint32, timeout uint16, typeIds []TypeId) CipRRDataBuilder {
+	return b.WithInterfaceHandle(interfaceHandle).WithTimeout(timeout).WithTypeIds(typeIds...)
+}
+
+func (b *_CipRRDataBuilder) WithInterfaceHandle(interfaceHandle uint32) CipRRDataBuilder {
+	b.InterfaceHandle = interfaceHandle
+	return b
+}
+
+func (b *_CipRRDataBuilder) WithTimeout(timeout uint16) CipRRDataBuilder {
+	b.Timeout = timeout
+	return b
+}
+
+func (b *_CipRRDataBuilder) WithTypeIds(typeIds ...TypeId) CipRRDataBuilder {
+	b.TypeIds = typeIds
+	return b
+}
+
+func (b *_CipRRDataBuilder) Build() (CipRRData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipRRData.deepCopy(), nil
+}
+
+func (b *_CipRRDataBuilder) MustBuild() CipRRData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipRRDataBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipRRDataBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_CipRRDataBuilder) DeepCopy() any {
+	_copy := b.CreateCipRRDataBuilder().(*_CipRRDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipRRDataBuilder creates a CipRRDataBuilder
+func (b *_CipRRData) CreateCipRRDataBuilder() CipRRDataBuilder {
+	if b == nil {
+		return NewCipRRDataBuilder()
+	}
+	return &_CipRRDataBuilder{_CipRRData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -107,18 +227,6 @@ func (m *_CipRRData) GetTypeIds() []TypeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipRRData factory function for _CipRRData
-func NewCipRRData(interfaceHandle uint32, timeout uint16, typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_CipRRData {
-	_result := &_CipRRData{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		InterfaceHandle:   interfaceHandle,
-		Timeout:           timeout,
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipRRData(structType any) CipRRData {
@@ -250,13 +358,35 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_CipRRData) IsCipRRData() {}
 
+func (m *_CipRRData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipRRData) deepCopy() *_CipRRData {
+	if m == nil {
+		return nil
+	}
+	_CipRRDataCopy := &_CipRRData{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+		m.InterfaceHandle,
+		m.Timeout,
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _CipRRDataCopy
+}
+
 func (m *_CipRRData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

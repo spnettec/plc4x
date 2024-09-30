@@ -38,6 +38,7 @@ type COTPPacketDisconnectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPPacket
 	// GetDestinationReference returns DestinationReference (property field)
 	GetDestinationReference() uint16
@@ -47,6 +48,8 @@ type COTPPacketDisconnectRequest interface {
 	GetProtocolClass() COTPProtocolClass
 	// IsCOTPPacketDisconnectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPPacketDisconnectRequest()
+	// CreateBuilder creates a COTPPacketDisconnectRequestBuilder
+	CreateCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder
 }
 
 // _COTPPacketDisconnectRequest is the data-structure of this message
@@ -59,6 +62,123 @@ type _COTPPacketDisconnectRequest struct {
 
 var _ COTPPacketDisconnectRequest = (*_COTPPacketDisconnectRequest)(nil)
 var _ COTPPacketRequirements = (*_COTPPacketDisconnectRequest)(nil)
+
+// NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
+func NewCOTPPacketDisconnectRequest(parameters []COTPParameter, payload S7Message, destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, cotpLen uint16) *_COTPPacketDisconnectRequest {
+	_result := &_COTPPacketDisconnectRequest{
+		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
+		DestinationReference: destinationReference,
+		SourceReference:      sourceReference,
+		ProtocolClass:        protocolClass,
+	}
+	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPPacketDisconnectRequestBuilder is a builder for COTPPacketDisconnectRequest
+type COTPPacketDisconnectRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder
+	// WithDestinationReference adds DestinationReference (property field)
+	WithDestinationReference(uint16) COTPPacketDisconnectRequestBuilder
+	// WithSourceReference adds SourceReference (property field)
+	WithSourceReference(uint16) COTPPacketDisconnectRequestBuilder
+	// WithProtocolClass adds ProtocolClass (property field)
+	WithProtocolClass(COTPProtocolClass) COTPPacketDisconnectRequestBuilder
+	// Build builds the COTPPacketDisconnectRequest or returns an error if something is wrong
+	Build() (COTPPacketDisconnectRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPPacketDisconnectRequest
+}
+
+// NewCOTPPacketDisconnectRequestBuilder() creates a COTPPacketDisconnectRequestBuilder
+func NewCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder {
+	return &_COTPPacketDisconnectRequestBuilder{_COTPPacketDisconnectRequest: new(_COTPPacketDisconnectRequest)}
+}
+
+type _COTPPacketDisconnectRequestBuilder struct {
+	*_COTPPacketDisconnectRequest
+
+	parentBuilder *_COTPPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (COTPPacketDisconnectRequestBuilder) = (*_COTPPacketDisconnectRequestBuilder)(nil)
+
+func (b *_COTPPacketDisconnectRequestBuilder) setParent(contract COTPPacketContract) {
+	b.COTPPacketContract = contract
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) WithMandatoryFields(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder {
+	return b.WithDestinationReference(destinationReference).WithSourceReference(sourceReference).WithProtocolClass(protocolClass)
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) WithDestinationReference(destinationReference uint16) COTPPacketDisconnectRequestBuilder {
+	b.DestinationReference = destinationReference
+	return b
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) WithSourceReference(sourceReference uint16) COTPPacketDisconnectRequestBuilder {
+	b.SourceReference = sourceReference
+	return b
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) WithProtocolClass(protocolClass COTPProtocolClass) COTPPacketDisconnectRequestBuilder {
+	b.ProtocolClass = protocolClass
+	return b
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) Build() (COTPPacketDisconnectRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._COTPPacketDisconnectRequest.deepCopy(), nil
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) MustBuild() COTPPacketDisconnectRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPPacketDisconnectRequestBuilder) Done() COTPPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) buildForCOTPPacket() (COTPPacket, error) {
+	return b.Build()
+}
+
+func (b *_COTPPacketDisconnectRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPPacketDisconnectRequestBuilder().(*_COTPPacketDisconnectRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCOTPPacketDisconnectRequestBuilder creates a COTPPacketDisconnectRequestBuilder
+func (b *_COTPPacketDisconnectRequest) CreateCOTPPacketDisconnectRequestBuilder() COTPPacketDisconnectRequestBuilder {
+	if b == nil {
+		return NewCOTPPacketDisconnectRequestBuilder()
+	}
+	return &_COTPPacketDisconnectRequestBuilder{_COTPPacketDisconnectRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +219,6 @@ func (m *_COTPPacketDisconnectRequest) GetProtocolClass() COTPProtocolClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPPacketDisconnectRequest factory function for _COTPPacketDisconnectRequest
-func NewCOTPPacketDisconnectRequest(destinationReference uint16, sourceReference uint16, protocolClass COTPProtocolClass, parameters []COTPParameter, payload S7Message, cotpLen uint16) *_COTPPacketDisconnectRequest {
-	_result := &_COTPPacketDisconnectRequest{
-		COTPPacketContract:   NewCOTPPacket(parameters, payload, cotpLen),
-		DestinationReference: destinationReference,
-		SourceReference:      sourceReference,
-		ProtocolClass:        protocolClass,
-	}
-	_result.COTPPacketContract.(*_COTPPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPPacketDisconnectRequest(structType any) COTPPacketDisconnectRequest {
@@ -222,13 +330,35 @@ func (m *_COTPPacketDisconnectRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_COTPPacketDisconnectRequest) IsCOTPPacketDisconnectRequest() {}
 
+func (m *_COTPPacketDisconnectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPPacketDisconnectRequest) deepCopy() *_COTPPacketDisconnectRequest {
+	if m == nil {
+		return nil
+	}
+	_COTPPacketDisconnectRequestCopy := &_COTPPacketDisconnectRequest{
+		m.COTPPacketContract.(*_COTPPacket).deepCopy(),
+		m.DestinationReference,
+		m.SourceReference,
+		m.ProtocolClass,
+	}
+	m.COTPPacketContract.(*_COTPPacket)._SubType = m
+	return _COTPPacketDisconnectRequestCopy
+}
+
 func (m *_COTPPacketDisconnectRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

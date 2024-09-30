@@ -38,11 +38,14 @@ type S7ParameterWriteVarResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetNumItems returns NumItems (property field)
 	GetNumItems() uint8
 	// IsS7ParameterWriteVarResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterWriteVarResponse()
+	// CreateBuilder creates a S7ParameterWriteVarResponseBuilder
+	CreateS7ParameterWriteVarResponseBuilder() S7ParameterWriteVarResponseBuilder
 }
 
 // _S7ParameterWriteVarResponse is the data-structure of this message
@@ -53,6 +56,107 @@ type _S7ParameterWriteVarResponse struct {
 
 var _ S7ParameterWriteVarResponse = (*_S7ParameterWriteVarResponse)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterWriteVarResponse)(nil)
+
+// NewS7ParameterWriteVarResponse factory function for _S7ParameterWriteVarResponse
+func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarResponse {
+	_result := &_S7ParameterWriteVarResponse{
+		S7ParameterContract: NewS7Parameter(),
+		NumItems:            numItems,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterWriteVarResponseBuilder is a builder for S7ParameterWriteVarResponse
+type S7ParameterWriteVarResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numItems uint8) S7ParameterWriteVarResponseBuilder
+	// WithNumItems adds NumItems (property field)
+	WithNumItems(uint8) S7ParameterWriteVarResponseBuilder
+	// Build builds the S7ParameterWriteVarResponse or returns an error if something is wrong
+	Build() (S7ParameterWriteVarResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterWriteVarResponse
+}
+
+// NewS7ParameterWriteVarResponseBuilder() creates a S7ParameterWriteVarResponseBuilder
+func NewS7ParameterWriteVarResponseBuilder() S7ParameterWriteVarResponseBuilder {
+	return &_S7ParameterWriteVarResponseBuilder{_S7ParameterWriteVarResponse: new(_S7ParameterWriteVarResponse)}
+}
+
+type _S7ParameterWriteVarResponseBuilder struct {
+	*_S7ParameterWriteVarResponse
+
+	parentBuilder *_S7ParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterWriteVarResponseBuilder) = (*_S7ParameterWriteVarResponseBuilder)(nil)
+
+func (b *_S7ParameterWriteVarResponseBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) WithMandatoryFields(numItems uint8) S7ParameterWriteVarResponseBuilder {
+	return b.WithNumItems(numItems)
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) WithNumItems(numItems uint8) S7ParameterWriteVarResponseBuilder {
+	b.NumItems = numItems
+	return b
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) Build() (S7ParameterWriteVarResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7ParameterWriteVarResponse.deepCopy(), nil
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) MustBuild() S7ParameterWriteVarResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterWriteVarResponseBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterWriteVarResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterWriteVarResponseBuilder().(*_S7ParameterWriteVarResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7ParameterWriteVarResponseBuilder creates a S7ParameterWriteVarResponseBuilder
+func (b *_S7ParameterWriteVarResponse) CreateS7ParameterWriteVarResponseBuilder() S7ParameterWriteVarResponseBuilder {
+	if b == nil {
+		return NewS7ParameterWriteVarResponseBuilder()
+	}
+	return &_S7ParameterWriteVarResponseBuilder{_S7ParameterWriteVarResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_S7ParameterWriteVarResponse) GetNumItems() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterWriteVarResponse factory function for _S7ParameterWriteVarResponse
-func NewS7ParameterWriteVarResponse(numItems uint8) *_S7ParameterWriteVarResponse {
-	_result := &_S7ParameterWriteVarResponse{
-		S7ParameterContract: NewS7Parameter(),
-		NumItems:            numItems,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterWriteVarResponse(structType any) S7ParameterWriteVarResponse {
@@ -184,13 +278,33 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_S7ParameterWriteVarResponse) IsS7ParameterWriteVarResponse() {}
 
+func (m *_S7ParameterWriteVarResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterWriteVarResponse) deepCopy() *_S7ParameterWriteVarResponse {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterWriteVarResponseCopy := &_S7ParameterWriteVarResponse{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		m.NumItems,
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterWriteVarResponseCopy
+}
+
 func (m *_S7ParameterWriteVarResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataEnergyMeterRef interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEnergyMeterRef returns EnergyMeterRef (property field)
 	GetEnergyMeterRef() BACnetDeviceObjectReference
@@ -45,6 +46,8 @@ type BACnetConstructedDataEnergyMeterRef interface {
 	GetActualValue() BACnetDeviceObjectReference
 	// IsBACnetConstructedDataEnergyMeterRef is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEnergyMeterRef()
+	// CreateBuilder creates a BACnetConstructedDataEnergyMeterRefBuilder
+	CreateBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergyMeterRefBuilder
 }
 
 // _BACnetConstructedDataEnergyMeterRef is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataEnergyMeterRef struct {
 
 var _ BACnetConstructedDataEnergyMeterRef = (*_BACnetConstructedDataEnergyMeterRef)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEnergyMeterRef)(nil)
+
+// NewBACnetConstructedDataEnergyMeterRef factory function for _BACnetConstructedDataEnergyMeterRef
+func NewBACnetConstructedDataEnergyMeterRef(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, energyMeterRef BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeterRef {
+	if energyMeterRef == nil {
+		panic("energyMeterRef of type BACnetDeviceObjectReference for BACnetConstructedDataEnergyMeterRef must not be nil")
+	}
+	_result := &_BACnetConstructedDataEnergyMeterRef{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EnergyMeterRef:                energyMeterRef,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEnergyMeterRefBuilder is a builder for BACnetConstructedDataEnergyMeterRef
+type BACnetConstructedDataEnergyMeterRefBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder
+	// WithEnergyMeterRef adds EnergyMeterRef (property field)
+	WithEnergyMeterRef(BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder
+	// WithEnergyMeterRefBuilder adds EnergyMeterRef (property field) which is build by the builder
+	WithEnergyMeterRefBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataEnergyMeterRefBuilder
+	// Build builds the BACnetConstructedDataEnergyMeterRef or returns an error if something is wrong
+	Build() (BACnetConstructedDataEnergyMeterRef, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEnergyMeterRef
+}
+
+// NewBACnetConstructedDataEnergyMeterRefBuilder() creates a BACnetConstructedDataEnergyMeterRefBuilder
+func NewBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergyMeterRefBuilder {
+	return &_BACnetConstructedDataEnergyMeterRefBuilder{_BACnetConstructedDataEnergyMeterRef: new(_BACnetConstructedDataEnergyMeterRef)}
+}
+
+type _BACnetConstructedDataEnergyMeterRefBuilder struct {
+	*_BACnetConstructedDataEnergyMeterRef
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEnergyMeterRefBuilder) = (*_BACnetConstructedDataEnergyMeterRefBuilder)(nil)
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithMandatoryFields(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
+	return b.WithEnergyMeterRef(energyMeterRef)
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRef(energyMeterRef BACnetDeviceObjectReference) BACnetConstructedDataEnergyMeterRefBuilder {
+	b.EnergyMeterRef = energyMeterRef
+	return b
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) WithEnergyMeterRefBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataEnergyMeterRefBuilder {
+	builder := builderSupplier(b.EnergyMeterRef.CreateBACnetDeviceObjectReferenceBuilder())
+	var err error
+	b.EnergyMeterRef, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) Build() (BACnetConstructedDataEnergyMeterRef, error) {
+	if b.EnergyMeterRef == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'energyMeterRef' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEnergyMeterRef.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) MustBuild() BACnetConstructedDataEnergyMeterRef {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEnergyMeterRefBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEnergyMeterRefBuilder().(*_BACnetConstructedDataEnergyMeterRefBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEnergyMeterRefBuilder creates a BACnetConstructedDataEnergyMeterRefBuilder
+func (b *_BACnetConstructedDataEnergyMeterRef) CreateBACnetConstructedDataEnergyMeterRefBuilder() BACnetConstructedDataEnergyMeterRefBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEnergyMeterRefBuilder()
+	}
+	return &_BACnetConstructedDataEnergyMeterRefBuilder{_BACnetConstructedDataEnergyMeterRef: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataEnergyMeterRef) GetActualValue() BACnetDeviceObje
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEnergyMeterRef factory function for _BACnetConstructedDataEnergyMeterRef
-func NewBACnetConstructedDataEnergyMeterRef(energyMeterRef BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEnergyMeterRef {
-	if energyMeterRef == nil {
-		panic("energyMeterRef of type BACnetDeviceObjectReference for BACnetConstructedDataEnergyMeterRef must not be nil")
-	}
-	_result := &_BACnetConstructedDataEnergyMeterRef{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EnergyMeterRef:                energyMeterRef,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEnergyMeterRef(structType any) BACnetConstructedDataEnergyMeterRef {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataEnergyMeterRef) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataEnergyMeterRef) IsBACnetConstructedDataEnergyMeterRef() {}
 
+func (m *_BACnetConstructedDataEnergyMeterRef) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEnergyMeterRef) deepCopy() *_BACnetConstructedDataEnergyMeterRef {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEnergyMeterRefCopy := &_BACnetConstructedDataEnergyMeterRef{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EnergyMeterRef.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEnergyMeterRefCopy
+}
+
 func (m *_BACnetConstructedDataEnergyMeterRef) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

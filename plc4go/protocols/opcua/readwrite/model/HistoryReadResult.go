@@ -38,6 +38,7 @@ type HistoryReadResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -47,6 +48,8 @@ type HistoryReadResult interface {
 	GetHistoryData() ExtensionObject
 	// IsHistoryReadResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryReadResult()
+	// CreateBuilder creates a HistoryReadResultBuilder
+	CreateHistoryReadResultBuilder() HistoryReadResultBuilder
 }
 
 // _HistoryReadResult is the data-structure of this message
@@ -59,6 +62,195 @@ type _HistoryReadResult struct {
 
 var _ HistoryReadResult = (*_HistoryReadResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadResult)(nil)
+
+// NewHistoryReadResult factory function for _HistoryReadResult
+func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
+	}
+	if historyData == nil {
+		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
+	}
+	_result := &_HistoryReadResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		ContinuationPoint:                 continuationPoint,
+		HistoryData:                       historyData,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryReadResultBuilder is a builder for HistoryReadResult
+type HistoryReadResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) HistoryReadResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) HistoryReadResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) HistoryReadResultBuilder
+	// WithContinuationPoint adds ContinuationPoint (property field)
+	WithContinuationPoint(PascalByteString) HistoryReadResultBuilder
+	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
+	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadResultBuilder
+	// WithHistoryData adds HistoryData (property field)
+	WithHistoryData(ExtensionObject) HistoryReadResultBuilder
+	// WithHistoryDataBuilder adds HistoryData (property field) which is build by the builder
+	WithHistoryDataBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadResultBuilder
+	// Build builds the HistoryReadResult or returns an error if something is wrong
+	Build() (HistoryReadResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryReadResult
+}
+
+// NewHistoryReadResultBuilder() creates a HistoryReadResultBuilder
+func NewHistoryReadResultBuilder() HistoryReadResultBuilder {
+	return &_HistoryReadResultBuilder{_HistoryReadResult: new(_HistoryReadResult)}
+}
+
+type _HistoryReadResultBuilder struct {
+	*_HistoryReadResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryReadResultBuilder) = (*_HistoryReadResultBuilder)(nil)
+
+func (b *_HistoryReadResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryReadResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) HistoryReadResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithHistoryData(historyData)
+}
+
+func (b *_HistoryReadResultBuilder) WithStatusCode(statusCode StatusCode) HistoryReadResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	b.StatusCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) HistoryReadResultBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
+	var err error
+	b.ContinuationPoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithHistoryData(historyData ExtensionObject) HistoryReadResultBuilder {
+	b.HistoryData = historyData
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) WithHistoryDataBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) HistoryReadResultBuilder {
+	builder := builderSupplier(b.HistoryData.CreateExtensionObjectBuilder())
+	var err error
+	b.HistoryData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HistoryReadResultBuilder) Build() (HistoryReadResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+	}
+	if b.HistoryData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'historyData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryReadResult.deepCopy(), nil
+}
+
+func (b *_HistoryReadResultBuilder) MustBuild() HistoryReadResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadResultBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadResultBuilder().(*_HistoryReadResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryReadResultBuilder creates a HistoryReadResultBuilder
+func (b *_HistoryReadResult) CreateHistoryReadResultBuilder() HistoryReadResultBuilder {
+	if b == nil {
+		return NewHistoryReadResultBuilder()
+	}
+	return &_HistoryReadResultBuilder{_HistoryReadResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +291,6 @@ func (m *_HistoryReadResult) GetHistoryData() ExtensionObject {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadResult factory function for _HistoryReadResult
-func NewHistoryReadResult(statusCode StatusCode, continuationPoint PascalByteString, historyData ExtensionObject) *_HistoryReadResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for HistoryReadResult must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for HistoryReadResult must not be nil")
-	}
-	if historyData == nil {
-		panic("historyData of type ExtensionObject for HistoryReadResult must not be nil")
-	}
-	_result := &_HistoryReadResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		ContinuationPoint:                 continuationPoint,
-		HistoryData:                       historyData,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadResult(structType any) HistoryReadResult {
@@ -231,13 +402,35 @@ func (m *_HistoryReadResult) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_HistoryReadResult) IsHistoryReadResult() {}
 
+func (m *_HistoryReadResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadResult) deepCopy() *_HistoryReadResult {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadResultCopy := &_HistoryReadResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.HistoryData.DeepCopy().(ExtensionObject),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadResultCopy
+}
+
 func (m *_HistoryReadResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

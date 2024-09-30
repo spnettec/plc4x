@@ -40,14 +40,19 @@ type AdsDiscoveryBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlock()
+	// CreateBuilder creates a AdsDiscoveryBlockBuilder
+	CreateAdsDiscoveryBlockBuilder() AdsDiscoveryBlockBuilder
 }
 
 // AdsDiscoveryBlockContract provides a set of functions which can be overwritten by a sub struct
 type AdsDiscoveryBlockContract interface {
 	// IsAdsDiscoveryBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlock()
+	// CreateBuilder creates a AdsDiscoveryBlockBuilder
+	CreateAdsDiscoveryBlockBuilder() AdsDiscoveryBlockBuilder
 }
 
 // AdsDiscoveryBlockRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,298 @@ var _ AdsDiscoveryBlockContract = (*_AdsDiscoveryBlock)(nil)
 func NewAdsDiscoveryBlock() *_AdsDiscoveryBlock {
 	return &_AdsDiscoveryBlock{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockBuilder is a builder for AdsDiscoveryBlock
+type AdsDiscoveryBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsDiscoveryBlockBuilder
+	// AsAdsDiscoveryBlockStatus converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockStatus() interface {
+		AdsDiscoveryBlockStatusBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockPassword converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockPassword() interface {
+		AdsDiscoveryBlockPasswordBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockVersion converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockVersion() interface {
+		AdsDiscoveryBlockVersionBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockOsData converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockOsData() interface {
+		AdsDiscoveryBlockOsDataBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockHostName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockHostName() interface {
+		AdsDiscoveryBlockHostNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockAmsNetId converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockAmsNetId() interface {
+		AdsDiscoveryBlockAmsNetIdBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockRouteName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockRouteName() interface {
+		AdsDiscoveryBlockRouteNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockUserName converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockUserName() interface {
+		AdsDiscoveryBlockUserNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// AsAdsDiscoveryBlockFingerprint converts this build to a subType of AdsDiscoveryBlock. It is always possible to return to current builder using Done()
+	AsAdsDiscoveryBlockFingerprint() interface {
+		AdsDiscoveryBlockFingerprintBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}
+	// Build builds the AdsDiscoveryBlock or returns an error if something is wrong
+	PartialBuild() (AdsDiscoveryBlockContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() AdsDiscoveryBlockContract
+	// Build builds the AdsDiscoveryBlock or returns an error if something is wrong
+	Build() (AdsDiscoveryBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlock
+}
+
+// NewAdsDiscoveryBlockBuilder() creates a AdsDiscoveryBlockBuilder
+func NewAdsDiscoveryBlockBuilder() AdsDiscoveryBlockBuilder {
+	return &_AdsDiscoveryBlockBuilder{_AdsDiscoveryBlock: new(_AdsDiscoveryBlock)}
+}
+
+type _AdsDiscoveryBlockChildBuilder interface {
+	utils.Copyable
+	setParent(AdsDiscoveryBlockContract)
+	buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error)
+}
+
+type _AdsDiscoveryBlockBuilder struct {
+	*_AdsDiscoveryBlock
+
+	childBuilder _AdsDiscoveryBlockChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockBuilder) = (*_AdsDiscoveryBlockBuilder)(nil)
+
+func (b *_AdsDiscoveryBlockBuilder) WithMandatoryFields() AdsDiscoveryBlockBuilder {
+	return b
+}
+
+func (b *_AdsDiscoveryBlockBuilder) PartialBuild() (AdsDiscoveryBlockContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDiscoveryBlock.deepCopy(), nil
+}
+
+func (b *_AdsDiscoveryBlockBuilder) PartialMustBuild() AdsDiscoveryBlockContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockStatus() interface {
+	AdsDiscoveryBlockStatusBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockStatusBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockStatusBuilder().(*_AdsDiscoveryBlockStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockPassword() interface {
+	AdsDiscoveryBlockPasswordBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockPasswordBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockPasswordBuilder().(*_AdsDiscoveryBlockPasswordBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockVersion() interface {
+	AdsDiscoveryBlockVersionBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockVersionBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockVersionBuilder().(*_AdsDiscoveryBlockVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockOsData() interface {
+	AdsDiscoveryBlockOsDataBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockOsDataBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockOsDataBuilder().(*_AdsDiscoveryBlockOsDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockHostName() interface {
+	AdsDiscoveryBlockHostNameBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockHostNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockHostNameBuilder().(*_AdsDiscoveryBlockHostNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockAmsNetId() interface {
+	AdsDiscoveryBlockAmsNetIdBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockAmsNetIdBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockAmsNetIdBuilder().(*_AdsDiscoveryBlockAmsNetIdBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockRouteName() interface {
+	AdsDiscoveryBlockRouteNameBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockRouteNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockRouteNameBuilder().(*_AdsDiscoveryBlockRouteNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockUserName() interface {
+	AdsDiscoveryBlockUserNameBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockUserNameBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockUserNameBuilder().(*_AdsDiscoveryBlockUserNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) AsAdsDiscoveryBlockFingerprint() interface {
+	AdsDiscoveryBlockFingerprintBuilder
+	Done() AdsDiscoveryBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDiscoveryBlockFingerprintBuilder
+		Done() AdsDiscoveryBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDiscoveryBlockFingerprintBuilder().(*_AdsDiscoveryBlockFingerprintBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AdsDiscoveryBlockBuilder) Build() (AdsDiscoveryBlock, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAdsDiscoveryBlock()
+}
+
+func (b *_AdsDiscoveryBlockBuilder) MustBuild() AdsDiscoveryBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDiscoveryBlockBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockBuilder().(*_AdsDiscoveryBlockBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AdsDiscoveryBlockChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDiscoveryBlockBuilder creates a AdsDiscoveryBlockBuilder
+func (b *_AdsDiscoveryBlock) CreateAdsDiscoveryBlockBuilder() AdsDiscoveryBlockBuilder {
+	if b == nil {
+		return NewAdsDiscoveryBlockBuilder()
+	}
+	return &_AdsDiscoveryBlockBuilder{_AdsDiscoveryBlock: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlock(structType any) AdsDiscoveryBlock {
@@ -108,7 +405,7 @@ func AdsDiscoveryBlockParseWithBufferProducer[T AdsDiscoveryBlock]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +415,12 @@ func AdsDiscoveryBlockParseWithBuffer[T AdsDiscoveryBlock](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_AdsDiscoveryBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDiscoveryBlock AdsDiscoveryBlock, err error) {
@@ -139,39 +441,39 @@ func (m *_AdsDiscoveryBlock) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child AdsDiscoveryBlock
 	switch {
 	case blockType == AdsDiscoveryBlockType_STATUS: // AdsDiscoveryBlockStatus
-		if _child, err = (&_AdsDiscoveryBlockStatus{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockStatus).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockStatus for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_PASSWORD: // AdsDiscoveryBlockPassword
-		if _child, err = (&_AdsDiscoveryBlockPassword{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockPassword).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockPassword for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_VERSION: // AdsDiscoveryBlockVersion
-		if _child, err = (&_AdsDiscoveryBlockVersion{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockVersion).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockVersion for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_OS_DATA: // AdsDiscoveryBlockOsData
-		if _child, err = (&_AdsDiscoveryBlockOsData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockOsData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockOsData for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_HOST_NAME: // AdsDiscoveryBlockHostName
-		if _child, err = (&_AdsDiscoveryBlockHostName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockHostName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockHostName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_AMS_NET_ID: // AdsDiscoveryBlockAmsNetId
-		if _child, err = (&_AdsDiscoveryBlockAmsNetId{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockAmsNetId).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockAmsNetId for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_ROUTE_NAME: // AdsDiscoveryBlockRouteName
-		if _child, err = (&_AdsDiscoveryBlockRouteName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockRouteName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockRouteName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_USER_NAME: // AdsDiscoveryBlockUserName
-		if _child, err = (&_AdsDiscoveryBlockUserName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockUserName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockUserName for type-switch of AdsDiscoveryBlock")
 		}
 	case blockType == AdsDiscoveryBlockType_FINGERPRINT: // AdsDiscoveryBlockFingerprint
-		if _child, err = (&_AdsDiscoveryBlockFingerprint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDiscoveryBlockFingerprint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDiscoveryBlockFingerprint for type-switch of AdsDiscoveryBlock")
 		}
 	default:
@@ -213,3 +515,17 @@ func (pm *_AdsDiscoveryBlock) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_AdsDiscoveryBlock) IsAdsDiscoveryBlock() {}
+
+func (m *_AdsDiscoveryBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlock) deepCopy() *_AdsDiscoveryBlock {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockCopy := &_AdsDiscoveryBlock{
+		nil, // will be set by child
+	}
+	return _AdsDiscoveryBlockCopy
+}

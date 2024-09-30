@@ -40,8 +40,11 @@ type BACnetRecipient interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
+	// CreateBuilder creates a BACnetRecipientBuilder
+	CreateBACnetRecipientBuilder() BACnetRecipientBuilder
 }
 
 // BACnetRecipientContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetRecipientContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetRecipient is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipient()
+	// CreateBuilder creates a BACnetRecipientBuilder
+	CreateBACnetRecipientBuilder() BACnetRecipientBuilder
 }
 
 // BACnetRecipientRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,187 @@ type _BACnetRecipient struct {
 }
 
 var _ BACnetRecipientContract = (*_BACnetRecipient)(nil)
+
+// NewBACnetRecipient factory function for _BACnetRecipient
+func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
+	}
+	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientBuilder is a builder for BACnetRecipient
+type BACnetRecipientBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetRecipientBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder
+	// AsBACnetRecipientDevice converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
+	AsBACnetRecipientDevice() interface {
+		BACnetRecipientDeviceBuilder
+		Done() BACnetRecipientBuilder
+	}
+	// AsBACnetRecipientAddress converts this build to a subType of BACnetRecipient. It is always possible to return to current builder using Done()
+	AsBACnetRecipientAddress() interface {
+		BACnetRecipientAddressBuilder
+		Done() BACnetRecipientBuilder
+	}
+	// Build builds the BACnetRecipient or returns an error if something is wrong
+	PartialBuild() (BACnetRecipientContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetRecipientContract
+	// Build builds the BACnetRecipient or returns an error if something is wrong
+	Build() (BACnetRecipient, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipient
+}
+
+// NewBACnetRecipientBuilder() creates a BACnetRecipientBuilder
+func NewBACnetRecipientBuilder() BACnetRecipientBuilder {
+	return &_BACnetRecipientBuilder{_BACnetRecipient: new(_BACnetRecipient)}
+}
+
+type _BACnetRecipientChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetRecipientContract)
+	buildForBACnetRecipient() (BACnetRecipient, error)
+}
+
+type _BACnetRecipientBuilder struct {
+	*_BACnetRecipient
+
+	childBuilder _BACnetRecipientChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientBuilder) = (*_BACnetRecipientBuilder)(nil)
+
+func (b *_BACnetRecipientBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetRecipientBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetRecipientBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetRecipientBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetRecipientBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRecipientBuilder) PartialBuild() (BACnetRecipientContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetRecipient.deepCopy(), nil
+}
+
+func (b *_BACnetRecipientBuilder) PartialMustBuild() BACnetRecipientContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientDevice() interface {
+	BACnetRecipientDeviceBuilder
+	Done() BACnetRecipientBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetRecipientDeviceBuilder
+		Done() BACnetRecipientBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetRecipientDeviceBuilder().(*_BACnetRecipientDeviceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetRecipientBuilder) AsBACnetRecipientAddress() interface {
+	BACnetRecipientAddressBuilder
+	Done() BACnetRecipientBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetRecipientAddressBuilder
+		Done() BACnetRecipientBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetRecipientAddressBuilder().(*_BACnetRecipientAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetRecipientBuilder) Build() (BACnetRecipient, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetRecipient()
+}
+
+func (b *_BACnetRecipientBuilder) MustBuild() BACnetRecipient {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRecipientBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientBuilder().(*_BACnetRecipientBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetRecipientChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetRecipientBuilder creates a BACnetRecipientBuilder
+func (b *_BACnetRecipient) CreateBACnetRecipientBuilder() BACnetRecipientBuilder {
+	if b == nil {
+		return NewBACnetRecipientBuilder()
+	}
+	return &_BACnetRecipientBuilder{_BACnetRecipient: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +285,6 @@ func (pm *_BACnetRecipient) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipient factory function for _BACnetRecipient
-func NewBACnetRecipient(peekedTagHeader BACnetTagHeader) *_BACnetRecipient {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetRecipient must not be nil")
-	}
-	return &_BACnetRecipient{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipient(structType any) BACnetRecipient {
@@ -146,7 +324,7 @@ func BACnetRecipientParseWithBufferProducer[T BACnetRecipient]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +334,12 @@ func BACnetRecipientParseWithBuffer[T BACnetRecipient](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetRecipient) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetRecipient BACnetRecipient, err error) {
@@ -184,11 +367,11 @@ func (m *_BACnetRecipient) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetRecipient
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetRecipientDevice
-		if _child, err = (&_BACnetRecipientDevice{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientDevice).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientDevice for type-switch of BACnetRecipient")
 		}
 	case peekedTagNumber == uint8(1): // BACnetRecipientAddress
-		if _child, err = (&_BACnetRecipientAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetRecipientAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetRecipientAddress for type-switch of BACnetRecipient")
 		}
 	default:
@@ -232,3 +415,18 @@ func (pm *_BACnetRecipient) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetRecipient) IsBACnetRecipient() {}
+
+func (m *_BACnetRecipient) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipient) deepCopy() *_BACnetRecipient {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientCopy := &_BACnetRecipient{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetRecipientCopy
+}

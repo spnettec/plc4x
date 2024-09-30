@@ -38,6 +38,7 @@ type BACnetLiftCarDriveStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetLiftCarDriveStatusTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLiftCarDriveStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLiftCarDriveStatusTagged()
+	// CreateBuilder creates a BACnetLiftCarDriveStatusTaggedBuilder
+	CreateBACnetLiftCarDriveStatusTaggedBuilder() BACnetLiftCarDriveStatusTaggedBuilder
 }
 
 // _BACnetLiftCarDriveStatusTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetLiftCarDriveStatusTagged struct {
 }
 
 var _ BACnetLiftCarDriveStatusTagged = (*_BACnetLiftCarDriveStatusTagged)(nil)
+
+// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
+func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
+	}
+	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLiftCarDriveStatusTaggedBuilder is a builder for BACnetLiftCarDriveStatusTagged
+type BACnetLiftCarDriveStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLiftCarDriveStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDriveStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLiftCarDriveStatus) BACnetLiftCarDriveStatusTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLiftCarDriveStatusTaggedBuilder
+	// Build builds the BACnetLiftCarDriveStatusTagged or returns an error if something is wrong
+	Build() (BACnetLiftCarDriveStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLiftCarDriveStatusTagged
+}
+
+// NewBACnetLiftCarDriveStatusTaggedBuilder() creates a BACnetLiftCarDriveStatusTaggedBuilder
+func NewBACnetLiftCarDriveStatusTaggedBuilder() BACnetLiftCarDriveStatusTaggedBuilder {
+	return &_BACnetLiftCarDriveStatusTaggedBuilder{_BACnetLiftCarDriveStatusTagged: new(_BACnetLiftCarDriveStatusTagged)}
+}
+
+type _BACnetLiftCarDriveStatusTaggedBuilder struct {
+	*_BACnetLiftCarDriveStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLiftCarDriveStatusTaggedBuilder) = (*_BACnetLiftCarDriveStatusTaggedBuilder)(nil)
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLiftCarDriveStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithValue(value BACnetLiftCarDriveStatus) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLiftCarDriveStatusTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) Build() (BACnetLiftCarDriveStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLiftCarDriveStatusTagged.deepCopy(), nil
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) MustBuild() BACnetLiftCarDriveStatusTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLiftCarDriveStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarDriveStatusTaggedBuilder().(*_BACnetLiftCarDriveStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLiftCarDriveStatusTaggedBuilder creates a BACnetLiftCarDriveStatusTaggedBuilder
+func (b *_BACnetLiftCarDriveStatusTagged) CreateBACnetLiftCarDriveStatusTaggedBuilder() BACnetLiftCarDriveStatusTaggedBuilder {
+	if b == nil {
+		return NewBACnetLiftCarDriveStatusTaggedBuilder()
+	}
+	return &_BACnetLiftCarDriveStatusTaggedBuilder{_BACnetLiftCarDriveStatusTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarDriveStatusTagged factory function for _BACnetLiftCarDriveStatusTagged
-func NewBACnetLiftCarDriveStatusTagged(header BACnetTagHeader, value BACnetLiftCarDriveStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLiftCarDriveStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLiftCarDriveStatusTagged must not be nil")
-	}
-	return &_BACnetLiftCarDriveStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarDriveStatusTagged(structType any) BACnetLiftCarDriveStatusTagged {
@@ -159,7 +273,7 @@ func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLiftCarDriveStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLiftCarDriveStatusTagged BACnetLiftCarDriveStatusTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetLiftCarDriveStatusTagged) GetTagClass() TagClass {
 
 func (m *_BACnetLiftCarDriveStatusTagged) IsBACnetLiftCarDriveStatusTagged() {}
 
+func (m *_BACnetLiftCarDriveStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarDriveStatusTagged) deepCopy() *_BACnetLiftCarDriveStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarDriveStatusTaggedCopy := &_BACnetLiftCarDriveStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLiftCarDriveStatusTaggedCopy
+}
+
 func (m *_BACnetLiftCarDriveStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type LinearConversionDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetInitialAddend returns InitialAddend (property field)
 	GetInitialAddend() float32
@@ -49,6 +50,8 @@ type LinearConversionDataType interface {
 	GetFinalAddend() float32
 	// IsLinearConversionDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLinearConversionDataType()
+	// CreateBuilder creates a LinearConversionDataTypeBuilder
+	CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder
 }
 
 // _LinearConversionDataType is the data-structure of this message
@@ -62,6 +65,131 @@ type _LinearConversionDataType struct {
 
 var _ LinearConversionDataType = (*_LinearConversionDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_LinearConversionDataType)(nil)
+
+// NewLinearConversionDataType factory function for _LinearConversionDataType
+func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
+	_result := &_LinearConversionDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		InitialAddend:                     initialAddend,
+		Multiplicand:                      multiplicand,
+		Divisor:                           divisor,
+		FinalAddend:                       finalAddend,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LinearConversionDataTypeBuilder is a builder for LinearConversionDataType
+type LinearConversionDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder
+	// WithInitialAddend adds InitialAddend (property field)
+	WithInitialAddend(float32) LinearConversionDataTypeBuilder
+	// WithMultiplicand adds Multiplicand (property field)
+	WithMultiplicand(float32) LinearConversionDataTypeBuilder
+	// WithDivisor adds Divisor (property field)
+	WithDivisor(float32) LinearConversionDataTypeBuilder
+	// WithFinalAddend adds FinalAddend (property field)
+	WithFinalAddend(float32) LinearConversionDataTypeBuilder
+	// Build builds the LinearConversionDataType or returns an error if something is wrong
+	Build() (LinearConversionDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LinearConversionDataType
+}
+
+// NewLinearConversionDataTypeBuilder() creates a LinearConversionDataTypeBuilder
+func NewLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
+	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: new(_LinearConversionDataType)}
+}
+
+type _LinearConversionDataTypeBuilder struct {
+	*_LinearConversionDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LinearConversionDataTypeBuilder) = (*_LinearConversionDataTypeBuilder)(nil)
+
+func (b *_LinearConversionDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_LinearConversionDataTypeBuilder) WithMandatoryFields(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) LinearConversionDataTypeBuilder {
+	return b.WithInitialAddend(initialAddend).WithMultiplicand(multiplicand).WithDivisor(divisor).WithFinalAddend(finalAddend)
+}
+
+func (b *_LinearConversionDataTypeBuilder) WithInitialAddend(initialAddend float32) LinearConversionDataTypeBuilder {
+	b.InitialAddend = initialAddend
+	return b
+}
+
+func (b *_LinearConversionDataTypeBuilder) WithMultiplicand(multiplicand float32) LinearConversionDataTypeBuilder {
+	b.Multiplicand = multiplicand
+	return b
+}
+
+func (b *_LinearConversionDataTypeBuilder) WithDivisor(divisor float32) LinearConversionDataTypeBuilder {
+	b.Divisor = divisor
+	return b
+}
+
+func (b *_LinearConversionDataTypeBuilder) WithFinalAddend(finalAddend float32) LinearConversionDataTypeBuilder {
+	b.FinalAddend = finalAddend
+	return b
+}
+
+func (b *_LinearConversionDataTypeBuilder) Build() (LinearConversionDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LinearConversionDataType.deepCopy(), nil
+}
+
+func (b *_LinearConversionDataTypeBuilder) MustBuild() LinearConversionDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LinearConversionDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LinearConversionDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_LinearConversionDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateLinearConversionDataTypeBuilder().(*_LinearConversionDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLinearConversionDataTypeBuilder creates a LinearConversionDataTypeBuilder
+func (b *_LinearConversionDataType) CreateLinearConversionDataTypeBuilder() LinearConversionDataTypeBuilder {
+	if b == nil {
+		return NewLinearConversionDataTypeBuilder()
+	}
+	return &_LinearConversionDataTypeBuilder{_LinearConversionDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_LinearConversionDataType) GetFinalAddend() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLinearConversionDataType factory function for _LinearConversionDataType
-func NewLinearConversionDataType(initialAddend float32, multiplicand float32, divisor float32, finalAddend float32) *_LinearConversionDataType {
-	_result := &_LinearConversionDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		InitialAddend:                     initialAddend,
-		Multiplicand:                      multiplicand,
-		Divisor:                           divisor,
-		FinalAddend:                       finalAddend,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLinearConversionDataType(structType any) LinearConversionDataType {
@@ -243,13 +358,36 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_LinearConversionDataType) IsLinearConversionDataType() {}
 
+func (m *_LinearConversionDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LinearConversionDataType) deepCopy() *_LinearConversionDataType {
+	if m == nil {
+		return nil
+	}
+	_LinearConversionDataTypeCopy := &_LinearConversionDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.InitialAddend,
+		m.Multiplicand,
+		m.Divisor,
+		m.FinalAddend,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _LinearConversionDataTypeCopy
+}
+
 func (m *_LinearConversionDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

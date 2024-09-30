@@ -38,10 +38,13 @@ type SerialInterfaceAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsSerialInterfaceAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSerialInterfaceAddress()
+	// CreateBuilder creates a SerialInterfaceAddressBuilder
+	CreateSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder
 }
 
 // _SerialInterfaceAddress is the data-structure of this message
@@ -50,6 +53,87 @@ type _SerialInterfaceAddress struct {
 }
 
 var _ SerialInterfaceAddress = (*_SerialInterfaceAddress)(nil)
+
+// NewSerialInterfaceAddress factory function for _SerialInterfaceAddress
+func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
+	return &_SerialInterfaceAddress{Address: address}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SerialInterfaceAddressBuilder is a builder for SerialInterfaceAddress
+type SerialInterfaceAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address byte) SerialInterfaceAddressBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(byte) SerialInterfaceAddressBuilder
+	// Build builds the SerialInterfaceAddress or returns an error if something is wrong
+	Build() (SerialInterfaceAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SerialInterfaceAddress
+}
+
+// NewSerialInterfaceAddressBuilder() creates a SerialInterfaceAddressBuilder
+func NewSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder {
+	return &_SerialInterfaceAddressBuilder{_SerialInterfaceAddress: new(_SerialInterfaceAddress)}
+}
+
+type _SerialInterfaceAddressBuilder struct {
+	*_SerialInterfaceAddress
+
+	err *utils.MultiError
+}
+
+var _ (SerialInterfaceAddressBuilder) = (*_SerialInterfaceAddressBuilder)(nil)
+
+func (b *_SerialInterfaceAddressBuilder) WithMandatoryFields(address byte) SerialInterfaceAddressBuilder {
+	return b.WithAddress(address)
+}
+
+func (b *_SerialInterfaceAddressBuilder) WithAddress(address byte) SerialInterfaceAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_SerialInterfaceAddressBuilder) Build() (SerialInterfaceAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SerialInterfaceAddress.deepCopy(), nil
+}
+
+func (b *_SerialInterfaceAddressBuilder) MustBuild() SerialInterfaceAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SerialInterfaceAddressBuilder) DeepCopy() any {
+	_copy := b.CreateSerialInterfaceAddressBuilder().(*_SerialInterfaceAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSerialInterfaceAddressBuilder creates a SerialInterfaceAddressBuilder
+func (b *_SerialInterfaceAddress) CreateSerialInterfaceAddressBuilder() SerialInterfaceAddressBuilder {
+	if b == nil {
+		return NewSerialInterfaceAddressBuilder()
+	}
+	return &_SerialInterfaceAddressBuilder{_SerialInterfaceAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_SerialInterfaceAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSerialInterfaceAddress factory function for _SerialInterfaceAddress
-func NewSerialInterfaceAddress(address byte) *_SerialInterfaceAddress {
-	return &_SerialInterfaceAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSerialInterfaceAddress(structType any) SerialInterfaceAddress {
@@ -113,7 +192,7 @@ func SerialInterfaceAddressParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SerialInterfaceAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__serialInterfaceAddress SerialInterfaceAddress, err error) {
@@ -167,13 +246,31 @@ func (m *_SerialInterfaceAddress) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_SerialInterfaceAddress) IsSerialInterfaceAddress() {}
 
+func (m *_SerialInterfaceAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SerialInterfaceAddress) deepCopy() *_SerialInterfaceAddress {
+	if m == nil {
+		return nil
+	}
+	_SerialInterfaceAddressCopy := &_SerialInterfaceAddress{
+		m.Address,
+	}
+	return _SerialInterfaceAddressCopy
+}
+
 func (m *_SerialInterfaceAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

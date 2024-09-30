@@ -38,6 +38,7 @@ type ClassID interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LogicalSegmentType
 	// GetFormat returns Format (property field)
 	GetFormat() uint8
@@ -45,6 +46,8 @@ type ClassID interface {
 	GetSegmentClass() uint8
 	// IsClassID is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsClassID()
+	// CreateBuilder creates a ClassIDBuilder
+	CreateClassIDBuilder() ClassIDBuilder
 }
 
 // _ClassID is the data-structure of this message
@@ -56,6 +59,115 @@ type _ClassID struct {
 
 var _ ClassID = (*_ClassID)(nil)
 var _ LogicalSegmentTypeRequirements = (*_ClassID)(nil)
+
+// NewClassID factory function for _ClassID
+func NewClassID(format uint8, segmentClass uint8) *_ClassID {
+	_result := &_ClassID{
+		LogicalSegmentTypeContract: NewLogicalSegmentType(),
+		Format:                     format,
+		SegmentClass:               segmentClass,
+	}
+	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ClassIDBuilder is a builder for ClassID
+type ClassIDBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(format uint8, segmentClass uint8) ClassIDBuilder
+	// WithFormat adds Format (property field)
+	WithFormat(uint8) ClassIDBuilder
+	// WithSegmentClass adds SegmentClass (property field)
+	WithSegmentClass(uint8) ClassIDBuilder
+	// Build builds the ClassID or returns an error if something is wrong
+	Build() (ClassID, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ClassID
+}
+
+// NewClassIDBuilder() creates a ClassIDBuilder
+func NewClassIDBuilder() ClassIDBuilder {
+	return &_ClassIDBuilder{_ClassID: new(_ClassID)}
+}
+
+type _ClassIDBuilder struct {
+	*_ClassID
+
+	parentBuilder *_LogicalSegmentTypeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ClassIDBuilder) = (*_ClassIDBuilder)(nil)
+
+func (b *_ClassIDBuilder) setParent(contract LogicalSegmentTypeContract) {
+	b.LogicalSegmentTypeContract = contract
+}
+
+func (b *_ClassIDBuilder) WithMandatoryFields(format uint8, segmentClass uint8) ClassIDBuilder {
+	return b.WithFormat(format).WithSegmentClass(segmentClass)
+}
+
+func (b *_ClassIDBuilder) WithFormat(format uint8) ClassIDBuilder {
+	b.Format = format
+	return b
+}
+
+func (b *_ClassIDBuilder) WithSegmentClass(segmentClass uint8) ClassIDBuilder {
+	b.SegmentClass = segmentClass
+	return b
+}
+
+func (b *_ClassIDBuilder) Build() (ClassID, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ClassID.deepCopy(), nil
+}
+
+func (b *_ClassIDBuilder) MustBuild() ClassID {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ClassIDBuilder) Done() LogicalSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ClassIDBuilder) buildForLogicalSegmentType() (LogicalSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_ClassIDBuilder) DeepCopy() any {
+	_copy := b.CreateClassIDBuilder().(*_ClassIDBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateClassIDBuilder creates a ClassIDBuilder
+func (b *_ClassID) CreateClassIDBuilder() ClassIDBuilder {
+	if b == nil {
+		return NewClassIDBuilder()
+	}
+	return &_ClassIDBuilder{_ClassID: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ClassID) GetSegmentClass() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewClassID factory function for _ClassID
-func NewClassID(format uint8, segmentClass uint8) *_ClassID {
-	_result := &_ClassID{
-		LogicalSegmentTypeContract: NewLogicalSegmentType(),
-		Format:                     format,
-		SegmentClass:               segmentClass,
-	}
-	_result.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastClassID(structType any) ClassID {
@@ -201,13 +302,34 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 func (m *_ClassID) IsClassID() {}
 
+func (m *_ClassID) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ClassID) deepCopy() *_ClassID {
+	if m == nil {
+		return nil
+	}
+	_ClassIDCopy := &_ClassID{
+		m.LogicalSegmentTypeContract.(*_LogicalSegmentType).deepCopy(),
+		m.Format,
+		m.SegmentClass,
+	}
+	m.LogicalSegmentTypeContract.(*_LogicalSegmentType)._SubType = m
+	return _ClassIDCopy
+}
+
 func (m *_ClassID) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

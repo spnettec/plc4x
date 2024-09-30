@@ -36,9 +36,12 @@ type S7MessageRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Message
 	// IsS7MessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageRequest()
+	// CreateBuilder creates a S7MessageRequestBuilder
+	CreateS7MessageRequestBuilder() S7MessageRequestBuilder
 }
 
 // _S7MessageRequest is the data-structure of this message
@@ -48,6 +51,99 @@ type _S7MessageRequest struct {
 
 var _ S7MessageRequest = (*_S7MessageRequest)(nil)
 var _ S7MessageRequirements = (*_S7MessageRequest)(nil)
+
+// NewS7MessageRequest factory function for _S7MessageRequest
+func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
+	_result := &_S7MessageRequest{
+		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
+	}
+	_result.S7MessageContract.(*_S7Message)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageRequestBuilder is a builder for S7MessageRequest
+type S7MessageRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7MessageRequestBuilder
+	// Build builds the S7MessageRequest or returns an error if something is wrong
+	Build() (S7MessageRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7MessageRequest
+}
+
+// NewS7MessageRequestBuilder() creates a S7MessageRequestBuilder
+func NewS7MessageRequestBuilder() S7MessageRequestBuilder {
+	return &_S7MessageRequestBuilder{_S7MessageRequest: new(_S7MessageRequest)}
+}
+
+type _S7MessageRequestBuilder struct {
+	*_S7MessageRequest
+
+	parentBuilder *_S7MessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageRequestBuilder) = (*_S7MessageRequestBuilder)(nil)
+
+func (b *_S7MessageRequestBuilder) setParent(contract S7MessageContract) {
+	b.S7MessageContract = contract
+}
+
+func (b *_S7MessageRequestBuilder) WithMandatoryFields() S7MessageRequestBuilder {
+	return b
+}
+
+func (b *_S7MessageRequestBuilder) Build() (S7MessageRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7MessageRequest.deepCopy(), nil
+}
+
+func (b *_S7MessageRequestBuilder) MustBuild() S7MessageRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageRequestBuilder) Done() S7MessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageRequestBuilder) buildForS7Message() (S7Message, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageRequestBuilder().(*_S7MessageRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7MessageRequestBuilder creates a S7MessageRequestBuilder
+func (b *_S7MessageRequest) CreateS7MessageRequestBuilder() S7MessageRequestBuilder {
+	if b == nil {
+		return NewS7MessageRequestBuilder()
+	}
+	return &_S7MessageRequestBuilder{_S7MessageRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_S7MessageRequest) GetMessageType() uint8 {
 
 func (m *_S7MessageRequest) GetParent() S7MessageContract {
 	return m.S7MessageContract
-}
-
-// NewS7MessageRequest factory function for _S7MessageRequest
-func NewS7MessageRequest(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7MessageRequest {
-	_result := &_S7MessageRequest{
-		S7MessageContract: NewS7Message(tpduReference, parameter, payload),
-	}
-	_result.S7MessageContract.(*_S7Message)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_S7MessageRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_S7MessageRequest) IsS7MessageRequest() {}
 
+func (m *_S7MessageRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageRequest) deepCopy() *_S7MessageRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageRequestCopy := &_S7MessageRequest{
+		m.S7MessageContract.(*_S7Message).deepCopy(),
+	}
+	m.S7MessageContract.(*_S7Message)._SubType = m
+	return _S7MessageRequestCopy
+}
+
 func (m *_S7MessageRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type SALDataErrorReporting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetErrorReportingData returns ErrorReportingData (property field)
 	GetErrorReportingData() ErrorReportingData
 	// IsSALDataErrorReporting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataErrorReporting()
+	// CreateBuilder creates a SALDataErrorReportingBuilder
+	CreateSALDataErrorReportingBuilder() SALDataErrorReportingBuilder
 }
 
 // _SALDataErrorReporting is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataErrorReporting struct {
 
 var _ SALDataErrorReporting = (*_SALDataErrorReporting)(nil)
 var _ SALDataRequirements = (*_SALDataErrorReporting)(nil)
+
+// NewSALDataErrorReporting factory function for _SALDataErrorReporting
+func NewSALDataErrorReporting(salData SALData, errorReportingData ErrorReportingData) *_SALDataErrorReporting {
+	if errorReportingData == nil {
+		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
+	}
+	_result := &_SALDataErrorReporting{
+		SALDataContract:    NewSALData(salData),
+		ErrorReportingData: errorReportingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataErrorReportingBuilder is a builder for SALDataErrorReporting
+type SALDataErrorReportingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder
+	// WithErrorReportingData adds ErrorReportingData (property field)
+	WithErrorReportingData(ErrorReportingData) SALDataErrorReportingBuilder
+	// WithErrorReportingDataBuilder adds ErrorReportingData (property field) which is build by the builder
+	WithErrorReportingDataBuilder(func(ErrorReportingDataBuilder) ErrorReportingDataBuilder) SALDataErrorReportingBuilder
+	// Build builds the SALDataErrorReporting or returns an error if something is wrong
+	Build() (SALDataErrorReporting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataErrorReporting
+}
+
+// NewSALDataErrorReportingBuilder() creates a SALDataErrorReportingBuilder
+func NewSALDataErrorReportingBuilder() SALDataErrorReportingBuilder {
+	return &_SALDataErrorReportingBuilder{_SALDataErrorReporting: new(_SALDataErrorReporting)}
+}
+
+type _SALDataErrorReportingBuilder struct {
+	*_SALDataErrorReporting
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataErrorReportingBuilder) = (*_SALDataErrorReportingBuilder)(nil)
+
+func (b *_SALDataErrorReportingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataErrorReportingBuilder) WithMandatoryFields(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder {
+	return b.WithErrorReportingData(errorReportingData)
+}
+
+func (b *_SALDataErrorReportingBuilder) WithErrorReportingData(errorReportingData ErrorReportingData) SALDataErrorReportingBuilder {
+	b.ErrorReportingData = errorReportingData
+	return b
+}
+
+func (b *_SALDataErrorReportingBuilder) WithErrorReportingDataBuilder(builderSupplier func(ErrorReportingDataBuilder) ErrorReportingDataBuilder) SALDataErrorReportingBuilder {
+	builder := builderSupplier(b.ErrorReportingData.CreateErrorReportingDataBuilder())
+	var err error
+	b.ErrorReportingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorReportingDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataErrorReportingBuilder) Build() (SALDataErrorReporting, error) {
+	if b.ErrorReportingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorReportingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataErrorReporting.deepCopy(), nil
+}
+
+func (b *_SALDataErrorReportingBuilder) MustBuild() SALDataErrorReporting {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataErrorReportingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataErrorReportingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataErrorReportingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataErrorReportingBuilder().(*_SALDataErrorReportingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataErrorReportingBuilder creates a SALDataErrorReportingBuilder
+func (b *_SALDataErrorReporting) CreateSALDataErrorReportingBuilder() SALDataErrorReportingBuilder {
+	if b == nil {
+		return NewSALDataErrorReportingBuilder()
+	}
+	return &_SALDataErrorReportingBuilder{_SALDataErrorReporting: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataErrorReporting) GetErrorReportingData() ErrorReportingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataErrorReporting factory function for _SALDataErrorReporting
-func NewSALDataErrorReporting(errorReportingData ErrorReportingData, salData SALData) *_SALDataErrorReporting {
-	if errorReportingData == nil {
-		panic("errorReportingData of type ErrorReportingData for SALDataErrorReporting must not be nil")
-	}
-	_result := &_SALDataErrorReporting{
-		SALDataContract:    NewSALData(salData),
-		ErrorReportingData: errorReportingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataErrorReporting(structType any) SALDataErrorReporting {
@@ -183,13 +298,33 @@ func (m *_SALDataErrorReporting) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_SALDataErrorReporting) IsSALDataErrorReporting() {}
 
+func (m *_SALDataErrorReporting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataErrorReporting) deepCopy() *_SALDataErrorReporting {
+	if m == nil {
+		return nil
+	}
+	_SALDataErrorReportingCopy := &_SALDataErrorReporting{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.ErrorReportingData.DeepCopy().(ErrorReportingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataErrorReportingCopy
+}
+
 func (m *_SALDataErrorReporting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

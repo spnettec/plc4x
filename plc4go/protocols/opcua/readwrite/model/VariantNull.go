@@ -36,9 +36,12 @@ type VariantNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// IsVariantNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantNull()
+	// CreateBuilder creates a VariantNullBuilder
+	CreateVariantNullBuilder() VariantNullBuilder
 }
 
 // _VariantNull is the data-structure of this message
@@ -48,6 +51,99 @@ type _VariantNull struct {
 
 var _ VariantNull = (*_VariantNull)(nil)
 var _ VariantRequirements = (*_VariantNull)(nil)
+
+// NewVariantNull factory function for _VariantNull
+func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
+	_result := &_VariantNull{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantNullBuilder is a builder for VariantNull
+type VariantNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() VariantNullBuilder
+	// Build builds the VariantNull or returns an error if something is wrong
+	Build() (VariantNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantNull
+}
+
+// NewVariantNullBuilder() creates a VariantNullBuilder
+func NewVariantNullBuilder() VariantNullBuilder {
+	return &_VariantNullBuilder{_VariantNull: new(_VariantNull)}
+}
+
+type _VariantNullBuilder struct {
+	*_VariantNull
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantNullBuilder) = (*_VariantNullBuilder)(nil)
+
+func (b *_VariantNullBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantNullBuilder) WithMandatoryFields() VariantNullBuilder {
+	return b
+}
+
+func (b *_VariantNullBuilder) Build() (VariantNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantNull.deepCopy(), nil
+}
+
+func (b *_VariantNullBuilder) MustBuild() VariantNull {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantNullBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantNullBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantNullBuilder) DeepCopy() any {
+	_copy := b.CreateVariantNullBuilder().(*_VariantNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantNullBuilder creates a VariantNullBuilder
+func (b *_VariantNull) CreateVariantNullBuilder() VariantNullBuilder {
+	if b == nil {
+		return NewVariantNullBuilder()
+	}
+	return &_VariantNullBuilder{_VariantNull: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_VariantNull) GetVariantType() uint8 {
 
 func (m *_VariantNull) GetParent() VariantContract {
 	return m.VariantContract
-}
-
-// NewVariantNull factory function for _VariantNull
-func NewVariantNull(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantNull {
-	_result := &_VariantNull{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_VariantNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_VariantNull) IsVariantNull() {}
 
+func (m *_VariantNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantNull) deepCopy() *_VariantNull {
+	if m == nil {
+		return nil
+	}
+	_VariantNullCopy := &_VariantNull{
+		m.VariantContract.(*_Variant).deepCopy(),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantNullCopy
+}
+
 func (m *_VariantNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

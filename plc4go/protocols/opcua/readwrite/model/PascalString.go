@@ -38,12 +38,15 @@ type PascalString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStringValue returns StringValue (property field)
 	GetStringValue() string
 	// GetStringLength returns StringLength (virtual field)
 	GetStringLength() int32
 	// IsPascalString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPascalString()
+	// CreateBuilder creates a PascalStringBuilder
+	CreatePascalStringBuilder() PascalStringBuilder
 }
 
 // _PascalString is the data-structure of this message
@@ -52,6 +55,87 @@ type _PascalString struct {
 }
 
 var _ PascalString = (*_PascalString)(nil)
+
+// NewPascalString factory function for _PascalString
+func NewPascalString(stringValue string) *_PascalString {
+	return &_PascalString{StringValue: stringValue}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PascalStringBuilder is a builder for PascalString
+type PascalStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(stringValue string) PascalStringBuilder
+	// WithStringValue adds StringValue (property field)
+	WithStringValue(string) PascalStringBuilder
+	// Build builds the PascalString or returns an error if something is wrong
+	Build() (PascalString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PascalString
+}
+
+// NewPascalStringBuilder() creates a PascalStringBuilder
+func NewPascalStringBuilder() PascalStringBuilder {
+	return &_PascalStringBuilder{_PascalString: new(_PascalString)}
+}
+
+type _PascalStringBuilder struct {
+	*_PascalString
+
+	err *utils.MultiError
+}
+
+var _ (PascalStringBuilder) = (*_PascalStringBuilder)(nil)
+
+func (b *_PascalStringBuilder) WithMandatoryFields(stringValue string) PascalStringBuilder {
+	return b.WithStringValue(stringValue)
+}
+
+func (b *_PascalStringBuilder) WithStringValue(stringValue string) PascalStringBuilder {
+	b.StringValue = stringValue
+	return b
+}
+
+func (b *_PascalStringBuilder) Build() (PascalString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PascalString.deepCopy(), nil
+}
+
+func (b *_PascalStringBuilder) MustBuild() PascalString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PascalStringBuilder) DeepCopy() any {
+	_copy := b.CreatePascalStringBuilder().(*_PascalStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePascalStringBuilder creates a PascalStringBuilder
+func (b *_PascalString) CreatePascalStringBuilder() PascalStringBuilder {
+	if b == nil {
+		return NewPascalStringBuilder()
+	}
+	return &_PascalStringBuilder{_PascalString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +165,6 @@ func (m *_PascalString) GetStringLength() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPascalString factory function for _PascalString
-func NewPascalString(stringValue string) *_PascalString {
-	return &_PascalString{StringValue: stringValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPascalString(structType any) PascalString {
@@ -135,7 +214,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PascalString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pascalString PascalString, err error) {
@@ -211,13 +290,31 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_PascalString) IsPascalString() {}
 
+func (m *_PascalString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PascalString) deepCopy() *_PascalString {
+	if m == nil {
+		return nil
+	}
+	_PascalStringCopy := &_PascalString{
+		m.StringValue,
+	}
+	return _PascalStringCopy
+}
+
 func (m *_PascalString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

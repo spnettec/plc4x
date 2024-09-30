@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -49,6 +50,8 @@ type BACnetConfirmedServiceRequestAddListElement interface {
 	GetListOfElements() BACnetConstructedData
 	// IsBACnetConfirmedServiceRequestAddListElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestAddListElement()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestAddListElementBuilder
+	CreateBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServiceRequestAddListElementBuilder
 }
 
 // _BACnetConfirmedServiceRequestAddListElement is the data-structure of this message
@@ -62,6 +65,209 @@ type _BACnetConfirmedServiceRequestAddListElement struct {
 
 var _ BACnetConfirmedServiceRequestAddListElement = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestAddListElement)(nil)
+
+// NewBACnetConfirmedServiceRequestAddListElement factory function for _BACnetConfirmedServiceRequestAddListElement
+func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAddListElement {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAddListElement must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestAddListElement must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestAddListElement{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		ObjectIdentifier:                      objectIdentifier,
+		PropertyIdentifier:                    propertyIdentifier,
+		ArrayIndex:                            arrayIndex,
+		ListOfElements:                        listOfElements,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestAddListElementBuilder is a builder for BACnetConfirmedServiceRequestAddListElement
+type BACnetConfirmedServiceRequestAddListElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithListOfElements adds ListOfElements (property field)
+	WithOptionalListOfElements(BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder
+	// WithOptionalListOfElementsBuilder adds ListOfElements (property field) which is build by the builder
+	WithOptionalListOfElementsBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestAddListElementBuilder
+	// Build builds the BACnetConfirmedServiceRequestAddListElement or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestAddListElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestAddListElement
+}
+
+// NewBACnetConfirmedServiceRequestAddListElementBuilder() creates a BACnetConfirmedServiceRequestAddListElementBuilder
+func NewBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServiceRequestAddListElementBuilder {
+	return &_BACnetConfirmedServiceRequestAddListElementBuilder{_BACnetConfirmedServiceRequestAddListElement: new(_BACnetConfirmedServiceRequestAddListElement)}
+}
+
+type _BACnetConfirmedServiceRequestAddListElementBuilder struct {
+	*_BACnetConfirmedServiceRequestAddListElement
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestAddListElementBuilder) = (*_BACnetConfirmedServiceRequestAddListElementBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalListOfElements(listOfElements BACnetConstructedData) BACnetConfirmedServiceRequestAddListElementBuilder {
+	b.ListOfElements = listOfElements
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) WithOptionalListOfElementsBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConfirmedServiceRequestAddListElementBuilder {
+	builder := builderSupplier(b.ListOfElements.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ListOfElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) Build() (BACnetConfirmedServiceRequestAddListElement, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestAddListElement.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) MustBuild() BACnetConfirmedServiceRequestAddListElement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestAddListElementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestAddListElementBuilder().(*_BACnetConfirmedServiceRequestAddListElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestAddListElementBuilder creates a BACnetConfirmedServiceRequestAddListElementBuilder
+func (b *_BACnetConfirmedServiceRequestAddListElement) CreateBACnetConfirmedServiceRequestAddListElementBuilder() BACnetConfirmedServiceRequestAddListElementBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestAddListElementBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestAddListElementBuilder{_BACnetConfirmedServiceRequestAddListElement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +312,6 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) GetListOfElements() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestAddListElement factory function for _BACnetConfirmedServiceRequestAddListElement
-func NewBACnetConfirmedServiceRequestAddListElement(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, listOfElements BACnetConstructedData, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestAddListElement {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestAddListElement must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetConfirmedServiceRequestAddListElement must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestAddListElement{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		ObjectIdentifier:                      objectIdentifier,
-		PropertyIdentifier:                    propertyIdentifier,
-		ArrayIndex:                            arrayIndex,
-		ListOfElements:                        listOfElements,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestAddListElement(structType any) BACnetConfirmedServiceRequestAddListElement {
@@ -262,13 +449,36 @@ func (m *_BACnetConfirmedServiceRequestAddListElement) SerializeWithWriteBuffer(
 func (m *_BACnetConfirmedServiceRequestAddListElement) IsBACnetConfirmedServiceRequestAddListElement() {
 }
 
+func (m *_BACnetConfirmedServiceRequestAddListElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestAddListElement) deepCopy() *_BACnetConfirmedServiceRequestAddListElement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestAddListElementCopy := &_BACnetConfirmedServiceRequestAddListElement{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfElements.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestAddListElementCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestAddListElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

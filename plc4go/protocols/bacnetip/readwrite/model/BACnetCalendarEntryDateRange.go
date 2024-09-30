@@ -38,11 +38,14 @@ type BACnetCalendarEntryDateRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetCalendarEntry
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRangeEnclosed
 	// IsBACnetCalendarEntryDateRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCalendarEntryDateRange()
+	// CreateBuilder creates a BACnetCalendarEntryDateRangeBuilder
+	CreateBACnetCalendarEntryDateRangeBuilder() BACnetCalendarEntryDateRangeBuilder
 }
 
 // _BACnetCalendarEntryDateRange is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetCalendarEntryDateRange struct {
 
 var _ BACnetCalendarEntryDateRange = (*_BACnetCalendarEntryDateRange)(nil)
 var _ BACnetCalendarEntryRequirements = (*_BACnetCalendarEntryDateRange)(nil)
+
+// NewBACnetCalendarEntryDateRange factory function for _BACnetCalendarEntryDateRange
+func NewBACnetCalendarEntryDateRange(peekedTagHeader BACnetTagHeader, dateRange BACnetDateRangeEnclosed) *_BACnetCalendarEntryDateRange {
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRangeEnclosed for BACnetCalendarEntryDateRange must not be nil")
+	}
+	_result := &_BACnetCalendarEntryDateRange{
+		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
+		DateRange:                   dateRange,
+	}
+	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCalendarEntryDateRangeBuilder is a builder for BACnetCalendarEntryDateRange
+type BACnetCalendarEntryDateRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateRange BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder
+	// WithDateRange adds DateRange (property field)
+	WithDateRange(BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder
+	// WithDateRangeBuilder adds DateRange (property field) which is build by the builder
+	WithDateRangeBuilder(func(BACnetDateRangeEnclosedBuilder) BACnetDateRangeEnclosedBuilder) BACnetCalendarEntryDateRangeBuilder
+	// Build builds the BACnetCalendarEntryDateRange or returns an error if something is wrong
+	Build() (BACnetCalendarEntryDateRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCalendarEntryDateRange
+}
+
+// NewBACnetCalendarEntryDateRangeBuilder() creates a BACnetCalendarEntryDateRangeBuilder
+func NewBACnetCalendarEntryDateRangeBuilder() BACnetCalendarEntryDateRangeBuilder {
+	return &_BACnetCalendarEntryDateRangeBuilder{_BACnetCalendarEntryDateRange: new(_BACnetCalendarEntryDateRange)}
+}
+
+type _BACnetCalendarEntryDateRangeBuilder struct {
+	*_BACnetCalendarEntryDateRange
+
+	parentBuilder *_BACnetCalendarEntryBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCalendarEntryDateRangeBuilder) = (*_BACnetCalendarEntryDateRangeBuilder)(nil)
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) setParent(contract BACnetCalendarEntryContract) {
+	b.BACnetCalendarEntryContract = contract
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) WithMandatoryFields(dateRange BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder {
+	return b.WithDateRange(dateRange)
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) WithDateRange(dateRange BACnetDateRangeEnclosed) BACnetCalendarEntryDateRangeBuilder {
+	b.DateRange = dateRange
+	return b
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) WithDateRangeBuilder(builderSupplier func(BACnetDateRangeEnclosedBuilder) BACnetDateRangeEnclosedBuilder) BACnetCalendarEntryDateRangeBuilder {
+	builder := builderSupplier(b.DateRange.CreateBACnetDateRangeEnclosedBuilder())
+	var err error
+	b.DateRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateRangeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) Build() (BACnetCalendarEntryDateRange, error) {
+	if b.DateRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateRange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCalendarEntryDateRange.deepCopy(), nil
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) MustBuild() BACnetCalendarEntryDateRange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetCalendarEntryDateRangeBuilder) Done() BACnetCalendarEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) buildForBACnetCalendarEntry() (BACnetCalendarEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetCalendarEntryDateRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCalendarEntryDateRangeBuilder().(*_BACnetCalendarEntryDateRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetCalendarEntryDateRangeBuilder creates a BACnetCalendarEntryDateRangeBuilder
+func (b *_BACnetCalendarEntryDateRange) CreateBACnetCalendarEntryDateRangeBuilder() BACnetCalendarEntryDateRangeBuilder {
+	if b == nil {
+		return NewBACnetCalendarEntryDateRangeBuilder()
+	}
+	return &_BACnetCalendarEntryDateRangeBuilder{_BACnetCalendarEntryDateRange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetCalendarEntryDateRange) GetDateRange() BACnetDateRangeEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCalendarEntryDateRange factory function for _BACnetCalendarEntryDateRange
-func NewBACnetCalendarEntryDateRange(dateRange BACnetDateRangeEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetCalendarEntryDateRange {
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRangeEnclosed for BACnetCalendarEntryDateRange must not be nil")
-	}
-	_result := &_BACnetCalendarEntryDateRange{
-		BACnetCalendarEntryContract: NewBACnetCalendarEntry(peekedTagHeader),
-		DateRange:                   dateRange,
-	}
-	_result.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCalendarEntryDateRange(structType any) BACnetCalendarEntryDateRange {
@@ -179,13 +294,33 @@ func (m *_BACnetCalendarEntryDateRange) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetCalendarEntryDateRange) IsBACnetCalendarEntryDateRange() {}
 
+func (m *_BACnetCalendarEntryDateRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCalendarEntryDateRange) deepCopy() *_BACnetCalendarEntryDateRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetCalendarEntryDateRangeCopy := &_BACnetCalendarEntryDateRange{
+		m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry).deepCopy(),
+		m.DateRange.DeepCopy().(BACnetDateRangeEnclosed),
+	}
+	m.BACnetCalendarEntryContract.(*_BACnetCalendarEntry)._SubType = m
+	return _BACnetCalendarEntryDateRangeCopy
+}
+
 func (m *_BACnetCalendarEntryDateRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

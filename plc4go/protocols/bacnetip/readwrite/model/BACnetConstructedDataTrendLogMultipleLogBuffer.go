@@ -38,11 +38,14 @@ type BACnetConstructedDataTrendLogMultipleLogBuffer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetLogMultipleRecord
 	// IsBACnetConstructedDataTrendLogMultipleLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrendLogMultipleLogBuffer()
+	// CreateBuilder creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder
 }
 
 // _BACnetConstructedDataTrendLogMultipleLogBuffer is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataTrendLogMultipleLogBuffer struct {
 
 var _ BACnetConstructedDataTrendLogMultipleLogBuffer = (*_BACnetConstructedDataTrendLogMultipleLogBuffer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrendLogMultipleLogBuffer)(nil)
+
+// NewBACnetConstructedDataTrendLogMultipleLogBuffer factory function for _BACnetConstructedDataTrendLogMultipleLogBuffer
+func NewBACnetConstructedDataTrendLogMultipleLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetLogMultipleRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
+	_result := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FloorText:                     floorText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTrendLogMultipleLogBufferBuilder is a builder for BACnetConstructedDataTrendLogMultipleLogBuffer
+type BACnetConstructedDataTrendLogMultipleLogBufferBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	// WithFloorText adds FloorText (property field)
+	WithFloorText(...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+	// Build builds the BACnetConstructedDataTrendLogMultipleLogBuffer or returns an error if something is wrong
+	Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer
+}
+
+// NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder() creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+func NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: new(_BACnetConstructedDataTrendLogMultipleLogBuffer)}
+}
+
+type _BACnetConstructedDataTrendLogMultipleLogBufferBuilder struct {
+	*_BACnetConstructedDataTrendLogMultipleLogBuffer
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTrendLogMultipleLogBufferBuilder) = (*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)(nil)
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithMandatoryFields(floorText []BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	return b.WithFloorText(floorText...)
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) WithFloorText(floorText ...BACnetLogMultipleRecord) BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	b.FloorText = floorText
+	return b
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Build() (BACnetConstructedDataTrendLogMultipleLogBuffer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTrendLogMultipleLogBuffer.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) MustBuild() BACnetConstructedDataTrendLogMultipleLogBuffer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrendLogMultipleLogBufferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder().(*_BACnetConstructedDataTrendLogMultipleLogBufferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder creates a BACnetConstructedDataTrendLogMultipleLogBufferBuilder
+func (b *_BACnetConstructedDataTrendLogMultipleLogBuffer) CreateBACnetConstructedDataTrendLogMultipleLogBufferBuilder() BACnetConstructedDataTrendLogMultipleLogBufferBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTrendLogMultipleLogBufferBuilder()
+	}
+	return &_BACnetConstructedDataTrendLogMultipleLogBufferBuilder{_BACnetConstructedDataTrendLogMultipleLogBuffer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) GetFloorText() []BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTrendLogMultipleLogBuffer factory function for _BACnetConstructedDataTrendLogMultipleLogBuffer
-func NewBACnetConstructedDataTrendLogMultipleLogBuffer(floorText []BACnetLogMultipleRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrendLogMultipleLogBuffer {
-	_result := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FloorText:                     floorText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTrendLogMultipleLogBuffer(structType any) BACnetConstructedDataTrendLogMultipleLogBuffer {
@@ -189,13 +283,33 @@ func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) SerializeWithWriteBuff
 func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) IsBACnetConstructedDataTrendLogMultipleLogBuffer() {
 }
 
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) deepCopy() *_BACnetConstructedDataTrendLogMultipleLogBuffer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrendLogMultipleLogBufferCopy := &_BACnetConstructedDataTrendLogMultipleLogBuffer{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetLogMultipleRecord, BACnetLogMultipleRecord](m.FloorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrendLogMultipleLogBufferCopy
+}
+
 func (m *_BACnetConstructedDataTrendLogMultipleLogBuffer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type SecurityDataZoneOpen interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
 	// IsSecurityDataZoneOpen is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneOpen()
+	// CreateBuilder creates a SecurityDataZoneOpenBuilder
+	CreateSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder
 }
 
 // _SecurityDataZoneOpen is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataZoneOpen struct {
 
 var _ SecurityDataZoneOpen = (*_SecurityDataZoneOpen)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneOpen)(nil)
+
+// NewSecurityDataZoneOpen factory function for _SecurityDataZoneOpen
+func NewSecurityDataZoneOpen(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneOpen {
+	_result := &_SecurityDataZoneOpen{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneOpenBuilder is a builder for SecurityDataZoneOpen
+type SecurityDataZoneOpenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneOpenBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneOpenBuilder
+	// Build builds the SecurityDataZoneOpen or returns an error if something is wrong
+	Build() (SecurityDataZoneOpen, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneOpen
+}
+
+// NewSecurityDataZoneOpenBuilder() creates a SecurityDataZoneOpenBuilder
+func NewSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder {
+	return &_SecurityDataZoneOpenBuilder{_SecurityDataZoneOpen: new(_SecurityDataZoneOpen)}
+}
+
+type _SecurityDataZoneOpenBuilder struct {
+	*_SecurityDataZoneOpen
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneOpenBuilder) = (*_SecurityDataZoneOpenBuilder)(nil)
+
+func (b *_SecurityDataZoneOpenBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataZoneOpenBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneOpenBuilder {
+	return b.WithZoneNumber(zoneNumber)
+}
+
+func (b *_SecurityDataZoneOpenBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneOpenBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataZoneOpenBuilder) Build() (SecurityDataZoneOpen, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataZoneOpen.deepCopy(), nil
+}
+
+func (b *_SecurityDataZoneOpenBuilder) MustBuild() SecurityDataZoneOpen {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataZoneOpenBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataZoneOpenBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataZoneOpenBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataZoneOpenBuilder().(*_SecurityDataZoneOpenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataZoneOpenBuilder creates a SecurityDataZoneOpenBuilder
+func (b *_SecurityDataZoneOpen) CreateSecurityDataZoneOpenBuilder() SecurityDataZoneOpenBuilder {
+	if b == nil {
+		return NewSecurityDataZoneOpenBuilder()
+	}
+	return &_SecurityDataZoneOpenBuilder{_SecurityDataZoneOpen: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataZoneOpen) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneOpen factory function for _SecurityDataZoneOpen
-func NewSecurityDataZoneOpen(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneOpen {
-	_result := &_SecurityDataZoneOpen{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneOpen(structType any) SecurityDataZoneOpen {
@@ -176,13 +270,33 @@ func (m *_SecurityDataZoneOpen) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_SecurityDataZoneOpen) IsSecurityDataZoneOpen() {}
 
+func (m *_SecurityDataZoneOpen) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneOpen) deepCopy() *_SecurityDataZoneOpen {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneOpenCopy := &_SecurityDataZoneOpen{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneOpenCopy
+}
+
 func (m *_SecurityDataZoneOpen) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

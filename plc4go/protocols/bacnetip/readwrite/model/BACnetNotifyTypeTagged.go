@@ -38,12 +38,15 @@ type BACnetNotifyTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNotifyType
 	// IsBACnetNotifyTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotifyTypeTagged()
+	// CreateBuilder creates a BACnetNotifyTypeTaggedBuilder
+	CreateBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder
 }
 
 // _BACnetNotifyTypeTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetNotifyTypeTagged struct {
 }
 
 var _ BACnetNotifyTypeTagged = (*_BACnetNotifyTypeTagged)(nil)
+
+// NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
+func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
+	}
+	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotifyTypeTaggedBuilder is a builder for BACnetNotifyTypeTagged
+type BACnetNotifyTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetNotifyTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetNotifyType) BACnetNotifyTypeTaggedBuilder
+	// Build builds the BACnetNotifyTypeTagged or returns an error if something is wrong
+	Build() (BACnetNotifyTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotifyTypeTagged
+}
+
+// NewBACnetNotifyTypeTaggedBuilder() creates a BACnetNotifyTypeTaggedBuilder
+func NewBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder {
+	return &_BACnetNotifyTypeTaggedBuilder{_BACnetNotifyTypeTagged: new(_BACnetNotifyTypeTagged)}
+}
+
+type _BACnetNotifyTypeTaggedBuilder struct {
+	*_BACnetNotifyTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotifyTypeTaggedBuilder) = (*_BACnetNotifyTypeTaggedBuilder)(nil)
+
+func (b *_BACnetNotifyTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNotifyTypeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNotifyTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) WithValue(value BACnetNotifyType) BACnetNotifyTypeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) Build() (BACnetNotifyTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotifyTypeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) MustBuild() BACnetNotifyTypeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNotifyTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotifyTypeTaggedBuilder().(*_BACnetNotifyTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotifyTypeTaggedBuilder creates a BACnetNotifyTypeTaggedBuilder
+func (b *_BACnetNotifyTypeTagged) CreateBACnetNotifyTypeTaggedBuilder() BACnetNotifyTypeTaggedBuilder {
+	if b == nil {
+		return NewBACnetNotifyTypeTaggedBuilder()
+	}
+	return &_BACnetNotifyTypeTaggedBuilder{_BACnetNotifyTypeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetNotifyTypeTagged) GetValue() BACnetNotifyType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotifyTypeTagged factory function for _BACnetNotifyTypeTagged
-func NewBACnetNotifyTypeTagged(header BACnetTagHeader, value BACnetNotifyType, tagNumber uint8, tagClass TagClass) *_BACnetNotifyTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNotifyTypeTagged must not be nil")
-	}
-	return &_BACnetNotifyTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotifyTypeTagged(structType any) BACnetNotifyTypeTagged {
@@ -130,7 +237,7 @@ func BACnetNotifyTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetNotifyTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetNotifyTypeTagged BACnetNotifyTypeTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetNotifyTypeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetNotifyTypeTagged) IsBACnetNotifyTypeTagged() {}
 
+func (m *_BACnetNotifyTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotifyTypeTagged) deepCopy() *_BACnetNotifyTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotifyTypeTaggedCopy := &_BACnetNotifyTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNotifyTypeTaggedCopy
+}
+
 func (m *_BACnetNotifyTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

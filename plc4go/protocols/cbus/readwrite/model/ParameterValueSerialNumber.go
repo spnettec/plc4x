@@ -38,6 +38,7 @@ type ParameterValueSerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() SerialNumber
@@ -45,6 +46,8 @@ type ParameterValueSerialNumber interface {
 	GetData() []byte
 	// IsParameterValueSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueSerialNumber()
+	// CreateBuilder creates a ParameterValueSerialNumberBuilder
+	CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder
 }
 
 // _ParameterValueSerialNumber is the data-structure of this message
@@ -56,6 +59,139 @@ type _ParameterValueSerialNumber struct {
 
 var _ ParameterValueSerialNumber = (*_ParameterValueSerialNumber)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueSerialNumber)(nil)
+
+// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
+func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
+	if value == nil {
+		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
+	}
+	_result := &_ParameterValueSerialNumber{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueSerialNumberBuilder is a builder for ParameterValueSerialNumber
+type ParameterValueSerialNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder
+	// WithValue adds Value (property field)
+	WithValue(SerialNumber) ParameterValueSerialNumberBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueSerialNumberBuilder
+	// Build builds the ParameterValueSerialNumber or returns an error if something is wrong
+	Build() (ParameterValueSerialNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueSerialNumber
+}
+
+// NewParameterValueSerialNumberBuilder() creates a ParameterValueSerialNumberBuilder
+func NewParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
+	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: new(_ParameterValueSerialNumber)}
+}
+
+type _ParameterValueSerialNumberBuilder struct {
+	*_ParameterValueSerialNumber
+
+	parentBuilder *_ParameterValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueSerialNumberBuilder) = (*_ParameterValueSerialNumberBuilder)(nil)
+
+func (b *_ParameterValueSerialNumberBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
+}
+
+func (b *_ParameterValueSerialNumberBuilder) WithMandatoryFields(value SerialNumber, data []byte) ParameterValueSerialNumberBuilder {
+	return b.WithValue(value).WithData(data...)
+}
+
+func (b *_ParameterValueSerialNumberBuilder) WithValue(value SerialNumber) ParameterValueSerialNumberBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueSerialNumberBuilder) WithValueBuilder(builderSupplier func(SerialNumberBuilder) SerialNumberBuilder) ParameterValueSerialNumberBuilder {
+	builder := builderSupplier(b.Value.CreateSerialNumberBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SerialNumberBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ParameterValueSerialNumberBuilder) WithData(data ...byte) ParameterValueSerialNumberBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueSerialNumberBuilder) Build() (ParameterValueSerialNumber, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterValueSerialNumber.deepCopy(), nil
+}
+
+func (b *_ParameterValueSerialNumberBuilder) MustBuild() ParameterValueSerialNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueSerialNumberBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueSerialNumberBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueSerialNumberBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueSerialNumberBuilder().(*_ParameterValueSerialNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterValueSerialNumberBuilder creates a ParameterValueSerialNumberBuilder
+func (b *_ParameterValueSerialNumber) CreateParameterValueSerialNumberBuilder() ParameterValueSerialNumberBuilder {
+	if b == nil {
+		return NewParameterValueSerialNumberBuilder()
+	}
+	return &_ParameterValueSerialNumberBuilder{_ParameterValueSerialNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_ParameterValueSerialNumber) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueSerialNumber factory function for _ParameterValueSerialNumber
-func NewParameterValueSerialNumber(value SerialNumber, data []byte, numBytes uint8) *_ParameterValueSerialNumber {
-	if value == nil {
-		panic("value of type SerialNumber for ParameterValueSerialNumber must not be nil")
-	}
-	_result := &_ParameterValueSerialNumber{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueSerialNumber(structType any) ParameterValueSerialNumber {
@@ -211,13 +333,34 @@ func (m *_ParameterValueSerialNumber) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_ParameterValueSerialNumber) IsParameterValueSerialNumber() {}
 
+func (m *_ParameterValueSerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueSerialNumber) deepCopy() *_ParameterValueSerialNumber {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueSerialNumberCopy := &_ParameterValueSerialNumber{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(SerialNumber),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueSerialNumberCopy
+}
+
 func (m *_ParameterValueSerialNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

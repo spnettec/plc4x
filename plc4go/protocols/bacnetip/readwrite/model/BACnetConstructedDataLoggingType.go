@@ -38,6 +38,7 @@ type BACnetConstructedDataLoggingType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLoggingType returns LoggingType (property field)
 	GetLoggingType() BACnetLoggingTypeTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataLoggingType interface {
 	GetActualValue() BACnetLoggingTypeTagged
 	// IsBACnetConstructedDataLoggingType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLoggingType()
+	// CreateBuilder creates a BACnetConstructedDataLoggingTypeBuilder
+	CreateBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTypeBuilder
 }
 
 // _BACnetConstructedDataLoggingType is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLoggingType struct {
 
 var _ BACnetConstructedDataLoggingType = (*_BACnetConstructedDataLoggingType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoggingType)(nil)
+
+// NewBACnetConstructedDataLoggingType factory function for _BACnetConstructedDataLoggingType
+func NewBACnetConstructedDataLoggingType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, loggingType BACnetLoggingTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingType {
+	if loggingType == nil {
+		panic("loggingType of type BACnetLoggingTypeTagged for BACnetConstructedDataLoggingType must not be nil")
+	}
+	_result := &_BACnetConstructedDataLoggingType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LoggingType:                   loggingType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLoggingTypeBuilder is a builder for BACnetConstructedDataLoggingType
+type BACnetConstructedDataLoggingTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder
+	// WithLoggingType adds LoggingType (property field)
+	WithLoggingType(BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder
+	// WithLoggingTypeBuilder adds LoggingType (property field) which is build by the builder
+	WithLoggingTypeBuilder(func(BACnetLoggingTypeTaggedBuilder) BACnetLoggingTypeTaggedBuilder) BACnetConstructedDataLoggingTypeBuilder
+	// Build builds the BACnetConstructedDataLoggingType or returns an error if something is wrong
+	Build() (BACnetConstructedDataLoggingType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLoggingType
+}
+
+// NewBACnetConstructedDataLoggingTypeBuilder() creates a BACnetConstructedDataLoggingTypeBuilder
+func NewBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTypeBuilder {
+	return &_BACnetConstructedDataLoggingTypeBuilder{_BACnetConstructedDataLoggingType: new(_BACnetConstructedDataLoggingType)}
+}
+
+type _BACnetConstructedDataLoggingTypeBuilder struct {
+	*_BACnetConstructedDataLoggingType
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLoggingTypeBuilder) = (*_BACnetConstructedDataLoggingTypeBuilder)(nil)
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithMandatoryFields(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
+	return b.WithLoggingType(loggingType)
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingType(loggingType BACnetLoggingTypeTagged) BACnetConstructedDataLoggingTypeBuilder {
+	b.LoggingType = loggingType
+	return b
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) WithLoggingTypeBuilder(builderSupplier func(BACnetLoggingTypeTaggedBuilder) BACnetLoggingTypeTaggedBuilder) BACnetConstructedDataLoggingTypeBuilder {
+	builder := builderSupplier(b.LoggingType.CreateBACnetLoggingTypeTaggedBuilder())
+	var err error
+	b.LoggingType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLoggingTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) Build() (BACnetConstructedDataLoggingType, error) {
+	if b.LoggingType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'loggingType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLoggingType.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) MustBuild() BACnetConstructedDataLoggingType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLoggingTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLoggingTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLoggingTypeBuilder().(*_BACnetConstructedDataLoggingTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLoggingTypeBuilder creates a BACnetConstructedDataLoggingTypeBuilder
+func (b *_BACnetConstructedDataLoggingType) CreateBACnetConstructedDataLoggingTypeBuilder() BACnetConstructedDataLoggingTypeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLoggingTypeBuilder()
+	}
+	return &_BACnetConstructedDataLoggingTypeBuilder{_BACnetConstructedDataLoggingType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLoggingType) GetActualValue() BACnetLoggingTypeTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLoggingType factory function for _BACnetConstructedDataLoggingType
-func NewBACnetConstructedDataLoggingType(loggingType BACnetLoggingTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoggingType {
-	if loggingType == nil {
-		panic("loggingType of type BACnetLoggingTypeTagged for BACnetConstructedDataLoggingType must not be nil")
-	}
-	_result := &_BACnetConstructedDataLoggingType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LoggingType:                   loggingType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLoggingType(structType any) BACnetConstructedDataLoggingType {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLoggingType) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataLoggingType) IsBACnetConstructedDataLoggingType() {}
 
+func (m *_BACnetConstructedDataLoggingType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoggingType) deepCopy() *_BACnetConstructedDataLoggingType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoggingTypeCopy := &_BACnetConstructedDataLoggingType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LoggingType.DeepCopy().(BACnetLoggingTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoggingTypeCopy
+}
+
 func (m *_BACnetConstructedDataLoggingType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

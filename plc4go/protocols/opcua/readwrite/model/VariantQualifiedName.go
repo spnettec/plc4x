@@ -38,6 +38,7 @@ type VariantQualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantQualifiedName interface {
 	GetValue() []QualifiedName
 	// IsVariantQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantQualifiedName()
+	// CreateBuilder creates a VariantQualifiedNameBuilder
+	CreateVariantQualifiedNameBuilder() VariantQualifiedNameBuilder
 }
 
 // _VariantQualifiedName is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantQualifiedName struct {
 
 var _ VariantQualifiedName = (*_VariantQualifiedName)(nil)
 var _ VariantRequirements = (*_VariantQualifiedName)(nil)
+
+// NewVariantQualifiedName factory function for _VariantQualifiedName
+func NewVariantQualifiedName(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []QualifiedName) *_VariantQualifiedName {
+	_result := &_VariantQualifiedName{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantQualifiedNameBuilder is a builder for VariantQualifiedName
+type VariantQualifiedNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []QualifiedName) VariantQualifiedNameBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantQualifiedNameBuilder
+	// WithValue adds Value (property field)
+	WithValue(...QualifiedName) VariantQualifiedNameBuilder
+	// Build builds the VariantQualifiedName or returns an error if something is wrong
+	Build() (VariantQualifiedName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantQualifiedName
+}
+
+// NewVariantQualifiedNameBuilder() creates a VariantQualifiedNameBuilder
+func NewVariantQualifiedNameBuilder() VariantQualifiedNameBuilder {
+	return &_VariantQualifiedNameBuilder{_VariantQualifiedName: new(_VariantQualifiedName)}
+}
+
+type _VariantQualifiedNameBuilder struct {
+	*_VariantQualifiedName
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantQualifiedNameBuilder) = (*_VariantQualifiedNameBuilder)(nil)
+
+func (b *_VariantQualifiedNameBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantQualifiedNameBuilder) WithMandatoryFields(value []QualifiedName) VariantQualifiedNameBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantQualifiedNameBuilder) WithOptionalArrayLength(arrayLength int32) VariantQualifiedNameBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantQualifiedNameBuilder) WithValue(value ...QualifiedName) VariantQualifiedNameBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantQualifiedNameBuilder) Build() (VariantQualifiedName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantQualifiedName.deepCopy(), nil
+}
+
+func (b *_VariantQualifiedNameBuilder) MustBuild() VariantQualifiedName {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantQualifiedNameBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantQualifiedNameBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantQualifiedNameBuilder) DeepCopy() any {
+	_copy := b.CreateVariantQualifiedNameBuilder().(*_VariantQualifiedNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantQualifiedNameBuilder creates a VariantQualifiedNameBuilder
+func (b *_VariantQualifiedName) CreateVariantQualifiedNameBuilder() VariantQualifiedNameBuilder {
+	if b == nil {
+		return NewVariantQualifiedNameBuilder()
+	}
+	return &_VariantQualifiedNameBuilder{_VariantQualifiedName: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantQualifiedName) GetValue() []QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantQualifiedName factory function for _VariantQualifiedName
-func NewVariantQualifiedName(arrayLength *int32, value []QualifiedName, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantQualifiedName {
-	_result := &_VariantQualifiedName{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantQualifiedName(structType any) VariantQualifiedName {
@@ -211,13 +312,34 @@ func (m *_VariantQualifiedName) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_VariantQualifiedName) IsVariantQualifiedName() {}
 
+func (m *_VariantQualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantQualifiedName) deepCopy() *_VariantQualifiedName {
+	if m == nil {
+		return nil
+	}
+	_VariantQualifiedNameCopy := &_VariantQualifiedName{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[QualifiedName, QualifiedName](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantQualifiedNameCopy
+}
+
 func (m *_VariantQualifiedName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

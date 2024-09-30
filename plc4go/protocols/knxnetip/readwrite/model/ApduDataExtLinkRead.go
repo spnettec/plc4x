@@ -36,9 +36,12 @@ type ApduDataExtLinkRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtLinkRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtLinkRead()
+	// CreateBuilder creates a ApduDataExtLinkReadBuilder
+	CreateApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder
 }
 
 // _ApduDataExtLinkRead is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataExtLinkRead struct {
 
 var _ ApduDataExtLinkRead = (*_ApduDataExtLinkRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtLinkRead)(nil)
+
+// NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
+func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
+	_result := &_ApduDataExtLinkRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtLinkReadBuilder is a builder for ApduDataExtLinkRead
+type ApduDataExtLinkReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtLinkReadBuilder
+	// Build builds the ApduDataExtLinkRead or returns an error if something is wrong
+	Build() (ApduDataExtLinkRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtLinkRead
+}
+
+// NewApduDataExtLinkReadBuilder() creates a ApduDataExtLinkReadBuilder
+func NewApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder {
+	return &_ApduDataExtLinkReadBuilder{_ApduDataExtLinkRead: new(_ApduDataExtLinkRead)}
+}
+
+type _ApduDataExtLinkReadBuilder struct {
+	*_ApduDataExtLinkRead
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtLinkReadBuilder) = (*_ApduDataExtLinkReadBuilder)(nil)
+
+func (b *_ApduDataExtLinkReadBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtLinkReadBuilder) WithMandatoryFields() ApduDataExtLinkReadBuilder {
+	return b
+}
+
+func (b *_ApduDataExtLinkReadBuilder) Build() (ApduDataExtLinkRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtLinkRead.deepCopy(), nil
+}
+
+func (b *_ApduDataExtLinkReadBuilder) MustBuild() ApduDataExtLinkRead {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtLinkReadBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtLinkReadBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtLinkReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtLinkReadBuilder().(*_ApduDataExtLinkReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtLinkReadBuilder creates a ApduDataExtLinkReadBuilder
+func (b *_ApduDataExtLinkRead) CreateApduDataExtLinkReadBuilder() ApduDataExtLinkReadBuilder {
+	if b == nil {
+		return NewApduDataExtLinkReadBuilder()
+	}
+	return &_ApduDataExtLinkReadBuilder{_ApduDataExtLinkRead: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataExtLinkRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtLinkRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtLinkRead factory function for _ApduDataExtLinkRead
-func NewApduDataExtLinkRead(length uint8) *_ApduDataExtLinkRead {
-	_result := &_ApduDataExtLinkRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataExtLinkRead) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_ApduDataExtLinkRead) IsApduDataExtLinkRead() {}
 
+func (m *_ApduDataExtLinkRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtLinkRead) deepCopy() *_ApduDataExtLinkRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtLinkReadCopy := &_ApduDataExtLinkRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtLinkReadCopy
+}
+
 func (m *_ApduDataExtLinkRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

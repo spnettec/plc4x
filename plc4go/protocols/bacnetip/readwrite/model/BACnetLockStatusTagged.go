@@ -38,12 +38,15 @@ type BACnetLockStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLockStatus
 	// IsBACnetLockStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLockStatusTagged()
+	// CreateBuilder creates a BACnetLockStatusTaggedBuilder
+	CreateBACnetLockStatusTaggedBuilder() BACnetLockStatusTaggedBuilder
 }
 
 // _BACnetLockStatusTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetLockStatusTagged struct {
 }
 
 var _ BACnetLockStatusTagged = (*_BACnetLockStatusTagged)(nil)
+
+// NewBACnetLockStatusTagged factory function for _BACnetLockStatusTagged
+func NewBACnetLockStatusTagged(header BACnetTagHeader, value BACnetLockStatus, tagNumber uint8, tagClass TagClass) *_BACnetLockStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLockStatusTagged must not be nil")
+	}
+	return &_BACnetLockStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLockStatusTaggedBuilder is a builder for BACnetLockStatusTagged
+type BACnetLockStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLockStatus) BACnetLockStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLockStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLockStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLockStatus) BACnetLockStatusTaggedBuilder
+	// Build builds the BACnetLockStatusTagged or returns an error if something is wrong
+	Build() (BACnetLockStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLockStatusTagged
+}
+
+// NewBACnetLockStatusTaggedBuilder() creates a BACnetLockStatusTaggedBuilder
+func NewBACnetLockStatusTaggedBuilder() BACnetLockStatusTaggedBuilder {
+	return &_BACnetLockStatusTaggedBuilder{_BACnetLockStatusTagged: new(_BACnetLockStatusTagged)}
+}
+
+type _BACnetLockStatusTaggedBuilder struct {
+	*_BACnetLockStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLockStatusTaggedBuilder) = (*_BACnetLockStatusTaggedBuilder)(nil)
+
+func (b *_BACnetLockStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLockStatus) BACnetLockStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLockStatusTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLockStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) WithValue(value BACnetLockStatus) BACnetLockStatusTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) Build() (BACnetLockStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLockStatusTagged.deepCopy(), nil
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) MustBuild() BACnetLockStatusTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLockStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLockStatusTaggedBuilder().(*_BACnetLockStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLockStatusTaggedBuilder creates a BACnetLockStatusTaggedBuilder
+func (b *_BACnetLockStatusTagged) CreateBACnetLockStatusTaggedBuilder() BACnetLockStatusTaggedBuilder {
+	if b == nil {
+		return NewBACnetLockStatusTaggedBuilder()
+	}
+	return &_BACnetLockStatusTaggedBuilder{_BACnetLockStatusTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetLockStatusTagged) GetValue() BACnetLockStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLockStatusTagged factory function for _BACnetLockStatusTagged
-func NewBACnetLockStatusTagged(header BACnetTagHeader, value BACnetLockStatus, tagNumber uint8, tagClass TagClass) *_BACnetLockStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLockStatusTagged must not be nil")
-	}
-	return &_BACnetLockStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLockStatusTagged(structType any) BACnetLockStatusTagged {
@@ -130,7 +237,7 @@ func BACnetLockStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLockStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLockStatusTagged BACnetLockStatusTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetLockStatusTagged) GetTagClass() TagClass {
 
 func (m *_BACnetLockStatusTagged) IsBACnetLockStatusTagged() {}
 
+func (m *_BACnetLockStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLockStatusTagged) deepCopy() *_BACnetLockStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLockStatusTaggedCopy := &_BACnetLockStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLockStatusTaggedCopy
+}
+
 func (m *_BACnetLockStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

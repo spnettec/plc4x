@@ -38,6 +38,7 @@ type BACnetConstructedDataCarLoad interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarLoad returns CarLoad (property field)
 	GetCarLoad() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataCarLoad interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataCarLoad is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarLoad()
+	// CreateBuilder creates a BACnetConstructedDataCarLoadBuilder
+	CreateBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilder
 }
 
 // _BACnetConstructedDataCarLoad is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCarLoad struct {
 
 var _ BACnetConstructedDataCarLoad = (*_BACnetConstructedDataCarLoad)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarLoad)(nil)
+
+// NewBACnetConstructedDataCarLoad factory function for _BACnetConstructedDataCarLoad
+func NewBACnetConstructedDataCarLoad(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carLoad BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
+	if carLoad == nil {
+		panic("carLoad of type BACnetApplicationTagReal for BACnetConstructedDataCarLoad must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarLoad{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarLoad:                       carLoad,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarLoadBuilder is a builder for BACnetConstructedDataCarLoad
+type BACnetConstructedDataCarLoadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder
+	// WithCarLoad adds CarLoad (property field)
+	WithCarLoad(BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder
+	// WithCarLoadBuilder adds CarLoad (property field) which is build by the builder
+	WithCarLoadBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCarLoadBuilder
+	// Build builds the BACnetConstructedDataCarLoad or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarLoad, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarLoad
+}
+
+// NewBACnetConstructedDataCarLoadBuilder() creates a BACnetConstructedDataCarLoadBuilder
+func NewBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilder {
+	return &_BACnetConstructedDataCarLoadBuilder{_BACnetConstructedDataCarLoad: new(_BACnetConstructedDataCarLoad)}
+}
+
+type _BACnetConstructedDataCarLoadBuilder struct {
+	*_BACnetConstructedDataCarLoad
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarLoadBuilder) = (*_BACnetConstructedDataCarLoadBuilder)(nil)
+
+func (b *_BACnetConstructedDataCarLoadBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) WithMandatoryFields(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
+	return b.WithCarLoad(carLoad)
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) WithCarLoad(carLoad BACnetApplicationTagReal) BACnetConstructedDataCarLoadBuilder {
+	b.CarLoad = carLoad
+	return b
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) WithCarLoadBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataCarLoadBuilder {
+	builder := builderSupplier(b.CarLoad.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.CarLoad, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) Build() (BACnetConstructedDataCarLoad, error) {
+	if b.CarLoad == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'carLoad' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCarLoad.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) MustBuild() BACnetConstructedDataCarLoad {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarLoadBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarLoadBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarLoadBuilder().(*_BACnetConstructedDataCarLoadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCarLoadBuilder creates a BACnetConstructedDataCarLoadBuilder
+func (b *_BACnetConstructedDataCarLoad) CreateBACnetConstructedDataCarLoadBuilder() BACnetConstructedDataCarLoadBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCarLoadBuilder()
+	}
+	return &_BACnetConstructedDataCarLoadBuilder{_BACnetConstructedDataCarLoad: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCarLoad) GetActualValue() BACnetApplicationTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarLoad factory function for _BACnetConstructedDataCarLoad
-func NewBACnetConstructedDataCarLoad(carLoad BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarLoad {
-	if carLoad == nil {
-		panic("carLoad of type BACnetApplicationTagReal for BACnetConstructedDataCarLoad must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarLoad{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarLoad:                       carLoad,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarLoad(structType any) BACnetConstructedDataCarLoad {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCarLoad) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetConstructedDataCarLoad) IsBACnetConstructedDataCarLoad() {}
 
+func (m *_BACnetConstructedDataCarLoad) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarLoad) deepCopy() *_BACnetConstructedDataCarLoad {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarLoadCopy := &_BACnetConstructedDataCarLoad{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarLoad.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarLoadCopy
+}
+
 func (m *_BACnetConstructedDataCarLoad) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

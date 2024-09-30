@@ -36,8 +36,11 @@ type ApplicationInstanceCertificate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApplicationInstanceCertificate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationInstanceCertificate()
+	// CreateBuilder creates a ApplicationInstanceCertificateBuilder
+	CreateApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder
 }
 
 // _ApplicationInstanceCertificate is the data-structure of this message
@@ -50,6 +53,75 @@ var _ ApplicationInstanceCertificate = (*_ApplicationInstanceCertificate)(nil)
 func NewApplicationInstanceCertificate() *_ApplicationInstanceCertificate {
 	return &_ApplicationInstanceCertificate{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApplicationInstanceCertificateBuilder is a builder for ApplicationInstanceCertificate
+type ApplicationInstanceCertificateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApplicationInstanceCertificateBuilder
+	// Build builds the ApplicationInstanceCertificate or returns an error if something is wrong
+	Build() (ApplicationInstanceCertificate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApplicationInstanceCertificate
+}
+
+// NewApplicationInstanceCertificateBuilder() creates a ApplicationInstanceCertificateBuilder
+func NewApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder {
+	return &_ApplicationInstanceCertificateBuilder{_ApplicationInstanceCertificate: new(_ApplicationInstanceCertificate)}
+}
+
+type _ApplicationInstanceCertificateBuilder struct {
+	*_ApplicationInstanceCertificate
+
+	err *utils.MultiError
+}
+
+var _ (ApplicationInstanceCertificateBuilder) = (*_ApplicationInstanceCertificateBuilder)(nil)
+
+func (b *_ApplicationInstanceCertificateBuilder) WithMandatoryFields() ApplicationInstanceCertificateBuilder {
+	return b
+}
+
+func (b *_ApplicationInstanceCertificateBuilder) Build() (ApplicationInstanceCertificate, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApplicationInstanceCertificate.deepCopy(), nil
+}
+
+func (b *_ApplicationInstanceCertificateBuilder) MustBuild() ApplicationInstanceCertificate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApplicationInstanceCertificateBuilder) DeepCopy() any {
+	_copy := b.CreateApplicationInstanceCertificateBuilder().(*_ApplicationInstanceCertificateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApplicationInstanceCertificateBuilder creates a ApplicationInstanceCertificateBuilder
+func (b *_ApplicationInstanceCertificate) CreateApplicationInstanceCertificateBuilder() ApplicationInstanceCertificateBuilder {
+	if b == nil {
+		return NewApplicationInstanceCertificateBuilder()
+	}
+	return &_ApplicationInstanceCertificateBuilder{_ApplicationInstanceCertificate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApplicationInstanceCertificate(structType any) ApplicationInstanceCertificate {
@@ -91,7 +163,7 @@ func ApplicationInstanceCertificateParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ApplicationInstanceCertificate) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__applicationInstanceCertificate ApplicationInstanceCertificate, err error) {
@@ -135,13 +207,29 @@ func (m *_ApplicationInstanceCertificate) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_ApplicationInstanceCertificate) IsApplicationInstanceCertificate() {}
 
+func (m *_ApplicationInstanceCertificate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationInstanceCertificate) deepCopy() *_ApplicationInstanceCertificate {
+	if m == nil {
+		return nil
+	}
+	_ApplicationInstanceCertificateCopy := &_ApplicationInstanceCertificate{}
+	return _ApplicationInstanceCertificateCopy
+}
+
 func (m *_ApplicationInstanceCertificate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type NodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeIdTypeDefinition
 	// GetId returns Id (virtual field)
 	GetId() string
 	// IsNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeId()
+	// CreateBuilder creates a NodeIdBuilder
+	CreateNodeIdBuilder() NodeIdBuilder
 }
 
 // _NodeId is the data-structure of this message
@@ -54,6 +57,111 @@ type _NodeId struct {
 }
 
 var _ NodeId = (*_NodeId)(nil)
+
+// NewNodeId factory function for _NodeId
+func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
+	if nodeId == nil {
+		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
+	}
+	return &_NodeId{NodeId: nodeId}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdBuilder is a builder for NodeId
+type NodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeIdTypeDefinition) NodeIdBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) NodeIdBuilder
+	// Build builds the NodeId or returns an error if something is wrong
+	Build() (NodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeId
+}
+
+// NewNodeIdBuilder() creates a NodeIdBuilder
+func NewNodeIdBuilder() NodeIdBuilder {
+	return &_NodeIdBuilder{_NodeId: new(_NodeId)}
+}
+
+type _NodeIdBuilder struct {
+	*_NodeId
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdBuilder) = (*_NodeIdBuilder)(nil)
+
+func (b *_NodeIdBuilder) WithMandatoryFields(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	return b.WithNodeId(nodeId)
+}
+
+func (b *_NodeIdBuilder) WithNodeId(nodeId NodeIdTypeDefinition) NodeIdBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_NodeIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdTypeDefinitionBuilder) NodeIdTypeDefinitionBuilder) NodeIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdTypeDefinitionBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdTypeDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NodeIdBuilder) Build() (NodeId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NodeId.deepCopy(), nil
+}
+
+func (b *_NodeIdBuilder) MustBuild() NodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdBuilder().(*_NodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNodeIdBuilder creates a NodeIdBuilder
+func (b *_NodeId) CreateNodeIdBuilder() NodeIdBuilder {
+	if b == nil {
+		return NewNodeIdBuilder()
+	}
+	return &_NodeIdBuilder{_NodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,14 +191,6 @@ func (m *_NodeId) GetId() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeId factory function for _NodeId
-func NewNodeId(nodeId NodeIdTypeDefinition) *_NodeId {
-	if nodeId == nil {
-		panic("nodeId of type NodeIdTypeDefinition for NodeId must not be nil")
-	}
-	return &_NodeId{NodeId: nodeId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeId(structType any) NodeId {
@@ -140,7 +240,7 @@ func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (No
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nodeId NodeId, err error) {
@@ -216,13 +316,32 @@ func (m *_NodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 
 func (m *_NodeId) IsNodeId() {}
 
+func (m *_NodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeId) deepCopy() *_NodeId {
+	if m == nil {
+		return nil
+	}
+	_NodeIdCopy := &_NodeId{
+		m.NodeId.DeepCopy().(NodeIdTypeDefinition),
+		m.reservedField0,
+	}
+	return _NodeIdCopy
+}
+
 func (m *_NodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type HPAIDataEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -46,6 +47,8 @@ type HPAIDataEndpoint interface {
 	GetIpPort() uint16
 	// IsHPAIDataEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHPAIDataEndpoint()
+	// CreateBuilder creates a HPAIDataEndpointBuilder
+	CreateHPAIDataEndpointBuilder() HPAIDataEndpointBuilder
 }
 
 // _HPAIDataEndpoint is the data-structure of this message
@@ -56,6 +59,125 @@ type _HPAIDataEndpoint struct {
 }
 
 var _ HPAIDataEndpoint = (*_HPAIDataEndpoint)(nil)
+
+// NewHPAIDataEndpoint factory function for _HPAIDataEndpoint
+func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDataEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDataEndpoint must not be nil")
+	}
+	return &_HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HPAIDataEndpointBuilder is a builder for HPAIDataEndpoint
+type HPAIDataEndpointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDataEndpointBuilder
+	// WithHostProtocolCode adds HostProtocolCode (property field)
+	WithHostProtocolCode(HostProtocolCode) HPAIDataEndpointBuilder
+	// WithIpAddress adds IpAddress (property field)
+	WithIpAddress(IPAddress) HPAIDataEndpointBuilder
+	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
+	WithIpAddressBuilder(func(IPAddressBuilder) IPAddressBuilder) HPAIDataEndpointBuilder
+	// WithIpPort adds IpPort (property field)
+	WithIpPort(uint16) HPAIDataEndpointBuilder
+	// Build builds the HPAIDataEndpoint or returns an error if something is wrong
+	Build() (HPAIDataEndpoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HPAIDataEndpoint
+}
+
+// NewHPAIDataEndpointBuilder() creates a HPAIDataEndpointBuilder
+func NewHPAIDataEndpointBuilder() HPAIDataEndpointBuilder {
+	return &_HPAIDataEndpointBuilder{_HPAIDataEndpoint: new(_HPAIDataEndpoint)}
+}
+
+type _HPAIDataEndpointBuilder struct {
+	*_HPAIDataEndpoint
+
+	err *utils.MultiError
+}
+
+var _ (HPAIDataEndpointBuilder) = (*_HPAIDataEndpointBuilder)(nil)
+
+func (b *_HPAIDataEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDataEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+}
+
+func (b *_HPAIDataEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDataEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
+}
+
+func (b *_HPAIDataEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDataEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
+}
+
+func (b *_HPAIDataEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDataEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
+	var err error
+	b.IpAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HPAIDataEndpointBuilder) WithIpPort(ipPort uint16) HPAIDataEndpointBuilder {
+	b.IpPort = ipPort
+	return b
+}
+
+func (b *_HPAIDataEndpointBuilder) Build() (HPAIDataEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HPAIDataEndpoint.deepCopy(), nil
+}
+
+func (b *_HPAIDataEndpointBuilder) MustBuild() HPAIDataEndpoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HPAIDataEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIDataEndpointBuilder().(*_HPAIDataEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHPAIDataEndpointBuilder creates a HPAIDataEndpointBuilder
+func (b *_HPAIDataEndpoint) CreateHPAIDataEndpointBuilder() HPAIDataEndpointBuilder {
+	if b == nil {
+		return NewHPAIDataEndpointBuilder()
+	}
+	return &_HPAIDataEndpointBuilder{_HPAIDataEndpoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +200,6 @@ func (m *_HPAIDataEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIDataEndpoint factory function for _HPAIDataEndpoint
-func NewHPAIDataEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDataEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIDataEndpoint must not be nil")
-	}
-	return &_HPAIDataEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIDataEndpoint(structType any) HPAIDataEndpoint {
@@ -139,7 +253,7 @@ func HPAIDataEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HPAIDataEndpoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hPAIDataEndpoint HPAIDataEndpoint, err error) {
@@ -223,13 +337,33 @@ func (m *_HPAIDataEndpoint) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_HPAIDataEndpoint) IsHPAIDataEndpoint() {}
 
+func (m *_HPAIDataEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDataEndpoint) deepCopy() *_HPAIDataEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDataEndpointCopy := &_HPAIDataEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDataEndpointCopy
+}
+
 func (m *_HPAIDataEndpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

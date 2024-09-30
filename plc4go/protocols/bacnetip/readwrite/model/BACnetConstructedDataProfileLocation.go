@@ -38,6 +38,7 @@ type BACnetConstructedDataProfileLocation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProfileLocation returns ProfileLocation (property field)
 	GetProfileLocation() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataProfileLocation interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataProfileLocation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProfileLocation()
+	// CreateBuilder creates a BACnetConstructedDataProfileLocationBuilder
+	CreateBACnetConstructedDataProfileLocationBuilder() BACnetConstructedDataProfileLocationBuilder
 }
 
 // _BACnetConstructedDataProfileLocation is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataProfileLocation struct {
 
 var _ BACnetConstructedDataProfileLocation = (*_BACnetConstructedDataProfileLocation)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProfileLocation)(nil)
+
+// NewBACnetConstructedDataProfileLocation factory function for _BACnetConstructedDataProfileLocation
+func NewBACnetConstructedDataProfileLocation(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, profileLocation BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileLocation {
+	if profileLocation == nil {
+		panic("profileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileLocation must not be nil")
+	}
+	_result := &_BACnetConstructedDataProfileLocation{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProfileLocation:               profileLocation,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProfileLocationBuilder is a builder for BACnetConstructedDataProfileLocation
+type BACnetConstructedDataProfileLocationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(profileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder
+	// WithProfileLocation adds ProfileLocation (property field)
+	WithProfileLocation(BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder
+	// WithProfileLocationBuilder adds ProfileLocation (property field) which is build by the builder
+	WithProfileLocationBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileLocationBuilder
+	// Build builds the BACnetConstructedDataProfileLocation or returns an error if something is wrong
+	Build() (BACnetConstructedDataProfileLocation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProfileLocation
+}
+
+// NewBACnetConstructedDataProfileLocationBuilder() creates a BACnetConstructedDataProfileLocationBuilder
+func NewBACnetConstructedDataProfileLocationBuilder() BACnetConstructedDataProfileLocationBuilder {
+	return &_BACnetConstructedDataProfileLocationBuilder{_BACnetConstructedDataProfileLocation: new(_BACnetConstructedDataProfileLocation)}
+}
+
+type _BACnetConstructedDataProfileLocationBuilder struct {
+	*_BACnetConstructedDataProfileLocation
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProfileLocationBuilder) = (*_BACnetConstructedDataProfileLocationBuilder)(nil)
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) WithMandatoryFields(profileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder {
+	return b.WithProfileLocation(profileLocation)
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) WithProfileLocation(profileLocation BACnetApplicationTagCharacterString) BACnetConstructedDataProfileLocationBuilder {
+	b.ProfileLocation = profileLocation
+	return b
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) WithProfileLocationBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataProfileLocationBuilder {
+	builder := builderSupplier(b.ProfileLocation.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.ProfileLocation, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) Build() (BACnetConstructedDataProfileLocation, error) {
+	if b.ProfileLocation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'profileLocation' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataProfileLocation.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) MustBuild() BACnetConstructedDataProfileLocation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProfileLocationBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProfileLocationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProfileLocationBuilder().(*_BACnetConstructedDataProfileLocationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataProfileLocationBuilder creates a BACnetConstructedDataProfileLocationBuilder
+func (b *_BACnetConstructedDataProfileLocation) CreateBACnetConstructedDataProfileLocationBuilder() BACnetConstructedDataProfileLocationBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataProfileLocationBuilder()
+	}
+	return &_BACnetConstructedDataProfileLocationBuilder{_BACnetConstructedDataProfileLocation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataProfileLocation) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProfileLocation factory function for _BACnetConstructedDataProfileLocation
-func NewBACnetConstructedDataProfileLocation(profileLocation BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProfileLocation {
-	if profileLocation == nil {
-		panic("profileLocation of type BACnetApplicationTagCharacterString for BACnetConstructedDataProfileLocation must not be nil")
-	}
-	_result := &_BACnetConstructedDataProfileLocation{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProfileLocation:               profileLocation,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProfileLocation(structType any) BACnetConstructedDataProfileLocation {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataProfileLocation) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataProfileLocation) IsBACnetConstructedDataProfileLocation() {}
 
+func (m *_BACnetConstructedDataProfileLocation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProfileLocation) deepCopy() *_BACnetConstructedDataProfileLocation {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProfileLocationCopy := &_BACnetConstructedDataProfileLocation{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProfileLocation.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProfileLocationCopy
+}
+
 func (m *_BACnetConstructedDataProfileLocation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

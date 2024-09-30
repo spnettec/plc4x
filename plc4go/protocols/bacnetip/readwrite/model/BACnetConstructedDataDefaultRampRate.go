@@ -38,6 +38,7 @@ type BACnetConstructedDataDefaultRampRate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDefaultRampRate returns DefaultRampRate (property field)
 	GetDefaultRampRate() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataDefaultRampRate interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataDefaultRampRate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDefaultRampRate()
+	// CreateBuilder creates a BACnetConstructedDataDefaultRampRateBuilder
+	CreateBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefaultRampRateBuilder
 }
 
 // _BACnetConstructedDataDefaultRampRate is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDefaultRampRate struct {
 
 var _ BACnetConstructedDataDefaultRampRate = (*_BACnetConstructedDataDefaultRampRate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDefaultRampRate)(nil)
+
+// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
+func NewBACnetConstructedDataDefaultRampRate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, defaultRampRate BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
+	if defaultRampRate == nil {
+		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
+	}
+	_result := &_BACnetConstructedDataDefaultRampRate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DefaultRampRate:               defaultRampRate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDefaultRampRateBuilder is a builder for BACnetConstructedDataDefaultRampRate
+type BACnetConstructedDataDefaultRampRateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder
+	// WithDefaultRampRate adds DefaultRampRate (property field)
+	WithDefaultRampRate(BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder
+	// WithDefaultRampRateBuilder adds DefaultRampRate (property field) which is build by the builder
+	WithDefaultRampRateBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultRampRateBuilder
+	// Build builds the BACnetConstructedDataDefaultRampRate or returns an error if something is wrong
+	Build() (BACnetConstructedDataDefaultRampRate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDefaultRampRate
+}
+
+// NewBACnetConstructedDataDefaultRampRateBuilder() creates a BACnetConstructedDataDefaultRampRateBuilder
+func NewBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefaultRampRateBuilder {
+	return &_BACnetConstructedDataDefaultRampRateBuilder{_BACnetConstructedDataDefaultRampRate: new(_BACnetConstructedDataDefaultRampRate)}
+}
+
+type _BACnetConstructedDataDefaultRampRateBuilder struct {
+	*_BACnetConstructedDataDefaultRampRate
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDefaultRampRateBuilder) = (*_BACnetConstructedDataDefaultRampRateBuilder)(nil)
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithMandatoryFields(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
+	return b.WithDefaultRampRate(defaultRampRate)
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRate(defaultRampRate BACnetApplicationTagReal) BACnetConstructedDataDefaultRampRateBuilder {
+	b.DefaultRampRate = defaultRampRate
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) WithDefaultRampRateBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDefaultRampRateBuilder {
+	builder := builderSupplier(b.DefaultRampRate.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.DefaultRampRate, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) Build() (BACnetConstructedDataDefaultRampRate, error) {
+	if b.DefaultRampRate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'defaultRampRate' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDefaultRampRate.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) MustBuild() BACnetConstructedDataDefaultRampRate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDefaultRampRateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDefaultRampRateBuilder().(*_BACnetConstructedDataDefaultRampRateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDefaultRampRateBuilder creates a BACnetConstructedDataDefaultRampRateBuilder
+func (b *_BACnetConstructedDataDefaultRampRate) CreateBACnetConstructedDataDefaultRampRateBuilder() BACnetConstructedDataDefaultRampRateBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDefaultRampRateBuilder()
+	}
+	return &_BACnetConstructedDataDefaultRampRateBuilder{_BACnetConstructedDataDefaultRampRate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDefaultRampRate) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDefaultRampRate factory function for _BACnetConstructedDataDefaultRampRate
-func NewBACnetConstructedDataDefaultRampRate(defaultRampRate BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDefaultRampRate {
-	if defaultRampRate == nil {
-		panic("defaultRampRate of type BACnetApplicationTagReal for BACnetConstructedDataDefaultRampRate must not be nil")
-	}
-	_result := &_BACnetConstructedDataDefaultRampRate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DefaultRampRate:               defaultRampRate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDefaultRampRate(structType any) BACnetConstructedDataDefaultRampRate {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataDefaultRampRate) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataDefaultRampRate) IsBACnetConstructedDataDefaultRampRate() {}
 
+func (m *_BACnetConstructedDataDefaultRampRate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDefaultRampRate) deepCopy() *_BACnetConstructedDataDefaultRampRate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDefaultRampRateCopy := &_BACnetConstructedDataDefaultRampRate{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DefaultRampRate.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDefaultRampRateCopy
+}
+
 func (m *_BACnetConstructedDataDefaultRampRate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

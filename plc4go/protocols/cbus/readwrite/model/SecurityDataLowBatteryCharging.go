@@ -38,6 +38,7 @@ type SecurityDataLowBatteryCharging interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetStartStop returns StartStop (property field)
 	GetStartStop() byte
@@ -47,6 +48,8 @@ type SecurityDataLowBatteryCharging interface {
 	GetChargeStarted() bool
 	// IsSecurityDataLowBatteryCharging is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLowBatteryCharging()
+	// CreateBuilder creates a SecurityDataLowBatteryChargingBuilder
+	CreateSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBuilder
 }
 
 // _SecurityDataLowBatteryCharging is the data-structure of this message
@@ -57,6 +60,107 @@ type _SecurityDataLowBatteryCharging struct {
 
 var _ SecurityDataLowBatteryCharging = (*_SecurityDataLowBatteryCharging)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLowBatteryCharging)(nil)
+
+// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
+func NewSecurityDataLowBatteryCharging(commandTypeContainer SecurityCommandTypeContainer, argument byte, startStop byte) *_SecurityDataLowBatteryCharging {
+	_result := &_SecurityDataLowBatteryCharging{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		StartStop:            startStop,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataLowBatteryChargingBuilder is a builder for SecurityDataLowBatteryCharging
+type SecurityDataLowBatteryChargingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder
+	// WithStartStop adds StartStop (property field)
+	WithStartStop(byte) SecurityDataLowBatteryChargingBuilder
+	// Build builds the SecurityDataLowBatteryCharging or returns an error if something is wrong
+	Build() (SecurityDataLowBatteryCharging, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataLowBatteryCharging
+}
+
+// NewSecurityDataLowBatteryChargingBuilder() creates a SecurityDataLowBatteryChargingBuilder
+func NewSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBuilder {
+	return &_SecurityDataLowBatteryChargingBuilder{_SecurityDataLowBatteryCharging: new(_SecurityDataLowBatteryCharging)}
+}
+
+type _SecurityDataLowBatteryChargingBuilder struct {
+	*_SecurityDataLowBatteryCharging
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataLowBatteryChargingBuilder) = (*_SecurityDataLowBatteryChargingBuilder)(nil)
+
+func (b *_SecurityDataLowBatteryChargingBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) WithMandatoryFields(startStop byte) SecurityDataLowBatteryChargingBuilder {
+	return b.WithStartStop(startStop)
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) WithStartStop(startStop byte) SecurityDataLowBatteryChargingBuilder {
+	b.StartStop = startStop
+	return b
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) Build() (SecurityDataLowBatteryCharging, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataLowBatteryCharging.deepCopy(), nil
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) MustBuild() SecurityDataLowBatteryCharging {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLowBatteryChargingBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLowBatteryChargingBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLowBatteryChargingBuilder().(*_SecurityDataLowBatteryChargingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataLowBatteryChargingBuilder creates a SecurityDataLowBatteryChargingBuilder
+func (b *_SecurityDataLowBatteryCharging) CreateSecurityDataLowBatteryChargingBuilder() SecurityDataLowBatteryChargingBuilder {
+	if b == nil {
+		return NewSecurityDataLowBatteryChargingBuilder()
+	}
+	return &_SecurityDataLowBatteryChargingBuilder{_SecurityDataLowBatteryCharging: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +210,6 @@ func (m *_SecurityDataLowBatteryCharging) GetChargeStarted() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataLowBatteryCharging factory function for _SecurityDataLowBatteryCharging
-func NewSecurityDataLowBatteryCharging(startStop byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLowBatteryCharging {
-	_result := &_SecurityDataLowBatteryCharging{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		StartStop:            startStop,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataLowBatteryCharging(structType any) SecurityDataLowBatteryCharging {
@@ -229,13 +323,33 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_SecurityDataLowBatteryCharging) IsSecurityDataLowBatteryCharging() {}
 
+func (m *_SecurityDataLowBatteryCharging) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLowBatteryCharging) deepCopy() *_SecurityDataLowBatteryCharging {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLowBatteryChargingCopy := &_SecurityDataLowBatteryCharging{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.StartStop,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLowBatteryChargingCopy
+}
+
 func (m *_SecurityDataLowBatteryCharging) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

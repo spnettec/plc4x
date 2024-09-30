@@ -38,6 +38,7 @@ type BACnetConstructedDataShedDuration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetShedDuration returns ShedDuration (property field)
 	GetShedDuration() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataShedDuration interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataShedDuration is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataShedDuration()
+	// CreateBuilder creates a BACnetConstructedDataShedDurationBuilder
+	CreateBACnetConstructedDataShedDurationBuilder() BACnetConstructedDataShedDurationBuilder
 }
 
 // _BACnetConstructedDataShedDuration is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataShedDuration struct {
 
 var _ BACnetConstructedDataShedDuration = (*_BACnetConstructedDataShedDuration)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataShedDuration)(nil)
+
+// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
+func NewBACnetConstructedDataShedDuration(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, shedDuration BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
+	if shedDuration == nil {
+		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
+	}
+	_result := &_BACnetConstructedDataShedDuration{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ShedDuration:                  shedDuration,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataShedDurationBuilder is a builder for BACnetConstructedDataShedDuration
+type BACnetConstructedDataShedDurationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(shedDuration BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder
+	// WithShedDuration adds ShedDuration (property field)
+	WithShedDuration(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder
+	// WithShedDurationBuilder adds ShedDuration (property field) which is build by the builder
+	WithShedDurationBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedDurationBuilder
+	// Build builds the BACnetConstructedDataShedDuration or returns an error if something is wrong
+	Build() (BACnetConstructedDataShedDuration, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataShedDuration
+}
+
+// NewBACnetConstructedDataShedDurationBuilder() creates a BACnetConstructedDataShedDurationBuilder
+func NewBACnetConstructedDataShedDurationBuilder() BACnetConstructedDataShedDurationBuilder {
+	return &_BACnetConstructedDataShedDurationBuilder{_BACnetConstructedDataShedDuration: new(_BACnetConstructedDataShedDuration)}
+}
+
+type _BACnetConstructedDataShedDurationBuilder struct {
+	*_BACnetConstructedDataShedDuration
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataShedDurationBuilder) = (*_BACnetConstructedDataShedDurationBuilder)(nil)
+
+func (b *_BACnetConstructedDataShedDurationBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) WithMandatoryFields(shedDuration BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder {
+	return b.WithShedDuration(shedDuration)
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) WithShedDuration(shedDuration BACnetApplicationTagUnsignedInteger) BACnetConstructedDataShedDurationBuilder {
+	b.ShedDuration = shedDuration
+	return b
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) WithShedDurationBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataShedDurationBuilder {
+	builder := builderSupplier(b.ShedDuration.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.ShedDuration, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) Build() (BACnetConstructedDataShedDuration, error) {
+	if b.ShedDuration == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'shedDuration' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataShedDuration.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) MustBuild() BACnetConstructedDataShedDuration {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataShedDurationBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataShedDurationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataShedDurationBuilder().(*_BACnetConstructedDataShedDurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataShedDurationBuilder creates a BACnetConstructedDataShedDurationBuilder
+func (b *_BACnetConstructedDataShedDuration) CreateBACnetConstructedDataShedDurationBuilder() BACnetConstructedDataShedDurationBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataShedDurationBuilder()
+	}
+	return &_BACnetConstructedDataShedDurationBuilder{_BACnetConstructedDataShedDuration: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataShedDuration) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataShedDuration factory function for _BACnetConstructedDataShedDuration
-func NewBACnetConstructedDataShedDuration(shedDuration BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataShedDuration {
-	if shedDuration == nil {
-		panic("shedDuration of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataShedDuration must not be nil")
-	}
-	_result := &_BACnetConstructedDataShedDuration{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ShedDuration:                  shedDuration,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataShedDuration(structType any) BACnetConstructedDataShedDuration {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataShedDuration) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetConstructedDataShedDuration) IsBACnetConstructedDataShedDuration() {}
 
+func (m *_BACnetConstructedDataShedDuration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataShedDuration) deepCopy() *_BACnetConstructedDataShedDuration {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataShedDurationCopy := &_BACnetConstructedDataShedDuration{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ShedDuration.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataShedDurationCopy
+}
+
 func (m *_BACnetConstructedDataShedDuration) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

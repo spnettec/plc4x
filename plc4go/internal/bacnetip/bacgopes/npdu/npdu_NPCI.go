@@ -21,15 +21,12 @@ package npdu
 
 import (
 	"context"
-	"fmt"
 	"math"
-	"strconv"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -78,19 +75,23 @@ type _NPCI struct {
 
 var _ NPCI = (*_NPCI)(nil)
 
-func NewNPCI(nlm readWriteModel.NLM, apdu readWriteModel.APDU) NPCI {
+func NewNPCI(args Args, kwArgs KWArgs, options ...Option) NPCI {
 	n := &_NPCI{
 		npduVersion: 1,
 	}
 	n.DebugContents = NewDebugContents(n, "npduVersion", "npduControl", "npduDADR", "npduSADR",
 		"npduHopCount", "npduNetMessage", "npduVendorID")
-	npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
-	nkw := NKW(KWCompRootMessage, npdu)
-	if npdu == nil {
-		nkw = NoKWArgs()
-	}
-	n.PCI = NewPCI(NoArgs, nkw) // TODO: convert to args so we can solve all those todos
+	options = AddLeafTypeIfAbundant(options, n)
+	n.PCI = NewPCI(args, kwArgs, options...)
 	n.AddExtraPrinters(n.PCI.(DebugContentPrinter))
+	if n.GetRootMessage() == nil {
+		nlm := ExtractNLM(options)
+		apdu := ExtractAPDU(options)
+		if nlm != nil || apdu != nil {
+			npdu, _ := n.buildNPDU(0, nil, nil, false, readWriteModel.NPDUNetworkPriority_NORMAL_MESSAGE, nlm, apdu)
+			n.SetRootMessage(npdu)
+		}
+	}
 	return n
 }
 
@@ -518,43 +519,4 @@ func (n *_NPCI) deepCopy() *_NPCI {
 
 func (n *_NPCI) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPCI) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("NPCI{%s}", n.PCI)
-	} else {
-		npduDADRStr := ""
-		if n.npduDADR != nil {
-			npduDADRStr = "\nnpduDADR = " + n.npduDADR.String()
-		}
-		npduSADRStr := ""
-		if n.npduSADR != nil {
-			npduSADRStr = "\nnpduSADR = " + n.npduSADR.String()
-		}
-		npduHopCountStr := ""
-		if n.npduHopCount != nil {
-			npduHopCountStr = "\nnpduHopCount = " + strconv.Itoa(int(*n.npduHopCount))
-		}
-		npduNetMessageStr := ""
-		if n.npduNetMessage != nil {
-			npduNetMessageStr = "\nnpduNetMessage = " + strconv.Itoa(int(*n.npduNetMessage))
-		}
-		npduVendorIDStr := ""
-		if n.npduVendorID != nil {
-			npduVendorIDStr = "\nnpduVendorID = " + n.npduVendorID.String()
-		}
-		return fmt.Sprintf("\n%s\n"+
-			"npduVersion = %d\n"+
-			"npduControl = %d%s%s%s%s%s",
-			n.PCI,
-			n.npduVersion,
-			n.npduControl,
-			npduDADRStr,
-			npduSADRStr,
-			npduHopCountStr,
-			npduNetMessageStr,
-			npduVendorIDStr,
-		)
-	}
 }

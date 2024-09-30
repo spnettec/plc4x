@@ -38,11 +38,14 @@ type CipSecurityInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CommandSpecificDataItem
 	// GetTodoImplement returns TodoImplement (property field)
 	GetTodoImplement() []uint8
 	// IsCipSecurityInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipSecurityInformation()
+	// CreateBuilder creates a CipSecurityInformationBuilder
+	CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder
 }
 
 // _CipSecurityInformation is the data-structure of this message
@@ -53,6 +56,107 @@ type _CipSecurityInformation struct {
 
 var _ CipSecurityInformation = (*_CipSecurityInformation)(nil)
 var _ CommandSpecificDataItemRequirements = (*_CipSecurityInformation)(nil)
+
+// NewCipSecurityInformation factory function for _CipSecurityInformation
+func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
+	_result := &_CipSecurityInformation{
+		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
+		TodoImplement:                   todoImplement,
+	}
+	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipSecurityInformationBuilder is a builder for CipSecurityInformation
+type CipSecurityInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder
+	// WithTodoImplement adds TodoImplement (property field)
+	WithTodoImplement(...uint8) CipSecurityInformationBuilder
+	// Build builds the CipSecurityInformation or returns an error if something is wrong
+	Build() (CipSecurityInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipSecurityInformation
+}
+
+// NewCipSecurityInformationBuilder() creates a CipSecurityInformationBuilder
+func NewCipSecurityInformationBuilder() CipSecurityInformationBuilder {
+	return &_CipSecurityInformationBuilder{_CipSecurityInformation: new(_CipSecurityInformation)}
+}
+
+type _CipSecurityInformationBuilder struct {
+	*_CipSecurityInformation
+
+	parentBuilder *_CommandSpecificDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipSecurityInformationBuilder) = (*_CipSecurityInformationBuilder)(nil)
+
+func (b *_CipSecurityInformationBuilder) setParent(contract CommandSpecificDataItemContract) {
+	b.CommandSpecificDataItemContract = contract
+}
+
+func (b *_CipSecurityInformationBuilder) WithMandatoryFields(todoImplement []uint8) CipSecurityInformationBuilder {
+	return b.WithTodoImplement(todoImplement...)
+}
+
+func (b *_CipSecurityInformationBuilder) WithTodoImplement(todoImplement ...uint8) CipSecurityInformationBuilder {
+	b.TodoImplement = todoImplement
+	return b
+}
+
+func (b *_CipSecurityInformationBuilder) Build() (CipSecurityInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipSecurityInformation.deepCopy(), nil
+}
+
+func (b *_CipSecurityInformationBuilder) MustBuild() CipSecurityInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipSecurityInformationBuilder) Done() CommandSpecificDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipSecurityInformationBuilder) buildForCommandSpecificDataItem() (CommandSpecificDataItem, error) {
+	return b.Build()
+}
+
+func (b *_CipSecurityInformationBuilder) DeepCopy() any {
+	_copy := b.CreateCipSecurityInformationBuilder().(*_CipSecurityInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipSecurityInformationBuilder creates a CipSecurityInformationBuilder
+func (b *_CipSecurityInformation) CreateCipSecurityInformationBuilder() CipSecurityInformationBuilder {
+	if b == nil {
+		return NewCipSecurityInformationBuilder()
+	}
+	return &_CipSecurityInformationBuilder{_CipSecurityInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_CipSecurityInformation) GetTodoImplement() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipSecurityInformation factory function for _CipSecurityInformation
-func NewCipSecurityInformation(todoImplement []uint8) *_CipSecurityInformation {
-	_result := &_CipSecurityInformation{
-		CommandSpecificDataItemContract: NewCommandSpecificDataItem(),
-		TodoImplement:                   todoImplement,
-	}
-	_result.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipSecurityInformation(structType any) CipSecurityInformation {
@@ -195,13 +289,33 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_CipSecurityInformation) IsCipSecurityInformation() {}
 
+func (m *_CipSecurityInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipSecurityInformation) deepCopy() *_CipSecurityInformation {
+	if m == nil {
+		return nil
+	}
+	_CipSecurityInformationCopy := &_CipSecurityInformation{
+		m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.TodoImplement),
+	}
+	m.CommandSpecificDataItemContract.(*_CommandSpecificDataItem)._SubType = m
+	return _CipSecurityInformationCopy
+}
+
 func (m *_CipSecurityInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

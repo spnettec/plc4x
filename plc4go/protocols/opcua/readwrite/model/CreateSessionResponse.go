@@ -38,6 +38,7 @@ type CreateSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -65,6 +66,8 @@ type CreateSessionResponse interface {
 	GetMaxRequestMessageSize() uint32
 	// IsCreateSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCreateSessionResponse()
+	// CreateBuilder creates a CreateSessionResponseBuilder
+	CreateCreateSessionResponseBuilder() CreateSessionResponseBuilder
 }
 
 // _CreateSessionResponse is the data-structure of this message
@@ -86,6 +89,339 @@ type _CreateSessionResponse struct {
 
 var _ CreateSessionResponse = (*_CreateSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CreateSessionResponse)(nil)
+
+// NewCreateSessionResponse factory function for _CreateSessionResponse
+func NewCreateSessionResponse(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) *_CreateSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CreateSessionResponse must not be nil")
+	}
+	if sessionId == nil {
+		panic("sessionId of type NodeId for CreateSessionResponse must not be nil")
+	}
+	if authenticationToken == nil {
+		panic("authenticationToken of type NodeId for CreateSessionResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for CreateSessionResponse must not be nil")
+	}
+	if serverCertificate == nil {
+		panic("serverCertificate of type PascalByteString for CreateSessionResponse must not be nil")
+	}
+	if serverSignature == nil {
+		panic("serverSignature of type ExtensionObjectDefinition for CreateSessionResponse must not be nil")
+	}
+	_result := &_CreateSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		SessionId:                         sessionId,
+		AuthenticationToken:               authenticationToken,
+		RevisedSessionTimeout:             revisedSessionTimeout,
+		ServerNonce:                       serverNonce,
+		ServerCertificate:                 serverCertificate,
+		NoOfServerEndpoints:               noOfServerEndpoints,
+		ServerEndpoints:                   serverEndpoints,
+		NoOfServerSoftwareCertificates:    noOfServerSoftwareCertificates,
+		ServerSoftwareCertificates:        serverSoftwareCertificates,
+		ServerSignature:                   serverSignature,
+		MaxRequestMessageSize:             maxRequestMessageSize,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CreateSessionResponseBuilder is a builder for CreateSessionResponse
+type CreateSessionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) CreateSessionResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CreateSessionResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder
+	// WithSessionId adds SessionId (property field)
+	WithSessionId(NodeId) CreateSessionResponseBuilder
+	// WithSessionIdBuilder adds SessionId (property field) which is build by the builder
+	WithSessionIdBuilder(func(NodeIdBuilder) NodeIdBuilder) CreateSessionResponseBuilder
+	// WithAuthenticationToken adds AuthenticationToken (property field)
+	WithAuthenticationToken(NodeId) CreateSessionResponseBuilder
+	// WithAuthenticationTokenBuilder adds AuthenticationToken (property field) which is build by the builder
+	WithAuthenticationTokenBuilder(func(NodeIdBuilder) NodeIdBuilder) CreateSessionResponseBuilder
+	// WithRevisedSessionTimeout adds RevisedSessionTimeout (property field)
+	WithRevisedSessionTimeout(float64) CreateSessionResponseBuilder
+	// WithServerNonce adds ServerNonce (property field)
+	WithServerNonce(PascalByteString) CreateSessionResponseBuilder
+	// WithServerNonceBuilder adds ServerNonce (property field) which is build by the builder
+	WithServerNonceBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionResponseBuilder
+	// WithServerCertificate adds ServerCertificate (property field)
+	WithServerCertificate(PascalByteString) CreateSessionResponseBuilder
+	// WithServerCertificateBuilder adds ServerCertificate (property field) which is build by the builder
+	WithServerCertificateBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionResponseBuilder
+	// WithNoOfServerEndpoints adds NoOfServerEndpoints (property field)
+	WithNoOfServerEndpoints(int32) CreateSessionResponseBuilder
+	// WithServerEndpoints adds ServerEndpoints (property field)
+	WithServerEndpoints(...ExtensionObjectDefinition) CreateSessionResponseBuilder
+	// WithNoOfServerSoftwareCertificates adds NoOfServerSoftwareCertificates (property field)
+	WithNoOfServerSoftwareCertificates(int32) CreateSessionResponseBuilder
+	// WithServerSoftwareCertificates adds ServerSoftwareCertificates (property field)
+	WithServerSoftwareCertificates(...ExtensionObjectDefinition) CreateSessionResponseBuilder
+	// WithServerSignature adds ServerSignature (property field)
+	WithServerSignature(ExtensionObjectDefinition) CreateSessionResponseBuilder
+	// WithServerSignatureBuilder adds ServerSignature (property field) which is build by the builder
+	WithServerSignatureBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder
+	// WithMaxRequestMessageSize adds MaxRequestMessageSize (property field)
+	WithMaxRequestMessageSize(uint32) CreateSessionResponseBuilder
+	// Build builds the CreateSessionResponse or returns an error if something is wrong
+	Build() (CreateSessionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CreateSessionResponse
+}
+
+// NewCreateSessionResponseBuilder() creates a CreateSessionResponseBuilder
+func NewCreateSessionResponseBuilder() CreateSessionResponseBuilder {
+	return &_CreateSessionResponseBuilder{_CreateSessionResponse: new(_CreateSessionResponse)}
+}
+
+type _CreateSessionResponseBuilder struct {
+	*_CreateSessionResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CreateSessionResponseBuilder) = (*_CreateSessionResponseBuilder)(nil)
+
+func (b *_CreateSessionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_CreateSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) CreateSessionResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithSessionId(sessionId).WithAuthenticationToken(authenticationToken).WithRevisedSessionTimeout(revisedSessionTimeout).WithServerNonce(serverNonce).WithServerCertificate(serverCertificate).WithNoOfServerEndpoints(noOfServerEndpoints).WithServerEndpoints(serverEndpoints...).WithNoOfServerSoftwareCertificates(noOfServerSoftwareCertificates).WithServerSoftwareCertificates(serverSoftwareCertificates...).WithServerSignature(serverSignature).WithMaxRequestMessageSize(maxRequestMessageSize)
+}
+
+func (b *_CreateSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CreateSessionResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithSessionId(sessionId NodeId) CreateSessionResponseBuilder {
+	b.SessionId = sessionId
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithSessionIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.SessionId.CreateNodeIdBuilder())
+	var err error
+	b.SessionId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithAuthenticationToken(authenticationToken NodeId) CreateSessionResponseBuilder {
+	b.AuthenticationToken = authenticationToken
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithAuthenticationTokenBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.AuthenticationToken.CreateNodeIdBuilder())
+	var err error
+	b.AuthenticationToken, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithRevisedSessionTimeout(revisedSessionTimeout float64) CreateSessionResponseBuilder {
+	b.RevisedSessionTimeout = revisedSessionTimeout
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerNonce(serverNonce PascalByteString) CreateSessionResponseBuilder {
+	b.ServerNonce = serverNonce
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ServerNonce.CreatePascalByteStringBuilder())
+	var err error
+	b.ServerNonce, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerCertificate(serverCertificate PascalByteString) CreateSessionResponseBuilder {
+	b.ServerCertificate = serverCertificate
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerCertificateBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ServerCertificate.CreatePascalByteStringBuilder())
+	var err error
+	b.ServerCertificate, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithNoOfServerEndpoints(noOfServerEndpoints int32) CreateSessionResponseBuilder {
+	b.NoOfServerEndpoints = noOfServerEndpoints
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerEndpoints(serverEndpoints ...ExtensionObjectDefinition) CreateSessionResponseBuilder {
+	b.ServerEndpoints = serverEndpoints
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithNoOfServerSoftwareCertificates(noOfServerSoftwareCertificates int32) CreateSessionResponseBuilder {
+	b.NoOfServerSoftwareCertificates = noOfServerSoftwareCertificates
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerSoftwareCertificates(serverSoftwareCertificates ...ExtensionObjectDefinition) CreateSessionResponseBuilder {
+	b.ServerSoftwareCertificates = serverSoftwareCertificates
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerSignature(serverSignature ExtensionObjectDefinition) CreateSessionResponseBuilder {
+	b.ServerSignature = serverSignature
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithServerSignatureBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CreateSessionResponseBuilder {
+	builder := builderSupplier(b.ServerSignature.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ServerSignature, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) WithMaxRequestMessageSize(maxRequestMessageSize uint32) CreateSessionResponseBuilder {
+	b.MaxRequestMessageSize = maxRequestMessageSize
+	return b
+}
+
+func (b *_CreateSessionResponseBuilder) Build() (CreateSessionResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.SessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sessionId' not set"))
+	}
+	if b.AuthenticationToken == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'authenticationToken' not set"))
+	}
+	if b.ServerNonce == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverNonce' not set"))
+	}
+	if b.ServerCertificate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverCertificate' not set"))
+	}
+	if b.ServerSignature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverSignature' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CreateSessionResponse.deepCopy(), nil
+}
+
+func (b *_CreateSessionResponseBuilder) MustBuild() CreateSessionResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CreateSessionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CreateSessionResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CreateSessionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCreateSessionResponseBuilder().(*_CreateSessionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCreateSessionResponseBuilder creates a CreateSessionResponseBuilder
+func (b *_CreateSessionResponse) CreateCreateSessionResponseBuilder() CreateSessionResponseBuilder {
+	if b == nil {
+		return NewCreateSessionResponseBuilder()
+	}
+	return &_CreateSessionResponseBuilder{_CreateSessionResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,45 +498,6 @@ func (m *_CreateSessionResponse) GetMaxRequestMessageSize() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCreateSessionResponse factory function for _CreateSessionResponse
-func NewCreateSessionResponse(responseHeader ExtensionObjectDefinition, sessionId NodeId, authenticationToken NodeId, revisedSessionTimeout float64, serverNonce PascalByteString, serverCertificate PascalByteString, noOfServerEndpoints int32, serverEndpoints []ExtensionObjectDefinition, noOfServerSoftwareCertificates int32, serverSoftwareCertificates []ExtensionObjectDefinition, serverSignature ExtensionObjectDefinition, maxRequestMessageSize uint32) *_CreateSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CreateSessionResponse must not be nil")
-	}
-	if sessionId == nil {
-		panic("sessionId of type NodeId for CreateSessionResponse must not be nil")
-	}
-	if authenticationToken == nil {
-		panic("authenticationToken of type NodeId for CreateSessionResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for CreateSessionResponse must not be nil")
-	}
-	if serverCertificate == nil {
-		panic("serverCertificate of type PascalByteString for CreateSessionResponse must not be nil")
-	}
-	if serverSignature == nil {
-		panic("serverSignature of type ExtensionObjectDefinition for CreateSessionResponse must not be nil")
-	}
-	_result := &_CreateSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		SessionId:                         sessionId,
-		AuthenticationToken:               authenticationToken,
-		RevisedSessionTimeout:             revisedSessionTimeout,
-		ServerNonce:                       serverNonce,
-		ServerCertificate:                 serverCertificate,
-		NoOfServerEndpoints:               noOfServerEndpoints,
-		ServerEndpoints:                   serverEndpoints,
-		NoOfServerSoftwareCertificates:    noOfServerSoftwareCertificates,
-		ServerSoftwareCertificates:        serverSoftwareCertificates,
-		ServerSignature:                   serverSignature,
-		MaxRequestMessageSize:             maxRequestMessageSize,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCreateSessionResponse(structType any) CreateSessionResponse {
@@ -443,13 +740,44 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_CreateSessionResponse) IsCreateSessionResponse() {}
 
+func (m *_CreateSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CreateSessionResponse) deepCopy() *_CreateSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_CreateSessionResponseCopy := &_CreateSessionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.SessionId.DeepCopy().(NodeId),
+		m.AuthenticationToken.DeepCopy().(NodeId),
+		m.RevisedSessionTimeout,
+		m.ServerNonce.DeepCopy().(PascalByteString),
+		m.ServerCertificate.DeepCopy().(PascalByteString),
+		m.NoOfServerEndpoints,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerEndpoints),
+		m.NoOfServerSoftwareCertificates,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ServerSoftwareCertificates),
+		m.ServerSignature.DeepCopy().(ExtensionObjectDefinition),
+		m.MaxRequestMessageSize,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CreateSessionResponseCopy
+}
+
 func (m *_CreateSessionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

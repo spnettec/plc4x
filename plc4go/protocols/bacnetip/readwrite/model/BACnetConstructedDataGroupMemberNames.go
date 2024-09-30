@@ -38,6 +38,7 @@ type BACnetConstructedDataGroupMemberNames interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataGroupMemberNames interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataGroupMemberNames is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGroupMemberNames()
+	// CreateBuilder creates a BACnetConstructedDataGroupMemberNamesBuilder
+	CreateBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder
 }
 
 // _BACnetConstructedDataGroupMemberNames is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataGroupMemberNames struct {
 
 var _ BACnetConstructedDataGroupMemberNames = (*_BACnetConstructedDataGroupMemberNames)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGroupMemberNames)(nil)
+
+// NewBACnetConstructedDataGroupMemberNames factory function for _BACnetConstructedDataGroupMemberNames
+func NewBACnetConstructedDataGroupMemberNames(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMemberNames []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMemberNames {
+	_result := &_BACnetConstructedDataGroupMemberNames{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		GroupMemberNames:              groupMemberNames,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGroupMemberNamesBuilder is a builder for BACnetConstructedDataGroupMemberNames
+type BACnetConstructedDataGroupMemberNamesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupMemberNames []BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupMemberNamesBuilder
+	// WithGroupMemberNames adds GroupMemberNames (property field)
+	WithGroupMemberNames(...BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder
+	// Build builds the BACnetConstructedDataGroupMemberNames or returns an error if something is wrong
+	Build() (BACnetConstructedDataGroupMemberNames, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGroupMemberNames
+}
+
+// NewBACnetConstructedDataGroupMemberNamesBuilder() creates a BACnetConstructedDataGroupMemberNamesBuilder
+func NewBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder {
+	return &_BACnetConstructedDataGroupMemberNamesBuilder{_BACnetConstructedDataGroupMemberNames: new(_BACnetConstructedDataGroupMemberNames)}
+}
+
+type _BACnetConstructedDataGroupMemberNamesBuilder struct {
+	*_BACnetConstructedDataGroupMemberNames
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGroupMemberNamesBuilder) = (*_BACnetConstructedDataGroupMemberNamesBuilder)(nil)
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) WithMandatoryFields(groupMemberNames []BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder {
+	return b.WithGroupMemberNames(groupMemberNames...)
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGroupMemberNamesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGroupMemberNamesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) WithGroupMemberNames(groupMemberNames ...BACnetApplicationTagCharacterString) BACnetConstructedDataGroupMemberNamesBuilder {
+	b.GroupMemberNames = groupMemberNames
+	return b
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) Build() (BACnetConstructedDataGroupMemberNames, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataGroupMemberNames.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) MustBuild() BACnetConstructedDataGroupMemberNames {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGroupMemberNamesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGroupMemberNamesBuilder().(*_BACnetConstructedDataGroupMemberNamesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataGroupMemberNamesBuilder creates a BACnetConstructedDataGroupMemberNamesBuilder
+func (b *_BACnetConstructedDataGroupMemberNames) CreateBACnetConstructedDataGroupMemberNamesBuilder() BACnetConstructedDataGroupMemberNamesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataGroupMemberNamesBuilder()
+	}
+	return &_BACnetConstructedDataGroupMemberNamesBuilder{_BACnetConstructedDataGroupMemberNames: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataGroupMemberNames) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGroupMemberNames factory function for _BACnetConstructedDataGroupMemberNames
-func NewBACnetConstructedDataGroupMemberNames(numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMemberNames []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGroupMemberNames {
-	_result := &_BACnetConstructedDataGroupMemberNames{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		GroupMemberNames:              groupMemberNames,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGroupMemberNames(structType any) BACnetConstructedDataGroupMemberNames {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataGroupMemberNames) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataGroupMemberNames) IsBACnetConstructedDataGroupMemberNames() {}
 
+func (m *_BACnetConstructedDataGroupMemberNames) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGroupMemberNames) deepCopy() *_BACnetConstructedDataGroupMemberNames {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGroupMemberNamesCopy := &_BACnetConstructedDataGroupMemberNames{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.GroupMemberNames),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGroupMemberNamesCopy
+}
+
 func (m *_BACnetConstructedDataGroupMemberNames) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

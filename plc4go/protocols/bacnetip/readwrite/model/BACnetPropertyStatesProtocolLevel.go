@@ -38,11 +38,14 @@ type BACnetPropertyStatesProtocolLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetProtocolLevel returns ProtocolLevel (property field)
 	GetProtocolLevel() BACnetProtocolLevelTagged
 	// IsBACnetPropertyStatesProtocolLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesProtocolLevel()
+	// CreateBuilder creates a BACnetPropertyStatesProtocolLevelBuilder
+	CreateBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolLevelBuilder
 }
 
 // _BACnetPropertyStatesProtocolLevel is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesProtocolLevel struct {
 
 var _ BACnetPropertyStatesProtocolLevel = (*_BACnetPropertyStatesProtocolLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesProtocolLevel)(nil)
+
+// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
+func NewBACnetPropertyStatesProtocolLevel(peekedTagHeader BACnetTagHeader, protocolLevel BACnetProtocolLevelTagged) *_BACnetPropertyStatesProtocolLevel {
+	if protocolLevel == nil {
+		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesProtocolLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ProtocolLevel:                protocolLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesProtocolLevelBuilder is a builder for BACnetPropertyStatesProtocolLevel
+type BACnetPropertyStatesProtocolLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder
+	// WithProtocolLevel adds ProtocolLevel (property field)
+	WithProtocolLevel(BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder
+	// WithProtocolLevelBuilder adds ProtocolLevel (property field) which is build by the builder
+	WithProtocolLevelBuilder(func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetPropertyStatesProtocolLevelBuilder
+	// Build builds the BACnetPropertyStatesProtocolLevel or returns an error if something is wrong
+	Build() (BACnetPropertyStatesProtocolLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesProtocolLevel
+}
+
+// NewBACnetPropertyStatesProtocolLevelBuilder() creates a BACnetPropertyStatesProtocolLevelBuilder
+func NewBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolLevelBuilder {
+	return &_BACnetPropertyStatesProtocolLevelBuilder{_BACnetPropertyStatesProtocolLevel: new(_BACnetPropertyStatesProtocolLevel)}
+}
+
+type _BACnetPropertyStatesProtocolLevelBuilder struct {
+	*_BACnetPropertyStatesProtocolLevel
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesProtocolLevelBuilder) = (*_BACnetPropertyStatesProtocolLevelBuilder)(nil)
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithMandatoryFields(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
+	return b.WithProtocolLevel(protocolLevel)
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevel(protocolLevel BACnetProtocolLevelTagged) BACnetPropertyStatesProtocolLevelBuilder {
+	b.ProtocolLevel = protocolLevel
+	return b
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) WithProtocolLevelBuilder(builderSupplier func(BACnetProtocolLevelTaggedBuilder) BACnetProtocolLevelTaggedBuilder) BACnetPropertyStatesProtocolLevelBuilder {
+	builder := builderSupplier(b.ProtocolLevel.CreateBACnetProtocolLevelTaggedBuilder())
+	var err error
+	b.ProtocolLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetProtocolLevelTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) Build() (BACnetPropertyStatesProtocolLevel, error) {
+	if b.ProtocolLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'protocolLevel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesProtocolLevel.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) MustBuild() BACnetPropertyStatesProtocolLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesProtocolLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesProtocolLevelBuilder().(*_BACnetPropertyStatesProtocolLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesProtocolLevelBuilder creates a BACnetPropertyStatesProtocolLevelBuilder
+func (b *_BACnetPropertyStatesProtocolLevel) CreateBACnetPropertyStatesProtocolLevelBuilder() BACnetPropertyStatesProtocolLevelBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesProtocolLevelBuilder()
+	}
+	return &_BACnetPropertyStatesProtocolLevelBuilder{_BACnetPropertyStatesProtocolLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesProtocolLevel) GetProtocolLevel() BACnetProtocolLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesProtocolLevel factory function for _BACnetPropertyStatesProtocolLevel
-func NewBACnetPropertyStatesProtocolLevel(protocolLevel BACnetProtocolLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesProtocolLevel {
-	if protocolLevel == nil {
-		panic("protocolLevel of type BACnetProtocolLevelTagged for BACnetPropertyStatesProtocolLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesProtocolLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ProtocolLevel:                protocolLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesProtocolLevel(structType any) BACnetPropertyStatesProtocolLevel {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesProtocolLevel) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetPropertyStatesProtocolLevel) IsBACnetPropertyStatesProtocolLevel() {}
 
+func (m *_BACnetPropertyStatesProtocolLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesProtocolLevel) deepCopy() *_BACnetPropertyStatesProtocolLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesProtocolLevelCopy := &_BACnetPropertyStatesProtocolLevel{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ProtocolLevel.DeepCopy().(BACnetProtocolLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesProtocolLevelCopy
+}
+
 func (m *_BACnetPropertyStatesProtocolLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

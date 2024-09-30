@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -38,33 +36,42 @@ type ICouldBeRouterToNetwork struct {
 	icbrtnPerformanceIndex uint8
 }
 
-func NewICouldBeRouterToNetwork(opts ...func(*ICouldBeRouterToNetwork)) (*ICouldBeRouterToNetwork, error) {
+func NewICouldBeRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*ICouldBeRouterToNetwork, error) {
 	i := &ICouldBeRouterToNetwork{
 		messageType: 0x02,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMICouldBeRouterToNetwork(i.icbrtnNetwork, i.icbrtnPerformanceIndex, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "icbrtnNetwork", "icbrtnPerformanceIndex")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
-func WithICouldBeRouterToNetworkNetwork(icbrtnNetwork uint16) func(*ICouldBeRouterToNetwork) {
-	return func(n *ICouldBeRouterToNetwork) {
-		n.icbrtnNetwork = icbrtnNetwork
-	}
+// TODO: check if this is rather a KWArgs
+func WithICouldBeRouterToNetworkNetwork(icbrtnNetwork uint16) GenericApplier[*ICouldBeRouterToNetwork] {
+	return WrapGenericApplier(func(n *ICouldBeRouterToNetwork) { n.icbrtnNetwork = icbrtnNetwork })
 }
 
-func WithICouldBeRouterToNetworkPerformanceIndex(icbrtnPerformanceIndex uint8) func(*ICouldBeRouterToNetwork) {
-	return func(n *ICouldBeRouterToNetwork) {
-		n.icbrtnPerformanceIndex = icbrtnPerformanceIndex
+// TODO: check if this is rather a KWArgs
+func WithICouldBeRouterToNetworkPerformanceIndex(icbrtnPerformanceIndex uint8) GenericApplier[*ICouldBeRouterToNetwork] {
+	return WrapGenericApplier(func(n *ICouldBeRouterToNetwork) { n.icbrtnPerformanceIndex = icbrtnPerformanceIndex })
+}
+
+func (i *ICouldBeRouterToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "icbrtnNetwork":
+		return i.icbrtnNetwork
+	case "icbrtnPerformanceIndex":
+		return i.icbrtnPerformanceIndex
 	}
+	return nil
 }
 
 func (i *ICouldBeRouterToNetwork) GetIcbrtnNetwork() uint16 {
@@ -113,8 +120,4 @@ func (i *ICouldBeRouterToNetwork) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *ICouldBeRouterToNetwork) String() string {
-	return fmt.Sprintf("ICouldBeRouterToNetwork{%s, icbrtnNetwork: %v, icbrtnPerformanceIndex: %v}", i._NPDU, i.icbrtnNetwork, i.icbrtnPerformanceIndex)
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultLowLimit returns FaultLowLimit (property field)
 	GetFaultLowLimit() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataFaultLowLimit interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataFaultLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFaultLowLimit()
+	// CreateBuilder creates a BACnetConstructedDataFaultLowLimitBuilder
+	CreateBACnetConstructedDataFaultLowLimitBuilder() BACnetConstructedDataFaultLowLimitBuilder
 }
 
 // _BACnetConstructedDataFaultLowLimit is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataFaultLowLimit struct {
 
 var _ BACnetConstructedDataFaultLowLimit = (*_BACnetConstructedDataFaultLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultLowLimit)(nil)
+
+// NewBACnetConstructedDataFaultLowLimit factory function for _BACnetConstructedDataFaultLowLimit
+func NewBACnetConstructedDataFaultLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultLowLimit BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultLowLimit {
+	if faultLowLimit == nil {
+		panic("faultLowLimit of type BACnetApplicationTagReal for BACnetConstructedDataFaultLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultLowLimit:                 faultLowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFaultLowLimitBuilder is a builder for BACnetConstructedDataFaultLowLimit
+type BACnetConstructedDataFaultLowLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder
+	// WithFaultLowLimit adds FaultLowLimit (property field)
+	WithFaultLowLimit(BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder
+	// WithFaultLowLimitBuilder adds FaultLowLimit (property field) which is build by the builder
+	WithFaultLowLimitBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFaultLowLimitBuilder
+	// Build builds the BACnetConstructedDataFaultLowLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataFaultLowLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFaultLowLimit
+}
+
+// NewBACnetConstructedDataFaultLowLimitBuilder() creates a BACnetConstructedDataFaultLowLimitBuilder
+func NewBACnetConstructedDataFaultLowLimitBuilder() BACnetConstructedDataFaultLowLimitBuilder {
+	return &_BACnetConstructedDataFaultLowLimitBuilder{_BACnetConstructedDataFaultLowLimit: new(_BACnetConstructedDataFaultLowLimit)}
+}
+
+type _BACnetConstructedDataFaultLowLimitBuilder struct {
+	*_BACnetConstructedDataFaultLowLimit
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFaultLowLimitBuilder) = (*_BACnetConstructedDataFaultLowLimitBuilder)(nil)
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) WithMandatoryFields(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder {
+	return b.WithFaultLowLimit(faultLowLimit)
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) WithFaultLowLimit(faultLowLimit BACnetApplicationTagReal) BACnetConstructedDataFaultLowLimitBuilder {
+	b.FaultLowLimit = faultLowLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) WithFaultLowLimitBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataFaultLowLimitBuilder {
+	builder := builderSupplier(b.FaultLowLimit.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.FaultLowLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) Build() (BACnetConstructedDataFaultLowLimit, error) {
+	if b.FaultLowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'faultLowLimit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFaultLowLimit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) MustBuild() BACnetConstructedDataFaultLowLimit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultLowLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultLowLimitBuilder().(*_BACnetConstructedDataFaultLowLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFaultLowLimitBuilder creates a BACnetConstructedDataFaultLowLimitBuilder
+func (b *_BACnetConstructedDataFaultLowLimit) CreateBACnetConstructedDataFaultLowLimitBuilder() BACnetConstructedDataFaultLowLimitBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFaultLowLimitBuilder()
+	}
+	return &_BACnetConstructedDataFaultLowLimitBuilder{_BACnetConstructedDataFaultLowLimit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataFaultLowLimit) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultLowLimit factory function for _BACnetConstructedDataFaultLowLimit
-func NewBACnetConstructedDataFaultLowLimit(faultLowLimit BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultLowLimit {
-	if faultLowLimit == nil {
-		panic("faultLowLimit of type BACnetApplicationTagReal for BACnetConstructedDataFaultLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultLowLimit:                 faultLowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultLowLimit(structType any) BACnetConstructedDataFaultLowLimit {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataFaultLowLimit) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataFaultLowLimit) IsBACnetConstructedDataFaultLowLimit() {}
 
+func (m *_BACnetConstructedDataFaultLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultLowLimit) deepCopy() *_BACnetConstructedDataFaultLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultLowLimitCopy := &_BACnetConstructedDataFaultLowLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FaultLowLimit.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultLowLimitCopy
+}
+
 func (m *_BACnetConstructedDataFaultLowLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

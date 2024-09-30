@@ -38,11 +38,14 @@ type IdentifyReplyCommandManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetManufacturerName returns ManufacturerName (property field)
 	GetManufacturerName() string
 	// IsIdentifyReplyCommandManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandManufacturer()
+	// CreateBuilder creates a IdentifyReplyCommandManufacturerBuilder
+	CreateIdentifyReplyCommandManufacturerBuilder() IdentifyReplyCommandManufacturerBuilder
 }
 
 // _IdentifyReplyCommandManufacturer is the data-structure of this message
@@ -53,6 +56,107 @@ type _IdentifyReplyCommandManufacturer struct {
 
 var _ IdentifyReplyCommandManufacturer = (*_IdentifyReplyCommandManufacturer)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandManufacturer)(nil)
+
+// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
+func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
+	_result := &_IdentifyReplyCommandManufacturer{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ManufacturerName:             manufacturerName,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandManufacturerBuilder is a builder for IdentifyReplyCommandManufacturer
+type IdentifyReplyCommandManufacturerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(manufacturerName string) IdentifyReplyCommandManufacturerBuilder
+	// WithManufacturerName adds ManufacturerName (property field)
+	WithManufacturerName(string) IdentifyReplyCommandManufacturerBuilder
+	// Build builds the IdentifyReplyCommandManufacturer or returns an error if something is wrong
+	Build() (IdentifyReplyCommandManufacturer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandManufacturer
+}
+
+// NewIdentifyReplyCommandManufacturerBuilder() creates a IdentifyReplyCommandManufacturerBuilder
+func NewIdentifyReplyCommandManufacturerBuilder() IdentifyReplyCommandManufacturerBuilder {
+	return &_IdentifyReplyCommandManufacturerBuilder{_IdentifyReplyCommandManufacturer: new(_IdentifyReplyCommandManufacturer)}
+}
+
+type _IdentifyReplyCommandManufacturerBuilder struct {
+	*_IdentifyReplyCommandManufacturer
+
+	parentBuilder *_IdentifyReplyCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandManufacturerBuilder) = (*_IdentifyReplyCommandManufacturerBuilder)(nil)
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) WithMandatoryFields(manufacturerName string) IdentifyReplyCommandManufacturerBuilder {
+	return b.WithManufacturerName(manufacturerName)
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) WithManufacturerName(manufacturerName string) IdentifyReplyCommandManufacturerBuilder {
+	b.ManufacturerName = manufacturerName
+	return b
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) Build() (IdentifyReplyCommandManufacturer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IdentifyReplyCommandManufacturer.deepCopy(), nil
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) MustBuild() IdentifyReplyCommandManufacturer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandManufacturerBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandManufacturerBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandManufacturerBuilder().(*_IdentifyReplyCommandManufacturerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIdentifyReplyCommandManufacturerBuilder creates a IdentifyReplyCommandManufacturerBuilder
+func (b *_IdentifyReplyCommandManufacturer) CreateIdentifyReplyCommandManufacturerBuilder() IdentifyReplyCommandManufacturerBuilder {
+	if b == nil {
+		return NewIdentifyReplyCommandManufacturerBuilder()
+	}
+	return &_IdentifyReplyCommandManufacturerBuilder{_IdentifyReplyCommandManufacturer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_IdentifyReplyCommandManufacturer) GetManufacturerName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandManufacturer factory function for _IdentifyReplyCommandManufacturer
-func NewIdentifyReplyCommandManufacturer(manufacturerName string, numBytes uint8) *_IdentifyReplyCommandManufacturer {
-	_result := &_IdentifyReplyCommandManufacturer{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		ManufacturerName:             manufacturerName,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandManufacturer(structType any) IdentifyReplyCommandManufacturer {
@@ -180,13 +274,33 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 
 func (m *_IdentifyReplyCommandManufacturer) IsIdentifyReplyCommandManufacturer() {}
 
+func (m *_IdentifyReplyCommandManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandManufacturer) deepCopy() *_IdentifyReplyCommandManufacturer {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandManufacturerCopy := &_IdentifyReplyCommandManufacturer{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.ManufacturerName,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandManufacturerCopy
+}
+
 func (m *_IdentifyReplyCommandManufacturer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

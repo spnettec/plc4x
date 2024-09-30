@@ -41,28 +41,28 @@ type IPRouterNode struct {
 	addrMask   *uint32
 	addrSubnet *uint32
 
-	// pass through args
-	argCid *int `ignore:"true"`
+	_leafName string
 
 	log zerolog.Logger
 }
 
-func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, lan *IPNetwork, opts ...func(*IPRouterNode)) (*IPRouterNode, error) {
+func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, lan *IPNetwork, options ...Option) (*IPRouterNode, error) {
 	i := &IPRouterNode{
 		// save the references to the router for packets and the lan for debugging
 		router: router,
 		lan:    lan,
 
+		_leafName: ExtractLeafName(options, StructName()),
+
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
+	ApplyAppliers(options, i)
+	optionsForParent := AddLeafTypeIfAbundant(options, i)
 	if _debug != nil {
 		_debug("__init__ %r %r lan=%r", router, addr, lan)
 	}
 	var err error
-	i.ClientContract, err = NewClient(localLog, OptionalOption2(i.argCid, ToPtr[ClientRequirements](i), WithClientCID))
+	i.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building client")
 	}
@@ -79,12 +79,6 @@ func NewIPRouterNode(localLog zerolog.Logger, router *IPRouter, addr *Address, l
 	i.addrMask = addr.AddrMask
 	i.addrSubnet = addr.AddrSubnet
 	return i, nil
-}
-
-func WithIPRouterNodeCid(cid int) func(*IPRouterNode) {
-	return func(n *IPRouterNode) {
-		n.argCid = &cid
-	}
 }
 
 func (n *IPRouterNode) Confirmation(args Args, kwArgs KWArgs) error {
@@ -108,6 +102,6 @@ func (n *IPRouterNode) ProcessPDU(pdu PDU) error {
 func (n *IPRouterNode) Format(s fmt.State, v rune) {
 	switch v {
 	case 's', 'v', 'r':
-		_, _ = fmt.Fprintf(s, "<%s for %s>", StructName(), n.lan.name)
+		_, _ = fmt.Fprintf(s, "<%s for %s>", n._leafName, n.lan.name)
 	}
 }

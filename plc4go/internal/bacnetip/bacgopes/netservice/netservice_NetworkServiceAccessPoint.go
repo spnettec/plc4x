@@ -21,6 +21,7 @@ package netservice
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -29,6 +30,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
@@ -38,32 +40,29 @@ import (
 type NetworkServiceAccessPoint struct {
 	ServiceAccessPointContract
 	ServerContract
+	*DebugContents `ignore:"true"`
+
 	adapters        map[netKey]*NetworkAdapter
 	routerInfoCache *RouterInfoCache `stringer:"true"`
 	pendingNets     map[netKey][]NPDU
 	localAdapter    *NetworkAdapter `stringer:"true"`
 
-	// pass through args
-	argSapID *int                `ignore:"true"`
-	argSap   *ServiceAccessPoint `ignore:"true"`
-	argSid   *int                `ignore:"true"`
-
 	log zerolog.Logger
 }
 
-func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*NetworkServiceAccessPoint)) (*NetworkServiceAccessPoint, error) {
+func NewNetworkServiceAccessPoint(localLog zerolog.Logger, options ...Option) (*NetworkServiceAccessPoint, error) {
 	n := &NetworkServiceAccessPoint{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
+	n.DebugContents = NewDebugContents(n, "adapters++", "pending_nets", "local_adapter-")
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(n.argSapID, n.argSap, WithServiceAccessPointSapID))
+	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
-	n.ServerContract, err = NewServer(localLog, OptionalOption2(n.argSid, ToPtr[ServerRequirements](n), WithServerSID))
+	n.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
@@ -82,22 +81,20 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 	return n, nil
 }
 
-func WithNetworkServiceAccessPointRouterInfoCache(routerInfoCache *RouterInfoCache) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.routerInfoCache = routerInfoCache
-	}
+func WithNetworkServiceAccessPointRouterInfoCache(routerInfoCache *RouterInfoCache) GenericApplier[*NetworkServiceAccessPoint] {
+	return WrapGenericApplier(func(n *NetworkServiceAccessPoint) { n.routerInfoCache = routerInfoCache })
 }
 
-func WithNetworkServiceAccessPointRouterSapID(sapID int, sap ServiceAccessPoint) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.argSapID = &sapID
-		n.argSap = &sap
-	}
-}
-
-func WithNetworkServiceAccessPointRouterSID(sid int) func(*NetworkServiceAccessPoint) {
-	return func(n *NetworkServiceAccessPoint) {
-		n.argSid = &sid
+func (n *NetworkServiceAccessPoint) GetDebugAttr(attr string) any {
+	switch attr {
+	case "adapters":
+		return n.adapters
+	case "pending_nets":
+		return n.pendingNets
+	case "local_adapter":
+		return n.localAdapter
+	default:
+		return nil
 	}
 }
 
@@ -212,7 +209,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("localAdapter", localAdapter).Msg("localAdapter")
 
 	// build a generic APDU
-	apdu, err := NewAPDU(nil, WithAPDUUserData(pdu.GetPDUUserData())) // Note: upstream makes a _APDU instance which looks like a programming error as this class is only useful in an extension context...
+	apdu, err := NewAPDU(NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData())) // Note: upstream uses _APDU which looks like the _APDU class but is an alias to APDU
 	if err != nil {
 		return errors.Wrap(err, "error creating _APDU")
 	}
@@ -222,7 +219,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 	n.log.Debug().Stringer("_APDU", apdu).Msg("apdu")
 
 	// build an NPDU specific to where it is going
-	npdu, err := NewNPDU(nil, nil)
+	npdu, err := NewNPDU(NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
@@ -333,7 +330,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 
 		// check the path status
 		dnetStatus := routerInfo.dnets[nk(dnet)]
-		n.log.Debug().Stringer("dnetStatus", dnetStatus).Msg("dnetStatus")
+		n.log.Debug().Interface("dnetStatus", dnetStatus).Msg("dnetStatus")
 
 		// fix the destination
 		npdu.SetPDUDestination(routerInfo.address)
@@ -349,7 +346,7 @@ func (n *NetworkServiceAccessPoint) Indication(args Args, kwArgs KWArgs) error {
 		n.pendingNets[nk(dnet)] = netList
 
 		// build a request for the network and send it to all the adapters
-		xnpdu, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(*dnet))
+		xnpdu, err := NewWhoIsRouterToNetwork(NoArgs, NoKWArgs(), WithWhoIsRouterToNetworkNet(*dnet))
 		if err != nil {
 			return errors.Wrap(err, "error building WhoIsRouterToNetwork")
 		}
@@ -444,11 +441,10 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 		if processLocally && n.HasServerPeer() {
 			n.log.Trace().Msg("processing APDU locally")
 			// decode as a generic APDU
-			apdu, err := NewAPDU(nil)
+			apdu, err := NewAPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData())) // Note: upstream uses _APDU which looks like the _APDU class but is an alias to APDU
 			if err != nil {
 				return errors.Wrap(err, "error creating APDU")
 			}
-			apdu.SetPDUUserData(npdu.GetPDUUserData()) // TODO: upstream does this inline
 			if err := apdu.Decode(DeepCopy[NPDU](npdu)); err != nil {
 				return errors.Wrap(err, "error decoding APDU")
 			}
@@ -658,7 +654,7 @@ func (n *NetworkServiceAccessPoint) ProcessNPDU(adapter *NetworkAdapter, npdu NP
 			}
 
 			// pass this along as if it came from the NSE
-			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCompRootMessage, xnpdu, KWCPCIDestination, pduDestination))), NoKWArgs()); err != nil {
+			if err := n.SapIndication(NA(xadapter, NewPDU(NoArgs, NKW(KWCPCIDestination, pduDestination), WithRootMessage(xnpdu))), NoKWArgs()); err != nil {
 				return errors.Wrap(err, "error sending indication")
 			}
 		}
@@ -679,14 +675,14 @@ func (n *NetworkServiceAccessPoint) SapIndication(args Args, kwArgs KWArgs) erro
 	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
-	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
+	xpdu, err := NewNPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err != nil {
 		return errors.Wrap(err, "error building NPDU")
 	}
 	if err := npdu.Encode(xpdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	// npdu._xpdu = xpdu
+	// npdu._xpdu = xpdu // TODO: what does that mean?
 
 	// tell the adapter to process the NPDU
 	return adapter.ProcessNPDU(xpdu)
@@ -698,14 +694,21 @@ func (n *NetworkServiceAccessPoint) SapConfirmation(args Args, kwArgs KWArgs) er
 	npdu := GA[NPDU](args, 1)
 
 	// encode it as a generic NPDU
-	xpdu, err := NewNPDU(nil, nil) // TODO: add with user data thingy...
+	xpdu, err := NewNPDU(NoArgs, NKW(KWCPCIUserData, npdu.GetPDUUserData()))
 	if err != nil {
 		return errors.Wrap(err, "error building NPDU")
 	}
 	if err := npdu.Encode(xpdu); err != nil {
 		return errors.Wrap(err, "error encoding NPDU")
 	}
-	// npdu._xpdu = xpdu
+	// npdu._xpdu = xpdu // TODO: what does this mean
 
 	return adapter.ProcessNPDU(xpdu)
+}
+
+func (n *NetworkServiceAccessPoint) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", n), true // Delegate to the format method
+	}
+	return "", false
 }

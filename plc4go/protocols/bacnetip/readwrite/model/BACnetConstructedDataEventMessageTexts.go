@@ -38,6 +38,7 @@ type BACnetConstructedDataEventMessageTexts interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -53,6 +54,8 @@ type BACnetConstructedDataEventMessageTexts interface {
 	GetToNormalText() BACnetOptionalCharacterString
 	// IsBACnetConstructedDataEventMessageTexts is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventMessageTexts()
+	// CreateBuilder creates a BACnetConstructedDataEventMessageTextsBuilder
+	CreateBACnetConstructedDataEventMessageTextsBuilder() BACnetConstructedDataEventMessageTextsBuilder
 }
 
 // _BACnetConstructedDataEventMessageTexts is the data-structure of this message
@@ -64,6 +67,130 @@ type _BACnetConstructedDataEventMessageTexts struct {
 
 var _ BACnetConstructedDataEventMessageTexts = (*_BACnetConstructedDataEventMessageTexts)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventMessageTexts)(nil)
+
+// NewBACnetConstructedDataEventMessageTexts factory function for _BACnetConstructedDataEventMessageTexts
+func NewBACnetConstructedDataEventMessageTexts(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTexts []BACnetOptionalCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventMessageTexts {
+	_result := &_BACnetConstructedDataEventMessageTexts{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		EventMessageTexts:             eventMessageTexts,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventMessageTextsBuilder is a builder for BACnetConstructedDataEventMessageTexts
+type BACnetConstructedDataEventMessageTextsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventMessageTexts []BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataEventMessageTextsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventMessageTextsBuilder
+	// WithEventMessageTexts adds EventMessageTexts (property field)
+	WithEventMessageTexts(...BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsBuilder
+	// Build builds the BACnetConstructedDataEventMessageTexts or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventMessageTexts, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventMessageTexts
+}
+
+// NewBACnetConstructedDataEventMessageTextsBuilder() creates a BACnetConstructedDataEventMessageTextsBuilder
+func NewBACnetConstructedDataEventMessageTextsBuilder() BACnetConstructedDataEventMessageTextsBuilder {
+	return &_BACnetConstructedDataEventMessageTextsBuilder{_BACnetConstructedDataEventMessageTexts: new(_BACnetConstructedDataEventMessageTexts)}
+}
+
+type _BACnetConstructedDataEventMessageTextsBuilder struct {
+	*_BACnetConstructedDataEventMessageTexts
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventMessageTextsBuilder) = (*_BACnetConstructedDataEventMessageTextsBuilder)(nil)
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) WithMandatoryFields(eventMessageTexts []BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsBuilder {
+	return b.WithEventMessageTexts(eventMessageTexts...)
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataEventMessageTextsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataEventMessageTextsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) WithEventMessageTexts(eventMessageTexts ...BACnetOptionalCharacterString) BACnetConstructedDataEventMessageTextsBuilder {
+	b.EventMessageTexts = eventMessageTexts
+	return b
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) Build() (BACnetConstructedDataEventMessageTexts, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEventMessageTexts.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) MustBuild() BACnetConstructedDataEventMessageTexts {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventMessageTextsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventMessageTextsBuilder().(*_BACnetConstructedDataEventMessageTextsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEventMessageTextsBuilder creates a BACnetConstructedDataEventMessageTextsBuilder
+func (b *_BACnetConstructedDataEventMessageTexts) CreateBACnetConstructedDataEventMessageTextsBuilder() BACnetConstructedDataEventMessageTextsBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEventMessageTextsBuilder()
+	}
+	return &_BACnetConstructedDataEventMessageTextsBuilder{_BACnetConstructedDataEventMessageTexts: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -145,17 +272,6 @@ func (m *_BACnetConstructedDataEventMessageTexts) GetToNormalText() BACnetOption
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventMessageTexts factory function for _BACnetConstructedDataEventMessageTexts
-func NewBACnetConstructedDataEventMessageTexts(numberOfDataElements BACnetApplicationTagUnsignedInteger, eventMessageTexts []BACnetOptionalCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventMessageTexts {
-	_result := &_BACnetConstructedDataEventMessageTexts{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		EventMessageTexts:             eventMessageTexts,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventMessageTexts(structType any) BACnetConstructedDataEventMessageTexts {
@@ -325,13 +441,34 @@ func (m *_BACnetConstructedDataEventMessageTexts) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataEventMessageTexts) IsBACnetConstructedDataEventMessageTexts() {}
 
+func (m *_BACnetConstructedDataEventMessageTexts) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventMessageTexts) deepCopy() *_BACnetConstructedDataEventMessageTexts {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventMessageTextsCopy := &_BACnetConstructedDataEventMessageTexts{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetOptionalCharacterString, BACnetOptionalCharacterString](m.EventMessageTexts),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventMessageTextsCopy
+}
+
 func (m *_BACnetConstructedDataEventMessageTexts) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

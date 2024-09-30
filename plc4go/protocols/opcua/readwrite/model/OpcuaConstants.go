@@ -41,8 +41,11 @@ type OpcuaConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsOpcuaConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaConstants()
+	// CreateBuilder creates a OpcuaConstantsBuilder
+	CreateOpcuaConstantsBuilder() OpcuaConstantsBuilder
 }
 
 // _OpcuaConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _OpcuaConstants struct {
 }
 
 var _ OpcuaConstants = (*_OpcuaConstants)(nil)
+
+// NewOpcuaConstants factory function for _OpcuaConstants
+func NewOpcuaConstants() *_OpcuaConstants {
+	return &_OpcuaConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaConstantsBuilder is a builder for OpcuaConstants
+type OpcuaConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() OpcuaConstantsBuilder
+	// Build builds the OpcuaConstants or returns an error if something is wrong
+	Build() (OpcuaConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaConstants
+}
+
+// NewOpcuaConstantsBuilder() creates a OpcuaConstantsBuilder
+func NewOpcuaConstantsBuilder() OpcuaConstantsBuilder {
+	return &_OpcuaConstantsBuilder{_OpcuaConstants: new(_OpcuaConstants)}
+}
+
+type _OpcuaConstantsBuilder struct {
+	*_OpcuaConstants
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaConstantsBuilder) = (*_OpcuaConstantsBuilder)(nil)
+
+func (b *_OpcuaConstantsBuilder) WithMandatoryFields() OpcuaConstantsBuilder {
+	return b
+}
+
+func (b *_OpcuaConstantsBuilder) Build() (OpcuaConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaConstants.deepCopy(), nil
+}
+
+func (b *_OpcuaConstantsBuilder) MustBuild() OpcuaConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_OpcuaConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaConstantsBuilder().(*_OpcuaConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaConstantsBuilder creates a OpcuaConstantsBuilder
+func (b *_OpcuaConstants) CreateOpcuaConstantsBuilder() OpcuaConstantsBuilder {
+	if b == nil {
+		return NewOpcuaConstantsBuilder()
+	}
+	return &_OpcuaConstantsBuilder{_OpcuaConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_OpcuaConstants) GetProtocolVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaConstants factory function for _OpcuaConstants
-func NewOpcuaConstants() *_OpcuaConstants {
-	return &_OpcuaConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaConstants(structType any) OpcuaConstants {
@@ -113,7 +185,7 @@ func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_OpcuaConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__opcuaConstants OpcuaConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_OpcuaConstants) IsOpcuaConstants() {}
 
+func (m *_OpcuaConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaConstants) deepCopy() *_OpcuaConstants {
+	if m == nil {
+		return nil
+	}
+	_OpcuaConstantsCopy := &_OpcuaConstants{}
+	return _OpcuaConstantsCopy
+}
+
 func (m *_OpcuaConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

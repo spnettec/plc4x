@@ -38,6 +38,7 @@ type HVACZoneList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetZone6 returns Zone6 (property field)
@@ -58,6 +59,8 @@ type HVACZoneList interface {
 	GetUnswitchedZone() bool
 	// IsHVACZoneList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACZoneList()
+	// CreateBuilder creates a HVACZoneListBuilder
+	CreateHVACZoneListBuilder() HVACZoneListBuilder
 }
 
 // _HVACZoneList is the data-structure of this message
@@ -73,6 +76,136 @@ type _HVACZoneList struct {
 }
 
 var _ HVACZoneList = (*_HVACZoneList)(nil)
+
+// NewHVACZoneList factory function for _HVACZoneList
+func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) *_HVACZoneList {
+	return &_HVACZoneList{Expansion: expansion, Zone6: zone6, Zone5: zone5, Zone4: zone4, Zone3: zone3, Zone2: zone2, Zone1: zone1, Zone0: zone0}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACZoneListBuilder is a builder for HVACZoneList
+type HVACZoneListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) HVACZoneListBuilder
+	// WithExpansion adds Expansion (property field)
+	WithExpansion(bool) HVACZoneListBuilder
+	// WithZone6 adds Zone6 (property field)
+	WithZone6(bool) HVACZoneListBuilder
+	// WithZone5 adds Zone5 (property field)
+	WithZone5(bool) HVACZoneListBuilder
+	// WithZone4 adds Zone4 (property field)
+	WithZone4(bool) HVACZoneListBuilder
+	// WithZone3 adds Zone3 (property field)
+	WithZone3(bool) HVACZoneListBuilder
+	// WithZone2 adds Zone2 (property field)
+	WithZone2(bool) HVACZoneListBuilder
+	// WithZone1 adds Zone1 (property field)
+	WithZone1(bool) HVACZoneListBuilder
+	// WithZone0 adds Zone0 (property field)
+	WithZone0(bool) HVACZoneListBuilder
+	// Build builds the HVACZoneList or returns an error if something is wrong
+	Build() (HVACZoneList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACZoneList
+}
+
+// NewHVACZoneListBuilder() creates a HVACZoneListBuilder
+func NewHVACZoneListBuilder() HVACZoneListBuilder {
+	return &_HVACZoneListBuilder{_HVACZoneList: new(_HVACZoneList)}
+}
+
+type _HVACZoneListBuilder struct {
+	*_HVACZoneList
+
+	err *utils.MultiError
+}
+
+var _ (HVACZoneListBuilder) = (*_HVACZoneListBuilder)(nil)
+
+func (b *_HVACZoneListBuilder) WithMandatoryFields(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) HVACZoneListBuilder {
+	return b.WithExpansion(expansion).WithZone6(zone6).WithZone5(zone5).WithZone4(zone4).WithZone3(zone3).WithZone2(zone2).WithZone1(zone1).WithZone0(zone0)
+}
+
+func (b *_HVACZoneListBuilder) WithExpansion(expansion bool) HVACZoneListBuilder {
+	b.Expansion = expansion
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone6(zone6 bool) HVACZoneListBuilder {
+	b.Zone6 = zone6
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone5(zone5 bool) HVACZoneListBuilder {
+	b.Zone5 = zone5
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone4(zone4 bool) HVACZoneListBuilder {
+	b.Zone4 = zone4
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone3(zone3 bool) HVACZoneListBuilder {
+	b.Zone3 = zone3
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone2(zone2 bool) HVACZoneListBuilder {
+	b.Zone2 = zone2
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone1(zone1 bool) HVACZoneListBuilder {
+	b.Zone1 = zone1
+	return b
+}
+
+func (b *_HVACZoneListBuilder) WithZone0(zone0 bool) HVACZoneListBuilder {
+	b.Zone0 = zone0
+	return b
+}
+
+func (b *_HVACZoneListBuilder) Build() (HVACZoneList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACZoneList.deepCopy(), nil
+}
+
+func (b *_HVACZoneListBuilder) MustBuild() HVACZoneList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACZoneListBuilder) DeepCopy() any {
+	_copy := b.CreateHVACZoneListBuilder().(*_HVACZoneListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACZoneListBuilder creates a HVACZoneListBuilder
+func (b *_HVACZoneList) CreateHVACZoneListBuilder() HVACZoneListBuilder {
+	if b == nil {
+		return NewHVACZoneListBuilder()
+	}
+	return &_HVACZoneListBuilder{_HVACZoneList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,11 +263,6 @@ func (m *_HVACZoneList) GetUnswitchedZone() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACZoneList factory function for _HVACZoneList
-func NewHVACZoneList(expansion bool, zone6 bool, zone5 bool, zone4 bool, zone3 bool, zone2 bool, zone1 bool, zone0 bool) *_HVACZoneList {
-	return &_HVACZoneList{Expansion: expansion, Zone6: zone6, Zone5: zone5, Zone4: zone4, Zone3: zone3, Zone2: zone2, Zone1: zone1, Zone0: zone0}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACZoneList(structType any) HVACZoneList {
@@ -202,7 +330,7 @@ func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACZoneList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACZoneList HVACZoneList, err error) {
@@ -338,13 +466,38 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_HVACZoneList) IsHVACZoneList() {}
 
+func (m *_HVACZoneList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACZoneList) deepCopy() *_HVACZoneList {
+	if m == nil {
+		return nil
+	}
+	_HVACZoneListCopy := &_HVACZoneList{
+		m.Expansion,
+		m.Zone6,
+		m.Zone5,
+		m.Zone4,
+		m.Zone3,
+		m.Zone2,
+		m.Zone1,
+		m.Zone0,
+	}
+	return _HVACZoneListCopy
+}
+
 func (m *_HVACZoneList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

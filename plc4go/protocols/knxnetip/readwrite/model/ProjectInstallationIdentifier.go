@@ -38,12 +38,15 @@ type ProjectInstallationIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProjectNumber returns ProjectNumber (property field)
 	GetProjectNumber() uint8
 	// GetInstallationNumber returns InstallationNumber (property field)
 	GetInstallationNumber() uint8
 	// IsProjectInstallationIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsProjectInstallationIdentifier()
+	// CreateBuilder creates a ProjectInstallationIdentifierBuilder
+	CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder
 }
 
 // _ProjectInstallationIdentifier is the data-structure of this message
@@ -53,6 +56,94 @@ type _ProjectInstallationIdentifier struct {
 }
 
 var _ ProjectInstallationIdentifier = (*_ProjectInstallationIdentifier)(nil)
+
+// NewProjectInstallationIdentifier factory function for _ProjectInstallationIdentifier
+func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *_ProjectInstallationIdentifier {
+	return &_ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ProjectInstallationIdentifierBuilder is a builder for ProjectInstallationIdentifier
+type ProjectInstallationIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder
+	// WithProjectNumber adds ProjectNumber (property field)
+	WithProjectNumber(uint8) ProjectInstallationIdentifierBuilder
+	// WithInstallationNumber adds InstallationNumber (property field)
+	WithInstallationNumber(uint8) ProjectInstallationIdentifierBuilder
+	// Build builds the ProjectInstallationIdentifier or returns an error if something is wrong
+	Build() (ProjectInstallationIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ProjectInstallationIdentifier
+}
+
+// NewProjectInstallationIdentifierBuilder() creates a ProjectInstallationIdentifierBuilder
+func NewProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
+	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: new(_ProjectInstallationIdentifier)}
+}
+
+type _ProjectInstallationIdentifierBuilder struct {
+	*_ProjectInstallationIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (ProjectInstallationIdentifierBuilder) = (*_ProjectInstallationIdentifierBuilder)(nil)
+
+func (b *_ProjectInstallationIdentifierBuilder) WithMandatoryFields(projectNumber uint8, installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	return b.WithProjectNumber(projectNumber).WithInstallationNumber(installationNumber)
+}
+
+func (b *_ProjectInstallationIdentifierBuilder) WithProjectNumber(projectNumber uint8) ProjectInstallationIdentifierBuilder {
+	b.ProjectNumber = projectNumber
+	return b
+}
+
+func (b *_ProjectInstallationIdentifierBuilder) WithInstallationNumber(installationNumber uint8) ProjectInstallationIdentifierBuilder {
+	b.InstallationNumber = installationNumber
+	return b
+}
+
+func (b *_ProjectInstallationIdentifierBuilder) Build() (ProjectInstallationIdentifier, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ProjectInstallationIdentifier.deepCopy(), nil
+}
+
+func (b *_ProjectInstallationIdentifierBuilder) MustBuild() ProjectInstallationIdentifier {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ProjectInstallationIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateProjectInstallationIdentifierBuilder().(*_ProjectInstallationIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateProjectInstallationIdentifierBuilder creates a ProjectInstallationIdentifierBuilder
+func (b *_ProjectInstallationIdentifier) CreateProjectInstallationIdentifierBuilder() ProjectInstallationIdentifierBuilder {
+	if b == nil {
+		return NewProjectInstallationIdentifierBuilder()
+	}
+	return &_ProjectInstallationIdentifierBuilder{_ProjectInstallationIdentifier: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_ProjectInstallationIdentifier) GetInstallationNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewProjectInstallationIdentifier factory function for _ProjectInstallationIdentifier
-func NewProjectInstallationIdentifier(projectNumber uint8, installationNumber uint8) *_ProjectInstallationIdentifier {
-	return &_ProjectInstallationIdentifier{ProjectNumber: projectNumber, InstallationNumber: installationNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastProjectInstallationIdentifier(structType any) ProjectInstallationIdentifier {
@@ -123,7 +209,7 @@ func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ProjectInstallationIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__projectInstallationIdentifier ProjectInstallationIdentifier, err error) {
@@ -187,13 +273,32 @@ func (m *_ProjectInstallationIdentifier) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_ProjectInstallationIdentifier) IsProjectInstallationIdentifier() {}
 
+func (m *_ProjectInstallationIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ProjectInstallationIdentifier) deepCopy() *_ProjectInstallationIdentifier {
+	if m == nil {
+		return nil
+	}
+	_ProjectInstallationIdentifierCopy := &_ProjectInstallationIdentifier{
+		m.ProjectNumber,
+		m.InstallationNumber,
+	}
+	return _ProjectInstallationIdentifierCopy
+}
+
 func (m *_ProjectInstallationIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

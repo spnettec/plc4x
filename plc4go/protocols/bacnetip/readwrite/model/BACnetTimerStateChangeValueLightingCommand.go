@@ -38,11 +38,14 @@ type BACnetTimerStateChangeValueLightingCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetLigthingCommandValue returns LigthingCommandValue (property field)
 	GetLigthingCommandValue() BACnetLightingCommandEnclosed
 	// IsBACnetTimerStateChangeValueLightingCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueLightingCommand()
+	// CreateBuilder creates a BACnetTimerStateChangeValueLightingCommandBuilder
+	CreateBACnetTimerStateChangeValueLightingCommandBuilder() BACnetTimerStateChangeValueLightingCommandBuilder
 }
 
 // _BACnetTimerStateChangeValueLightingCommand is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetTimerStateChangeValueLightingCommand struct {
 
 var _ BACnetTimerStateChangeValueLightingCommand = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueLightingCommand)(nil)
+
+// NewBACnetTimerStateChangeValueLightingCommand factory function for _BACnetTimerStateChangeValueLightingCommand
+func NewBACnetTimerStateChangeValueLightingCommand(peekedTagHeader BACnetTagHeader, ligthingCommandValue BACnetLightingCommandEnclosed, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
+	if ligthingCommandValue == nil {
+		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetTimerStateChangeValueLightingCommand must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueLightingCommand{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		LigthingCommandValue:                ligthingCommandValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueLightingCommandBuilder is a builder for BACnetTimerStateChangeValueLightingCommand
+type BACnetTimerStateChangeValueLightingCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder
+	// WithLigthingCommandValue adds LigthingCommandValue (property field)
+	WithLigthingCommandValue(BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder
+	// WithLigthingCommandValueBuilder adds LigthingCommandValue (property field) which is build by the builder
+	WithLigthingCommandValueBuilder(func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetTimerStateChangeValueLightingCommandBuilder
+	// Build builds the BACnetTimerStateChangeValueLightingCommand or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueLightingCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueLightingCommand
+}
+
+// NewBACnetTimerStateChangeValueLightingCommandBuilder() creates a BACnetTimerStateChangeValueLightingCommandBuilder
+func NewBACnetTimerStateChangeValueLightingCommandBuilder() BACnetTimerStateChangeValueLightingCommandBuilder {
+	return &_BACnetTimerStateChangeValueLightingCommandBuilder{_BACnetTimerStateChangeValueLightingCommand: new(_BACnetTimerStateChangeValueLightingCommand)}
+}
+
+type _BACnetTimerStateChangeValueLightingCommandBuilder struct {
+	*_BACnetTimerStateChangeValueLightingCommand
+
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueLightingCommandBuilder) = (*_BACnetTimerStateChangeValueLightingCommandBuilder)(nil)
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) WithMandatoryFields(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder {
+	return b.WithLigthingCommandValue(ligthingCommandValue)
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) WithLigthingCommandValue(ligthingCommandValue BACnetLightingCommandEnclosed) BACnetTimerStateChangeValueLightingCommandBuilder {
+	b.LigthingCommandValue = ligthingCommandValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) WithLigthingCommandValueBuilder(builderSupplier func(BACnetLightingCommandEnclosedBuilder) BACnetLightingCommandEnclosedBuilder) BACnetTimerStateChangeValueLightingCommandBuilder {
+	builder := builderSupplier(b.LigthingCommandValue.CreateBACnetLightingCommandEnclosedBuilder())
+	var err error
+	b.LigthingCommandValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLightingCommandEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) Build() (BACnetTimerStateChangeValueLightingCommand, error) {
+	if b.LigthingCommandValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ligthingCommandValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimerStateChangeValueLightingCommand.deepCopy(), nil
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) MustBuild() BACnetTimerStateChangeValueLightingCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueLightingCommandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueLightingCommandBuilder().(*_BACnetTimerStateChangeValueLightingCommandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTimerStateChangeValueLightingCommandBuilder creates a BACnetTimerStateChangeValueLightingCommandBuilder
+func (b *_BACnetTimerStateChangeValueLightingCommand) CreateBACnetTimerStateChangeValueLightingCommandBuilder() BACnetTimerStateChangeValueLightingCommandBuilder {
+	if b == nil {
+		return NewBACnetTimerStateChangeValueLightingCommandBuilder()
+	}
+	return &_BACnetTimerStateChangeValueLightingCommandBuilder{_BACnetTimerStateChangeValueLightingCommand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) GetLigthingCommandValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueLightingCommand factory function for _BACnetTimerStateChangeValueLightingCommand
-func NewBACnetTimerStateChangeValueLightingCommand(ligthingCommandValue BACnetLightingCommandEnclosed, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueLightingCommand {
-	if ligthingCommandValue == nil {
-		panic("ligthingCommandValue of type BACnetLightingCommandEnclosed for BACnetTimerStateChangeValueLightingCommand must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueLightingCommand{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		LigthingCommandValue:                ligthingCommandValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueLightingCommand(structType any) BACnetTimerStateChangeValueLightingCommand {
@@ -180,13 +295,33 @@ func (m *_BACnetTimerStateChangeValueLightingCommand) SerializeWithWriteBuffer(c
 func (m *_BACnetTimerStateChangeValueLightingCommand) IsBACnetTimerStateChangeValueLightingCommand() {
 }
 
+func (m *_BACnetTimerStateChangeValueLightingCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueLightingCommand) deepCopy() *_BACnetTimerStateChangeValueLightingCommand {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueLightingCommandCopy := &_BACnetTimerStateChangeValueLightingCommand{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.LigthingCommandValue.DeepCopy().(BACnetLightingCommandEnclosed),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueLightingCommandCopy
+}
+
 func (m *_BACnetTimerStateChangeValueLightingCommand) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

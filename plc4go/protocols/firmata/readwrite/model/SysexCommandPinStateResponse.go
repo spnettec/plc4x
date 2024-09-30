@@ -38,6 +38,7 @@ type SysexCommandPinStateResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -47,6 +48,8 @@ type SysexCommandPinStateResponse interface {
 	GetPinState() uint8
 	// IsSysexCommandPinStateResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandPinStateResponse()
+	// CreateBuilder creates a SysexCommandPinStateResponseBuilder
+	CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder
 }
 
 // _SysexCommandPinStateResponse is the data-structure of this message
@@ -59,6 +62,123 @@ type _SysexCommandPinStateResponse struct {
 
 var _ SysexCommandPinStateResponse = (*_SysexCommandPinStateResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandPinStateResponse)(nil)
+
+// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
+func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
+	_result := &_SysexCommandPinStateResponse{
+		SysexCommandContract: NewSysexCommand(),
+		Pin:                  pin,
+		PinMode:              pinMode,
+		PinState:             pinState,
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandPinStateResponseBuilder is a builder for SysexCommandPinStateResponse
+type SysexCommandPinStateResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) SysexCommandPinStateResponseBuilder
+	// WithPinMode adds PinMode (property field)
+	WithPinMode(uint8) SysexCommandPinStateResponseBuilder
+	// WithPinState adds PinState (property field)
+	WithPinState(uint8) SysexCommandPinStateResponseBuilder
+	// Build builds the SysexCommandPinStateResponse or returns an error if something is wrong
+	Build() (SysexCommandPinStateResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandPinStateResponse
+}
+
+// NewSysexCommandPinStateResponseBuilder() creates a SysexCommandPinStateResponseBuilder
+func NewSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
+	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: new(_SysexCommandPinStateResponse)}
+}
+
+type _SysexCommandPinStateResponseBuilder struct {
+	*_SysexCommandPinStateResponse
+
+	parentBuilder *_SysexCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandPinStateResponseBuilder) = (*_SysexCommandPinStateResponseBuilder)(nil)
+
+func (b *_SysexCommandPinStateResponseBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) WithMandatoryFields(pin uint8, pinMode uint8, pinState uint8) SysexCommandPinStateResponseBuilder {
+	return b.WithPin(pin).WithPinMode(pinMode).WithPinState(pinState)
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) WithPin(pin uint8) SysexCommandPinStateResponseBuilder {
+	b.Pin = pin
+	return b
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) WithPinMode(pinMode uint8) SysexCommandPinStateResponseBuilder {
+	b.PinMode = pinMode
+	return b
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) WithPinState(pinState uint8) SysexCommandPinStateResponseBuilder {
+	b.PinState = pinState
+	return b
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) Build() (SysexCommandPinStateResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SysexCommandPinStateResponse.deepCopy(), nil
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) MustBuild() SysexCommandPinStateResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandPinStateResponseBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandPinStateResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandPinStateResponseBuilder().(*_SysexCommandPinStateResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSysexCommandPinStateResponseBuilder creates a SysexCommandPinStateResponseBuilder
+func (b *_SysexCommandPinStateResponse) CreateSysexCommandPinStateResponseBuilder() SysexCommandPinStateResponseBuilder {
+	if b == nil {
+		return NewSysexCommandPinStateResponseBuilder()
+	}
+	return &_SysexCommandPinStateResponseBuilder{_SysexCommandPinStateResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +223,6 @@ func (m *_SysexCommandPinStateResponse) GetPinState() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSysexCommandPinStateResponse factory function for _SysexCommandPinStateResponse
-func NewSysexCommandPinStateResponse(pin uint8, pinMode uint8, pinState uint8) *_SysexCommandPinStateResponse {
-	_result := &_SysexCommandPinStateResponse{
-		SysexCommandContract: NewSysexCommand(),
-		Pin:                  pin,
-		PinMode:              pinMode,
-		PinState:             pinState,
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSysexCommandPinStateResponse(structType any) SysexCommandPinStateResponse {
@@ -226,13 +334,35 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_SysexCommandPinStateResponse) IsSysexCommandPinStateResponse() {}
 
+func (m *_SysexCommandPinStateResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandPinStateResponse) deepCopy() *_SysexCommandPinStateResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandPinStateResponseCopy := &_SysexCommandPinStateResponse{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+		m.Pin,
+		m.PinMode,
+		m.PinState,
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandPinStateResponseCopy
+}
+
 func (m *_SysexCommandPinStateResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

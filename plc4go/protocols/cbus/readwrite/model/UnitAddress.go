@@ -38,10 +38,13 @@ type UnitAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// IsUnitAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnitAddress()
+	// CreateBuilder creates a UnitAddressBuilder
+	CreateUnitAddressBuilder() UnitAddressBuilder
 }
 
 // _UnitAddress is the data-structure of this message
@@ -50,6 +53,87 @@ type _UnitAddress struct {
 }
 
 var _ UnitAddress = (*_UnitAddress)(nil)
+
+// NewUnitAddress factory function for _UnitAddress
+func NewUnitAddress(address byte) *_UnitAddress {
+	return &_UnitAddress{Address: address}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnitAddressBuilder is a builder for UnitAddress
+type UnitAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address byte) UnitAddressBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(byte) UnitAddressBuilder
+	// Build builds the UnitAddress or returns an error if something is wrong
+	Build() (UnitAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnitAddress
+}
+
+// NewUnitAddressBuilder() creates a UnitAddressBuilder
+func NewUnitAddressBuilder() UnitAddressBuilder {
+	return &_UnitAddressBuilder{_UnitAddress: new(_UnitAddress)}
+}
+
+type _UnitAddressBuilder struct {
+	*_UnitAddress
+
+	err *utils.MultiError
+}
+
+var _ (UnitAddressBuilder) = (*_UnitAddressBuilder)(nil)
+
+func (b *_UnitAddressBuilder) WithMandatoryFields(address byte) UnitAddressBuilder {
+	return b.WithAddress(address)
+}
+
+func (b *_UnitAddressBuilder) WithAddress(address byte) UnitAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_UnitAddressBuilder) Build() (UnitAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnitAddress.deepCopy(), nil
+}
+
+func (b *_UnitAddressBuilder) MustBuild() UnitAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_UnitAddressBuilder) DeepCopy() any {
+	_copy := b.CreateUnitAddressBuilder().(*_UnitAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUnitAddressBuilder creates a UnitAddressBuilder
+func (b *_UnitAddress) CreateUnitAddressBuilder() UnitAddressBuilder {
+	if b == nil {
+		return NewUnitAddressBuilder()
+	}
+	return &_UnitAddressBuilder{_UnitAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_UnitAddress) GetAddress() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnitAddress factory function for _UnitAddress
-func NewUnitAddress(address byte) *_UnitAddress {
-	return &_UnitAddress{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnitAddress(structType any) UnitAddress {
@@ -113,7 +192,7 @@ func UnitAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_UnitAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__unitAddress UnitAddress, err error) {
@@ -167,13 +246,31 @@ func (m *_UnitAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_UnitAddress) IsUnitAddress() {}
 
+func (m *_UnitAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnitAddress) deepCopy() *_UnitAddress {
+	if m == nil {
+		return nil
+	}
+	_UnitAddressCopy := &_UnitAddress{
+		m.Address,
+	}
+	return _UnitAddressCopy
+}
+
 func (m *_UnitAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

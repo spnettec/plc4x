@@ -38,6 +38,7 @@ type ViewDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetViewId returns ViewId (property field)
 	GetViewId() NodeId
@@ -47,6 +48,8 @@ type ViewDescription interface {
 	GetViewVersion() uint32
 	// IsViewDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsViewDescription()
+	// CreateBuilder creates a ViewDescriptionBuilder
+	CreateViewDescriptionBuilder() ViewDescriptionBuilder
 }
 
 // _ViewDescription is the data-structure of this message
@@ -59,6 +62,147 @@ type _ViewDescription struct {
 
 var _ ViewDescription = (*_ViewDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ViewDescription)(nil)
+
+// NewViewDescription factory function for _ViewDescription
+func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
+	if viewId == nil {
+		panic("viewId of type NodeId for ViewDescription must not be nil")
+	}
+	_result := &_ViewDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ViewId:                            viewId,
+		Timestamp:                         timestamp,
+		ViewVersion:                       viewVersion,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ViewDescriptionBuilder is a builder for ViewDescription
+type ViewDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder
+	// WithViewId adds ViewId (property field)
+	WithViewId(NodeId) ViewDescriptionBuilder
+	// WithViewIdBuilder adds ViewId (property field) which is build by the builder
+	WithViewIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(int64) ViewDescriptionBuilder
+	// WithViewVersion adds ViewVersion (property field)
+	WithViewVersion(uint32) ViewDescriptionBuilder
+	// Build builds the ViewDescription or returns an error if something is wrong
+	Build() (ViewDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ViewDescription
+}
+
+// NewViewDescriptionBuilder() creates a ViewDescriptionBuilder
+func NewViewDescriptionBuilder() ViewDescriptionBuilder {
+	return &_ViewDescriptionBuilder{_ViewDescription: new(_ViewDescription)}
+}
+
+type _ViewDescriptionBuilder struct {
+	*_ViewDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ViewDescriptionBuilder) = (*_ViewDescriptionBuilder)(nil)
+
+func (b *_ViewDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ViewDescriptionBuilder) WithMandatoryFields(viewId NodeId, timestamp int64, viewVersion uint32) ViewDescriptionBuilder {
+	return b.WithViewId(viewId).WithTimestamp(timestamp).WithViewVersion(viewVersion)
+}
+
+func (b *_ViewDescriptionBuilder) WithViewId(viewId NodeId) ViewDescriptionBuilder {
+	b.ViewId = viewId
+	return b
+}
+
+func (b *_ViewDescriptionBuilder) WithViewIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ViewDescriptionBuilder {
+	builder := builderSupplier(b.ViewId.CreateNodeIdBuilder())
+	var err error
+	b.ViewId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ViewDescriptionBuilder) WithTimestamp(timestamp int64) ViewDescriptionBuilder {
+	b.Timestamp = timestamp
+	return b
+}
+
+func (b *_ViewDescriptionBuilder) WithViewVersion(viewVersion uint32) ViewDescriptionBuilder {
+	b.ViewVersion = viewVersion
+	return b
+}
+
+func (b *_ViewDescriptionBuilder) Build() (ViewDescription, error) {
+	if b.ViewId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'viewId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ViewDescription.deepCopy(), nil
+}
+
+func (b *_ViewDescriptionBuilder) MustBuild() ViewDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ViewDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ViewDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ViewDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateViewDescriptionBuilder().(*_ViewDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateViewDescriptionBuilder creates a ViewDescriptionBuilder
+func (b *_ViewDescription) CreateViewDescriptionBuilder() ViewDescriptionBuilder {
+	if b == nil {
+		return NewViewDescriptionBuilder()
+	}
+	return &_ViewDescriptionBuilder{_ViewDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_ViewDescription) GetViewVersion() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewViewDescription factory function for _ViewDescription
-func NewViewDescription(viewId NodeId, timestamp int64, viewVersion uint32) *_ViewDescription {
-	if viewId == nil {
-		panic("viewId of type NodeId for ViewDescription must not be nil")
-	}
-	_result := &_ViewDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ViewId:                            viewId,
-		Timestamp:                         timestamp,
-		ViewVersion:                       viewVersion,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastViewDescription(structType any) ViewDescription {
@@ -225,13 +354,35 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ViewDescription) IsViewDescription() {}
 
+func (m *_ViewDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ViewDescription) deepCopy() *_ViewDescription {
+	if m == nil {
+		return nil
+	}
+	_ViewDescriptionCopy := &_ViewDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ViewId.DeepCopy().(NodeId),
+		m.Timestamp,
+		m.ViewVersion,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ViewDescriptionCopy
+}
+
 func (m *_ViewDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type RelativePathElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceTypeId returns ReferenceTypeId (property field)
 	GetReferenceTypeId() NodeId
@@ -49,6 +50,8 @@ type RelativePathElement interface {
 	GetTargetName() QualifiedName
 	// IsRelativePathElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRelativePathElement()
+	// CreateBuilder creates a RelativePathElementBuilder
+	CreateRelativePathElementBuilder() RelativePathElementBuilder
 }
 
 // _RelativePathElement is the data-structure of this message
@@ -64,6 +67,179 @@ type _RelativePathElement struct {
 
 var _ RelativePathElement = (*_RelativePathElement)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RelativePathElement)(nil)
+
+// NewRelativePathElement factory function for _RelativePathElement
+func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
+	}
+	if targetName == nil {
+		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
+	}
+	_result := &_RelativePathElement{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		IsInverse:                         isInverse,
+		TargetName:                        targetName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RelativePathElementBuilder is a builder for RelativePathElement
+type RelativePathElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) RelativePathElementBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) RelativePathElementBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) RelativePathElementBuilder
+	// WithIncludeSubtypes adds IncludeSubtypes (property field)
+	WithIncludeSubtypes(bool) RelativePathElementBuilder
+	// WithIsInverse adds IsInverse (property field)
+	WithIsInverse(bool) RelativePathElementBuilder
+	// WithTargetName adds TargetName (property field)
+	WithTargetName(QualifiedName) RelativePathElementBuilder
+	// WithTargetNameBuilder adds TargetName (property field) which is build by the builder
+	WithTargetNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) RelativePathElementBuilder
+	// Build builds the RelativePathElement or returns an error if something is wrong
+	Build() (RelativePathElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RelativePathElement
+}
+
+// NewRelativePathElementBuilder() creates a RelativePathElementBuilder
+func NewRelativePathElementBuilder() RelativePathElementBuilder {
+	return &_RelativePathElementBuilder{_RelativePathElement: new(_RelativePathElement)}
+}
+
+type _RelativePathElementBuilder struct {
+	*_RelativePathElement
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RelativePathElementBuilder) = (*_RelativePathElementBuilder)(nil)
+
+func (b *_RelativePathElementBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_RelativePathElementBuilder) WithMandatoryFields(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) RelativePathElementBuilder {
+	return b.WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithIsInverse(isInverse).WithTargetName(targetName)
+}
+
+func (b *_RelativePathElementBuilder) WithReferenceTypeId(referenceTypeId NodeId) RelativePathElementBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) RelativePathElementBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	b.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithIncludeSubtypes(includeSubtypes bool) RelativePathElementBuilder {
+	b.IncludeSubtypes = includeSubtypes
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithIsInverse(isInverse bool) RelativePathElementBuilder {
+	b.IsInverse = isInverse
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithTargetName(targetName QualifiedName) RelativePathElementBuilder {
+	b.TargetName = targetName
+	return b
+}
+
+func (b *_RelativePathElementBuilder) WithTargetNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) RelativePathElementBuilder {
+	builder := builderSupplier(b.TargetName.CreateQualifiedNameBuilder())
+	var err error
+	b.TargetName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RelativePathElementBuilder) Build() (RelativePathElement, error) {
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if b.TargetName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'targetName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RelativePathElement.deepCopy(), nil
+}
+
+func (b *_RelativePathElementBuilder) MustBuild() RelativePathElement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RelativePathElementBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RelativePathElementBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RelativePathElementBuilder) DeepCopy() any {
+	_copy := b.CreateRelativePathElementBuilder().(*_RelativePathElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRelativePathElementBuilder creates a RelativePathElementBuilder
+func (b *_RelativePathElement) CreateRelativePathElementBuilder() RelativePathElementBuilder {
+	if b == nil {
+		return NewRelativePathElementBuilder()
+	}
+	return &_RelativePathElementBuilder{_RelativePathElement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,25 +284,6 @@ func (m *_RelativePathElement) GetTargetName() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativePathElement factory function for _RelativePathElement
-func NewRelativePathElement(referenceTypeId NodeId, includeSubtypes bool, isInverse bool, targetName QualifiedName) *_RelativePathElement {
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for RelativePathElement must not be nil")
-	}
-	if targetName == nil {
-		panic("targetName of type QualifiedName for RelativePathElement must not be nil")
-	}
-	_result := &_RelativePathElement{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceTypeId:                   referenceTypeId,
-		IncludeSubtypes:                   includeSubtypes,
-		IsInverse:                         isInverse,
-		TargetName:                        targetName,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativePathElement(structType any) RelativePathElement {
@@ -264,13 +421,37 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_RelativePathElement) IsRelativePathElement() {}
 
+func (m *_RelativePathElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativePathElement) deepCopy() *_RelativePathElement {
+	if m == nil {
+		return nil
+	}
+	_RelativePathElementCopy := &_RelativePathElement{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.IsInverse,
+		m.TargetName.DeepCopy().(QualifiedName),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RelativePathElementCopy
+}
+
 func (m *_RelativePathElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

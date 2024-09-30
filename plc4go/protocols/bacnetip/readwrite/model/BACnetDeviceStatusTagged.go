@@ -38,6 +38,7 @@ type BACnetDeviceStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetDeviceStatusTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetDeviceStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDeviceStatusTagged()
+	// CreateBuilder creates a BACnetDeviceStatusTaggedBuilder
+	CreateBACnetDeviceStatusTaggedBuilder() BACnetDeviceStatusTaggedBuilder
 }
 
 // _BACnetDeviceStatusTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetDeviceStatusTagged struct {
 }
 
 var _ BACnetDeviceStatusTagged = (*_BACnetDeviceStatusTagged)(nil)
+
+// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
+func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
+	}
+	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDeviceStatusTaggedBuilder is a builder for BACnetDeviceStatusTagged
+type BACnetDeviceStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDeviceStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDeviceStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetDeviceStatusTaggedBuilder
+	// Build builds the BACnetDeviceStatusTagged or returns an error if something is wrong
+	Build() (BACnetDeviceStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDeviceStatusTagged
+}
+
+// NewBACnetDeviceStatusTaggedBuilder() creates a BACnetDeviceStatusTaggedBuilder
+func NewBACnetDeviceStatusTaggedBuilder() BACnetDeviceStatusTaggedBuilder {
+	return &_BACnetDeviceStatusTaggedBuilder{_BACnetDeviceStatusTagged: new(_BACnetDeviceStatusTagged)}
+}
+
+type _BACnetDeviceStatusTaggedBuilder struct {
+	*_BACnetDeviceStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDeviceStatusTaggedBuilder) = (*_BACnetDeviceStatusTaggedBuilder)(nil)
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDeviceStatusTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDeviceStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithValue(value BACnetDeviceStatus) BACnetDeviceStatusTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDeviceStatusTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) Build() (BACnetDeviceStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDeviceStatusTagged.deepCopy(), nil
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) MustBuild() BACnetDeviceStatusTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDeviceStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDeviceStatusTaggedBuilder().(*_BACnetDeviceStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDeviceStatusTaggedBuilder creates a BACnetDeviceStatusTaggedBuilder
+func (b *_BACnetDeviceStatusTagged) CreateBACnetDeviceStatusTaggedBuilder() BACnetDeviceStatusTaggedBuilder {
+	if b == nil {
+		return NewBACnetDeviceStatusTaggedBuilder()
+	}
+	return &_BACnetDeviceStatusTaggedBuilder{_BACnetDeviceStatusTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetDeviceStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceStatusTagged factory function for _BACnetDeviceStatusTagged
-func NewBACnetDeviceStatusTagged(header BACnetTagHeader, value BACnetDeviceStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDeviceStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDeviceStatusTagged must not be nil")
-	}
-	return &_BACnetDeviceStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceStatusTagged(structType any) BACnetDeviceStatusTagged {
@@ -159,7 +273,7 @@ func BACnetDeviceStatusTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDeviceStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDeviceStatusTagged BACnetDeviceStatusTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetDeviceStatusTagged) GetTagClass() TagClass {
 
 func (m *_BACnetDeviceStatusTagged) IsBACnetDeviceStatusTagged() {}
 
+func (m *_BACnetDeviceStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceStatusTagged) deepCopy() *_BACnetDeviceStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceStatusTaggedCopy := &_BACnetDeviceStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDeviceStatusTaggedCopy
+}
+
 func (m *_BACnetDeviceStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

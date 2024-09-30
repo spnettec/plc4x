@@ -36,9 +36,12 @@ type MFuncPropCommandReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropCommandReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropCommandReq()
+	// CreateBuilder creates a MFuncPropCommandReqBuilder
+	CreateMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder
 }
 
 // _MFuncPropCommandReq is the data-structure of this message
@@ -48,6 +51,99 @@ type _MFuncPropCommandReq struct {
 
 var _ MFuncPropCommandReq = (*_MFuncPropCommandReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropCommandReq)(nil)
+
+// NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
+func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
+	_result := &_MFuncPropCommandReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MFuncPropCommandReqBuilder is a builder for MFuncPropCommandReq
+type MFuncPropCommandReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MFuncPropCommandReqBuilder
+	// Build builds the MFuncPropCommandReq or returns an error if something is wrong
+	Build() (MFuncPropCommandReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MFuncPropCommandReq
+}
+
+// NewMFuncPropCommandReqBuilder() creates a MFuncPropCommandReqBuilder
+func NewMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder {
+	return &_MFuncPropCommandReqBuilder{_MFuncPropCommandReq: new(_MFuncPropCommandReq)}
+}
+
+type _MFuncPropCommandReqBuilder struct {
+	*_MFuncPropCommandReq
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MFuncPropCommandReqBuilder) = (*_MFuncPropCommandReqBuilder)(nil)
+
+func (b *_MFuncPropCommandReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_MFuncPropCommandReqBuilder) WithMandatoryFields() MFuncPropCommandReqBuilder {
+	return b
+}
+
+func (b *_MFuncPropCommandReqBuilder) Build() (MFuncPropCommandReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MFuncPropCommandReq.deepCopy(), nil
+}
+
+func (b *_MFuncPropCommandReqBuilder) MustBuild() MFuncPropCommandReq {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MFuncPropCommandReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MFuncPropCommandReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MFuncPropCommandReqBuilder) DeepCopy() any {
+	_copy := b.CreateMFuncPropCommandReqBuilder().(*_MFuncPropCommandReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMFuncPropCommandReqBuilder creates a MFuncPropCommandReqBuilder
+func (b *_MFuncPropCommandReq) CreateMFuncPropCommandReqBuilder() MFuncPropCommandReqBuilder {
+	if b == nil {
+		return NewMFuncPropCommandReqBuilder()
+	}
+	return &_MFuncPropCommandReqBuilder{_MFuncPropCommandReq: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_MFuncPropCommandReq) GetMessageCode() uint8 {
 
 func (m *_MFuncPropCommandReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropCommandReq factory function for _MFuncPropCommandReq
-func NewMFuncPropCommandReq(size uint16) *_MFuncPropCommandReq {
-	_result := &_MFuncPropCommandReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_MFuncPropCommandReq) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_MFuncPropCommandReq) IsMFuncPropCommandReq() {}
 
+func (m *_MFuncPropCommandReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropCommandReq) deepCopy() *_MFuncPropCommandReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropCommandReqCopy := &_MFuncPropCommandReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropCommandReqCopy
+}
+
 func (m *_MFuncPropCommandReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type CipConnectedResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -47,6 +48,8 @@ type CipConnectedResponse interface {
 	GetData() CIPDataConnected
 	// IsCipConnectedResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipConnectedResponse()
+	// CreateBuilder creates a CipConnectedResponseBuilder
+	CreateCipConnectedResponseBuilder() CipConnectedResponseBuilder
 }
 
 // _CipConnectedResponse is the data-structure of this message
@@ -61,6 +64,138 @@ type _CipConnectedResponse struct {
 
 var _ CipConnectedResponse = (*_CipConnectedResponse)(nil)
 var _ CipServiceRequirements = (*_CipConnectedResponse)(nil)
+
+// NewCipConnectedResponse factory function for _CipConnectedResponse
+func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
+	_result := &_CipConnectedResponse{
+		CipServiceContract:    NewCipService(serviceLen),
+		Status:                status,
+		AdditionalStatusWords: additionalStatusWords,
+		Data:                  data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipConnectedResponseBuilder is a builder for CipConnectedResponse
+type CipConnectedResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) CipConnectedResponseBuilder
+	// WithAdditionalStatusWords adds AdditionalStatusWords (property field)
+	WithAdditionalStatusWords(uint8) CipConnectedResponseBuilder
+	// WithData adds Data (property field)
+	WithOptionalData(CIPDataConnected) CipConnectedResponseBuilder
+	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
+	WithOptionalDataBuilder(func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder
+	// Build builds the CipConnectedResponse or returns an error if something is wrong
+	Build() (CipConnectedResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipConnectedResponse
+}
+
+// NewCipConnectedResponseBuilder() creates a CipConnectedResponseBuilder
+func NewCipConnectedResponseBuilder() CipConnectedResponseBuilder {
+	return &_CipConnectedResponseBuilder{_CipConnectedResponse: new(_CipConnectedResponse)}
+}
+
+type _CipConnectedResponseBuilder struct {
+	*_CipConnectedResponse
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipConnectedResponseBuilder) = (*_CipConnectedResponseBuilder)(nil)
+
+func (b *_CipConnectedResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipConnectedResponseBuilder) WithMandatoryFields(status uint8, additionalStatusWords uint8) CipConnectedResponseBuilder {
+	return b.WithStatus(status).WithAdditionalStatusWords(additionalStatusWords)
+}
+
+func (b *_CipConnectedResponseBuilder) WithStatus(status uint8) CipConnectedResponseBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_CipConnectedResponseBuilder) WithAdditionalStatusWords(additionalStatusWords uint8) CipConnectedResponseBuilder {
+	b.AdditionalStatusWords = additionalStatusWords
+	return b
+}
+
+func (b *_CipConnectedResponseBuilder) WithOptionalData(data CIPDataConnected) CipConnectedResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipConnectedResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataConnectedBuilder) CIPDataConnectedBuilder) CipConnectedResponseBuilder {
+	builder := builderSupplier(b.Data.CreateCIPDataConnectedBuilder())
+	var err error
+	b.Data, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CIPDataConnectedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipConnectedResponseBuilder) Build() (CipConnectedResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipConnectedResponse.deepCopy(), nil
+}
+
+func (b *_CipConnectedResponseBuilder) MustBuild() CipConnectedResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipConnectedResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipConnectedResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipConnectedResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipConnectedResponseBuilder().(*_CipConnectedResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipConnectedResponseBuilder creates a CipConnectedResponseBuilder
+func (b *_CipConnectedResponse) CreateCipConnectedResponseBuilder() CipConnectedResponseBuilder {
+	if b == nil {
+		return NewCipConnectedResponseBuilder()
+	}
+	return &_CipConnectedResponseBuilder{_CipConnectedResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,18 +244,6 @@ func (m *_CipConnectedResponse) GetData() CIPDataConnected {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipConnectedResponse factory function for _CipConnectedResponse
-func NewCipConnectedResponse(status uint8, additionalStatusWords uint8, data CIPDataConnected, serviceLen uint16) *_CipConnectedResponse {
-	_result := &_CipConnectedResponse{
-		CipServiceContract:    NewCipService(serviceLen),
-		Status:                status,
-		AdditionalStatusWords: additionalStatusWords,
-		Data:                  data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipConnectedResponse(structType any) CipConnectedResponse {
@@ -251,13 +374,36 @@ func (m *_CipConnectedResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_CipConnectedResponse) IsCipConnectedResponse() {}
 
+func (m *_CipConnectedResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipConnectedResponse) deepCopy() *_CipConnectedResponse {
+	if m == nil {
+		return nil
+	}
+	_CipConnectedResponseCopy := &_CipConnectedResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.AdditionalStatusWords,
+		m.Data.DeepCopy().(CIPDataConnected),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipConnectedResponseCopy
+}
+
 func (m *_CipConnectedResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type AdditionalParametersType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfParameters returns NoOfParameters (property field)
 	GetNoOfParameters() int32
@@ -45,6 +46,8 @@ type AdditionalParametersType interface {
 	GetParameters() []ExtensionObjectDefinition
 	// IsAdditionalParametersType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdditionalParametersType()
+	// CreateBuilder creates a AdditionalParametersTypeBuilder
+	CreateAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder
 }
 
 // _AdditionalParametersType is the data-structure of this message
@@ -56,6 +59,115 @@ type _AdditionalParametersType struct {
 
 var _ AdditionalParametersType = (*_AdditionalParametersType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AdditionalParametersType)(nil)
+
+// NewAdditionalParametersType factory function for _AdditionalParametersType
+func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
+	_result := &_AdditionalParametersType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfParameters:                    noOfParameters,
+		Parameters:                        parameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdditionalParametersTypeBuilder is a builder for AdditionalParametersType
+type AdditionalParametersTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	// WithNoOfParameters adds NoOfParameters (property field)
+	WithNoOfParameters(int32) AdditionalParametersTypeBuilder
+	// WithParameters adds Parameters (property field)
+	WithParameters(...ExtensionObjectDefinition) AdditionalParametersTypeBuilder
+	// Build builds the AdditionalParametersType or returns an error if something is wrong
+	Build() (AdditionalParametersType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdditionalParametersType
+}
+
+// NewAdditionalParametersTypeBuilder() creates a AdditionalParametersTypeBuilder
+func NewAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder {
+	return &_AdditionalParametersTypeBuilder{_AdditionalParametersType: new(_AdditionalParametersType)}
+}
+
+type _AdditionalParametersTypeBuilder struct {
+	*_AdditionalParametersType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdditionalParametersTypeBuilder) = (*_AdditionalParametersTypeBuilder)(nil)
+
+func (b *_AdditionalParametersTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AdditionalParametersTypeBuilder) WithMandatoryFields(noOfParameters int32, parameters []ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+	return b.WithNoOfParameters(noOfParameters).WithParameters(parameters...)
+}
+
+func (b *_AdditionalParametersTypeBuilder) WithNoOfParameters(noOfParameters int32) AdditionalParametersTypeBuilder {
+	b.NoOfParameters = noOfParameters
+	return b
+}
+
+func (b *_AdditionalParametersTypeBuilder) WithParameters(parameters ...ExtensionObjectDefinition) AdditionalParametersTypeBuilder {
+	b.Parameters = parameters
+	return b
+}
+
+func (b *_AdditionalParametersTypeBuilder) Build() (AdditionalParametersType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdditionalParametersType.deepCopy(), nil
+}
+
+func (b *_AdditionalParametersTypeBuilder) MustBuild() AdditionalParametersType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdditionalParametersTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdditionalParametersTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AdditionalParametersTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAdditionalParametersTypeBuilder().(*_AdditionalParametersTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdditionalParametersTypeBuilder creates a AdditionalParametersTypeBuilder
+func (b *_AdditionalParametersType) CreateAdditionalParametersTypeBuilder() AdditionalParametersTypeBuilder {
+	if b == nil {
+		return NewAdditionalParametersTypeBuilder()
+	}
+	return &_AdditionalParametersTypeBuilder{_AdditionalParametersType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_AdditionalParametersType) GetParameters() []ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdditionalParametersType factory function for _AdditionalParametersType
-func NewAdditionalParametersType(noOfParameters int32, parameters []ExtensionObjectDefinition) *_AdditionalParametersType {
-	_result := &_AdditionalParametersType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfParameters:                    noOfParameters,
-		Parameters:                        parameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdditionalParametersType(structType any) AdditionalParametersType {
@@ -208,13 +309,34 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_AdditionalParametersType) IsAdditionalParametersType() {}
 
+func (m *_AdditionalParametersType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdditionalParametersType) deepCopy() *_AdditionalParametersType {
+	if m == nil {
+		return nil
+	}
+	_AdditionalParametersTypeCopy := &_AdditionalParametersType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfParameters,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Parameters),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AdditionalParametersTypeCopy
+}
+
 func (m *_AdditionalParametersType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

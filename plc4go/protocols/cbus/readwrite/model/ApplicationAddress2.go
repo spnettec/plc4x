@@ -38,12 +38,15 @@ type ApplicationAddress2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddress returns Address (property field)
 	GetAddress() byte
 	// GetIsWildcard returns IsWildcard (virtual field)
 	GetIsWildcard() bool
 	// IsApplicationAddress2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApplicationAddress2()
+	// CreateBuilder creates a ApplicationAddress2Builder
+	CreateApplicationAddress2Builder() ApplicationAddress2Builder
 }
 
 // _ApplicationAddress2 is the data-structure of this message
@@ -52,6 +55,87 @@ type _ApplicationAddress2 struct {
 }
 
 var _ ApplicationAddress2 = (*_ApplicationAddress2)(nil)
+
+// NewApplicationAddress2 factory function for _ApplicationAddress2
+func NewApplicationAddress2(address byte) *_ApplicationAddress2 {
+	return &_ApplicationAddress2{Address: address}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApplicationAddress2Builder is a builder for ApplicationAddress2
+type ApplicationAddress2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address byte) ApplicationAddress2Builder
+	// WithAddress adds Address (property field)
+	WithAddress(byte) ApplicationAddress2Builder
+	// Build builds the ApplicationAddress2 or returns an error if something is wrong
+	Build() (ApplicationAddress2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApplicationAddress2
+}
+
+// NewApplicationAddress2Builder() creates a ApplicationAddress2Builder
+func NewApplicationAddress2Builder() ApplicationAddress2Builder {
+	return &_ApplicationAddress2Builder{_ApplicationAddress2: new(_ApplicationAddress2)}
+}
+
+type _ApplicationAddress2Builder struct {
+	*_ApplicationAddress2
+
+	err *utils.MultiError
+}
+
+var _ (ApplicationAddress2Builder) = (*_ApplicationAddress2Builder)(nil)
+
+func (b *_ApplicationAddress2Builder) WithMandatoryFields(address byte) ApplicationAddress2Builder {
+	return b.WithAddress(address)
+}
+
+func (b *_ApplicationAddress2Builder) WithAddress(address byte) ApplicationAddress2Builder {
+	b.Address = address
+	return b
+}
+
+func (b *_ApplicationAddress2Builder) Build() (ApplicationAddress2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApplicationAddress2.deepCopy(), nil
+}
+
+func (b *_ApplicationAddress2Builder) MustBuild() ApplicationAddress2 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApplicationAddress2Builder) DeepCopy() any {
+	_copy := b.CreateApplicationAddress2Builder().(*_ApplicationAddress2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApplicationAddress2Builder creates a ApplicationAddress2Builder
+func (b *_ApplicationAddress2) CreateApplicationAddress2Builder() ApplicationAddress2Builder {
+	if b == nil {
+		return NewApplicationAddress2Builder()
+	}
+	return &_ApplicationAddress2Builder{_ApplicationAddress2: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +165,6 @@ func (m *_ApplicationAddress2) GetIsWildcard() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApplicationAddress2 factory function for _ApplicationAddress2
-func NewApplicationAddress2(address byte) *_ApplicationAddress2 {
-	return &_ApplicationAddress2{Address: address}
-}
 
 // Deprecated: use the interface for direct cast
 func CastApplicationAddress2(structType any) ApplicationAddress2 {
@@ -132,7 +211,7 @@ func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ApplicationAddress2) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__applicationAddress2 ApplicationAddress2, err error) {
@@ -198,13 +277,31 @@ func (m *_ApplicationAddress2) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_ApplicationAddress2) IsApplicationAddress2() {}
 
+func (m *_ApplicationAddress2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApplicationAddress2) deepCopy() *_ApplicationAddress2 {
+	if m == nil {
+		return nil
+	}
+	_ApplicationAddress2Copy := &_ApplicationAddress2{
+		m.Address,
+	}
+	return _ApplicationAddress2Copy
+}
+
 func (m *_ApplicationAddress2) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

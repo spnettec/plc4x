@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDhcpLeaseTimeRemaining returns IpDhcpLeaseTimeRemaining (property field)
 	GetIpDhcpLeaseTimeRemaining() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPDHCPLeaseTimeRemaining interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataIPDHCPLeaseTimeRemaining is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPDHCPLeaseTimeRemaining()
+	// CreateBuilder creates a BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	CreateBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder() BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
 }
 
 // _BACnetConstructedDataIPDHCPLeaseTimeRemaining is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPDHCPLeaseTimeRemaining struct {
 
 var _ BACnetConstructedDataIPDHCPLeaseTimeRemaining = (*_BACnetConstructedDataIPDHCPLeaseTimeRemaining)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPLeaseTimeRemaining)(nil)
+
+// NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for _BACnetConstructedDataIPDHCPLeaseTimeRemaining
+func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+	if ipDhcpLeaseTimeRemaining == nil {
+		panic("ipDhcpLeaseTimeRemaining of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTimeRemaining must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDhcpLeaseTimeRemaining:      ipDhcpLeaseTimeRemaining,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder is a builder for BACnetConstructedDataIPDHCPLeaseTimeRemaining
+type BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	// WithIpDhcpLeaseTimeRemaining adds IpDhcpLeaseTimeRemaining (property field)
+	WithIpDhcpLeaseTimeRemaining(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	// WithIpDhcpLeaseTimeRemainingBuilder adds IpDhcpLeaseTimeRemaining (property field) which is build by the builder
+	WithIpDhcpLeaseTimeRemainingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+	// Build builds the BACnetConstructedDataIPDHCPLeaseTimeRemaining or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPDHCPLeaseTimeRemaining
+}
+
+// NewBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder() creates a BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+func NewBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder() BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
+	return &_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder{_BACnetConstructedDataIPDHCPLeaseTimeRemaining: new(_BACnetConstructedDataIPDHCPLeaseTimeRemaining)}
+}
+
+type _BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder struct {
+	*_BACnetConstructedDataIPDHCPLeaseTimeRemaining
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) = (*_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) WithMandatoryFields(ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
+	return b.WithIpDhcpLeaseTimeRemaining(ipDhcpLeaseTimeRemaining)
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) WithIpDhcpLeaseTimeRemaining(ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
+	b.IpDhcpLeaseTimeRemaining = ipDhcpLeaseTimeRemaining
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) WithIpDhcpLeaseTimeRemainingBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
+	builder := builderSupplier(b.IpDhcpLeaseTimeRemaining.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.IpDhcpLeaseTimeRemaining, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) Build() (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+	if b.IpDhcpLeaseTimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipDhcpLeaseTimeRemaining' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPDHCPLeaseTimeRemaining.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) MustBuild() BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder().(*_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder creates a BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder
+func (b *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) CreateBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder() BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder()
+	}
+	return &_BACnetConstructedDataIPDHCPLeaseTimeRemainingBuilder{_BACnetConstructedDataIPDHCPLeaseTimeRemaining: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDHCPLeaseTimeRemaining factory function for _BACnetConstructedDataIPDHCPLeaseTimeRemaining
-func NewBACnetConstructedDataIPDHCPLeaseTimeRemaining(ipDhcpLeaseTimeRemaining BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
-	if ipDhcpLeaseTimeRemaining == nil {
-		panic("ipDhcpLeaseTimeRemaining of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataIPDHCPLeaseTimeRemaining must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDhcpLeaseTimeRemaining:      ipDhcpLeaseTimeRemaining,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDHCPLeaseTimeRemaining(structType any) BACnetConstructedDataIPDHCPLeaseTimeRemaining {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) SerializeWithWriteBuffe
 func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) IsBACnetConstructedDataIPDHCPLeaseTimeRemaining() {
 }
 
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) deepCopy() *_BACnetConstructedDataIPDHCPLeaseTimeRemaining {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy := &_BACnetConstructedDataIPDHCPLeaseTimeRemaining{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IpDhcpLeaseTimeRemaining.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDHCPLeaseTimeRemainingCopy
+}
+
 func (m *_BACnetConstructedDataIPDHCPLeaseTimeRemaining) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

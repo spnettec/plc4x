@@ -38,6 +38,7 @@ type ReferenceListEntryDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceType returns ReferenceType (property field)
 	GetReferenceType() NodeId
@@ -47,6 +48,8 @@ type ReferenceListEntryDataType interface {
 	GetTargetNode() ExpandedNodeId
 	// IsReferenceListEntryDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReferenceListEntryDataType()
+	// CreateBuilder creates a ReferenceListEntryDataTypeBuilder
+	CreateReferenceListEntryDataTypeBuilder() ReferenceListEntryDataTypeBuilder
 }
 
 // _ReferenceListEntryDataType is the data-structure of this message
@@ -61,6 +64,171 @@ type _ReferenceListEntryDataType struct {
 
 var _ ReferenceListEntryDataType = (*_ReferenceListEntryDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceListEntryDataType)(nil)
+
+// NewReferenceListEntryDataType factory function for _ReferenceListEntryDataType
+func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceListEntryDataType {
+	if referenceType == nil {
+		panic("referenceType of type NodeId for ReferenceListEntryDataType must not be nil")
+	}
+	if targetNode == nil {
+		panic("targetNode of type ExpandedNodeId for ReferenceListEntryDataType must not be nil")
+	}
+	_result := &_ReferenceListEntryDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceType:                     referenceType,
+		IsForward:                         isForward,
+		TargetNode:                        targetNode,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReferenceListEntryDataTypeBuilder is a builder for ReferenceListEntryDataType
+type ReferenceListEntryDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceListEntryDataTypeBuilder
+	// WithReferenceType adds ReferenceType (property field)
+	WithReferenceType(NodeId) ReferenceListEntryDataTypeBuilder
+	// WithReferenceTypeBuilder adds ReferenceType (property field) which is build by the builder
+	WithReferenceTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) ReferenceListEntryDataTypeBuilder
+	// WithIsForward adds IsForward (property field)
+	WithIsForward(bool) ReferenceListEntryDataTypeBuilder
+	// WithTargetNode adds TargetNode (property field)
+	WithTargetNode(ExpandedNodeId) ReferenceListEntryDataTypeBuilder
+	// WithTargetNodeBuilder adds TargetNode (property field) which is build by the builder
+	WithTargetNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceListEntryDataTypeBuilder
+	// Build builds the ReferenceListEntryDataType or returns an error if something is wrong
+	Build() (ReferenceListEntryDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReferenceListEntryDataType
+}
+
+// NewReferenceListEntryDataTypeBuilder() creates a ReferenceListEntryDataTypeBuilder
+func NewReferenceListEntryDataTypeBuilder() ReferenceListEntryDataTypeBuilder {
+	return &_ReferenceListEntryDataTypeBuilder{_ReferenceListEntryDataType: new(_ReferenceListEntryDataType)}
+}
+
+type _ReferenceListEntryDataTypeBuilder struct {
+	*_ReferenceListEntryDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReferenceListEntryDataTypeBuilder) = (*_ReferenceListEntryDataTypeBuilder)(nil)
+
+func (b *_ReferenceListEntryDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithMandatoryFields(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) ReferenceListEntryDataTypeBuilder {
+	return b.WithReferenceType(referenceType).WithIsForward(isForward).WithTargetNode(targetNode)
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithReferenceType(referenceType NodeId) ReferenceListEntryDataTypeBuilder {
+	b.ReferenceType = referenceType
+	return b
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithReferenceTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceListEntryDataTypeBuilder {
+	builder := builderSupplier(b.ReferenceType.CreateNodeIdBuilder())
+	var err error
+	b.ReferenceType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithIsForward(isForward bool) ReferenceListEntryDataTypeBuilder {
+	b.IsForward = isForward
+	return b
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithTargetNode(targetNode ExpandedNodeId) ReferenceListEntryDataTypeBuilder {
+	b.TargetNode = targetNode
+	return b
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) WithTargetNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceListEntryDataTypeBuilder {
+	builder := builderSupplier(b.TargetNode.CreateExpandedNodeIdBuilder())
+	var err error
+	b.TargetNode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) Build() (ReferenceListEntryDataType, error) {
+	if b.ReferenceType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceType' not set"))
+	}
+	if b.TargetNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'targetNode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReferenceListEntryDataType.deepCopy(), nil
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) MustBuild() ReferenceListEntryDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReferenceListEntryDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReferenceListEntryDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateReferenceListEntryDataTypeBuilder().(*_ReferenceListEntryDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReferenceListEntryDataTypeBuilder creates a ReferenceListEntryDataTypeBuilder
+func (b *_ReferenceListEntryDataType) CreateReferenceListEntryDataTypeBuilder() ReferenceListEntryDataTypeBuilder {
+	if b == nil {
+		return NewReferenceListEntryDataTypeBuilder()
+	}
+	return &_ReferenceListEntryDataTypeBuilder{_ReferenceListEntryDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,24 +269,6 @@ func (m *_ReferenceListEntryDataType) GetTargetNode() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceListEntryDataType factory function for _ReferenceListEntryDataType
-func NewReferenceListEntryDataType(referenceType NodeId, isForward bool, targetNode ExpandedNodeId) *_ReferenceListEntryDataType {
-	if referenceType == nil {
-		panic("referenceType of type NodeId for ReferenceListEntryDataType must not be nil")
-	}
-	if targetNode == nil {
-		panic("targetNode of type ExpandedNodeId for ReferenceListEntryDataType must not be nil")
-	}
-	_result := &_ReferenceListEntryDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceType:                     referenceType,
-		IsForward:                         isForward,
-		TargetNode:                        targetNode,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceListEntryDataType(structType any) ReferenceListEntryDataType {
@@ -243,13 +393,36 @@ func (m *_ReferenceListEntryDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_ReferenceListEntryDataType) IsReferenceListEntryDataType() {}
 
+func (m *_ReferenceListEntryDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceListEntryDataType) deepCopy() *_ReferenceListEntryDataType {
+	if m == nil {
+		return nil
+	}
+	_ReferenceListEntryDataTypeCopy := &_ReferenceListEntryDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceType.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetNode.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceListEntryDataTypeCopy
+}
+
 func (m *_ReferenceListEntryDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

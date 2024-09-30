@@ -38,6 +38,7 @@ type BACnetSecurityKeySet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetKeyRevision returns KeyRevision (property field)
 	GetKeyRevision() BACnetContextTagUnsignedInteger
 	// GetActivationTime returns ActivationTime (property field)
@@ -48,6 +49,8 @@ type BACnetSecurityKeySet interface {
 	GetKeyIds() BACnetSecurityKeySetKeyIds
 	// IsBACnetSecurityKeySet is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSecurityKeySet()
+	// CreateBuilder creates a BACnetSecurityKeySetBuilder
+	CreateBACnetSecurityKeySetBuilder() BACnetSecurityKeySetBuilder
 }
 
 // _BACnetSecurityKeySet is the data-structure of this message
@@ -59,6 +62,204 @@ type _BACnetSecurityKeySet struct {
 }
 
 var _ BACnetSecurityKeySet = (*_BACnetSecurityKeySet)(nil)
+
+// NewBACnetSecurityKeySet factory function for _BACnetSecurityKeySet
+func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) *_BACnetSecurityKeySet {
+	if keyRevision == nil {
+		panic("keyRevision of type BACnetContextTagUnsignedInteger for BACnetSecurityKeySet must not be nil")
+	}
+	if activationTime == nil {
+		panic("activationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if expirationTime == nil {
+		panic("expirationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
+	}
+	if keyIds == nil {
+		panic("keyIds of type BACnetSecurityKeySetKeyIds for BACnetSecurityKeySet must not be nil")
+	}
+	return &_BACnetSecurityKeySet{KeyRevision: keyRevision, ActivationTime: activationTime, ExpirationTime: expirationTime, KeyIds: keyIds}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSecurityKeySetBuilder is a builder for BACnetSecurityKeySet
+type BACnetSecurityKeySetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) BACnetSecurityKeySetBuilder
+	// WithKeyRevision adds KeyRevision (property field)
+	WithKeyRevision(BACnetContextTagUnsignedInteger) BACnetSecurityKeySetBuilder
+	// WithKeyRevisionBuilder adds KeyRevision (property field) which is build by the builder
+	WithKeyRevisionBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSecurityKeySetBuilder
+	// WithActivationTime adds ActivationTime (property field)
+	WithActivationTime(BACnetDateTimeEnclosed) BACnetSecurityKeySetBuilder
+	// WithActivationTimeBuilder adds ActivationTime (property field) which is build by the builder
+	WithActivationTimeBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetSecurityKeySetBuilder
+	// WithExpirationTime adds ExpirationTime (property field)
+	WithExpirationTime(BACnetDateTimeEnclosed) BACnetSecurityKeySetBuilder
+	// WithExpirationTimeBuilder adds ExpirationTime (property field) which is build by the builder
+	WithExpirationTimeBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetSecurityKeySetBuilder
+	// WithKeyIds adds KeyIds (property field)
+	WithKeyIds(BACnetSecurityKeySetKeyIds) BACnetSecurityKeySetBuilder
+	// WithKeyIdsBuilder adds KeyIds (property field) which is build by the builder
+	WithKeyIdsBuilder(func(BACnetSecurityKeySetKeyIdsBuilder) BACnetSecurityKeySetKeyIdsBuilder) BACnetSecurityKeySetBuilder
+	// Build builds the BACnetSecurityKeySet or returns an error if something is wrong
+	Build() (BACnetSecurityKeySet, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSecurityKeySet
+}
+
+// NewBACnetSecurityKeySetBuilder() creates a BACnetSecurityKeySetBuilder
+func NewBACnetSecurityKeySetBuilder() BACnetSecurityKeySetBuilder {
+	return &_BACnetSecurityKeySetBuilder{_BACnetSecurityKeySet: new(_BACnetSecurityKeySet)}
+}
+
+type _BACnetSecurityKeySetBuilder struct {
+	*_BACnetSecurityKeySet
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSecurityKeySetBuilder) = (*_BACnetSecurityKeySetBuilder)(nil)
+
+func (b *_BACnetSecurityKeySetBuilder) WithMandatoryFields(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) BACnetSecurityKeySetBuilder {
+	return b.WithKeyRevision(keyRevision).WithActivationTime(activationTime).WithExpirationTime(expirationTime).WithKeyIds(keyIds)
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithKeyRevision(keyRevision BACnetContextTagUnsignedInteger) BACnetSecurityKeySetBuilder {
+	b.KeyRevision = keyRevision
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithKeyRevisionBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetSecurityKeySetBuilder {
+	builder := builderSupplier(b.KeyRevision.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.KeyRevision, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithActivationTime(activationTime BACnetDateTimeEnclosed) BACnetSecurityKeySetBuilder {
+	b.ActivationTime = activationTime
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithActivationTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetSecurityKeySetBuilder {
+	builder := builderSupplier(b.ActivationTime.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	b.ActivationTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithExpirationTime(expirationTime BACnetDateTimeEnclosed) BACnetSecurityKeySetBuilder {
+	b.ExpirationTime = expirationTime
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithExpirationTimeBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetSecurityKeySetBuilder {
+	builder := builderSupplier(b.ExpirationTime.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	b.ExpirationTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithKeyIds(keyIds BACnetSecurityKeySetKeyIds) BACnetSecurityKeySetBuilder {
+	b.KeyIds = keyIds
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) WithKeyIdsBuilder(builderSupplier func(BACnetSecurityKeySetKeyIdsBuilder) BACnetSecurityKeySetKeyIdsBuilder) BACnetSecurityKeySetBuilder {
+	builder := builderSupplier(b.KeyIds.CreateBACnetSecurityKeySetKeyIdsBuilder())
+	var err error
+	b.KeyIds, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetSecurityKeySetKeyIdsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetBuilder) Build() (BACnetSecurityKeySet, error) {
+	if b.KeyRevision == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'keyRevision' not set"))
+	}
+	if b.ActivationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'activationTime' not set"))
+	}
+	if b.ExpirationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'expirationTime' not set"))
+	}
+	if b.KeyIds == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'keyIds' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSecurityKeySet.deepCopy(), nil
+}
+
+func (b *_BACnetSecurityKeySetBuilder) MustBuild() BACnetSecurityKeySet {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSecurityKeySetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityKeySetBuilder().(*_BACnetSecurityKeySetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSecurityKeySetBuilder creates a BACnetSecurityKeySetBuilder
+func (b *_BACnetSecurityKeySet) CreateBACnetSecurityKeySetBuilder() BACnetSecurityKeySetBuilder {
+	if b == nil {
+		return NewBACnetSecurityKeySetBuilder()
+	}
+	return &_BACnetSecurityKeySetBuilder{_BACnetSecurityKeySet: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,23 +286,6 @@ func (m *_BACnetSecurityKeySet) GetKeyIds() BACnetSecurityKeySetKeyIds {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityKeySet factory function for _BACnetSecurityKeySet
-func NewBACnetSecurityKeySet(keyRevision BACnetContextTagUnsignedInteger, activationTime BACnetDateTimeEnclosed, expirationTime BACnetDateTimeEnclosed, keyIds BACnetSecurityKeySetKeyIds) *_BACnetSecurityKeySet {
-	if keyRevision == nil {
-		panic("keyRevision of type BACnetContextTagUnsignedInteger for BACnetSecurityKeySet must not be nil")
-	}
-	if activationTime == nil {
-		panic("activationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
-	}
-	if expirationTime == nil {
-		panic("expirationTime of type BACnetDateTimeEnclosed for BACnetSecurityKeySet must not be nil")
-	}
-	if keyIds == nil {
-		panic("keyIds of type BACnetSecurityKeySetKeyIds for BACnetSecurityKeySet must not be nil")
-	}
-	return &_BACnetSecurityKeySet{KeyRevision: keyRevision, ActivationTime: activationTime, ExpirationTime: expirationTime, KeyIds: keyIds}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityKeySet(structType any) BACnetSecurityKeySet {
@@ -155,7 +339,7 @@ func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSecurityKeySet) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetSecurityKeySet BACnetSecurityKeySet, err error) {
@@ -239,13 +423,34 @@ func (m *_BACnetSecurityKeySet) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetSecurityKeySet) IsBACnetSecurityKeySet() {}
 
+func (m *_BACnetSecurityKeySet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySet) deepCopy() *_BACnetSecurityKeySet {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetCopy := &_BACnetSecurityKeySet{
+		m.KeyRevision.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ActivationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.ExpirationTime.DeepCopy().(BACnetDateTimeEnclosed),
+		m.KeyIds.DeepCopy().(BACnetSecurityKeySetKeyIds),
+	}
+	return _BACnetSecurityKeySetCopy
+}
+
 func (m *_BACnetSecurityKeySet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

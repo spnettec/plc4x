@@ -36,9 +36,12 @@ type ApduDataExtDomainAddressResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtDomainAddressResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtDomainAddressResponse()
+	// CreateBuilder creates a ApduDataExtDomainAddressResponseBuilder
+	CreateApduDataExtDomainAddressResponseBuilder() ApduDataExtDomainAddressResponseBuilder
 }
 
 // _ApduDataExtDomainAddressResponse is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataExtDomainAddressResponse struct {
 
 var _ ApduDataExtDomainAddressResponse = (*_ApduDataExtDomainAddressResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtDomainAddressResponse)(nil)
+
+// NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
+func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
+	_result := &_ApduDataExtDomainAddressResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtDomainAddressResponseBuilder is a builder for ApduDataExtDomainAddressResponse
+type ApduDataExtDomainAddressResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtDomainAddressResponseBuilder
+	// Build builds the ApduDataExtDomainAddressResponse or returns an error if something is wrong
+	Build() (ApduDataExtDomainAddressResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtDomainAddressResponse
+}
+
+// NewApduDataExtDomainAddressResponseBuilder() creates a ApduDataExtDomainAddressResponseBuilder
+func NewApduDataExtDomainAddressResponseBuilder() ApduDataExtDomainAddressResponseBuilder {
+	return &_ApduDataExtDomainAddressResponseBuilder{_ApduDataExtDomainAddressResponse: new(_ApduDataExtDomainAddressResponse)}
+}
+
+type _ApduDataExtDomainAddressResponseBuilder struct {
+	*_ApduDataExtDomainAddressResponse
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtDomainAddressResponseBuilder) = (*_ApduDataExtDomainAddressResponseBuilder)(nil)
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) WithMandatoryFields() ApduDataExtDomainAddressResponseBuilder {
+	return b
+}
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) Build() (ApduDataExtDomainAddressResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtDomainAddressResponse.deepCopy(), nil
+}
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) MustBuild() ApduDataExtDomainAddressResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtDomainAddressResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtDomainAddressResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtDomainAddressResponseBuilder().(*_ApduDataExtDomainAddressResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtDomainAddressResponseBuilder creates a ApduDataExtDomainAddressResponseBuilder
+func (b *_ApduDataExtDomainAddressResponse) CreateApduDataExtDomainAddressResponseBuilder() ApduDataExtDomainAddressResponseBuilder {
+	if b == nil {
+		return NewApduDataExtDomainAddressResponseBuilder()
+	}
+	return &_ApduDataExtDomainAddressResponseBuilder{_ApduDataExtDomainAddressResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataExtDomainAddressResponse) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtDomainAddressResponse) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtDomainAddressResponse factory function for _ApduDataExtDomainAddressResponse
-func NewApduDataExtDomainAddressResponse(length uint8) *_ApduDataExtDomainAddressResponse {
-	_result := &_ApduDataExtDomainAddressResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataExtDomainAddressResponse) SerializeWithWriteBuffer(ctx context
 
 func (m *_ApduDataExtDomainAddressResponse) IsApduDataExtDomainAddressResponse() {}
 
+func (m *_ApduDataExtDomainAddressResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtDomainAddressResponse) deepCopy() *_ApduDataExtDomainAddressResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtDomainAddressResponseCopy := &_ApduDataExtDomainAddressResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtDomainAddressResponseCopy
+}
+
 func (m *_ApduDataExtDomainAddressResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetPropertyStatesNotifyType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetNotifyType returns NotifyType (property field)
 	GetNotifyType() BACnetNotifyTypeTagged
 	// IsBACnetPropertyStatesNotifyType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesNotifyType()
+	// CreateBuilder creates a BACnetPropertyStatesNotifyTypeBuilder
+	CreateBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder
 }
 
 // _BACnetPropertyStatesNotifyType is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesNotifyType struct {
 
 var _ BACnetPropertyStatesNotifyType = (*_BACnetPropertyStatesNotifyType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesNotifyType)(nil)
+
+// NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
+func NewBACnetPropertyStatesNotifyType(peekedTagHeader BACnetTagHeader, notifyType BACnetNotifyTypeTagged) *_BACnetPropertyStatesNotifyType {
+	if notifyType == nil {
+		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesNotifyType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		NotifyType:                   notifyType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesNotifyTypeBuilder is a builder for BACnetPropertyStatesNotifyType
+type BACnetPropertyStatesNotifyTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder
+	// WithNotifyType adds NotifyType (property field)
+	WithNotifyType(BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder
+	// WithNotifyTypeBuilder adds NotifyType (property field) which is build by the builder
+	WithNotifyTypeBuilder(func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetPropertyStatesNotifyTypeBuilder
+	// Build builds the BACnetPropertyStatesNotifyType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesNotifyType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesNotifyType
+}
+
+// NewBACnetPropertyStatesNotifyTypeBuilder() creates a BACnetPropertyStatesNotifyTypeBuilder
+func NewBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder {
+	return &_BACnetPropertyStatesNotifyTypeBuilder{_BACnetPropertyStatesNotifyType: new(_BACnetPropertyStatesNotifyType)}
+}
+
+type _BACnetPropertyStatesNotifyTypeBuilder struct {
+	*_BACnetPropertyStatesNotifyType
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesNotifyTypeBuilder) = (*_BACnetPropertyStatesNotifyTypeBuilder)(nil)
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) WithMandatoryFields(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder {
+	return b.WithNotifyType(notifyType)
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) WithNotifyType(notifyType BACnetNotifyTypeTagged) BACnetPropertyStatesNotifyTypeBuilder {
+	b.NotifyType = notifyType
+	return b
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) WithNotifyTypeBuilder(builderSupplier func(BACnetNotifyTypeTaggedBuilder) BACnetNotifyTypeTaggedBuilder) BACnetPropertyStatesNotifyTypeBuilder {
+	builder := builderSupplier(b.NotifyType.CreateBACnetNotifyTypeTaggedBuilder())
+	var err error
+	b.NotifyType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetNotifyTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) Build() (BACnetPropertyStatesNotifyType, error) {
+	if b.NotifyType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'notifyType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesNotifyType.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) MustBuild() BACnetPropertyStatesNotifyType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesNotifyTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesNotifyTypeBuilder().(*_BACnetPropertyStatesNotifyTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesNotifyTypeBuilder creates a BACnetPropertyStatesNotifyTypeBuilder
+func (b *_BACnetPropertyStatesNotifyType) CreateBACnetPropertyStatesNotifyTypeBuilder() BACnetPropertyStatesNotifyTypeBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesNotifyTypeBuilder()
+	}
+	return &_BACnetPropertyStatesNotifyTypeBuilder{_BACnetPropertyStatesNotifyType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesNotifyType) GetNotifyType() BACnetNotifyTypeTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesNotifyType factory function for _BACnetPropertyStatesNotifyType
-func NewBACnetPropertyStatesNotifyType(notifyType BACnetNotifyTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesNotifyType {
-	if notifyType == nil {
-		panic("notifyType of type BACnetNotifyTypeTagged for BACnetPropertyStatesNotifyType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesNotifyType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		NotifyType:                   notifyType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesNotifyType(structType any) BACnetPropertyStatesNotifyType {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesNotifyType) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetPropertyStatesNotifyType) IsBACnetPropertyStatesNotifyType() {}
 
+func (m *_BACnetPropertyStatesNotifyType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesNotifyType) deepCopy() *_BACnetPropertyStatesNotifyType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesNotifyTypeCopy := &_BACnetPropertyStatesNotifyType{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.NotifyType.DeepCopy().(BACnetNotifyTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesNotifyTypeCopy
+}
+
 func (m *_BACnetPropertyStatesNotifyType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

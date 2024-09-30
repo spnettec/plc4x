@@ -38,6 +38,7 @@ type BACnetGroupChannelValueList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
@@ -46,6 +47,8 @@ type BACnetGroupChannelValueList interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetGroupChannelValueList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetGroupChannelValueList()
+	// CreateBuilder creates a BACnetGroupChannelValueListBuilder
+	CreateBACnetGroupChannelValueListBuilder() BACnetGroupChannelValueListBuilder
 }
 
 // _BACnetGroupChannelValueList is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetGroupChannelValueList struct {
 }
 
 var _ BACnetGroupChannelValueList = (*_BACnetGroupChannelValueList)(nil)
+
+// NewBACnetGroupChannelValueList factory function for _BACnetGroupChannelValueList
+func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetGroupChannelValueList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetGroupChannelValueList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetGroupChannelValueList must not be nil")
+	}
+	return &_BACnetGroupChannelValueList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetGroupChannelValueListBuilder is a builder for BACnetGroupChannelValueList
+type BACnetGroupChannelValueListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetGroupChannelValueListBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetGroupChannelValueListBuilder
+	// WithListOfEventSummaries adds ListOfEventSummaries (property field)
+	WithListOfEventSummaries(...BACnetEventSummary) BACnetGroupChannelValueListBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetGroupChannelValueListBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetGroupChannelValueListBuilder
+	// Build builds the BACnetGroupChannelValueList or returns an error if something is wrong
+	Build() (BACnetGroupChannelValueList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetGroupChannelValueList
+}
+
+// NewBACnetGroupChannelValueListBuilder() creates a BACnetGroupChannelValueListBuilder
+func NewBACnetGroupChannelValueListBuilder() BACnetGroupChannelValueListBuilder {
+	return &_BACnetGroupChannelValueListBuilder{_BACnetGroupChannelValueList: new(_BACnetGroupChannelValueList)}
+}
+
+type _BACnetGroupChannelValueListBuilder struct {
+	*_BACnetGroupChannelValueList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetGroupChannelValueListBuilder) = (*_BACnetGroupChannelValueListBuilder)(nil)
+
+func (b *_BACnetGroupChannelValueListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfEventSummaries(listOfEventSummaries...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetGroupChannelValueListBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetGroupChannelValueListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithListOfEventSummaries(listOfEventSummaries ...BACnetEventSummary) BACnetGroupChannelValueListBuilder {
+	b.ListOfEventSummaries = listOfEventSummaries
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetGroupChannelValueListBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetGroupChannelValueListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) Build() (BACnetGroupChannelValueList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetGroupChannelValueList.deepCopy(), nil
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) MustBuild() BACnetGroupChannelValueList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetGroupChannelValueListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetGroupChannelValueListBuilder().(*_BACnetGroupChannelValueListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetGroupChannelValueListBuilder creates a BACnetGroupChannelValueListBuilder
+func (b *_BACnetGroupChannelValueList) CreateBACnetGroupChannelValueListBuilder() BACnetGroupChannelValueListBuilder {
+	if b == nil {
+		return NewBACnetGroupChannelValueListBuilder()
+	}
+	return &_BACnetGroupChannelValueListBuilder{_BACnetGroupChannelValueList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetGroupChannelValueList) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetGroupChannelValueList factory function for _BACnetGroupChannelValueList
-func NewBACnetGroupChannelValueList(openingTag BACnetOpeningTag, listOfEventSummaries []BACnetEventSummary, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetGroupChannelValueList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetGroupChannelValueList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetGroupChannelValueList must not be nil")
-	}
-	return &_BACnetGroupChannelValueList{OpeningTag: openingTag, ListOfEventSummaries: listOfEventSummaries, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetGroupChannelValueList(structType any) BACnetGroupChannelValueList {
@@ -146,7 +281,7 @@ func BACnetGroupChannelValueListParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetGroupChannelValueList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetGroupChannelValueList BACnetGroupChannelValueList, err error) {
@@ -230,13 +365,34 @@ func (m *_BACnetGroupChannelValueList) GetTagNumber() uint8 {
 
 func (m *_BACnetGroupChannelValueList) IsBACnetGroupChannelValueList() {}
 
+func (m *_BACnetGroupChannelValueList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetGroupChannelValueList) deepCopy() *_BACnetGroupChannelValueList {
+	if m == nil {
+		return nil
+	}
+	_BACnetGroupChannelValueListCopy := &_BACnetGroupChannelValueList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetEventSummary, BACnetEventSummary](m.ListOfEventSummaries),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetGroupChannelValueListCopy
+}
+
 func (m *_BACnetGroupChannelValueList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

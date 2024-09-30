@@ -38,11 +38,14 @@ type BACnetPropertyStatesEventType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetEventType returns EventType (property field)
 	GetEventType() BACnetEventTypeTagged
 	// IsBACnetPropertyStatesEventType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesEventType()
+	// CreateBuilder creates a BACnetPropertyStatesEventTypeBuilder
+	CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder
 }
 
 // _BACnetPropertyStatesEventType is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesEventType struct {
 
 var _ BACnetPropertyStatesEventType = (*_BACnetPropertyStatesEventType)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesEventType)(nil)
+
+// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
+func NewBACnetPropertyStatesEventType(peekedTagHeader BACnetTagHeader, eventType BACnetEventTypeTagged) *_BACnetPropertyStatesEventType {
+	if eventType == nil {
+		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
+	}
+	_result := &_BACnetPropertyStatesEventType{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		EventType:                    eventType,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesEventTypeBuilder is a builder for BACnetPropertyStatesEventType
+type BACnetPropertyStatesEventTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder
+	// WithEventType adds EventType (property field)
+	WithEventType(BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder
+	// WithEventTypeBuilder adds EventType (property field) which is build by the builder
+	WithEventTypeBuilder(func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder
+	// Build builds the BACnetPropertyStatesEventType or returns an error if something is wrong
+	Build() (BACnetPropertyStatesEventType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesEventType
+}
+
+// NewBACnetPropertyStatesEventTypeBuilder() creates a BACnetPropertyStatesEventTypeBuilder
+func NewBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
+	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: new(_BACnetPropertyStatesEventType)}
+}
+
+type _BACnetPropertyStatesEventTypeBuilder struct {
+	*_BACnetPropertyStatesEventType
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesEventTypeBuilder) = (*_BACnetPropertyStatesEventTypeBuilder)(nil)
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithMandatoryFields(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	return b.WithEventType(eventType)
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithEventType(eventType BACnetEventTypeTagged) BACnetPropertyStatesEventTypeBuilder {
+	b.EventType = eventType
+	return b
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) WithEventTypeBuilder(builderSupplier func(BACnetEventTypeTaggedBuilder) BACnetEventTypeTaggedBuilder) BACnetPropertyStatesEventTypeBuilder {
+	builder := builderSupplier(b.EventType.CreateBACnetEventTypeTaggedBuilder())
+	var err error
+	b.EventType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEventTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) Build() (BACnetPropertyStatesEventType, error) {
+	if b.EventType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesEventType.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) MustBuild() BACnetPropertyStatesEventType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesEventTypeBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesEventTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesEventTypeBuilder().(*_BACnetPropertyStatesEventTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesEventTypeBuilder creates a BACnetPropertyStatesEventTypeBuilder
+func (b *_BACnetPropertyStatesEventType) CreateBACnetPropertyStatesEventTypeBuilder() BACnetPropertyStatesEventTypeBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesEventTypeBuilder()
+	}
+	return &_BACnetPropertyStatesEventTypeBuilder{_BACnetPropertyStatesEventType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesEventType) GetEventType() BACnetEventTypeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesEventType factory function for _BACnetPropertyStatesEventType
-func NewBACnetPropertyStatesEventType(eventType BACnetEventTypeTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesEventType {
-	if eventType == nil {
-		panic("eventType of type BACnetEventTypeTagged for BACnetPropertyStatesEventType must not be nil")
-	}
-	_result := &_BACnetPropertyStatesEventType{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		EventType:                    eventType,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesEventType(structType any) BACnetPropertyStatesEventType {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesEventType) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetPropertyStatesEventType) IsBACnetPropertyStatesEventType() {}
 
+func (m *_BACnetPropertyStatesEventType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesEventType) deepCopy() *_BACnetPropertyStatesEventType {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesEventTypeCopy := &_BACnetPropertyStatesEventType{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.EventType.DeepCopy().(BACnetEventTypeTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesEventTypeCopy
+}
+
 func (m *_BACnetPropertyStatesEventType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

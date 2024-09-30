@@ -39,10 +39,13 @@ type AmsString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetText returns Text (property field)
 	GetText() string
 	// IsAmsString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsString()
+	// CreateBuilder creates a AmsStringBuilder
+	CreateAmsStringBuilder() AmsStringBuilder
 }
 
 // _AmsString is the data-structure of this message
@@ -53,6 +56,87 @@ type _AmsString struct {
 }
 
 var _ AmsString = (*_AmsString)(nil)
+
+// NewAmsString factory function for _AmsString
+func NewAmsString(text string) *_AmsString {
+	return &_AmsString{Text: text}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsStringBuilder is a builder for AmsString
+type AmsStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(text string) AmsStringBuilder
+	// WithText adds Text (property field)
+	WithText(string) AmsStringBuilder
+	// Build builds the AmsString or returns an error if something is wrong
+	Build() (AmsString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsString
+}
+
+// NewAmsStringBuilder() creates a AmsStringBuilder
+func NewAmsStringBuilder() AmsStringBuilder {
+	return &_AmsStringBuilder{_AmsString: new(_AmsString)}
+}
+
+type _AmsStringBuilder struct {
+	*_AmsString
+
+	err *utils.MultiError
+}
+
+var _ (AmsStringBuilder) = (*_AmsStringBuilder)(nil)
+
+func (b *_AmsStringBuilder) WithMandatoryFields(text string) AmsStringBuilder {
+	return b.WithText(text)
+}
+
+func (b *_AmsStringBuilder) WithText(text string) AmsStringBuilder {
+	b.Text = text
+	return b
+}
+
+func (b *_AmsStringBuilder) Build() (AmsString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsString.deepCopy(), nil
+}
+
+func (b *_AmsStringBuilder) MustBuild() AmsString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsStringBuilder) DeepCopy() any {
+	_copy := b.CreateAmsStringBuilder().(*_AmsStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAmsStringBuilder creates a AmsStringBuilder
+func (b *_AmsString) CreateAmsStringBuilder() AmsStringBuilder {
+	if b == nil {
+		return NewAmsStringBuilder()
+	}
+	return &_AmsStringBuilder{_AmsString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,11 +151,6 @@ func (m *_AmsString) GetText() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsString factory function for _AmsString
-func NewAmsString(text string) *_AmsString {
-	return &_AmsString{Text: text}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsString(structType any) AmsString {
@@ -122,7 +201,7 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AmsString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsString AmsString, err error) {
@@ -196,13 +275,32 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_AmsString) IsAmsString() {}
 
+func (m *_AmsString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsString) deepCopy() *_AmsString {
+	if m == nil {
+		return nil
+	}
+	_AmsStringCopy := &_AmsString{
+		m.Text,
+		m.reservedField0,
+	}
+	return _AmsStringCopy
+}
+
 func (m *_AmsString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

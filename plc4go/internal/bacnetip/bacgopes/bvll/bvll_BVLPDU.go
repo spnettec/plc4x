@@ -44,14 +44,14 @@ type _BVLPDU struct {
 
 var _ BVLPDU = (*_BVLPDU)(nil)
 
-func NewBVLPDU(args Args, kwArgs KWArgs) BVLPDU {
+func NewBVLPDU(args Args, kwArgs KWArgs, options ...Option) BVLPDU {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
 	b := &_BVLPDU{}
-	kwArgs[KWCompBVLCIRequirements] = b
-	b._BVLCI = NewBVLCI(args, kwArgs).(*_BVLCI)
-	b.PDUData = NewPDUData(args, kwArgs)
+	options = AddLeafTypeIfAbundant(options, b)
+	b._BVLCI = NewBVLCI(b, args, kwArgs, options...).(*_BVLCI)
+	b.PDUData = NewPDUData(args, kwArgs, options...)
 	b.AddExtraPrinters(b.PDUData.(DebugContentPrinter))
 	if b.GetRootMessage() != nil {
 		data, _ := b.GetRootMessage().Serialize()
@@ -103,6 +103,15 @@ func (b *_BVLPDU) Decode(pdu Arg) error {
 		b.SetRootMessage(rootMessage)
 	}
 	return nil
+}
+
+func (b *_BVLPDU) CreateBVLCBuilder() readWriteModel.BVLCBuilder {
+	switch rm := b.GetRootMessage().(type) {
+	case readWriteModel.BVLC:
+		return rm.CreateBVLCBuilder()
+	default:
+		return readWriteModel.NewBVLCBuilder()
+	}
 }
 
 func (b *_BVLPDU) GetBvlcFunction() uint8 {

@@ -40,8 +40,11 @@ type SecurityData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
+	// CreateBuilder creates a SecurityDataBuilder
+	CreateSecurityDataBuilder() SecurityDataBuilder
 }
 
 // SecurityDataContract provides a set of functions which can be overwritten by a sub struct
@@ -54,6 +57,8 @@ type SecurityDataContract interface {
 	GetCommandType() SecurityCommandType
 	// IsSecurityData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityData()
+	// CreateBuilder creates a SecurityDataBuilder
+	CreateSecurityDataBuilder() SecurityDataBuilder
 }
 
 // SecurityDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +79,1136 @@ type _SecurityData struct {
 }
 
 var _ SecurityDataContract = (*_SecurityData)(nil)
+
+// NewSecurityData factory function for _SecurityData
+func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityData {
+	return &_SecurityData{CommandTypeContainer: commandTypeContainer, Argument: argument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataBuilder is a builder for SecurityData
+type SecurityDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer SecurityCommandTypeContainer, argument byte) SecurityDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(SecurityCommandTypeContainer) SecurityDataBuilder
+	// WithArgument adds Argument (property field)
+	WithArgument(byte) SecurityDataBuilder
+	// AsSecurityDataSystemArmedDisarmed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataSystemArmedDisarmed() interface {
+		SecurityDataSystemArmedDisarmedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataSystemDisarmed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataSystemDisarmed() interface {
+		SecurityDataSystemDisarmedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataExitDelayStarted converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataExitDelayStarted() interface {
+		SecurityDataExitDelayStartedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataEntryDelayStarted converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataEntryDelayStarted() interface {
+		SecurityDataEntryDelayStartedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataAlarmOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataAlarmOn() interface {
+		SecurityDataAlarmOnBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataAlarmOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataAlarmOff() interface {
+		SecurityDataAlarmOffBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataTamperOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataTamperOn() interface {
+		SecurityDataTamperOnBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataTamperOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataTamperOff() interface {
+		SecurityDataTamperOffBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataPanicActivated converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataPanicActivated() interface {
+		SecurityDataPanicActivatedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataPanicCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataPanicCleared() interface {
+		SecurityDataPanicClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneUnsealed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneUnsealed() interface {
+		SecurityDataZoneUnsealedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneSealed converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneSealed() interface {
+		SecurityDataZoneSealedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneOpen converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneOpen() interface {
+		SecurityDataZoneOpenBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneShort converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneShort() interface {
+		SecurityDataZoneShortBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneIsolated converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneIsolated() interface {
+		SecurityDataZoneIsolatedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataLowBatteryDetected converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataLowBatteryDetected() interface {
+		SecurityDataLowBatteryDetectedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataLowBatteryCorrected converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataLowBatteryCorrected() interface {
+		SecurityDataLowBatteryCorrectedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataLowBatteryCharging converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataLowBatteryCharging() interface {
+		SecurityDataLowBatteryChargingBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataZoneName converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataZoneName() interface {
+		SecurityDataZoneNameBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataStatusReport1 converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataStatusReport1() interface {
+		SecurityDataStatusReport1Builder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataStatusReport2 converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataStatusReport2() interface {
+		SecurityDataStatusReport2Builder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataPasswordEntryStatus converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataPasswordEntryStatus() interface {
+		SecurityDataPasswordEntryStatusBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataMainsFailure converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataMainsFailure() interface {
+		SecurityDataMainsFailureBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataMainsRestoredOrApplied converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataMainsRestoredOrApplied() interface {
+		SecurityDataMainsRestoredOrAppliedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataArmReadyNotReady converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataArmReadyNotReady() interface {
+		SecurityDataArmReadyNotReadyBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataCurrentAlarmType converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataCurrentAlarmType() interface {
+		SecurityDataCurrentAlarmTypeBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataLineCutAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataLineCutAlarmRaised() interface {
+		SecurityDataLineCutAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataLineCutAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataLineCutAlarmCleared() interface {
+		SecurityDataLineCutAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataArmFailedRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataArmFailedRaised() interface {
+		SecurityDataArmFailedRaisedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataArmFailedCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataArmFailedCleared() interface {
+		SecurityDataArmFailedClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataFireAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataFireAlarmRaised() interface {
+		SecurityDataFireAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataFireAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataFireAlarmCleared() interface {
+		SecurityDataFireAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataGasAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataGasAlarmRaised() interface {
+		SecurityDataGasAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataGasAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataGasAlarmCleared() interface {
+		SecurityDataGasAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataOtherAlarmRaised converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataOtherAlarmRaised() interface {
+		SecurityDataOtherAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataOtherAlarmCleared converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataOtherAlarmCleared() interface {
+		SecurityDataOtherAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataStatus1Request converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataStatus1Request() interface {
+		SecurityDataStatus1RequestBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataStatus2Request converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataStatus2Request() interface {
+		SecurityDataStatus2RequestBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataArmSystem converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataArmSystem() interface {
+		SecurityDataArmSystemBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataRaiseTamper converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataRaiseTamper() interface {
+		SecurityDataRaiseTamperBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataDropTamper converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataDropTamper() interface {
+		SecurityDataDropTamperBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataRaiseAlarm converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataRaiseAlarm() interface {
+		SecurityDataRaiseAlarmBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataEmulatedKeypad converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataEmulatedKeypad() interface {
+		SecurityDataEmulatedKeypadBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataDisplayMessage converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataDisplayMessage() interface {
+		SecurityDataDisplayMessageBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataRequestZoneName converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataRequestZoneName() interface {
+		SecurityDataRequestZoneNameBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataOff converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataOff() interface {
+		SecurityDataOffBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataOn converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataOn() interface {
+		SecurityDataOnBuilder
+		Done() SecurityDataBuilder
+	}
+	// AsSecurityDataEvent converts this build to a subType of SecurityData. It is always possible to return to current builder using Done()
+	AsSecurityDataEvent() interface {
+		SecurityDataEventBuilder
+		Done() SecurityDataBuilder
+	}
+	// Build builds the SecurityData or returns an error if something is wrong
+	PartialBuild() (SecurityDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() SecurityDataContract
+	// Build builds the SecurityData or returns an error if something is wrong
+	Build() (SecurityData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityData
+}
+
+// NewSecurityDataBuilder() creates a SecurityDataBuilder
+func NewSecurityDataBuilder() SecurityDataBuilder {
+	return &_SecurityDataBuilder{_SecurityData: new(_SecurityData)}
+}
+
+type _SecurityDataChildBuilder interface {
+	utils.Copyable
+	setParent(SecurityDataContract)
+	buildForSecurityData() (SecurityData, error)
+}
+
+type _SecurityDataBuilder struct {
+	*_SecurityData
+
+	childBuilder _SecurityDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataBuilder) = (*_SecurityDataBuilder)(nil)
+
+func (b *_SecurityDataBuilder) WithMandatoryFields(commandTypeContainer SecurityCommandTypeContainer, argument byte) SecurityDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithArgument(argument)
+}
+
+func (b *_SecurityDataBuilder) WithCommandTypeContainer(commandTypeContainer SecurityCommandTypeContainer) SecurityDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_SecurityDataBuilder) WithArgument(argument byte) SecurityDataBuilder {
+	b.Argument = argument
+	return b
+}
+
+func (b *_SecurityDataBuilder) PartialBuild() (SecurityDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityData.deepCopy(), nil
+}
+
+func (b *_SecurityDataBuilder) PartialMustBuild() SecurityDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataSystemArmedDisarmed() interface {
+	SecurityDataSystemArmedDisarmedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataSystemArmedDisarmedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataSystemArmedDisarmedBuilder().(*_SecurityDataSystemArmedDisarmedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataSystemDisarmed() interface {
+	SecurityDataSystemDisarmedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataSystemDisarmedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataSystemDisarmedBuilder().(*_SecurityDataSystemDisarmedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataExitDelayStarted() interface {
+	SecurityDataExitDelayStartedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataExitDelayStartedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataExitDelayStartedBuilder().(*_SecurityDataExitDelayStartedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataEntryDelayStarted() interface {
+	SecurityDataEntryDelayStartedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataEntryDelayStartedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataEntryDelayStartedBuilder().(*_SecurityDataEntryDelayStartedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataAlarmOn() interface {
+	SecurityDataAlarmOnBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataAlarmOnBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataAlarmOnBuilder().(*_SecurityDataAlarmOnBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataAlarmOff() interface {
+	SecurityDataAlarmOffBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataAlarmOffBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataAlarmOffBuilder().(*_SecurityDataAlarmOffBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataTamperOn() interface {
+	SecurityDataTamperOnBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataTamperOnBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataTamperOnBuilder().(*_SecurityDataTamperOnBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataTamperOff() interface {
+	SecurityDataTamperOffBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataTamperOffBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataTamperOffBuilder().(*_SecurityDataTamperOffBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataPanicActivated() interface {
+	SecurityDataPanicActivatedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataPanicActivatedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataPanicActivatedBuilder().(*_SecurityDataPanicActivatedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataPanicCleared() interface {
+	SecurityDataPanicClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataPanicClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataPanicClearedBuilder().(*_SecurityDataPanicClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneUnsealed() interface {
+	SecurityDataZoneUnsealedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneUnsealedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneUnsealedBuilder().(*_SecurityDataZoneUnsealedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneSealed() interface {
+	SecurityDataZoneSealedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneSealedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneSealedBuilder().(*_SecurityDataZoneSealedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneOpen() interface {
+	SecurityDataZoneOpenBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneOpenBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneOpenBuilder().(*_SecurityDataZoneOpenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneShort() interface {
+	SecurityDataZoneShortBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneShortBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneShortBuilder().(*_SecurityDataZoneShortBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneIsolated() interface {
+	SecurityDataZoneIsolatedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneIsolatedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneIsolatedBuilder().(*_SecurityDataZoneIsolatedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryDetected() interface {
+	SecurityDataLowBatteryDetectedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataLowBatteryDetectedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataLowBatteryDetectedBuilder().(*_SecurityDataLowBatteryDetectedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCorrected() interface {
+	SecurityDataLowBatteryCorrectedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataLowBatteryCorrectedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataLowBatteryCorrectedBuilder().(*_SecurityDataLowBatteryCorrectedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataLowBatteryCharging() interface {
+	SecurityDataLowBatteryChargingBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataLowBatteryChargingBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataLowBatteryChargingBuilder().(*_SecurityDataLowBatteryChargingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataZoneName() interface {
+	SecurityDataZoneNameBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataZoneNameBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataZoneNameBuilder().(*_SecurityDataZoneNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataStatusReport1() interface {
+	SecurityDataStatusReport1Builder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataStatusReport1Builder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataStatusReport1Builder().(*_SecurityDataStatusReport1Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataStatusReport2() interface {
+	SecurityDataStatusReport2Builder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataStatusReport2Builder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataStatusReport2Builder().(*_SecurityDataStatusReport2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataPasswordEntryStatus() interface {
+	SecurityDataPasswordEntryStatusBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataPasswordEntryStatusBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataPasswordEntryStatusBuilder().(*_SecurityDataPasswordEntryStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataMainsFailure() interface {
+	SecurityDataMainsFailureBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataMainsFailureBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataMainsFailureBuilder().(*_SecurityDataMainsFailureBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataMainsRestoredOrApplied() interface {
+	SecurityDataMainsRestoredOrAppliedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataMainsRestoredOrAppliedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataMainsRestoredOrAppliedBuilder().(*_SecurityDataMainsRestoredOrAppliedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataArmReadyNotReady() interface {
+	SecurityDataArmReadyNotReadyBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataArmReadyNotReadyBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataArmReadyNotReadyBuilder().(*_SecurityDataArmReadyNotReadyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataCurrentAlarmType() interface {
+	SecurityDataCurrentAlarmTypeBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataCurrentAlarmTypeBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataCurrentAlarmTypeBuilder().(*_SecurityDataCurrentAlarmTypeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmRaised() interface {
+	SecurityDataLineCutAlarmRaisedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataLineCutAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataLineCutAlarmRaisedBuilder().(*_SecurityDataLineCutAlarmRaisedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataLineCutAlarmCleared() interface {
+	SecurityDataLineCutAlarmClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataLineCutAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataLineCutAlarmClearedBuilder().(*_SecurityDataLineCutAlarmClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataArmFailedRaised() interface {
+	SecurityDataArmFailedRaisedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataArmFailedRaisedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataArmFailedRaisedBuilder().(*_SecurityDataArmFailedRaisedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataArmFailedCleared() interface {
+	SecurityDataArmFailedClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataArmFailedClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataArmFailedClearedBuilder().(*_SecurityDataArmFailedClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmRaised() interface {
+	SecurityDataFireAlarmRaisedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataFireAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataFireAlarmRaisedBuilder().(*_SecurityDataFireAlarmRaisedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataFireAlarmCleared() interface {
+	SecurityDataFireAlarmClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataFireAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataFireAlarmClearedBuilder().(*_SecurityDataFireAlarmClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmRaised() interface {
+	SecurityDataGasAlarmRaisedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataGasAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataGasAlarmRaisedBuilder().(*_SecurityDataGasAlarmRaisedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataGasAlarmCleared() interface {
+	SecurityDataGasAlarmClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataGasAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataGasAlarmClearedBuilder().(*_SecurityDataGasAlarmClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmRaised() interface {
+	SecurityDataOtherAlarmRaisedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataOtherAlarmRaisedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataOtherAlarmRaisedBuilder().(*_SecurityDataOtherAlarmRaisedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataOtherAlarmCleared() interface {
+	SecurityDataOtherAlarmClearedBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataOtherAlarmClearedBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataOtherAlarmClearedBuilder().(*_SecurityDataOtherAlarmClearedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataStatus1Request() interface {
+	SecurityDataStatus1RequestBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataStatus1RequestBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataStatus1RequestBuilder().(*_SecurityDataStatus1RequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataStatus2Request() interface {
+	SecurityDataStatus2RequestBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataStatus2RequestBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataStatus2RequestBuilder().(*_SecurityDataStatus2RequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataArmSystem() interface {
+	SecurityDataArmSystemBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataArmSystemBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataArmSystemBuilder().(*_SecurityDataArmSystemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataRaiseTamper() interface {
+	SecurityDataRaiseTamperBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataRaiseTamperBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataRaiseTamperBuilder().(*_SecurityDataRaiseTamperBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataDropTamper() interface {
+	SecurityDataDropTamperBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataDropTamperBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataDropTamperBuilder().(*_SecurityDataDropTamperBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataRaiseAlarm() interface {
+	SecurityDataRaiseAlarmBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataRaiseAlarmBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataRaiseAlarmBuilder().(*_SecurityDataRaiseAlarmBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataEmulatedKeypad() interface {
+	SecurityDataEmulatedKeypadBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataEmulatedKeypadBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataEmulatedKeypadBuilder().(*_SecurityDataEmulatedKeypadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataDisplayMessage() interface {
+	SecurityDataDisplayMessageBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataDisplayMessageBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataDisplayMessageBuilder().(*_SecurityDataDisplayMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataRequestZoneName() interface {
+	SecurityDataRequestZoneNameBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataRequestZoneNameBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataRequestZoneNameBuilder().(*_SecurityDataRequestZoneNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataOff() interface {
+	SecurityDataOffBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataOffBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataOffBuilder().(*_SecurityDataOffBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataOn() interface {
+	SecurityDataOnBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataOnBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataOnBuilder().(*_SecurityDataOnBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) AsSecurityDataEvent() interface {
+	SecurityDataEventBuilder
+	Done() SecurityDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SecurityDataEventBuilder
+		Done() SecurityDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSecurityDataEventBuilder().(*_SecurityDataEventBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SecurityDataBuilder) Build() (SecurityData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForSecurityData()
+}
+
+func (b *_SecurityDataBuilder) MustBuild() SecurityData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SecurityDataBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataBuilder().(*_SecurityDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_SecurityDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataBuilder creates a SecurityDataBuilder
+func (b *_SecurityData) CreateSecurityDataBuilder() SecurityDataBuilder {
+	if b == nil {
+		return NewSecurityDataBuilder()
+	}
+	return &_SecurityDataBuilder{_SecurityData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,11 +1243,6 @@ func (pm *_SecurityData) GetCommandType() SecurityCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityData factory function for _SecurityData
-func NewSecurityData(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityData {
-	return &_SecurityData{CommandTypeContainer: commandTypeContainer, Argument: argument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityData(structType any) SecurityData {
@@ -158,7 +1288,7 @@ func SecurityDataParseWithBufferProducer[T SecurityData]() func(ctx context.Cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -168,7 +1298,12 @@ func SecurityDataParseWithBuffer[T SecurityData](ctx context.Context, readBuffer
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_SecurityData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__securityData SecurityData, err error) {
@@ -207,195 +1342,195 @@ func (m *_SecurityData) parse(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var _child SecurityData
 	switch {
 	case commandType == SecurityCommandType_ON && argument == 0x80: // SecurityDataSystemArmedDisarmed
-		if _child, err = (&_SecurityDataSystemArmedDisarmed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataSystemArmedDisarmed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataSystemArmedDisarmed for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x80: // SecurityDataSystemDisarmed
-		if _child, err = (&_SecurityDataSystemDisarmed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataSystemDisarmed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataSystemDisarmed for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x81: // SecurityDataExitDelayStarted
-		if _child, err = (&_SecurityDataExitDelayStarted{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataExitDelayStarted).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataExitDelayStarted for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x82: // SecurityDataEntryDelayStarted
-		if _child, err = (&_SecurityDataEntryDelayStarted{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataEntryDelayStarted).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataEntryDelayStarted for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x83: // SecurityDataAlarmOn
-		if _child, err = (&_SecurityDataAlarmOn{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataAlarmOn).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataAlarmOn for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x83: // SecurityDataAlarmOff
-		if _child, err = (&_SecurityDataAlarmOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataAlarmOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataAlarmOff for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x84: // SecurityDataTamperOn
-		if _child, err = (&_SecurityDataTamperOn{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataTamperOn).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataTamperOn for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x84: // SecurityDataTamperOff
-		if _child, err = (&_SecurityDataTamperOff{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataTamperOff).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataTamperOff for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x85: // SecurityDataPanicActivated
-		if _child, err = (&_SecurityDataPanicActivated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataPanicActivated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataPanicActivated for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x85: // SecurityDataPanicCleared
-		if _child, err = (&_SecurityDataPanicCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataPanicCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataPanicCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x86: // SecurityDataZoneUnsealed
-		if _child, err = (&_SecurityDataZoneUnsealed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneUnsealed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneUnsealed for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x87: // SecurityDataZoneSealed
-		if _child, err = (&_SecurityDataZoneSealed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneSealed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneSealed for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x88: // SecurityDataZoneOpen
-		if _child, err = (&_SecurityDataZoneOpen{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneOpen).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneOpen for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x89: // SecurityDataZoneShort
-		if _child, err = (&_SecurityDataZoneShort{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneShort).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneShort for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x89: // SecurityDataZoneIsolated
-		if _child, err = (&_SecurityDataZoneIsolated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneIsolated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneIsolated for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x8B: // SecurityDataLowBatteryDetected
-		if _child, err = (&_SecurityDataLowBatteryDetected{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataLowBatteryDetected).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataLowBatteryDetected for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x8B: // SecurityDataLowBatteryCorrected
-		if _child, err = (&_SecurityDataLowBatteryCorrected{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataLowBatteryCorrected).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataLowBatteryCorrected for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x8C: // SecurityDataLowBatteryCharging
-		if _child, err = (&_SecurityDataLowBatteryCharging{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataLowBatteryCharging).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataLowBatteryCharging for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x8D: // SecurityDataZoneName
-		if _child, err = (&_SecurityDataZoneName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataZoneName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataZoneName for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x8E: // SecurityDataStatusReport1
-		if _child, err = (&_SecurityDataStatusReport1{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataStatusReport1).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataStatusReport1 for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x8F: // SecurityDataStatusReport2
-		if _child, err = (&_SecurityDataStatusReport2{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataStatusReport2).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataStatusReport2 for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x90: // SecurityDataPasswordEntryStatus
-		if _child, err = (&_SecurityDataPasswordEntryStatus{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataPasswordEntryStatus).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataPasswordEntryStatus for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x91: // SecurityDataMainsFailure
-		if _child, err = (&_SecurityDataMainsFailure{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataMainsFailure).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataMainsFailure for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x91: // SecurityDataMainsRestoredOrApplied
-		if _child, err = (&_SecurityDataMainsRestoredOrApplied{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataMainsRestoredOrApplied).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataMainsRestoredOrApplied for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x92: // SecurityDataArmReadyNotReady
-		if _child, err = (&_SecurityDataArmReadyNotReady{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataArmReadyNotReady).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataArmReadyNotReady for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0x93: // SecurityDataCurrentAlarmType
-		if _child, err = (&_SecurityDataCurrentAlarmType{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataCurrentAlarmType).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataCurrentAlarmType for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x94: // SecurityDataLineCutAlarmRaised
-		if _child, err = (&_SecurityDataLineCutAlarmRaised{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataLineCutAlarmRaised).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataLineCutAlarmRaised for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x94: // SecurityDataLineCutAlarmCleared
-		if _child, err = (&_SecurityDataLineCutAlarmCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataLineCutAlarmCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataLineCutAlarmCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x95: // SecurityDataArmFailedRaised
-		if _child, err = (&_SecurityDataArmFailedRaised{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataArmFailedRaised).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataArmFailedRaised for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x95: // SecurityDataArmFailedCleared
-		if _child, err = (&_SecurityDataArmFailedCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataArmFailedCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataArmFailedCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x96: // SecurityDataFireAlarmRaised
-		if _child, err = (&_SecurityDataFireAlarmRaised{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataFireAlarmRaised).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataFireAlarmRaised for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x96: // SecurityDataFireAlarmCleared
-		if _child, err = (&_SecurityDataFireAlarmCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataFireAlarmCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataFireAlarmCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x97: // SecurityDataGasAlarmRaised
-		if _child, err = (&_SecurityDataGasAlarmRaised{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataGasAlarmRaised).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataGasAlarmRaised for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x97: // SecurityDataGasAlarmCleared
-		if _child, err = (&_SecurityDataGasAlarmCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataGasAlarmCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataGasAlarmCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0x98: // SecurityDataOtherAlarmRaised
-		if _child, err = (&_SecurityDataOtherAlarmRaised{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataOtherAlarmRaised).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataOtherAlarmRaised for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0x98: // SecurityDataOtherAlarmCleared
-		if _child, err = (&_SecurityDataOtherAlarmCleared{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataOtherAlarmCleared).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataOtherAlarmCleared for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0xA0: // SecurityDataStatus1Request
-		if _child, err = (&_SecurityDataStatus1Request{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataStatus1Request).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataStatus1Request for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0xA1: // SecurityDataStatus2Request
-		if _child, err = (&_SecurityDataStatus2Request{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataStatus2Request).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataStatus2Request for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0xA2: // SecurityDataArmSystem
-		if _child, err = (&_SecurityDataArmSystem{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataArmSystem).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataArmSystem for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0xA3: // SecurityDataRaiseTamper
-		if _child, err = (&_SecurityDataRaiseTamper{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataRaiseTamper).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataRaiseTamper for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF && argument == 0xA3: // SecurityDataDropTamper
-		if _child, err = (&_SecurityDataDropTamper{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataDropTamper).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataDropTamper for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0xA4: // SecurityDataRaiseAlarm
-		if _child, err = (&_SecurityDataRaiseAlarm{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataRaiseAlarm).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataRaiseAlarm for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0xA5: // SecurityDataEmulatedKeypad
-		if _child, err = (&_SecurityDataEmulatedKeypad{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataEmulatedKeypad).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataEmulatedKeypad for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON && argument == 0xA6: // SecurityDataDisplayMessage
-		if _child, err = (&_SecurityDataDisplayMessage{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_SecurityDataDisplayMessage).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataDisplayMessage for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT && argument == 0xA7: // SecurityDataRequestZoneName
-		if _child, err = (&_SecurityDataRequestZoneName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_SecurityDataRequestZoneName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataRequestZoneName for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_OFF: // SecurityDataOff
-		if _child, err = (&_SecurityDataOff{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_SecurityDataOff).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataOff for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_ON: // SecurityDataOn
-		if _child, err = (&_SecurityDataOn{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_SecurityDataOn).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataOn for type-switch of SecurityData")
 		}
 	case commandType == SecurityCommandType_EVENT: // SecurityDataEvent
-		if _child, err = (&_SecurityDataEvent{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_SecurityDataEvent).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SecurityDataEvent for type-switch of SecurityData")
 		}
 	default:
@@ -447,3 +1582,19 @@ func (pm *_SecurityData) serializeParent(ctx context.Context, writeBuffer utils.
 }
 
 func (m *_SecurityData) IsSecurityData() {}
+
+func (m *_SecurityData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityData) deepCopy() *_SecurityData {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataCopy := &_SecurityData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.Argument,
+	}
+	return _SecurityDataCopy
+}

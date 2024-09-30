@@ -38,6 +38,7 @@ type BACnetConstructedDataIPv6DefaultGateway interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpv6DefaultGateway returns Ipv6DefaultGateway (property field)
 	GetIpv6DefaultGateway() BACnetApplicationTagOctetString
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPv6DefaultGateway interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPv6DefaultGateway is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPv6DefaultGateway()
+	// CreateBuilder creates a BACnetConstructedDataIPv6DefaultGatewayBuilder
+	CreateBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIPv6DefaultGatewayBuilder
 }
 
 // _BACnetConstructedDataIPv6DefaultGateway is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPv6DefaultGateway struct {
 
 var _ BACnetConstructedDataIPv6DefaultGateway = (*_BACnetConstructedDataIPv6DefaultGateway)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPv6DefaultGateway)(nil)
+
+// NewBACnetConstructedDataIPv6DefaultGateway factory function for _BACnetConstructedDataIPv6DefaultGateway
+func NewBACnetConstructedDataIPv6DefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipv6DefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DefaultGateway {
+	if ipv6DefaultGateway == nil {
+		panic("ipv6DefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DefaultGateway must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPv6DefaultGateway{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Ipv6DefaultGateway:            ipv6DefaultGateway,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPv6DefaultGatewayBuilder is a builder for BACnetConstructedDataIPv6DefaultGateway
+type BACnetConstructedDataIPv6DefaultGatewayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder
+	// WithIpv6DefaultGateway adds Ipv6DefaultGateway (property field)
+	WithIpv6DefaultGateway(BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder
+	// WithIpv6DefaultGatewayBuilder adds Ipv6DefaultGateway (property field) which is build by the builder
+	WithIpv6DefaultGatewayBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DefaultGatewayBuilder
+	// Build builds the BACnetConstructedDataIPv6DefaultGateway or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPv6DefaultGateway, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPv6DefaultGateway
+}
+
+// NewBACnetConstructedDataIPv6DefaultGatewayBuilder() creates a BACnetConstructedDataIPv6DefaultGatewayBuilder
+func NewBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	return &_BACnetConstructedDataIPv6DefaultGatewayBuilder{_BACnetConstructedDataIPv6DefaultGateway: new(_BACnetConstructedDataIPv6DefaultGateway)}
+}
+
+type _BACnetConstructedDataIPv6DefaultGatewayBuilder struct {
+	*_BACnetConstructedDataIPv6DefaultGateway
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPv6DefaultGatewayBuilder) = (*_BACnetConstructedDataIPv6DefaultGatewayBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithMandatoryFields(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	return b.WithIpv6DefaultGateway(ipv6DefaultGateway)
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGateway(ipv6DefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	b.Ipv6DefaultGateway = ipv6DefaultGateway
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) WithIpv6DefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	builder := builderSupplier(b.Ipv6DefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.Ipv6DefaultGateway, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) Build() (BACnetConstructedDataIPv6DefaultGateway, error) {
+	if b.Ipv6DefaultGateway == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipv6DefaultGateway' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPv6DefaultGateway.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPv6DefaultGateway {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPv6DefaultGatewayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPv6DefaultGatewayBuilder().(*_BACnetConstructedDataIPv6DefaultGatewayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPv6DefaultGatewayBuilder creates a BACnetConstructedDataIPv6DefaultGatewayBuilder
+func (b *_BACnetConstructedDataIPv6DefaultGateway) CreateBACnetConstructedDataIPv6DefaultGatewayBuilder() BACnetConstructedDataIPv6DefaultGatewayBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPv6DefaultGatewayBuilder()
+	}
+	return &_BACnetConstructedDataIPv6DefaultGatewayBuilder{_BACnetConstructedDataIPv6DefaultGateway: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPv6DefaultGateway factory function for _BACnetConstructedDataIPv6DefaultGateway
-func NewBACnetConstructedDataIPv6DefaultGateway(ipv6DefaultGateway BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPv6DefaultGateway {
-	if ipv6DefaultGateway == nil {
-		panic("ipv6DefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPv6DefaultGateway must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPv6DefaultGateway{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Ipv6DefaultGateway:            ipv6DefaultGateway,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPv6DefaultGateway(structType any) BACnetConstructedDataIPv6DefaultGateway {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPv6DefaultGateway) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetConstructedDataIPv6DefaultGateway) IsBACnetConstructedDataIPv6DefaultGateway() {}
 
+func (m *_BACnetConstructedDataIPv6DefaultGateway) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPv6DefaultGateway) deepCopy() *_BACnetConstructedDataIPv6DefaultGateway {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPv6DefaultGatewayCopy := &_BACnetConstructedDataIPv6DefaultGateway{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Ipv6DefaultGateway.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPv6DefaultGatewayCopy
+}
+
 func (m *_BACnetConstructedDataIPv6DefaultGateway) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

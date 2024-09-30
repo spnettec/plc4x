@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPNATTraversal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIPNATTraversal returns BacnetIPNATTraversal (property field)
 	GetBacnetIPNATTraversal() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataBACnetIPNATTraversal interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataBACnetIPNATTraversal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBACnetIPNATTraversal()
+	// CreateBuilder creates a BACnetConstructedDataBACnetIPNATTraversalBuilder
+	CreateBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedDataBACnetIPNATTraversalBuilder
 }
 
 // _BACnetConstructedDataBACnetIPNATTraversal is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBACnetIPNATTraversal struct {
 
 var _ BACnetConstructedDataBACnetIPNATTraversal = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPNATTraversal)(nil)
+
+// NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
+func NewBACnetConstructedDataBACnetIPNATTraversal(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIPNATTraversal BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
+	if bacnetIPNATTraversal == nil {
+		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIPNATTraversal:          bacnetIPNATTraversal,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBACnetIPNATTraversalBuilder is a builder for BACnetConstructedDataBACnetIPNATTraversal
+type BACnetConstructedDataBACnetIPNATTraversalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder
+	// WithBacnetIPNATTraversal adds BacnetIPNATTraversal (property field)
+	WithBacnetIPNATTraversal(BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder
+	// WithBacnetIPNATTraversalBuilder adds BacnetIPNATTraversal (property field) which is build by the builder
+	WithBacnetIPNATTraversalBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBACnetIPNATTraversalBuilder
+	// Build builds the BACnetConstructedDataBACnetIPNATTraversal or returns an error if something is wrong
+	Build() (BACnetConstructedDataBACnetIPNATTraversal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBACnetIPNATTraversal
+}
+
+// NewBACnetConstructedDataBACnetIPNATTraversalBuilder() creates a BACnetConstructedDataBACnetIPNATTraversalBuilder
+func NewBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	return &_BACnetConstructedDataBACnetIPNATTraversalBuilder{_BACnetConstructedDataBACnetIPNATTraversal: new(_BACnetConstructedDataBACnetIPNATTraversal)}
+}
+
+type _BACnetConstructedDataBACnetIPNATTraversalBuilder struct {
+	*_BACnetConstructedDataBACnetIPNATTraversal
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBACnetIPNATTraversalBuilder) = (*_BACnetConstructedDataBACnetIPNATTraversalBuilder)(nil)
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithMandatoryFields(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	return b.WithBacnetIPNATTraversal(bacnetIPNATTraversal)
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversal(bacnetIPNATTraversal BACnetApplicationTagBoolean) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	b.BacnetIPNATTraversal = bacnetIPNATTraversal
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) WithBacnetIPNATTraversalBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	builder := builderSupplier(b.BacnetIPNATTraversal.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.BacnetIPNATTraversal, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) Build() (BACnetConstructedDataBACnetIPNATTraversal, error) {
+	if b.BacnetIPNATTraversal == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bacnetIPNATTraversal' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBACnetIPNATTraversal.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) MustBuild() BACnetConstructedDataBACnetIPNATTraversal {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPNATTraversalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPNATTraversalBuilder().(*_BACnetConstructedDataBACnetIPNATTraversalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBACnetIPNATTraversalBuilder creates a BACnetConstructedDataBACnetIPNATTraversalBuilder
+func (b *_BACnetConstructedDataBACnetIPNATTraversal) CreateBACnetConstructedDataBACnetIPNATTraversalBuilder() BACnetConstructedDataBACnetIPNATTraversalBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBACnetIPNATTraversalBuilder()
+	}
+	return &_BACnetConstructedDataBACnetIPNATTraversalBuilder{_BACnetConstructedDataBACnetIPNATTraversal: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPNATTraversal factory function for _BACnetConstructedDataBACnetIPNATTraversal
-func NewBACnetConstructedDataBACnetIPNATTraversal(bacnetIPNATTraversal BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPNATTraversal {
-	if bacnetIPNATTraversal == nil {
-		panic("bacnetIPNATTraversal of type BACnetApplicationTagBoolean for BACnetConstructedDataBACnetIPNATTraversal must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPNATTraversal{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIPNATTraversal:          bacnetIPNATTraversal,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPNATTraversal(structType any) BACnetConstructedDataBACnetIPNATTraversal {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataBACnetIPNATTraversal) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) IsBACnetConstructedDataBACnetIPNATTraversal() {}
 
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPNATTraversal) deepCopy() *_BACnetConstructedDataBACnetIPNATTraversal {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPNATTraversalCopy := &_BACnetConstructedDataBACnetIPNATTraversal{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BacnetIPNATTraversal.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPNATTraversalCopy
+}
+
 func (m *_BACnetConstructedDataBACnetIPNATTraversal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

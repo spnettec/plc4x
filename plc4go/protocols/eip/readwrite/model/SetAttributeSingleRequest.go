@@ -36,9 +36,12 @@ type SetAttributeSingleRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// IsSetAttributeSingleRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetAttributeSingleRequest()
+	// CreateBuilder creates a SetAttributeSingleRequestBuilder
+	CreateSetAttributeSingleRequestBuilder() SetAttributeSingleRequestBuilder
 }
 
 // _SetAttributeSingleRequest is the data-structure of this message
@@ -48,6 +51,99 @@ type _SetAttributeSingleRequest struct {
 
 var _ SetAttributeSingleRequest = (*_SetAttributeSingleRequest)(nil)
 var _ CipServiceRequirements = (*_SetAttributeSingleRequest)(nil)
+
+// NewSetAttributeSingleRequest factory function for _SetAttributeSingleRequest
+func NewSetAttributeSingleRequest(serviceLen uint16) *_SetAttributeSingleRequest {
+	_result := &_SetAttributeSingleRequest{
+		CipServiceContract: NewCipService(serviceLen),
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetAttributeSingleRequestBuilder is a builder for SetAttributeSingleRequest
+type SetAttributeSingleRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SetAttributeSingleRequestBuilder
+	// Build builds the SetAttributeSingleRequest or returns an error if something is wrong
+	Build() (SetAttributeSingleRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetAttributeSingleRequest
+}
+
+// NewSetAttributeSingleRequestBuilder() creates a SetAttributeSingleRequestBuilder
+func NewSetAttributeSingleRequestBuilder() SetAttributeSingleRequestBuilder {
+	return &_SetAttributeSingleRequestBuilder{_SetAttributeSingleRequest: new(_SetAttributeSingleRequest)}
+}
+
+type _SetAttributeSingleRequestBuilder struct {
+	*_SetAttributeSingleRequest
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SetAttributeSingleRequestBuilder) = (*_SetAttributeSingleRequestBuilder)(nil)
+
+func (b *_SetAttributeSingleRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_SetAttributeSingleRequestBuilder) WithMandatoryFields() SetAttributeSingleRequestBuilder {
+	return b
+}
+
+func (b *_SetAttributeSingleRequestBuilder) Build() (SetAttributeSingleRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SetAttributeSingleRequest.deepCopy(), nil
+}
+
+func (b *_SetAttributeSingleRequestBuilder) MustBuild() SetAttributeSingleRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetAttributeSingleRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetAttributeSingleRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_SetAttributeSingleRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSetAttributeSingleRequestBuilder().(*_SetAttributeSingleRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSetAttributeSingleRequestBuilder creates a SetAttributeSingleRequestBuilder
+func (b *_SetAttributeSingleRequest) CreateSetAttributeSingleRequestBuilder() SetAttributeSingleRequestBuilder {
+	if b == nil {
+		return NewSetAttributeSingleRequestBuilder()
+	}
+	return &_SetAttributeSingleRequestBuilder{_SetAttributeSingleRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +169,6 @@ func (m *_SetAttributeSingleRequest) GetConnected() bool {
 
 func (m *_SetAttributeSingleRequest) GetParent() CipServiceContract {
 	return m.CipServiceContract
-}
-
-// NewSetAttributeSingleRequest factory function for _SetAttributeSingleRequest
-func NewSetAttributeSingleRequest(serviceLen uint16) *_SetAttributeSingleRequest {
-	_result := &_SetAttributeSingleRequest{
-		CipServiceContract: NewCipService(serviceLen),
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,13 +242,32 @@ func (m *_SetAttributeSingleRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_SetAttributeSingleRequest) IsSetAttributeSingleRequest() {}
 
+func (m *_SetAttributeSingleRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetAttributeSingleRequest) deepCopy() *_SetAttributeSingleRequest {
+	if m == nil {
+		return nil
+	}
+	_SetAttributeSingleRequestCopy := &_SetAttributeSingleRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _SetAttributeSingleRequestCopy
+}
+
 func (m *_SetAttributeSingleRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type DF1UnprotectedReadRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Command
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -45,6 +46,8 @@ type DF1UnprotectedReadRequest interface {
 	GetSize() uint8
 	// IsDF1UnprotectedReadRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1UnprotectedReadRequest()
+	// CreateBuilder creates a DF1UnprotectedReadRequestBuilder
+	CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder
 }
 
 // _DF1UnprotectedReadRequest is the data-structure of this message
@@ -56,6 +59,115 @@ type _DF1UnprotectedReadRequest struct {
 
 var _ DF1UnprotectedReadRequest = (*_DF1UnprotectedReadRequest)(nil)
 var _ DF1CommandRequirements = (*_DF1UnprotectedReadRequest)(nil)
+
+// NewDF1UnprotectedReadRequest factory function for _DF1UnprotectedReadRequest
+func NewDF1UnprotectedReadRequest(status uint8, transactionCounter uint16, address uint16, size uint8) *_DF1UnprotectedReadRequest {
+	_result := &_DF1UnprotectedReadRequest{
+		DF1CommandContract: NewDF1Command(status, transactionCounter),
+		Address:            address,
+		Size:               size,
+	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1UnprotectedReadRequestBuilder is a builder for DF1UnprotectedReadRequest
+type DF1UnprotectedReadRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) DF1UnprotectedReadRequestBuilder
+	// WithSize adds Size (property field)
+	WithSize(uint8) DF1UnprotectedReadRequestBuilder
+	// Build builds the DF1UnprotectedReadRequest or returns an error if something is wrong
+	Build() (DF1UnprotectedReadRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1UnprotectedReadRequest
+}
+
+// NewDF1UnprotectedReadRequestBuilder() creates a DF1UnprotectedReadRequestBuilder
+func NewDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
+	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: new(_DF1UnprotectedReadRequest)}
+}
+
+type _DF1UnprotectedReadRequestBuilder struct {
+	*_DF1UnprotectedReadRequest
+
+	parentBuilder *_DF1CommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1UnprotectedReadRequestBuilder) = (*_DF1UnprotectedReadRequestBuilder)(nil)
+
+func (b *_DF1UnprotectedReadRequestBuilder) setParent(contract DF1CommandContract) {
+	b.DF1CommandContract = contract
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) WithMandatoryFields(address uint16, size uint8) DF1UnprotectedReadRequestBuilder {
+	return b.WithAddress(address).WithSize(size)
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) WithAddress(address uint16) DF1UnprotectedReadRequestBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) WithSize(size uint8) DF1UnprotectedReadRequestBuilder {
+	b.Size = size
+	return b
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) Build() (DF1UnprotectedReadRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1UnprotectedReadRequest.deepCopy(), nil
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) MustBuild() DF1UnprotectedReadRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1UnprotectedReadRequestBuilder) Done() DF1CommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) buildForDF1Command() (DF1Command, error) {
+	return b.Build()
+}
+
+func (b *_DF1UnprotectedReadRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDF1UnprotectedReadRequestBuilder().(*_DF1UnprotectedReadRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1UnprotectedReadRequestBuilder creates a DF1UnprotectedReadRequestBuilder
+func (b *_DF1UnprotectedReadRequest) CreateDF1UnprotectedReadRequestBuilder() DF1UnprotectedReadRequestBuilder {
+	if b == nil {
+		return NewDF1UnprotectedReadRequestBuilder()
+	}
+	return &_DF1UnprotectedReadRequestBuilder{_DF1UnprotectedReadRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_DF1UnprotectedReadRequest) GetSize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1UnprotectedReadRequest factory function for _DF1UnprotectedReadRequest
-func NewDF1UnprotectedReadRequest(address uint16, size uint8, status uint8, transactionCounter uint16) *_DF1UnprotectedReadRequest {
-	_result := &_DF1UnprotectedReadRequest{
-		DF1CommandContract: NewDF1Command(status, transactionCounter),
-		Address:            address,
-		Size:               size,
-	}
-	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1UnprotectedReadRequest(structType any) DF1UnprotectedReadRequest {
@@ -201,13 +302,34 @@ func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_DF1UnprotectedReadRequest) IsDF1UnprotectedReadRequest() {}
 
+func (m *_DF1UnprotectedReadRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1UnprotectedReadRequest) deepCopy() *_DF1UnprotectedReadRequest {
+	if m == nil {
+		return nil
+	}
+	_DF1UnprotectedReadRequestCopy := &_DF1UnprotectedReadRequest{
+		m.DF1CommandContract.(*_DF1Command).deepCopy(),
+		m.Address,
+		m.Size,
+	}
+	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	return _DF1UnprotectedReadRequestCopy
+}
+
 func (m *_DF1UnprotectedReadRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

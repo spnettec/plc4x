@@ -38,6 +38,7 @@ type BACnetDoorStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetDoorStatusTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetDoorStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDoorStatusTagged()
+	// CreateBuilder creates a BACnetDoorStatusTaggedBuilder
+	CreateBACnetDoorStatusTaggedBuilder() BACnetDoorStatusTaggedBuilder
 }
 
 // _BACnetDoorStatusTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetDoorStatusTagged struct {
 }
 
 var _ BACnetDoorStatusTagged = (*_BACnetDoorStatusTagged)(nil)
+
+// NewBACnetDoorStatusTagged factory function for _BACnetDoorStatusTagged
+func NewBACnetDoorStatusTagged(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDoorStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetDoorStatusTagged must not be nil")
+	}
+	return &_BACnetDoorStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDoorStatusTaggedBuilder is a builder for BACnetDoorStatusTagged
+type BACnetDoorStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32) BACnetDoorStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetDoorStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetDoorStatus) BACnetDoorStatusTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetDoorStatusTaggedBuilder
+	// Build builds the BACnetDoorStatusTagged or returns an error if something is wrong
+	Build() (BACnetDoorStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDoorStatusTagged
+}
+
+// NewBACnetDoorStatusTaggedBuilder() creates a BACnetDoorStatusTaggedBuilder
+func NewBACnetDoorStatusTaggedBuilder() BACnetDoorStatusTaggedBuilder {
+	return &_BACnetDoorStatusTaggedBuilder{_BACnetDoorStatusTagged: new(_BACnetDoorStatusTagged)}
+}
+
+type _BACnetDoorStatusTaggedBuilder struct {
+	*_BACnetDoorStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDoorStatusTaggedBuilder) = (*_BACnetDoorStatusTaggedBuilder)(nil)
+
+func (b *_BACnetDoorStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32) BACnetDoorStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetDoorStatusTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetDoorStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) WithValue(value BACnetDoorStatus) BACnetDoorStatusTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetDoorStatusTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) Build() (BACnetDoorStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDoorStatusTagged.deepCopy(), nil
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) MustBuild() BACnetDoorStatusTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDoorStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDoorStatusTaggedBuilder().(*_BACnetDoorStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDoorStatusTaggedBuilder creates a BACnetDoorStatusTaggedBuilder
+func (b *_BACnetDoorStatusTagged) CreateBACnetDoorStatusTaggedBuilder() BACnetDoorStatusTaggedBuilder {
+	if b == nil {
+		return NewBACnetDoorStatusTaggedBuilder()
+	}
+	return &_BACnetDoorStatusTaggedBuilder{_BACnetDoorStatusTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetDoorStatusTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDoorStatusTagged factory function for _BACnetDoorStatusTagged
-func NewBACnetDoorStatusTagged(header BACnetTagHeader, value BACnetDoorStatus, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetDoorStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetDoorStatusTagged must not be nil")
-	}
-	return &_BACnetDoorStatusTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDoorStatusTagged(structType any) BACnetDoorStatusTagged {
@@ -159,7 +273,7 @@ func BACnetDoorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDoorStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetDoorStatusTagged BACnetDoorStatusTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetDoorStatusTagged) GetTagClass() TagClass {
 
 func (m *_BACnetDoorStatusTagged) IsBACnetDoorStatusTagged() {}
 
+func (m *_BACnetDoorStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDoorStatusTagged) deepCopy() *_BACnetDoorStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetDoorStatusTaggedCopy := &_BACnetDoorStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetDoorStatusTaggedCopy
+}
+
 func (m *_BACnetDoorStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

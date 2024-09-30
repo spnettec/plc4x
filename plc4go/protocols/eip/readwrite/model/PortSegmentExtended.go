@@ -38,6 +38,7 @@ type PortSegmentExtended interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	PortSegmentType
 	// GetPort returns Port (property field)
 	GetPort() uint8
@@ -49,6 +50,8 @@ type PortSegmentExtended interface {
 	GetPaddingByte() uint8
 	// IsPortSegmentExtended is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentExtended()
+	// CreateBuilder creates a PortSegmentExtendedBuilder
+	CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder
 }
 
 // _PortSegmentExtended is the data-structure of this message
@@ -61,6 +64,123 @@ type _PortSegmentExtended struct {
 
 var _ PortSegmentExtended = (*_PortSegmentExtended)(nil)
 var _ PortSegmentTypeRequirements = (*_PortSegmentExtended)(nil)
+
+// NewPortSegmentExtended factory function for _PortSegmentExtended
+func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
+	_result := &_PortSegmentExtended{
+		PortSegmentTypeContract: NewPortSegmentType(),
+		Port:                    port,
+		LinkAddressSize:         linkAddressSize,
+		Address:                 address,
+	}
+	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PortSegmentExtendedBuilder is a builder for PortSegmentExtended
+type PortSegmentExtendedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder
+	// WithPort adds Port (property field)
+	WithPort(uint8) PortSegmentExtendedBuilder
+	// WithLinkAddressSize adds LinkAddressSize (property field)
+	WithLinkAddressSize(uint8) PortSegmentExtendedBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(string) PortSegmentExtendedBuilder
+	// Build builds the PortSegmentExtended or returns an error if something is wrong
+	Build() (PortSegmentExtended, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PortSegmentExtended
+}
+
+// NewPortSegmentExtendedBuilder() creates a PortSegmentExtendedBuilder
+func NewPortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
+	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: new(_PortSegmentExtended)}
+}
+
+type _PortSegmentExtendedBuilder struct {
+	*_PortSegmentExtended
+
+	parentBuilder *_PortSegmentTypeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PortSegmentExtendedBuilder) = (*_PortSegmentExtendedBuilder)(nil)
+
+func (b *_PortSegmentExtendedBuilder) setParent(contract PortSegmentTypeContract) {
+	b.PortSegmentTypeContract = contract
+}
+
+func (b *_PortSegmentExtendedBuilder) WithMandatoryFields(port uint8, linkAddressSize uint8, address string) PortSegmentExtendedBuilder {
+	return b.WithPort(port).WithLinkAddressSize(linkAddressSize).WithAddress(address)
+}
+
+func (b *_PortSegmentExtendedBuilder) WithPort(port uint8) PortSegmentExtendedBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_PortSegmentExtendedBuilder) WithLinkAddressSize(linkAddressSize uint8) PortSegmentExtendedBuilder {
+	b.LinkAddressSize = linkAddressSize
+	return b
+}
+
+func (b *_PortSegmentExtendedBuilder) WithAddress(address string) PortSegmentExtendedBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_PortSegmentExtendedBuilder) Build() (PortSegmentExtended, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PortSegmentExtended.deepCopy(), nil
+}
+
+func (b *_PortSegmentExtendedBuilder) MustBuild() PortSegmentExtended {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PortSegmentExtendedBuilder) Done() PortSegmentTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PortSegmentExtendedBuilder) buildForPortSegmentType() (PortSegmentType, error) {
+	return b.Build()
+}
+
+func (b *_PortSegmentExtendedBuilder) DeepCopy() any {
+	_copy := b.CreatePortSegmentExtendedBuilder().(*_PortSegmentExtendedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePortSegmentExtendedBuilder creates a PortSegmentExtendedBuilder
+func (b *_PortSegmentExtended) CreatePortSegmentExtendedBuilder() PortSegmentExtendedBuilder {
+	if b == nil {
+		return NewPortSegmentExtendedBuilder()
+	}
+	return &_PortSegmentExtendedBuilder{_PortSegmentExtended: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,18 +236,6 @@ func (m *_PortSegmentExtended) GetPaddingByte() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPortSegmentExtended factory function for _PortSegmentExtended
-func NewPortSegmentExtended(port uint8, linkAddressSize uint8, address string) *_PortSegmentExtended {
-	_result := &_PortSegmentExtended{
-		PortSegmentTypeContract: NewPortSegmentType(),
-		Port:                    port,
-		LinkAddressSize:         linkAddressSize,
-		Address:                 address,
-	}
-	_result.PortSegmentTypeContract.(*_PortSegmentType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentExtended(structType any) PortSegmentExtended {
@@ -253,13 +361,35 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_PortSegmentExtended) IsPortSegmentExtended() {}
 
+func (m *_PortSegmentExtended) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentExtended) deepCopy() *_PortSegmentExtended {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentExtendedCopy := &_PortSegmentExtended{
+		m.PortSegmentTypeContract.(*_PortSegmentType).deepCopy(),
+		m.Port,
+		m.LinkAddressSize,
+		m.Address,
+	}
+	m.PortSegmentTypeContract.(*_PortSegmentType)._SubType = m
+	return _PortSegmentExtendedCopy
+}
+
 func (m *_PortSegmentExtended) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

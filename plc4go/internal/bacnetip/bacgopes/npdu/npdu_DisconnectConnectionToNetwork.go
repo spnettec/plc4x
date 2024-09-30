@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,35 @@ type DisconnectConnectionToNetwork struct {
 	dctnDNET uint16
 }
 
-func NewDisconnectConnectionToNetwork(opts ...func(*DisconnectConnectionToNetwork)) (*DisconnectConnectionToNetwork, error) {
+func NewDisconnectConnectionToNetwork(args Args, kwArgs KWArgs, options ...Option) (*DisconnectConnectionToNetwork, error) {
 	i := &DisconnectConnectionToNetwork{
 		messageType: 0x09,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMDisconnectConnectionToNetwork(i.dctnDNET, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "dctnDNET")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
-func WithDisconnectConnectionToNetworkDNET(dnet uint16) func(*DisconnectConnectionToNetwork) {
-	return func(n *DisconnectConnectionToNetwork) {
-		n.dctnDNET = dnet
+// TODO: check if this is rather a KWArgs
+func WithDisconnectConnectionToNetworkDNET(dnet uint16) GenericApplier[*DisconnectConnectionToNetwork] {
+	return WrapGenericApplier(func(n *DisconnectConnectionToNetwork) { n.dctnDNET = dnet })
+}
+
+func (n *DisconnectConnectionToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "dctnDNET":
+		return n.dctnDNET
 	}
+	return nil
 }
 
 func (n *DisconnectConnectionToNetwork) GetDctnDNET() uint16 {
@@ -100,8 +106,4 @@ func (n *DisconnectConnectionToNetwork) Decode(npdu Arg) error {
 		n.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (n *DisconnectConnectionToNetwork) String() string {
-	return fmt.Sprintf("DisconnectConnectionToNetwork{%s, dctnDNET: %v}", n._NPDU, n.dctnDNET)
 }

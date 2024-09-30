@@ -38,11 +38,14 @@ type S7VarRequestParameterItemAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7VarRequestParameterItem
 	// GetAddress returns Address (property field)
 	GetAddress() S7Address
 	// IsS7VarRequestParameterItemAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7VarRequestParameterItemAddress()
+	// CreateBuilder creates a S7VarRequestParameterItemAddressBuilder
+	CreateS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddressBuilder
 }
 
 // _S7VarRequestParameterItemAddress is the data-structure of this message
@@ -53,6 +56,131 @@ type _S7VarRequestParameterItemAddress struct {
 
 var _ S7VarRequestParameterItemAddress = (*_S7VarRequestParameterItemAddress)(nil)
 var _ S7VarRequestParameterItemRequirements = (*_S7VarRequestParameterItemAddress)(nil)
+
+// NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
+func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
+	if address == nil {
+		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
+	}
+	_result := &_S7VarRequestParameterItemAddress{
+		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
+		Address:                           address,
+	}
+	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7VarRequestParameterItemAddressBuilder is a builder for S7VarRequestParameterItemAddress
+type S7VarRequestParameterItemAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(S7Address) S7VarRequestParameterItemAddressBuilder
+	// WithAddressBuilder adds Address (property field) which is build by the builder
+	WithAddressBuilder(func(S7AddressBuilder) S7AddressBuilder) S7VarRequestParameterItemAddressBuilder
+	// Build builds the S7VarRequestParameterItemAddress or returns an error if something is wrong
+	Build() (S7VarRequestParameterItemAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7VarRequestParameterItemAddress
+}
+
+// NewS7VarRequestParameterItemAddressBuilder() creates a S7VarRequestParameterItemAddressBuilder
+func NewS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddressBuilder {
+	return &_S7VarRequestParameterItemAddressBuilder{_S7VarRequestParameterItemAddress: new(_S7VarRequestParameterItemAddress)}
+}
+
+type _S7VarRequestParameterItemAddressBuilder struct {
+	*_S7VarRequestParameterItemAddress
+
+	parentBuilder *_S7VarRequestParameterItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7VarRequestParameterItemAddressBuilder) = (*_S7VarRequestParameterItemAddressBuilder)(nil)
+
+func (b *_S7VarRequestParameterItemAddressBuilder) setParent(contract S7VarRequestParameterItemContract) {
+	b.S7VarRequestParameterItemContract = contract
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) WithMandatoryFields(address S7Address) S7VarRequestParameterItemAddressBuilder {
+	return b.WithAddress(address)
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) WithAddress(address S7Address) S7VarRequestParameterItemAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) WithAddressBuilder(builderSupplier func(S7AddressBuilder) S7AddressBuilder) S7VarRequestParameterItemAddressBuilder {
+	builder := builderSupplier(b.Address.CreateS7AddressBuilder())
+	var err error
+	b.Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "S7AddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) Build() (S7VarRequestParameterItemAddress, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7VarRequestParameterItemAddress.deepCopy(), nil
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) MustBuild() S7VarRequestParameterItemAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7VarRequestParameterItemAddressBuilder) Done() S7VarRequestParameterItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) buildForS7VarRequestParameterItem() (S7VarRequestParameterItem, error) {
+	return b.Build()
+}
+
+func (b *_S7VarRequestParameterItemAddressBuilder) DeepCopy() any {
+	_copy := b.CreateS7VarRequestParameterItemAddressBuilder().(*_S7VarRequestParameterItemAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7VarRequestParameterItemAddressBuilder creates a S7VarRequestParameterItemAddressBuilder
+func (b *_S7VarRequestParameterItemAddress) CreateS7VarRequestParameterItemAddressBuilder() S7VarRequestParameterItemAddressBuilder {
+	if b == nil {
+		return NewS7VarRequestParameterItemAddressBuilder()
+	}
+	return &_S7VarRequestParameterItemAddressBuilder{_S7VarRequestParameterItemAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_S7VarRequestParameterItemAddress) GetAddress() S7Address {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7VarRequestParameterItemAddress factory function for _S7VarRequestParameterItemAddress
-func NewS7VarRequestParameterItemAddress(address S7Address) *_S7VarRequestParameterItemAddress {
-	if address == nil {
-		panic("address of type S7Address for S7VarRequestParameterItemAddress must not be nil")
-	}
-	_result := &_S7VarRequestParameterItemAddress{
-		S7VarRequestParameterItemContract: NewS7VarRequestParameterItem(),
-		Address:                           address,
-	}
-	_result.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7VarRequestParameterItemAddress(structType any) S7VarRequestParameterItemAddress {
@@ -196,13 +311,33 @@ func (m *_S7VarRequestParameterItemAddress) SerializeWithWriteBuffer(ctx context
 
 func (m *_S7VarRequestParameterItemAddress) IsS7VarRequestParameterItemAddress() {}
 
+func (m *_S7VarRequestParameterItemAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7VarRequestParameterItemAddress) deepCopy() *_S7VarRequestParameterItemAddress {
+	if m == nil {
+		return nil
+	}
+	_S7VarRequestParameterItemAddressCopy := &_S7VarRequestParameterItemAddress{
+		m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem).deepCopy(),
+		m.Address.DeepCopy().(S7Address),
+	}
+	m.S7VarRequestParameterItemContract.(*_S7VarRequestParameterItem)._SubType = m
+	return _S7VarRequestParameterItemAddressCopy
+}
+
 func (m *_S7VarRequestParameterItemAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

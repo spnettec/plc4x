@@ -40,8 +40,11 @@ type Request interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequest()
+	// CreateBuilder creates a RequestBuilder
+	CreateRequestBuilder() RequestBuilder
 }
 
 // RequestContract provides a set of functions which can be overwritten by a sub struct
@@ -62,6 +65,8 @@ type RequestContract interface {
 	GetCBusOptions() CBusOptions
 	// IsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequest()
+	// CreateBuilder creates a RequestBuilder
+	CreateRequestBuilder() RequestBuilder
 }
 
 // RequestRequirements provides a set of functions which need to be implemented by a sub struct
@@ -86,6 +91,320 @@ type _Request struct {
 }
 
 var _ RequestContract = (*_Request)(nil)
+
+// NewRequest factory function for _Request
+func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
+	if termination == nil {
+		panic("termination of type RequestTermination for Request must not be nil")
+	}
+	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestBuilder is a builder for Request
+type RequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte RequestType, secondPeek RequestType, termination RequestTermination) RequestBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(RequestType) RequestBuilder
+	// WithStartingCR adds StartingCR (property field)
+	WithOptionalStartingCR(RequestType) RequestBuilder
+	// WithResetMode adds ResetMode (property field)
+	WithOptionalResetMode(RequestType) RequestBuilder
+	// WithSecondPeek adds SecondPeek (property field)
+	WithSecondPeek(RequestType) RequestBuilder
+	// WithTermination adds Termination (property field)
+	WithTermination(RequestTermination) RequestBuilder
+	// WithTerminationBuilder adds Termination (property field) which is build by the builder
+	WithTerminationBuilder(func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder
+	// AsRequestSmartConnectShortcut converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestSmartConnectShortcut() interface {
+		RequestSmartConnectShortcutBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestReset converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestReset() interface {
+		RequestResetBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestDirectCommandAccess converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestDirectCommandAccess() interface {
+		RequestDirectCommandAccessBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestCommand converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestCommand() interface {
+		RequestCommandBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestNull converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestNull() interface {
+		RequestNullBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestEmpty converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestEmpty() interface {
+		RequestEmptyBuilder
+		Done() RequestBuilder
+	}
+	// AsRequestObsolete converts this build to a subType of Request. It is always possible to return to current builder using Done()
+	AsRequestObsolete() interface {
+		RequestObsoleteBuilder
+		Done() RequestBuilder
+	}
+	// Build builds the Request or returns an error if something is wrong
+	PartialBuild() (RequestContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() RequestContract
+	// Build builds the Request or returns an error if something is wrong
+	Build() (Request, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Request
+}
+
+// NewRequestBuilder() creates a RequestBuilder
+func NewRequestBuilder() RequestBuilder {
+	return &_RequestBuilder{_Request: new(_Request)}
+}
+
+type _RequestChildBuilder interface {
+	utils.Copyable
+	setParent(RequestContract)
+	buildForRequest() (Request, error)
+}
+
+type _RequestBuilder struct {
+	*_Request
+
+	childBuilder _RequestChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RequestBuilder) = (*_RequestBuilder)(nil)
+
+func (b *_RequestBuilder) WithMandatoryFields(peekedByte RequestType, secondPeek RequestType, termination RequestTermination) RequestBuilder {
+	return b.WithPeekedByte(peekedByte).WithSecondPeek(secondPeek).WithTermination(termination)
+}
+
+func (b *_RequestBuilder) WithPeekedByte(peekedByte RequestType) RequestBuilder {
+	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_RequestBuilder) WithOptionalStartingCR(startingCR RequestType) RequestBuilder {
+	b.StartingCR = &startingCR
+	return b
+}
+
+func (b *_RequestBuilder) WithOptionalResetMode(resetMode RequestType) RequestBuilder {
+	b.ResetMode = &resetMode
+	return b
+}
+
+func (b *_RequestBuilder) WithSecondPeek(secondPeek RequestType) RequestBuilder {
+	b.SecondPeek = secondPeek
+	return b
+}
+
+func (b *_RequestBuilder) WithTermination(termination RequestTermination) RequestBuilder {
+	b.Termination = termination
+	return b
+}
+
+func (b *_RequestBuilder) WithTerminationBuilder(builderSupplier func(RequestTerminationBuilder) RequestTerminationBuilder) RequestBuilder {
+	builder := builderSupplier(b.Termination.CreateRequestTerminationBuilder())
+	var err error
+	b.Termination, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "RequestTerminationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestBuilder) PartialBuild() (RequestContract, error) {
+	if b.Termination == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'termination' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Request.deepCopy(), nil
+}
+
+func (b *_RequestBuilder) PartialMustBuild() RequestContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RequestBuilder) AsRequestSmartConnectShortcut() interface {
+	RequestSmartConnectShortcutBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestSmartConnectShortcutBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestSmartConnectShortcutBuilder().(*_RequestSmartConnectShortcutBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestReset() interface {
+	RequestResetBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestResetBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestResetBuilder().(*_RequestResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestDirectCommandAccess() interface {
+	RequestDirectCommandAccessBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestDirectCommandAccessBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestCommand() interface {
+	RequestCommandBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestCommandBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestCommandBuilder().(*_RequestCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestNull() interface {
+	RequestNullBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestNullBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestNullBuilder().(*_RequestNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestEmpty() interface {
+	RequestEmptyBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestEmptyBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestEmptyBuilder().(*_RequestEmptyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) AsRequestObsolete() interface {
+	RequestObsoleteBuilder
+	Done() RequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		RequestObsoleteBuilder
+		Done() RequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewRequestObsoleteBuilder().(*_RequestObsoleteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_RequestBuilder) Build() (Request, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForRequest()
+}
+
+func (b *_RequestBuilder) MustBuild() Request {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RequestBuilder) DeepCopy() any {
+	_copy := b.CreateRequestBuilder().(*_RequestBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_RequestChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestBuilder creates a RequestBuilder
+func (b *_Request) CreateRequestBuilder() RequestBuilder {
+	if b == nil {
+		return NewRequestBuilder()
+	}
+	return &_RequestBuilder{_Request: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,14 +455,6 @@ func (pm *_Request) GetActualPeek() RequestType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequest factory function for _Request
-func NewRequest(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_Request {
-	if termination == nil {
-		panic("termination of type RequestTermination for Request must not be nil")
-	}
-	return &_Request{PeekedByte: peekedByte, StartingCR: startingCR, ResetMode: resetMode, SecondPeek: secondPeek, Termination: termination, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequest(structType any) Request {
@@ -196,7 +507,7 @@ func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -206,7 +517,12 @@ func RequestParseWithBuffer[T Request](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (__request Request, err error) {
@@ -254,31 +570,31 @@ func (m *_Request) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusO
 	var _child Request
 	switch {
 	case actualPeek == RequestType_SMART_CONNECT_SHORTCUT: // RequestSmartConnectShortcut
-		if _child, err = (&_RequestSmartConnectShortcut{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestSmartConnectShortcut).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestSmartConnectShortcut for type-switch of Request")
 		}
 	case actualPeek == RequestType_RESET: // RequestReset
-		if _child, err = (&_RequestReset{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestReset).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestReset for type-switch of Request")
 		}
 	case actualPeek == RequestType_DIRECT_COMMAND: // RequestDirectCommandAccess
-		if _child, err = (&_RequestDirectCommandAccess{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestDirectCommandAccess).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestDirectCommandAccess for type-switch of Request")
 		}
 	case actualPeek == RequestType_REQUEST_COMMAND: // RequestCommand
-		if _child, err = (&_RequestCommand{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestCommand).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestCommand for type-switch of Request")
 		}
 	case actualPeek == RequestType_NULL: // RequestNull
-		if _child, err = (&_RequestNull{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestNull).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestNull for type-switch of Request")
 		}
 	case actualPeek == RequestType_EMPTY: // RequestEmpty
-		if _child, err = (&_RequestEmpty{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestEmpty).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestEmpty for type-switch of Request")
 		}
 	case 0 == 0: // RequestObsolete
-		if _child, err = (&_RequestObsolete{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_RequestObsolete).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type RequestObsolete for type-switch of Request")
 		}
 	default:
@@ -350,3 +666,23 @@ func (m *_Request) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_Request) IsRequest() {}
+
+func (m *_Request) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Request) deepCopy() *_Request {
+	if m == nil {
+		return nil
+	}
+	_RequestCopy := &_Request{
+		nil, // will be set by child
+		m.PeekedByte,
+		utils.CopyPtr[RequestType](m.StartingCR),
+		utils.CopyPtr[RequestType](m.ResetMode),
+		m.SecondPeek,
+		m.Termination.DeepCopy().(RequestTermination),
+		m.CBusOptions,
+	}
+	return _RequestCopy
+}

@@ -38,6 +38,7 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLimitMonitoringInterval returns LimitMonitoringInterval (property field)
 	GetLimitMonitoringInterval() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataLimitMonitoringInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataLimitMonitoringInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLimitMonitoringInterval()
+	// CreateBuilder creates a BACnetConstructedDataLimitMonitoringIntervalBuilder
+	CreateBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedDataLimitMonitoringIntervalBuilder
 }
 
 // _BACnetConstructedDataLimitMonitoringInterval is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLimitMonitoringInterval struct {
 
 var _ BACnetConstructedDataLimitMonitoringInterval = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitMonitoringInterval)(nil)
+
+// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
+func NewBACnetConstructedDataLimitMonitoringInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitMonitoringInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
+	if limitMonitoringInterval == nil {
+		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataLimitMonitoringInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LimitMonitoringInterval:       limitMonitoringInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLimitMonitoringIntervalBuilder is a builder for BACnetConstructedDataLimitMonitoringInterval
+type BACnetConstructedDataLimitMonitoringIntervalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder
+	// WithLimitMonitoringInterval adds LimitMonitoringInterval (property field)
+	WithLimitMonitoringInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder
+	// WithLimitMonitoringIntervalBuilder adds LimitMonitoringInterval (property field) which is build by the builder
+	WithLimitMonitoringIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLimitMonitoringIntervalBuilder
+	// Build builds the BACnetConstructedDataLimitMonitoringInterval or returns an error if something is wrong
+	Build() (BACnetConstructedDataLimitMonitoringInterval, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLimitMonitoringInterval
+}
+
+// NewBACnetConstructedDataLimitMonitoringIntervalBuilder() creates a BACnetConstructedDataLimitMonitoringIntervalBuilder
+func NewBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	return &_BACnetConstructedDataLimitMonitoringIntervalBuilder{_BACnetConstructedDataLimitMonitoringInterval: new(_BACnetConstructedDataLimitMonitoringInterval)}
+}
+
+type _BACnetConstructedDataLimitMonitoringIntervalBuilder struct {
+	*_BACnetConstructedDataLimitMonitoringInterval
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLimitMonitoringIntervalBuilder) = (*_BACnetConstructedDataLimitMonitoringIntervalBuilder)(nil)
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithMandatoryFields(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	return b.WithLimitMonitoringInterval(limitMonitoringInterval)
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	b.LimitMonitoringInterval = limitMonitoringInterval
+	return b
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) WithLimitMonitoringIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	builder := builderSupplier(b.LimitMonitoringInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.LimitMonitoringInterval, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Build() (BACnetConstructedDataLimitMonitoringInterval, error) {
+	if b.LimitMonitoringInterval == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'limitMonitoringInterval' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLimitMonitoringInterval.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) MustBuild() BACnetConstructedDataLimitMonitoringInterval {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLimitMonitoringIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLimitMonitoringIntervalBuilder().(*_BACnetConstructedDataLimitMonitoringIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLimitMonitoringIntervalBuilder creates a BACnetConstructedDataLimitMonitoringIntervalBuilder
+func (b *_BACnetConstructedDataLimitMonitoringInterval) CreateBACnetConstructedDataLimitMonitoringIntervalBuilder() BACnetConstructedDataLimitMonitoringIntervalBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLimitMonitoringIntervalBuilder()
+	}
+	return &_BACnetConstructedDataLimitMonitoringIntervalBuilder{_BACnetConstructedDataLimitMonitoringInterval: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) GetActualValue() BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLimitMonitoringInterval factory function for _BACnetConstructedDataLimitMonitoringInterval
-func NewBACnetConstructedDataLimitMonitoringInterval(limitMonitoringInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitMonitoringInterval {
-	if limitMonitoringInterval == nil {
-		panic("limitMonitoringInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataLimitMonitoringInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataLimitMonitoringInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LimitMonitoringInterval:       limitMonitoringInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLimitMonitoringInterval(structType any) BACnetConstructedDataLimitMonitoringInterval {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLimitMonitoringInterval) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataLimitMonitoringInterval) IsBACnetConstructedDataLimitMonitoringInterval() {
 }
 
+func (m *_BACnetConstructedDataLimitMonitoringInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLimitMonitoringInterval) deepCopy() *_BACnetConstructedDataLimitMonitoringInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLimitMonitoringIntervalCopy := &_BACnetConstructedDataLimitMonitoringInterval{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LimitMonitoringInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLimitMonitoringIntervalCopy
+}
+
 func (m *_BACnetConstructedDataLimitMonitoringInterval) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

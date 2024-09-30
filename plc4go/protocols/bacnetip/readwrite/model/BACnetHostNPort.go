@@ -38,12 +38,15 @@ type BACnetHostNPort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHost returns Host (property field)
 	GetHost() BACnetHostAddressEnclosed
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
 	// IsBACnetHostNPort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostNPort()
+	// CreateBuilder creates a BACnetHostNPortBuilder
+	CreateBACnetHostNPortBuilder() BACnetHostNPortBuilder
 }
 
 // _BACnetHostNPort is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetHostNPort struct {
 }
 
 var _ BACnetHostNPort = (*_BACnetHostNPort)(nil)
+
+// NewBACnetHostNPort factory function for _BACnetHostNPort
+func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
+	if host == nil {
+		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
+	}
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
+	}
+	return &_BACnetHostNPort{Host: host, Port: port}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostNPortBuilder is a builder for BACnetHostNPort
+type BACnetHostNPortBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) BACnetHostNPortBuilder
+	// WithHost adds Host (property field)
+	WithHost(BACnetHostAddressEnclosed) BACnetHostNPortBuilder
+	// WithHostBuilder adds Host (property field) which is build by the builder
+	WithHostBuilder(func(BACnetHostAddressEnclosedBuilder) BACnetHostAddressEnclosedBuilder) BACnetHostNPortBuilder
+	// WithPort adds Port (property field)
+	WithPort(BACnetContextTagUnsignedInteger) BACnetHostNPortBuilder
+	// WithPortBuilder adds Port (property field) which is build by the builder
+	WithPortBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetHostNPortBuilder
+	// Build builds the BACnetHostNPort or returns an error if something is wrong
+	Build() (BACnetHostNPort, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostNPort
+}
+
+// NewBACnetHostNPortBuilder() creates a BACnetHostNPortBuilder
+func NewBACnetHostNPortBuilder() BACnetHostNPortBuilder {
+	return &_BACnetHostNPortBuilder{_BACnetHostNPort: new(_BACnetHostNPort)}
+}
+
+type _BACnetHostNPortBuilder struct {
+	*_BACnetHostNPort
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostNPortBuilder) = (*_BACnetHostNPortBuilder)(nil)
+
+func (b *_BACnetHostNPortBuilder) WithMandatoryFields(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) BACnetHostNPortBuilder {
+	return b.WithHost(host).WithPort(port)
+}
+
+func (b *_BACnetHostNPortBuilder) WithHost(host BACnetHostAddressEnclosed) BACnetHostNPortBuilder {
+	b.Host = host
+	return b
+}
+
+func (b *_BACnetHostNPortBuilder) WithHostBuilder(builderSupplier func(BACnetHostAddressEnclosedBuilder) BACnetHostAddressEnclosedBuilder) BACnetHostNPortBuilder {
+	builder := builderSupplier(b.Host.CreateBACnetHostAddressEnclosedBuilder())
+	var err error
+	b.Host, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetHostAddressEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetHostNPortBuilder) WithPort(port BACnetContextTagUnsignedInteger) BACnetHostNPortBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_BACnetHostNPortBuilder) WithPortBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetHostNPortBuilder {
+	builder := builderSupplier(b.Port.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Port, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetHostNPortBuilder) Build() (BACnetHostNPort, error) {
+	if b.Host == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'host' not set"))
+	}
+	if b.Port == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'port' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetHostNPort.deepCopy(), nil
+}
+
+func (b *_BACnetHostNPortBuilder) MustBuild() BACnetHostNPort {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetHostNPortBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostNPortBuilder().(*_BACnetHostNPortBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetHostNPortBuilder creates a BACnetHostNPortBuilder
+func (b *_BACnetHostNPort) CreateBACnetHostNPortBuilder() BACnetHostNPortBuilder {
+	if b == nil {
+		return NewBACnetHostNPortBuilder()
+	}
+	return &_BACnetHostNPortBuilder{_BACnetHostNPort: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetHostNPort) GetPort() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostNPort factory function for _BACnetHostNPort
-func NewBACnetHostNPort(host BACnetHostAddressEnclosed, port BACnetContextTagUnsignedInteger) *_BACnetHostNPort {
-	if host == nil {
-		panic("host of type BACnetHostAddressEnclosed for BACnetHostNPort must not be nil")
-	}
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetHostNPort must not be nil")
-	}
-	return &_BACnetHostNPort{Host: host, Port: port}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostNPort(structType any) BACnetHostNPort {
@@ -129,7 +257,7 @@ func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetHostNPort) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetHostNPort BACnetHostNPort, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetHostNPort) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_BACnetHostNPort) IsBACnetHostNPort() {}
 
+func (m *_BACnetHostNPort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostNPort) deepCopy() *_BACnetHostNPort {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostNPortCopy := &_BACnetHostNPort{
+		m.Host.DeepCopy().(BACnetHostAddressEnclosed),
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetHostNPortCopy
+}
+
 func (m *_BACnetHostNPort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

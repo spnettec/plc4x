@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetControlFlags returns ControlFlags (property field)
 	GetControlFlags() NLMUpdateKeyUpdateControlFlags
@@ -63,6 +64,8 @@ type NLMUpdateKeyUpdate interface {
 	GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry
 	// IsNLMUpdateKeyUpdate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMUpdateKeyUpdate()
+	// CreateBuilder creates a NLMUpdateKeyUpdateBuilder
+	CreateNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder
 }
 
 // _NLMUpdateKeyUpdate is the data-structure of this message
@@ -83,6 +86,211 @@ type _NLMUpdateKeyUpdate struct {
 
 var _ NLMUpdateKeyUpdate = (*_NLMUpdateKeyUpdate)(nil)
 var _ NLMRequirements = (*_NLMUpdateKeyUpdate)(nil)
+
+// NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
+func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
+	if controlFlags == nil {
+		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
+	}
+	_result := &_NLMUpdateKeyUpdate{
+		NLMContract:        NewNLM(apduLength),
+		ControlFlags:       controlFlags,
+		Set1KeyRevision:    set1KeyRevision,
+		Set1ActivationTime: set1ActivationTime,
+		Set1ExpirationTime: set1ExpirationTime,
+		Set1KeyCount:       set1KeyCount,
+		Set1Keys:           set1Keys,
+		Set2KeyRevision:    set2KeyRevision,
+		Set2ActivationTime: set2ActivationTime,
+		Set2ExpirationTime: set2ExpirationTime,
+		Set2KeyCount:       set2KeyCount,
+		Set2Keys:           set2Keys,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMUpdateKeyUpdateBuilder is a builder for NLMUpdateKeyUpdate
+type NLMUpdateKeyUpdateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(controlFlags NLMUpdateKeyUpdateControlFlags, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2Keys []NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder
+	// WithControlFlags adds ControlFlags (property field)
+	WithControlFlags(NLMUpdateKeyUpdateControlFlags) NLMUpdateKeyUpdateBuilder
+	// WithControlFlagsBuilder adds ControlFlags (property field) which is build by the builder
+	WithControlFlagsBuilder(func(NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateBuilder
+	// WithSet1KeyRevision adds Set1KeyRevision (property field)
+	WithOptionalSet1KeyRevision(byte) NLMUpdateKeyUpdateBuilder
+	// WithSet1ActivationTime adds Set1ActivationTime (property field)
+	WithOptionalSet1ActivationTime(uint32) NLMUpdateKeyUpdateBuilder
+	// WithSet1ExpirationTime adds Set1ExpirationTime (property field)
+	WithOptionalSet1ExpirationTime(uint32) NLMUpdateKeyUpdateBuilder
+	// WithSet1KeyCount adds Set1KeyCount (property field)
+	WithOptionalSet1KeyCount(uint8) NLMUpdateKeyUpdateBuilder
+	// WithSet1Keys adds Set1Keys (property field)
+	WithSet1Keys(...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder
+	// WithSet2KeyRevision adds Set2KeyRevision (property field)
+	WithOptionalSet2KeyRevision(byte) NLMUpdateKeyUpdateBuilder
+	// WithSet2ActivationTime adds Set2ActivationTime (property field)
+	WithOptionalSet2ActivationTime(uint32) NLMUpdateKeyUpdateBuilder
+	// WithSet2ExpirationTime adds Set2ExpirationTime (property field)
+	WithOptionalSet2ExpirationTime(uint32) NLMUpdateKeyUpdateBuilder
+	// WithSet2KeyCount adds Set2KeyCount (property field)
+	WithOptionalSet2KeyCount(uint8) NLMUpdateKeyUpdateBuilder
+	// WithSet2Keys adds Set2Keys (property field)
+	WithSet2Keys(...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder
+	// Build builds the NLMUpdateKeyUpdate or returns an error if something is wrong
+	Build() (NLMUpdateKeyUpdate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMUpdateKeyUpdate
+}
+
+// NewNLMUpdateKeyUpdateBuilder() creates a NLMUpdateKeyUpdateBuilder
+func NewNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder {
+	return &_NLMUpdateKeyUpdateBuilder{_NLMUpdateKeyUpdate: new(_NLMUpdateKeyUpdate)}
+}
+
+type _NLMUpdateKeyUpdateBuilder struct {
+	*_NLMUpdateKeyUpdate
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMUpdateKeyUpdateBuilder) = (*_NLMUpdateKeyUpdateBuilder)(nil)
+
+func (b *_NLMUpdateKeyUpdateBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithMandatoryFields(controlFlags NLMUpdateKeyUpdateControlFlags, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2Keys []NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	return b.WithControlFlags(controlFlags).WithSet1Keys(set1Keys...).WithSet2Keys(set2Keys...)
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithControlFlags(controlFlags NLMUpdateKeyUpdateControlFlags) NLMUpdateKeyUpdateBuilder {
+	b.ControlFlags = controlFlags
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithControlFlagsBuilder(builderSupplier func(NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateControlFlagsBuilder) NLMUpdateKeyUpdateBuilder {
+	builder := builderSupplier(b.ControlFlags.CreateNLMUpdateKeyUpdateControlFlagsBuilder())
+	var err error
+	b.ControlFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NLMUpdateKeyUpdateControlFlagsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyRevision(set1KeyRevision byte) NLMUpdateKeyUpdateBuilder {
+	b.Set1KeyRevision = &set1KeyRevision
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ActivationTime(set1ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set1ActivationTime = &set1ActivationTime
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1ExpirationTime(set1ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set1ExpirationTime = &set1ExpirationTime
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet1KeyCount(set1KeyCount uint8) NLMUpdateKeyUpdateBuilder {
+	b.Set1KeyCount = &set1KeyCount
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithSet1Keys(set1Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	b.Set1Keys = set1Keys
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyRevision(set2KeyRevision byte) NLMUpdateKeyUpdateBuilder {
+	b.Set2KeyRevision = &set2KeyRevision
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ActivationTime(set2ActivationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set2ActivationTime = &set2ActivationTime
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2ExpirationTime(set2ExpirationTime uint32) NLMUpdateKeyUpdateBuilder {
+	b.Set2ExpirationTime = &set2ExpirationTime
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithOptionalSet2KeyCount(set2KeyCount uint8) NLMUpdateKeyUpdateBuilder {
+	b.Set2KeyCount = &set2KeyCount
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) WithSet2Keys(set2Keys ...NLMUpdateKeyUpdateKeyEntry) NLMUpdateKeyUpdateBuilder {
+	b.Set2Keys = set2Keys
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) Build() (NLMUpdateKeyUpdate, error) {
+	if b.ControlFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'controlFlags' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMUpdateKeyUpdate.deepCopy(), nil
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) MustBuild() NLMUpdateKeyUpdate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMUpdateKeyUpdateBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMUpdateKeyUpdateBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyUpdateBuilder().(*_NLMUpdateKeyUpdateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMUpdateKeyUpdateBuilder creates a NLMUpdateKeyUpdateBuilder
+func (b *_NLMUpdateKeyUpdate) CreateNLMUpdateKeyUpdateBuilder() NLMUpdateKeyUpdateBuilder {
+	if b == nil {
+		return NewNLMUpdateKeyUpdateBuilder()
+	}
+	return &_NLMUpdateKeyUpdateBuilder{_NLMUpdateKeyUpdate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -155,29 +363,6 @@ func (m *_NLMUpdateKeyUpdate) GetSet2Keys() []NLMUpdateKeyUpdateKeyEntry {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdate factory function for _NLMUpdateKeyUpdate
-func NewNLMUpdateKeyUpdate(controlFlags NLMUpdateKeyUpdateControlFlags, set1KeyRevision *byte, set1ActivationTime *uint32, set1ExpirationTime *uint32, set1KeyCount *uint8, set1Keys []NLMUpdateKeyUpdateKeyEntry, set2KeyRevision *byte, set2ActivationTime *uint32, set2ExpirationTime *uint32, set2KeyCount *uint8, set2Keys []NLMUpdateKeyUpdateKeyEntry, apduLength uint16) *_NLMUpdateKeyUpdate {
-	if controlFlags == nil {
-		panic("controlFlags of type NLMUpdateKeyUpdateControlFlags for NLMUpdateKeyUpdate must not be nil")
-	}
-	_result := &_NLMUpdateKeyUpdate{
-		NLMContract:        NewNLM(apduLength),
-		ControlFlags:       controlFlags,
-		Set1KeyRevision:    set1KeyRevision,
-		Set1ActivationTime: set1ActivationTime,
-		Set1ExpirationTime: set1ExpirationTime,
-		Set1KeyCount:       set1KeyCount,
-		Set1Keys:           set1Keys,
-		Set2KeyRevision:    set2KeyRevision,
-		Set2ActivationTime: set2ActivationTime,
-		Set2ExpirationTime: set2ExpirationTime,
-		Set2KeyCount:       set2KeyCount,
-		Set2Keys:           set2Keys,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdate(structType any) NLMUpdateKeyUpdate {
@@ -431,13 +616,43 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_NLMUpdateKeyUpdate) IsNLMUpdateKeyUpdate() {}
 
+func (m *_NLMUpdateKeyUpdate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdate) deepCopy() *_NLMUpdateKeyUpdate {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateCopy := &_NLMUpdateKeyUpdate{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.ControlFlags.DeepCopy().(NLMUpdateKeyUpdateControlFlags),
+		utils.CopyPtr[byte](m.Set1KeyRevision),
+		utils.CopyPtr[uint32](m.Set1ActivationTime),
+		utils.CopyPtr[uint32](m.Set1ExpirationTime),
+		utils.CopyPtr[uint8](m.Set1KeyCount),
+		utils.DeepCopySlice[NLMUpdateKeyUpdateKeyEntry, NLMUpdateKeyUpdateKeyEntry](m.Set1Keys),
+		utils.CopyPtr[byte](m.Set2KeyRevision),
+		utils.CopyPtr[uint32](m.Set2ActivationTime),
+		utils.CopyPtr[uint32](m.Set2ExpirationTime),
+		utils.CopyPtr[uint8](m.Set2KeyCount),
+		utils.DeepCopySlice[NLMUpdateKeyUpdateKeyEntry, NLMUpdateKeyUpdateKeyEntry](m.Set2Keys),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMUpdateKeyUpdateCopy
+}
+
 func (m *_NLMUpdateKeyUpdate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

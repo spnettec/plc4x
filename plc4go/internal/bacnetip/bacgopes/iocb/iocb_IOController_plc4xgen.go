@@ -52,6 +52,10 @@ func (d *IOController) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("IOController"); err != nil {
 		return err
 	}
@@ -64,9 +68,9 @@ func (d *IOController) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

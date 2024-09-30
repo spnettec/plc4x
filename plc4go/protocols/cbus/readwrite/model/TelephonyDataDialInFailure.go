@@ -38,11 +38,14 @@ type TelephonyDataDialInFailure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetReason returns Reason (property field)
 	GetReason() DialInFailureReason
 	// IsTelephonyDataDialInFailure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataDialInFailure()
+	// CreateBuilder creates a TelephonyDataDialInFailureBuilder
+	CreateTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder
 }
 
 // _TelephonyDataDialInFailure is the data-structure of this message
@@ -53,6 +56,107 @@ type _TelephonyDataDialInFailure struct {
 
 var _ TelephonyDataDialInFailure = (*_TelephonyDataDialInFailure)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataDialInFailure)(nil)
+
+// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
+func NewTelephonyDataDialInFailure(commandTypeContainer TelephonyCommandTypeContainer, argument byte, reason DialInFailureReason) *_TelephonyDataDialInFailure {
+	_result := &_TelephonyDataDialInFailure{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		Reason:                reason,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataDialInFailureBuilder is a builder for TelephonyDataDialInFailure
+type TelephonyDataDialInFailureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reason DialInFailureReason) TelephonyDataDialInFailureBuilder
+	// WithReason adds Reason (property field)
+	WithReason(DialInFailureReason) TelephonyDataDialInFailureBuilder
+	// Build builds the TelephonyDataDialInFailure or returns an error if something is wrong
+	Build() (TelephonyDataDialInFailure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataDialInFailure
+}
+
+// NewTelephonyDataDialInFailureBuilder() creates a TelephonyDataDialInFailureBuilder
+func NewTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder {
+	return &_TelephonyDataDialInFailureBuilder{_TelephonyDataDialInFailure: new(_TelephonyDataDialInFailure)}
+}
+
+type _TelephonyDataDialInFailureBuilder struct {
+	*_TelephonyDataDialInFailure
+
+	parentBuilder *_TelephonyDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataDialInFailureBuilder) = (*_TelephonyDataDialInFailureBuilder)(nil)
+
+func (b *_TelephonyDataDialInFailureBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) WithMandatoryFields(reason DialInFailureReason) TelephonyDataDialInFailureBuilder {
+	return b.WithReason(reason)
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) WithReason(reason DialInFailureReason) TelephonyDataDialInFailureBuilder {
+	b.Reason = reason
+	return b
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) Build() (TelephonyDataDialInFailure, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TelephonyDataDialInFailure.deepCopy(), nil
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) MustBuild() TelephonyDataDialInFailure {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataDialInFailureBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataDialInFailureBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataDialInFailureBuilder().(*_TelephonyDataDialInFailureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTelephonyDataDialInFailureBuilder creates a TelephonyDataDialInFailureBuilder
+func (b *_TelephonyDataDialInFailure) CreateTelephonyDataDialInFailureBuilder() TelephonyDataDialInFailureBuilder {
+	if b == nil {
+		return NewTelephonyDataDialInFailureBuilder()
+	}
+	return &_TelephonyDataDialInFailureBuilder{_TelephonyDataDialInFailure: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_TelephonyDataDialInFailure) GetReason() DialInFailureReason {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataDialInFailure factory function for _TelephonyDataDialInFailure
-func NewTelephonyDataDialInFailure(reason DialInFailureReason, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataDialInFailure {
-	_result := &_TelephonyDataDialInFailure{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		Reason:                reason,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataDialInFailure(structType any) TelephonyDataDialInFailure {
@@ -176,13 +270,33 @@ func (m *_TelephonyDataDialInFailure) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_TelephonyDataDialInFailure) IsTelephonyDataDialInFailure() {}
 
+func (m *_TelephonyDataDialInFailure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataDialInFailure) deepCopy() *_TelephonyDataDialInFailure {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataDialInFailureCopy := &_TelephonyDataDialInFailure{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.Reason,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataDialInFailureCopy
+}
+
 func (m *_TelephonyDataDialInFailure) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

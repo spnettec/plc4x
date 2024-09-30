@@ -38,11 +38,14 @@ type S7PayloadUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Payload
 	// GetItems returns Items (property field)
 	GetItems() []S7PayloadUserDataItem
 	// IsS7PayloadUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserData()
+	// CreateBuilder creates a S7PayloadUserDataBuilder
+	CreateS7PayloadUserDataBuilder() S7PayloadUserDataBuilder
 }
 
 // _S7PayloadUserData is the data-structure of this message
@@ -53,6 +56,107 @@ type _S7PayloadUserData struct {
 
 var _ S7PayloadUserData = (*_S7PayloadUserData)(nil)
 var _ S7PayloadRequirements = (*_S7PayloadUserData)(nil)
+
+// NewS7PayloadUserData factory function for _S7PayloadUserData
+func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
+	_result := &_S7PayloadUserData{
+		S7PayloadContract: NewS7Payload(parameter),
+		Items:             items,
+	}
+	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataBuilder is a builder for S7PayloadUserData
+type S7PayloadUserDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7PayloadUserDataItem) S7PayloadUserDataBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7PayloadUserDataItem) S7PayloadUserDataBuilder
+	// Build builds the S7PayloadUserData or returns an error if something is wrong
+	Build() (S7PayloadUserData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserData
+}
+
+// NewS7PayloadUserDataBuilder() creates a S7PayloadUserDataBuilder
+func NewS7PayloadUserDataBuilder() S7PayloadUserDataBuilder {
+	return &_S7PayloadUserDataBuilder{_S7PayloadUserData: new(_S7PayloadUserData)}
+}
+
+type _S7PayloadUserDataBuilder struct {
+	*_S7PayloadUserData
+
+	parentBuilder *_S7PayloadBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataBuilder) = (*_S7PayloadUserDataBuilder)(nil)
+
+func (b *_S7PayloadUserDataBuilder) setParent(contract S7PayloadContract) {
+	b.S7PayloadContract = contract
+}
+
+func (b *_S7PayloadUserDataBuilder) WithMandatoryFields(items []S7PayloadUserDataItem) S7PayloadUserDataBuilder {
+	return b.WithItems(items...)
+}
+
+func (b *_S7PayloadUserDataBuilder) WithItems(items ...S7PayloadUserDataItem) S7PayloadUserDataBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7PayloadUserDataBuilder) Build() (S7PayloadUserData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserData.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataBuilder) MustBuild() S7PayloadUserData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataBuilder) Done() S7PayloadBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataBuilder) buildForS7Payload() (S7Payload, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataBuilder().(*_S7PayloadUserDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataBuilder creates a S7PayloadUserDataBuilder
+func (b *_S7PayloadUserData) CreateS7PayloadUserDataBuilder() S7PayloadUserDataBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataBuilder()
+	}
+	return &_S7PayloadUserDataBuilder{_S7PayloadUserData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_S7PayloadUserData) GetItems() []S7PayloadUserDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserData factory function for _S7PayloadUserData
-func NewS7PayloadUserData(items []S7PayloadUserDataItem, parameter S7Parameter) *_S7PayloadUserData {
-	_result := &_S7PayloadUserData{
-		S7PayloadContract: NewS7Payload(parameter),
-		Items:             items,
-	}
-	_result.S7PayloadContract.(*_S7Payload)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserData(structType any) S7PayloadUserData {
@@ -191,13 +285,33 @@ func (m *_S7PayloadUserData) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_S7PayloadUserData) IsS7PayloadUserData() {}
 
+func (m *_S7PayloadUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserData) deepCopy() *_S7PayloadUserData {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataCopy := &_S7PayloadUserData{
+		m.S7PayloadContract.(*_S7Payload).deepCopy(),
+		utils.DeepCopySlice[S7PayloadUserDataItem, S7PayloadUserDataItem](m.Items),
+	}
+	m.S7PayloadContract.(*_S7Payload)._SubType = m
+	return _S7PayloadUserDataCopy
+}
+
 func (m *_S7PayloadUserData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

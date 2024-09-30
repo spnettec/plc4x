@@ -38,6 +38,7 @@ type BACnetConstructedDataIPSubnetMask interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpSubnetMask returns IpSubnetMask (property field)
 	GetIpSubnetMask() BACnetApplicationTagOctetString
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPSubnetMask interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPSubnetMask is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPSubnetMask()
+	// CreateBuilder creates a BACnetConstructedDataIPSubnetMaskBuilder
+	CreateBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnetMaskBuilder
 }
 
 // _BACnetConstructedDataIPSubnetMask is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPSubnetMask struct {
 
 var _ BACnetConstructedDataIPSubnetMask = (*_BACnetConstructedDataIPSubnetMask)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPSubnetMask)(nil)
+
+// NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
+func NewBACnetConstructedDataIPSubnetMask(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipSubnetMask BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
+	if ipSubnetMask == nil {
+		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPSubnetMask{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpSubnetMask:                  ipSubnetMask,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPSubnetMaskBuilder is a builder for BACnetConstructedDataIPSubnetMask
+type BACnetConstructedDataIPSubnetMaskBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder
+	// WithIpSubnetMask adds IpSubnetMask (property field)
+	WithIpSubnetMask(BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder
+	// WithIpSubnetMaskBuilder adds IpSubnetMask (property field) which is build by the builder
+	WithIpSubnetMaskBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPSubnetMaskBuilder
+	// Build builds the BACnetConstructedDataIPSubnetMask or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPSubnetMask, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPSubnetMask
+}
+
+// NewBACnetConstructedDataIPSubnetMaskBuilder() creates a BACnetConstructedDataIPSubnetMaskBuilder
+func NewBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnetMaskBuilder {
+	return &_BACnetConstructedDataIPSubnetMaskBuilder{_BACnetConstructedDataIPSubnetMask: new(_BACnetConstructedDataIPSubnetMask)}
+}
+
+type _BACnetConstructedDataIPSubnetMaskBuilder struct {
+	*_BACnetConstructedDataIPSubnetMask
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPSubnetMaskBuilder) = (*_BACnetConstructedDataIPSubnetMaskBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithMandatoryFields(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
+	return b.WithIpSubnetMask(ipSubnetMask)
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMask(ipSubnetMask BACnetApplicationTagOctetString) BACnetConstructedDataIPSubnetMaskBuilder {
+	b.IpSubnetMask = ipSubnetMask
+	return b
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) WithIpSubnetMaskBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPSubnetMaskBuilder {
+	builder := builderSupplier(b.IpSubnetMask.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.IpSubnetMask, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) Build() (BACnetConstructedDataIPSubnetMask, error) {
+	if b.IpSubnetMask == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipSubnetMask' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPSubnetMask.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) MustBuild() BACnetConstructedDataIPSubnetMask {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPSubnetMaskBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPSubnetMaskBuilder().(*_BACnetConstructedDataIPSubnetMaskBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPSubnetMaskBuilder creates a BACnetConstructedDataIPSubnetMaskBuilder
+func (b *_BACnetConstructedDataIPSubnetMask) CreateBACnetConstructedDataIPSubnetMaskBuilder() BACnetConstructedDataIPSubnetMaskBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPSubnetMaskBuilder()
+	}
+	return &_BACnetConstructedDataIPSubnetMaskBuilder{_BACnetConstructedDataIPSubnetMask: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPSubnetMask) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPSubnetMask factory function for _BACnetConstructedDataIPSubnetMask
-func NewBACnetConstructedDataIPSubnetMask(ipSubnetMask BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPSubnetMask {
-	if ipSubnetMask == nil {
-		panic("ipSubnetMask of type BACnetApplicationTagOctetString for BACnetConstructedDataIPSubnetMask must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPSubnetMask{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpSubnetMask:                  ipSubnetMask,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPSubnetMask(structType any) BACnetConstructedDataIPSubnetMask {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPSubnetMask) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetConstructedDataIPSubnetMask) IsBACnetConstructedDataIPSubnetMask() {}
 
+func (m *_BACnetConstructedDataIPSubnetMask) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPSubnetMask) deepCopy() *_BACnetConstructedDataIPSubnetMask {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPSubnetMaskCopy := &_BACnetConstructedDataIPSubnetMask{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IpSubnetMask.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPSubnetMaskCopy
+}
+
 func (m *_BACnetConstructedDataIPSubnetMask) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

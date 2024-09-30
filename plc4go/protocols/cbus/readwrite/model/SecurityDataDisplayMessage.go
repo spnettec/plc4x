@@ -38,11 +38,14 @@ type SecurityDataDisplayMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetMessage returns Message (property field)
 	GetMessage() string
 	// IsSecurityDataDisplayMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataDisplayMessage()
+	// CreateBuilder creates a SecurityDataDisplayMessageBuilder
+	CreateSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder
 }
 
 // _SecurityDataDisplayMessage is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataDisplayMessage struct {
 
 var _ SecurityDataDisplayMessage = (*_SecurityDataDisplayMessage)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataDisplayMessage)(nil)
+
+// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
+func NewSecurityDataDisplayMessage(commandTypeContainer SecurityCommandTypeContainer, argument byte, message string) *_SecurityDataDisplayMessage {
+	_result := &_SecurityDataDisplayMessage{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Message:              message,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataDisplayMessageBuilder is a builder for SecurityDataDisplayMessage
+type SecurityDataDisplayMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(string) SecurityDataDisplayMessageBuilder
+	// Build builds the SecurityDataDisplayMessage or returns an error if something is wrong
+	Build() (SecurityDataDisplayMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataDisplayMessage
+}
+
+// NewSecurityDataDisplayMessageBuilder() creates a SecurityDataDisplayMessageBuilder
+func NewSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder {
+	return &_SecurityDataDisplayMessageBuilder{_SecurityDataDisplayMessage: new(_SecurityDataDisplayMessage)}
+}
+
+type _SecurityDataDisplayMessageBuilder struct {
+	*_SecurityDataDisplayMessage
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataDisplayMessageBuilder) = (*_SecurityDataDisplayMessageBuilder)(nil)
+
+func (b *_SecurityDataDisplayMessageBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) WithMandatoryFields(message string) SecurityDataDisplayMessageBuilder {
+	return b.WithMessage(message)
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) WithMessage(message string) SecurityDataDisplayMessageBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) Build() (SecurityDataDisplayMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataDisplayMessage.deepCopy(), nil
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) MustBuild() SecurityDataDisplayMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataDisplayMessageBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataDisplayMessageBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataDisplayMessageBuilder().(*_SecurityDataDisplayMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataDisplayMessageBuilder creates a SecurityDataDisplayMessageBuilder
+func (b *_SecurityDataDisplayMessage) CreateSecurityDataDisplayMessageBuilder() SecurityDataDisplayMessageBuilder {
+	if b == nil {
+		return NewSecurityDataDisplayMessageBuilder()
+	}
+	return &_SecurityDataDisplayMessageBuilder{_SecurityDataDisplayMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataDisplayMessage) GetMessage() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataDisplayMessage factory function for _SecurityDataDisplayMessage
-func NewSecurityDataDisplayMessage(message string, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataDisplayMessage {
-	_result := &_SecurityDataDisplayMessage{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Message:              message,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataDisplayMessage(structType any) SecurityDataDisplayMessage {
@@ -176,13 +270,33 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_SecurityDataDisplayMessage) IsSecurityDataDisplayMessage() {}
 
+func (m *_SecurityDataDisplayMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataDisplayMessage) deepCopy() *_SecurityDataDisplayMessage {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataDisplayMessageCopy := &_SecurityDataDisplayMessage{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.Message,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataDisplayMessageCopy
+}
+
 func (m *_SecurityDataDisplayMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

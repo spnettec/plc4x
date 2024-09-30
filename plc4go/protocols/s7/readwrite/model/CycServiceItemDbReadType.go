@@ -38,6 +38,7 @@ type CycServiceItemDbReadType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CycServiceItemType
 	// GetNumberOfAreas returns NumberOfAreas (property field)
 	GetNumberOfAreas() uint8
@@ -45,6 +46,8 @@ type CycServiceItemDbReadType interface {
 	GetItems() []SubItem
 	// IsCycServiceItemDbReadType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCycServiceItemDbReadType()
+	// CreateBuilder creates a CycServiceItemDbReadTypeBuilder
+	CreateCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder
 }
 
 // _CycServiceItemDbReadType is the data-structure of this message
@@ -56,6 +59,115 @@ type _CycServiceItemDbReadType struct {
 
 var _ CycServiceItemDbReadType = (*_CycServiceItemDbReadType)(nil)
 var _ CycServiceItemTypeRequirements = (*_CycServiceItemDbReadType)(nil)
+
+// NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
+func NewCycServiceItemDbReadType(byteLength uint8, syntaxId uint8, numberOfAreas uint8, items []SubItem) *_CycServiceItemDbReadType {
+	_result := &_CycServiceItemDbReadType{
+		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
+		NumberOfAreas:              numberOfAreas,
+		Items:                      items,
+	}
+	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CycServiceItemDbReadTypeBuilder is a builder for CycServiceItemDbReadType
+type CycServiceItemDbReadTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numberOfAreas uint8, items []SubItem) CycServiceItemDbReadTypeBuilder
+	// WithNumberOfAreas adds NumberOfAreas (property field)
+	WithNumberOfAreas(uint8) CycServiceItemDbReadTypeBuilder
+	// WithItems adds Items (property field)
+	WithItems(...SubItem) CycServiceItemDbReadTypeBuilder
+	// Build builds the CycServiceItemDbReadType or returns an error if something is wrong
+	Build() (CycServiceItemDbReadType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CycServiceItemDbReadType
+}
+
+// NewCycServiceItemDbReadTypeBuilder() creates a CycServiceItemDbReadTypeBuilder
+func NewCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder {
+	return &_CycServiceItemDbReadTypeBuilder{_CycServiceItemDbReadType: new(_CycServiceItemDbReadType)}
+}
+
+type _CycServiceItemDbReadTypeBuilder struct {
+	*_CycServiceItemDbReadType
+
+	parentBuilder *_CycServiceItemTypeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CycServiceItemDbReadTypeBuilder) = (*_CycServiceItemDbReadTypeBuilder)(nil)
+
+func (b *_CycServiceItemDbReadTypeBuilder) setParent(contract CycServiceItemTypeContract) {
+	b.CycServiceItemTypeContract = contract
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) WithMandatoryFields(numberOfAreas uint8, items []SubItem) CycServiceItemDbReadTypeBuilder {
+	return b.WithNumberOfAreas(numberOfAreas).WithItems(items...)
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) WithNumberOfAreas(numberOfAreas uint8) CycServiceItemDbReadTypeBuilder {
+	b.NumberOfAreas = numberOfAreas
+	return b
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) WithItems(items ...SubItem) CycServiceItemDbReadTypeBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) Build() (CycServiceItemDbReadType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CycServiceItemDbReadType.deepCopy(), nil
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) MustBuild() CycServiceItemDbReadType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CycServiceItemDbReadTypeBuilder) Done() CycServiceItemTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) buildForCycServiceItemType() (CycServiceItemType, error) {
+	return b.Build()
+}
+
+func (b *_CycServiceItemDbReadTypeBuilder) DeepCopy() any {
+	_copy := b.CreateCycServiceItemDbReadTypeBuilder().(*_CycServiceItemDbReadTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCycServiceItemDbReadTypeBuilder creates a CycServiceItemDbReadTypeBuilder
+func (b *_CycServiceItemDbReadType) CreateCycServiceItemDbReadTypeBuilder() CycServiceItemDbReadTypeBuilder {
+	if b == nil {
+		return NewCycServiceItemDbReadTypeBuilder()
+	}
+	return &_CycServiceItemDbReadTypeBuilder{_CycServiceItemDbReadType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +200,6 @@ func (m *_CycServiceItemDbReadType) GetItems() []SubItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCycServiceItemDbReadType factory function for _CycServiceItemDbReadType
-func NewCycServiceItemDbReadType(numberOfAreas uint8, items []SubItem, byteLength uint8, syntaxId uint8) *_CycServiceItemDbReadType {
-	_result := &_CycServiceItemDbReadType{
-		CycServiceItemTypeContract: NewCycServiceItemType(byteLength, syntaxId),
-		NumberOfAreas:              numberOfAreas,
-		Items:                      items,
-	}
-	_result.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCycServiceItemDbReadType(structType any) CycServiceItemDbReadType {
@@ -204,13 +305,34 @@ func (m *_CycServiceItemDbReadType) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_CycServiceItemDbReadType) IsCycServiceItemDbReadType() {}
 
+func (m *_CycServiceItemDbReadType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CycServiceItemDbReadType) deepCopy() *_CycServiceItemDbReadType {
+	if m == nil {
+		return nil
+	}
+	_CycServiceItemDbReadTypeCopy := &_CycServiceItemDbReadType{
+		m.CycServiceItemTypeContract.(*_CycServiceItemType).deepCopy(),
+		m.NumberOfAreas,
+		utils.DeepCopySlice[SubItem, SubItem](m.Items),
+	}
+	m.CycServiceItemTypeContract.(*_CycServiceItemType)._SubType = m
+	return _CycServiceItemDbReadTypeCopy
+}
+
 func (m *_CycServiceItemDbReadType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

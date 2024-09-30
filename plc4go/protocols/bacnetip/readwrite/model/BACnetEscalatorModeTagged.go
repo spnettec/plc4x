@@ -38,6 +38,7 @@ type BACnetEscalatorModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetEscalatorModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetEscalatorModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEscalatorModeTagged()
+	// CreateBuilder creates a BACnetEscalatorModeTaggedBuilder
+	CreateBACnetEscalatorModeTaggedBuilder() BACnetEscalatorModeTaggedBuilder
 }
 
 // _BACnetEscalatorModeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetEscalatorModeTagged struct {
 }
 
 var _ BACnetEscalatorModeTagged = (*_BACnetEscalatorModeTagged)(nil)
+
+// NewBACnetEscalatorModeTagged factory function for _BACnetEscalatorModeTagged
+func NewBACnetEscalatorModeTagged(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetEscalatorModeTagged must not be nil")
+	}
+	return &_BACnetEscalatorModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEscalatorModeTaggedBuilder is a builder for BACnetEscalatorModeTagged
+type BACnetEscalatorModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32) BACnetEscalatorModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetEscalatorModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEscalatorModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetEscalatorMode) BACnetEscalatorModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetEscalatorModeTaggedBuilder
+	// Build builds the BACnetEscalatorModeTagged or returns an error if something is wrong
+	Build() (BACnetEscalatorModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEscalatorModeTagged
+}
+
+// NewBACnetEscalatorModeTaggedBuilder() creates a BACnetEscalatorModeTaggedBuilder
+func NewBACnetEscalatorModeTaggedBuilder() BACnetEscalatorModeTaggedBuilder {
+	return &_BACnetEscalatorModeTaggedBuilder{_BACnetEscalatorModeTagged: new(_BACnetEscalatorModeTagged)}
+}
+
+type _BACnetEscalatorModeTaggedBuilder struct {
+	*_BACnetEscalatorModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEscalatorModeTaggedBuilder) = (*_BACnetEscalatorModeTaggedBuilder)(nil)
+
+func (b *_BACnetEscalatorModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32) BACnetEscalatorModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetEscalatorModeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEscalatorModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) WithValue(value BACnetEscalatorMode) BACnetEscalatorModeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetEscalatorModeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) Build() (BACnetEscalatorModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEscalatorModeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) MustBuild() BACnetEscalatorModeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEscalatorModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEscalatorModeTaggedBuilder().(*_BACnetEscalatorModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEscalatorModeTaggedBuilder creates a BACnetEscalatorModeTaggedBuilder
+func (b *_BACnetEscalatorModeTagged) CreateBACnetEscalatorModeTaggedBuilder() BACnetEscalatorModeTaggedBuilder {
+	if b == nil {
+		return NewBACnetEscalatorModeTaggedBuilder()
+	}
+	return &_BACnetEscalatorModeTaggedBuilder{_BACnetEscalatorModeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetEscalatorModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEscalatorModeTagged factory function for _BACnetEscalatorModeTagged
-func NewBACnetEscalatorModeTagged(header BACnetTagHeader, value BACnetEscalatorMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetEscalatorModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetEscalatorModeTagged must not be nil")
-	}
-	return &_BACnetEscalatorModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEscalatorModeTagged(structType any) BACnetEscalatorModeTagged {
@@ -159,7 +273,7 @@ func BACnetEscalatorModeTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEscalatorModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetEscalatorModeTagged BACnetEscalatorModeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetEscalatorModeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetEscalatorModeTagged) IsBACnetEscalatorModeTagged() {}
 
+func (m *_BACnetEscalatorModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEscalatorModeTagged) deepCopy() *_BACnetEscalatorModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetEscalatorModeTaggedCopy := &_BACnetEscalatorModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetEscalatorModeTaggedCopy
+}
+
 func (m *_BACnetEscalatorModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

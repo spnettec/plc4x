@@ -38,6 +38,7 @@ type AdsNotificationSample interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNotificationHandle returns NotificationHandle (property field)
 	GetNotificationHandle() uint32
 	// GetSampleSize returns SampleSize (property field)
@@ -46,6 +47,8 @@ type AdsNotificationSample interface {
 	GetData() []byte
 	// IsAdsNotificationSample is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsNotificationSample()
+	// CreateBuilder creates a AdsNotificationSampleBuilder
+	CreateAdsNotificationSampleBuilder() AdsNotificationSampleBuilder
 }
 
 // _AdsNotificationSample is the data-structure of this message
@@ -56,6 +59,101 @@ type _AdsNotificationSample struct {
 }
 
 var _ AdsNotificationSample = (*_AdsNotificationSample)(nil)
+
+// NewAdsNotificationSample factory function for _AdsNotificationSample
+func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
+	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsNotificationSampleBuilder is a builder for AdsNotificationSample
+type AdsNotificationSampleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(notificationHandle uint32, sampleSize uint32, data []byte) AdsNotificationSampleBuilder
+	// WithNotificationHandle adds NotificationHandle (property field)
+	WithNotificationHandle(uint32) AdsNotificationSampleBuilder
+	// WithSampleSize adds SampleSize (property field)
+	WithSampleSize(uint32) AdsNotificationSampleBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsNotificationSampleBuilder
+	// Build builds the AdsNotificationSample or returns an error if something is wrong
+	Build() (AdsNotificationSample, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsNotificationSample
+}
+
+// NewAdsNotificationSampleBuilder() creates a AdsNotificationSampleBuilder
+func NewAdsNotificationSampleBuilder() AdsNotificationSampleBuilder {
+	return &_AdsNotificationSampleBuilder{_AdsNotificationSample: new(_AdsNotificationSample)}
+}
+
+type _AdsNotificationSampleBuilder struct {
+	*_AdsNotificationSample
+
+	err *utils.MultiError
+}
+
+var _ (AdsNotificationSampleBuilder) = (*_AdsNotificationSampleBuilder)(nil)
+
+func (b *_AdsNotificationSampleBuilder) WithMandatoryFields(notificationHandle uint32, sampleSize uint32, data []byte) AdsNotificationSampleBuilder {
+	return b.WithNotificationHandle(notificationHandle).WithSampleSize(sampleSize).WithData(data...)
+}
+
+func (b *_AdsNotificationSampleBuilder) WithNotificationHandle(notificationHandle uint32) AdsNotificationSampleBuilder {
+	b.NotificationHandle = notificationHandle
+	return b
+}
+
+func (b *_AdsNotificationSampleBuilder) WithSampleSize(sampleSize uint32) AdsNotificationSampleBuilder {
+	b.SampleSize = sampleSize
+	return b
+}
+
+func (b *_AdsNotificationSampleBuilder) WithData(data ...byte) AdsNotificationSampleBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsNotificationSampleBuilder) Build() (AdsNotificationSample, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsNotificationSample.deepCopy(), nil
+}
+
+func (b *_AdsNotificationSampleBuilder) MustBuild() AdsNotificationSample {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsNotificationSampleBuilder) DeepCopy() any {
+	_copy := b.CreateAdsNotificationSampleBuilder().(*_AdsNotificationSampleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsNotificationSampleBuilder creates a AdsNotificationSampleBuilder
+func (b *_AdsNotificationSample) CreateAdsNotificationSampleBuilder() AdsNotificationSampleBuilder {
+	if b == nil {
+		return NewAdsNotificationSampleBuilder()
+	}
+	return &_AdsNotificationSampleBuilder{_AdsNotificationSample: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_AdsNotificationSample) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsNotificationSample factory function for _AdsNotificationSample
-func NewAdsNotificationSample(notificationHandle uint32, sampleSize uint32, data []byte) *_AdsNotificationSample {
-	return &_AdsNotificationSample{NotificationHandle: notificationHandle, SampleSize: sampleSize, Data: data}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsNotificationSample(structType any) AdsNotificationSample {
@@ -135,7 +228,7 @@ func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsNotificationSample) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsNotificationSample AdsNotificationSample, err error) {
@@ -209,13 +302,33 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_AdsNotificationSample) IsAdsNotificationSample() {}
 
+func (m *_AdsNotificationSample) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsNotificationSample) deepCopy() *_AdsNotificationSample {
+	if m == nil {
+		return nil
+	}
+	_AdsNotificationSampleCopy := &_AdsNotificationSample{
+		m.NotificationHandle,
+		m.SampleSize,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	return _AdsNotificationSampleCopy
+}
+
 func (m *_AdsNotificationSample) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

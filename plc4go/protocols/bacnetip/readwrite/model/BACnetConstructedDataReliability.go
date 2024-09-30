@@ -38,6 +38,7 @@ type BACnetConstructedDataReliability interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReliability returns Reliability (property field)
 	GetReliability() BACnetReliabilityTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataReliability interface {
 	GetActualValue() BACnetReliabilityTagged
 	// IsBACnetConstructedDataReliability is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReliability()
+	// CreateBuilder creates a BACnetConstructedDataReliabilityBuilder
+	CreateBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabilityBuilder
 }
 
 // _BACnetConstructedDataReliability is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataReliability struct {
 
 var _ BACnetConstructedDataReliability = (*_BACnetConstructedDataReliability)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReliability)(nil)
+
+// NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
+func NewBACnetConstructedDataReliability(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reliability BACnetReliabilityTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
+	if reliability == nil {
+		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
+	}
+	_result := &_BACnetConstructedDataReliability{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Reliability:                   reliability,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReliabilityBuilder is a builder for BACnetConstructedDataReliability
+type BACnetConstructedDataReliabilityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder
+	// WithReliability adds Reliability (property field)
+	WithReliability(BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder
+	// WithReliabilityBuilder adds Reliability (property field) which is build by the builder
+	WithReliabilityBuilder(func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetConstructedDataReliabilityBuilder
+	// Build builds the BACnetConstructedDataReliability or returns an error if something is wrong
+	Build() (BACnetConstructedDataReliability, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReliability
+}
+
+// NewBACnetConstructedDataReliabilityBuilder() creates a BACnetConstructedDataReliabilityBuilder
+func NewBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabilityBuilder {
+	return &_BACnetConstructedDataReliabilityBuilder{_BACnetConstructedDataReliability: new(_BACnetConstructedDataReliability)}
+}
+
+type _BACnetConstructedDataReliabilityBuilder struct {
+	*_BACnetConstructedDataReliability
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReliabilityBuilder) = (*_BACnetConstructedDataReliabilityBuilder)(nil)
+
+func (b *_BACnetConstructedDataReliabilityBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) WithMandatoryFields(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
+	return b.WithReliability(reliability)
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) WithReliability(reliability BACnetReliabilityTagged) BACnetConstructedDataReliabilityBuilder {
+	b.Reliability = reliability
+	return b
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) WithReliabilityBuilder(builderSupplier func(BACnetReliabilityTaggedBuilder) BACnetReliabilityTaggedBuilder) BACnetConstructedDataReliabilityBuilder {
+	builder := builderSupplier(b.Reliability.CreateBACnetReliabilityTaggedBuilder())
+	var err error
+	b.Reliability, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetReliabilityTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) Build() (BACnetConstructedDataReliability, error) {
+	if b.Reliability == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'reliability' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataReliability.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) MustBuild() BACnetConstructedDataReliability {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReliabilityBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReliabilityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReliabilityBuilder().(*_BACnetConstructedDataReliabilityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataReliabilityBuilder creates a BACnetConstructedDataReliabilityBuilder
+func (b *_BACnetConstructedDataReliability) CreateBACnetConstructedDataReliabilityBuilder() BACnetConstructedDataReliabilityBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataReliabilityBuilder()
+	}
+	return &_BACnetConstructedDataReliabilityBuilder{_BACnetConstructedDataReliability: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataReliability) GetActualValue() BACnetReliabilityTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReliability factory function for _BACnetConstructedDataReliability
-func NewBACnetConstructedDataReliability(reliability BACnetReliabilityTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReliability {
-	if reliability == nil {
-		panic("reliability of type BACnetReliabilityTagged for BACnetConstructedDataReliability must not be nil")
-	}
-	_result := &_BACnetConstructedDataReliability{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Reliability:                   reliability,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReliability(structType any) BACnetConstructedDataReliability {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataReliability) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataReliability) IsBACnetConstructedDataReliability() {}
 
+func (m *_BACnetConstructedDataReliability) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReliability) deepCopy() *_BACnetConstructedDataReliability {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReliabilityCopy := &_BACnetConstructedDataReliability{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Reliability.DeepCopy().(BACnetReliabilityTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReliabilityCopy
+}
+
 func (m *_BACnetConstructedDataReliability) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

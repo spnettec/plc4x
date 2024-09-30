@@ -38,6 +38,7 @@ type BrowseDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -53,6 +54,8 @@ type BrowseDescription interface {
 	GetResultMask() uint32
 	// IsBrowseDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseDescription()
+	// CreateBuilder creates a BrowseDescriptionBuilder
+	CreateBrowseDescriptionBuilder() BrowseDescriptionBuilder
 }
 
 // _BrowseDescription is the data-structure of this message
@@ -70,6 +73,195 @@ type _BrowseDescription struct {
 
 var _ BrowseDescription = (*_BrowseDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseDescription)(nil)
+
+// NewBrowseDescription factory function for _BrowseDescription
+func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) *_BrowseDescription {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for BrowseDescription must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for BrowseDescription must not be nil")
+	}
+	_result := &_BrowseDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		BrowseDirection:                   browseDirection,
+		ReferenceTypeId:                   referenceTypeId,
+		IncludeSubtypes:                   includeSubtypes,
+		NodeClassMask:                     nodeClassMask,
+		ResultMask:                        resultMask,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowseDescriptionBuilder is a builder for BrowseDescription
+type BrowseDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) BrowseDescriptionBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) BrowseDescriptionBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder
+	// WithBrowseDirection adds BrowseDirection (property field)
+	WithBrowseDirection(BrowseDirection) BrowseDescriptionBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) BrowseDescriptionBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder
+	// WithIncludeSubtypes adds IncludeSubtypes (property field)
+	WithIncludeSubtypes(bool) BrowseDescriptionBuilder
+	// WithNodeClassMask adds NodeClassMask (property field)
+	WithNodeClassMask(uint32) BrowseDescriptionBuilder
+	// WithResultMask adds ResultMask (property field)
+	WithResultMask(uint32) BrowseDescriptionBuilder
+	// Build builds the BrowseDescription or returns an error if something is wrong
+	Build() (BrowseDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowseDescription
+}
+
+// NewBrowseDescriptionBuilder() creates a BrowseDescriptionBuilder
+func NewBrowseDescriptionBuilder() BrowseDescriptionBuilder {
+	return &_BrowseDescriptionBuilder{_BrowseDescription: new(_BrowseDescription)}
+}
+
+type _BrowseDescriptionBuilder struct {
+	*_BrowseDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrowseDescriptionBuilder) = (*_BrowseDescriptionBuilder)(nil)
+
+func (b *_BrowseDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrowseDescriptionBuilder) WithMandatoryFields(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) BrowseDescriptionBuilder {
+	return b.WithNodeId(nodeId).WithBrowseDirection(browseDirection).WithReferenceTypeId(referenceTypeId).WithIncludeSubtypes(includeSubtypes).WithNodeClassMask(nodeClassMask).WithResultMask(resultMask)
+}
+
+func (b *_BrowseDescriptionBuilder) WithNodeId(nodeId NodeId) BrowseDescriptionBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithBrowseDirection(browseDirection BrowseDirection) BrowseDescriptionBuilder {
+	b.BrowseDirection = browseDirection
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) BrowseDescriptionBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) BrowseDescriptionBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	b.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithIncludeSubtypes(includeSubtypes bool) BrowseDescriptionBuilder {
+	b.IncludeSubtypes = includeSubtypes
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithNodeClassMask(nodeClassMask uint32) BrowseDescriptionBuilder {
+	b.NodeClassMask = nodeClassMask
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) WithResultMask(resultMask uint32) BrowseDescriptionBuilder {
+	b.ResultMask = resultMask
+	return b
+}
+
+func (b *_BrowseDescriptionBuilder) Build() (BrowseDescription, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrowseDescription.deepCopy(), nil
+}
+
+func (b *_BrowseDescriptionBuilder) MustBuild() BrowseDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseDescriptionBuilder().(*_BrowseDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrowseDescriptionBuilder creates a BrowseDescriptionBuilder
+func (b *_BrowseDescription) CreateBrowseDescriptionBuilder() BrowseDescriptionBuilder {
+	if b == nil {
+		return NewBrowseDescriptionBuilder()
+	}
+	return &_BrowseDescriptionBuilder{_BrowseDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,27 +314,6 @@ func (m *_BrowseDescription) GetResultMask() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseDescription factory function for _BrowseDescription
-func NewBrowseDescription(nodeId NodeId, browseDirection BrowseDirection, referenceTypeId NodeId, includeSubtypes bool, nodeClassMask uint32, resultMask uint32) *_BrowseDescription {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for BrowseDescription must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for BrowseDescription must not be nil")
-	}
-	_result := &_BrowseDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		BrowseDirection:                   browseDirection,
-		ReferenceTypeId:                   referenceTypeId,
-		IncludeSubtypes:                   includeSubtypes,
-		NodeClassMask:                     nodeClassMask,
-		ResultMask:                        resultMask,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseDescription(structType any) BrowseDescription {
@@ -306,13 +477,39 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_BrowseDescription) IsBrowseDescription() {}
 
+func (m *_BrowseDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseDescription) deepCopy() *_BrowseDescription {
+	if m == nil {
+		return nil
+	}
+	_BrowseDescriptionCopy := &_BrowseDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.BrowseDirection,
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IncludeSubtypes,
+		m.NodeClassMask,
+		m.ResultMask,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseDescriptionCopy
+}
+
 func (m *_BrowseDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

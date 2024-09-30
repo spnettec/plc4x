@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetFunction returns Function (property field)
 	GetFunction() uint8
@@ -45,6 +46,8 @@ type S7PayloadUserDataItemCyclicServicesUnsubscribeRequest interface {
 	GetJobId() uint8
 	// IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
 }
 
 // _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest is the data-structure of this message
@@ -56,6 +59,115 @@ type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest struct {
 
 var _ S7PayloadUserDataItemCyclicServicesUnsubscribeRequest = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)(nil)
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, function uint8, jobId uint8) *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Function:                      function,
+		JobId:                         jobId,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder is a builder for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+type S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(function uint8, jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// WithFunction adds Function (property field)
+	WithFunction(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// WithJobId adds JobId (property field)
+	WithJobId(uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+	// Build builds the S7PayloadUserDataItemCyclicServicesUnsubscribeRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+}
+
+// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest: new(_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest)}
+}
+
+type _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder struct {
+	*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) = (*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithMandatoryFields(function uint8, jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	return b.WithFunction(function).WithJobId(jobId)
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithFunction(function uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	b.Function = function
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) WithJobId(jobId uint8) S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	b.JobId = jobId
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) Build() (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCyclicServicesUnsubscribeRequest.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) MustBuild() S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder().(*_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder creates a S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder
+func (b *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) CreateS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder() S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestBuilder{_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +212,6 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) GetJobId() uint
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest factory function for _S7PayloadUserDataItemCyclicServicesUnsubscribeRequest
-func NewS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(function uint8, jobId uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
-	_result := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Function:                      function,
-		JobId:                         jobId,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCyclicServicesUnsubscribeRequest(structType any) S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
@@ -210,13 +311,34 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) IsS7PayloadUserDataItemCyclicServicesUnsubscribeRequest() {
 }
 
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) deepCopy() *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy := &_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Function,
+		m.JobId,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCyclicServicesUnsubscribeRequestCopy
+}
+
 func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

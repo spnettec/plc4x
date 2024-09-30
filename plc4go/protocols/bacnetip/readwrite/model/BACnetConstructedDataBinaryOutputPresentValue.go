@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryOutputPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetBinaryPVTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataBinaryOutputPresentValue interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataBinaryOutputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryOutputPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+	CreateBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder
 }
 
 // _BACnetConstructedDataBinaryOutputPresentValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBinaryOutputPresentValue struct {
 
 var _ BACnetConstructedDataBinaryOutputPresentValue = (*_BACnetConstructedDataBinaryOutputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputPresentValue)(nil)
+
+// NewBACnetConstructedDataBinaryOutputPresentValue factory function for _BACnetConstructedDataBinaryOutputPresentValue
+func NewBACnetConstructedDataBinaryOutputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryOutputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryOutputPresentValueBuilder is a builder for BACnetConstructedDataBinaryOutputPresentValue
+type BACnetConstructedDataBinaryOutputPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputPresentValueBuilder
+	// Build builds the BACnetConstructedDataBinaryOutputPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryOutputPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryOutputPresentValue
+}
+
+// NewBACnetConstructedDataBinaryOutputPresentValueBuilder() creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+func NewBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	return &_BACnetConstructedDataBinaryOutputPresentValueBuilder{_BACnetConstructedDataBinaryOutputPresentValue: new(_BACnetConstructedDataBinaryOutputPresentValue)}
+}
+
+type _BACnetConstructedDataBinaryOutputPresentValueBuilder struct {
+	*_BACnetConstructedDataBinaryOutputPresentValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryOutputPresentValueBuilder) = (*_BACnetConstructedDataBinaryOutputPresentValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithMandatoryFields(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithPresentValue(presentValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	b.PresentValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) Build() (BACnetConstructedDataBinaryOutputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBinaryOutputPresentValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) MustBuild() BACnetConstructedDataBinaryOutputPresentValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryOutputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryOutputPresentValueBuilder().(*_BACnetConstructedDataBinaryOutputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBinaryOutputPresentValueBuilder creates a BACnetConstructedDataBinaryOutputPresentValueBuilder
+func (b *_BACnetConstructedDataBinaryOutputPresentValue) CreateBACnetConstructedDataBinaryOutputPresentValueBuilder() BACnetConstructedDataBinaryOutputPresentValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBinaryOutputPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataBinaryOutputPresentValueBuilder{_BACnetConstructedDataBinaryOutputPresentValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBinaryOutputPresentValue) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryOutputPresentValue factory function for _BACnetConstructedDataBinaryOutputPresentValue
-func NewBACnetConstructedDataBinaryOutputPresentValue(presentValue BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryOutputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryOutputPresentValue(structType any) BACnetConstructedDataBinaryOutputPresentValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataBinaryOutputPresentValue) SerializeWithWriteBuffe
 func (m *_BACnetConstructedDataBinaryOutputPresentValue) IsBACnetConstructedDataBinaryOutputPresentValue() {
 }
 
+func (m *_BACnetConstructedDataBinaryOutputPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryOutputPresentValue) deepCopy() *_BACnetConstructedDataBinaryOutputPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryOutputPresentValueCopy := &_BACnetConstructedDataBinaryOutputPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryOutputPresentValueCopy
+}
+
 func (m *_BACnetConstructedDataBinaryOutputPresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

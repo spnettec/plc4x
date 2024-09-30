@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,35 @@ type InitializeRoutingTable struct {
 	irtTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTable(opts ...func(*InitializeRoutingTable)) (*InitializeRoutingTable, error) {
+func NewInitializeRoutingTable(args Args, kwArgs KWArgs, options ...Option) (*InitializeRoutingTable, error) {
 	i := &InitializeRoutingTable{
 		messageType: 0x06,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping()), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMInitializeRoutingTable(i.produceNLMInitializeRoutingTablePortMapping()))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "irtTable++")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
-func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) func(*InitializeRoutingTable) {
-	return func(r *InitializeRoutingTable) {
-		r.irtTable = irtTable
+// TODO: check if this is rather a KWArgs
+func WithInitializeRoutingTableIrtTable(irtTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTable] {
+	return WrapGenericApplier(func(r *InitializeRoutingTable) { r.irtTable = irtTable })
+}
+
+func (i *InitializeRoutingTable) GetDebugAttr(attr string) any {
+	switch attr {
+	case "irtTable":
+		return i.irtTable
 	}
+	return nil
 }
 
 func (i *InitializeRoutingTable) GetIrtTable() []*RoutingTableEntry {
@@ -130,8 +136,4 @@ func (i *InitializeRoutingTable) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *InitializeRoutingTable) String() string {
-	return fmt.Sprintf("InitializeRoutingTable{%s, irtTable: %v}", i._NPDU, i.irtTable)
 }

@@ -36,8 +36,11 @@ type ImageGIF interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImageGIF is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageGIF()
+	// CreateBuilder creates a ImageGIFBuilder
+	CreateImageGIFBuilder() ImageGIFBuilder
 }
 
 // _ImageGIF is the data-structure of this message
@@ -50,6 +53,75 @@ var _ ImageGIF = (*_ImageGIF)(nil)
 func NewImageGIF() *_ImageGIF {
 	return &_ImageGIF{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ImageGIFBuilder is a builder for ImageGIF
+type ImageGIFBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ImageGIFBuilder
+	// Build builds the ImageGIF or returns an error if something is wrong
+	Build() (ImageGIF, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ImageGIF
+}
+
+// NewImageGIFBuilder() creates a ImageGIFBuilder
+func NewImageGIFBuilder() ImageGIFBuilder {
+	return &_ImageGIFBuilder{_ImageGIF: new(_ImageGIF)}
+}
+
+type _ImageGIFBuilder struct {
+	*_ImageGIF
+
+	err *utils.MultiError
+}
+
+var _ (ImageGIFBuilder) = (*_ImageGIFBuilder)(nil)
+
+func (b *_ImageGIFBuilder) WithMandatoryFields() ImageGIFBuilder {
+	return b
+}
+
+func (b *_ImageGIFBuilder) Build() (ImageGIF, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ImageGIF.deepCopy(), nil
+}
+
+func (b *_ImageGIFBuilder) MustBuild() ImageGIF {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ImageGIFBuilder) DeepCopy() any {
+	_copy := b.CreateImageGIFBuilder().(*_ImageGIFBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateImageGIFBuilder creates a ImageGIFBuilder
+func (b *_ImageGIF) CreateImageGIFBuilder() ImageGIFBuilder {
+	if b == nil {
+		return NewImageGIFBuilder()
+	}
+	return &_ImageGIFBuilder{_ImageGIF: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastImageGIF(structType any) ImageGIF {
@@ -91,7 +163,7 @@ func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ImageGIF) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imageGIF ImageGIF, err error) {
@@ -135,13 +207,29 @@ func (m *_ImageGIF) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_ImageGIF) IsImageGIF() {}
 
+func (m *_ImageGIF) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImageGIF) deepCopy() *_ImageGIF {
+	if m == nil {
+		return nil
+	}
+	_ImageGIFCopy := &_ImageGIF{}
+	return _ImageGIFCopy
+}
+
 func (m *_ImageGIF) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

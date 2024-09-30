@@ -38,11 +38,14 @@ type BACnetChannelValueDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
 	// IsBACnetChannelValueDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueDate()
+	// CreateBuilder creates a BACnetChannelValueDateBuilder
+	CreateBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder
 }
 
 // _BACnetChannelValueDate is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetChannelValueDate struct {
 
 var _ BACnetChannelValueDate = (*_BACnetChannelValueDate)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueDate)(nil)
+
+// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
+func NewBACnetChannelValueDate(peekedTagHeader BACnetTagHeader, dateValue BACnetApplicationTagDate) *_BACnetChannelValueDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
+	}
+	_result := &_BACnetChannelValueDate{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		DateValue:                  dateValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueDateBuilder is a builder for BACnetChannelValueDate
+type BACnetChannelValueDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder
+	// WithDateValue adds DateValue (property field)
+	WithDateValue(BACnetApplicationTagDate) BACnetChannelValueDateBuilder
+	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetChannelValueDateBuilder
+	// Build builds the BACnetChannelValueDate or returns an error if something is wrong
+	Build() (BACnetChannelValueDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueDate
+}
+
+// NewBACnetChannelValueDateBuilder() creates a BACnetChannelValueDateBuilder
+func NewBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder {
+	return &_BACnetChannelValueDateBuilder{_BACnetChannelValueDate: new(_BACnetChannelValueDate)}
+}
+
+type _BACnetChannelValueDateBuilder struct {
+	*_BACnetChannelValueDate
+
+	parentBuilder *_BACnetChannelValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueDateBuilder) = (*_BACnetChannelValueDateBuilder)(nil)
+
+func (b *_BACnetChannelValueDateBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
+}
+
+func (b *_BACnetChannelValueDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
+	return b.WithDateValue(dateValue)
+}
+
+func (b *_BACnetChannelValueDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetChannelValueDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetChannelValueDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetChannelValueDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	b.DateValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetChannelValueDateBuilder) Build() (BACnetChannelValueDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetChannelValueDate.deepCopy(), nil
+}
+
+func (b *_BACnetChannelValueDateBuilder) MustBuild() BACnetChannelValueDate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueDateBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueDateBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueDateBuilder().(*_BACnetChannelValueDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetChannelValueDateBuilder creates a BACnetChannelValueDateBuilder
+func (b *_BACnetChannelValueDate) CreateBACnetChannelValueDateBuilder() BACnetChannelValueDateBuilder {
+	if b == nil {
+		return NewBACnetChannelValueDateBuilder()
+	}
+	return &_BACnetChannelValueDateBuilder{_BACnetChannelValueDate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetChannelValueDate) GetDateValue() BACnetApplicationTagDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueDate factory function for _BACnetChannelValueDate
-func NewBACnetChannelValueDate(dateValue BACnetApplicationTagDate, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetChannelValueDate must not be nil")
-	}
-	_result := &_BACnetChannelValueDate{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		DateValue:                  dateValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueDate(structType any) BACnetChannelValueDate {
@@ -179,13 +294,33 @@ func (m *_BACnetChannelValueDate) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetChannelValueDate) IsBACnetChannelValueDate() {}
 
+func (m *_BACnetChannelValueDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueDate) deepCopy() *_BACnetChannelValueDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueDateCopy := &_BACnetChannelValueDate{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueDateCopy
+}
+
 func (m *_BACnetChannelValueDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

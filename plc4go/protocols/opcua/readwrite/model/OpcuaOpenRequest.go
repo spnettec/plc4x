@@ -38,6 +38,7 @@ type OpcuaOpenRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetOpenRequest returns OpenRequest (property field)
 	GetOpenRequest() OpenChannelMessage
@@ -45,6 +46,8 @@ type OpcuaOpenRequest interface {
 	GetMessage() Payload
 	// IsOpcuaOpenRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaOpenRequest()
+	// CreateBuilder creates a OpcuaOpenRequestBuilder
+	CreateOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder
 }
 
 // _OpcuaOpenRequest is the data-structure of this message
@@ -59,6 +62,163 @@ type _OpcuaOpenRequest struct {
 
 var _ OpcuaOpenRequest = (*_OpcuaOpenRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenRequest)(nil)
+
+// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
+func NewOpcuaOpenRequest(chunk ChunkType, openRequest OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenRequest {
+	if openRequest == nil {
+		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaOpenRequest must not be nil")
+	}
+	_result := &_OpcuaOpenRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		OpenRequest:        openRequest,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaOpenRequestBuilder is a builder for OpcuaOpenRequest
+type OpcuaOpenRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openRequest OpenChannelMessage, message Payload) OpcuaOpenRequestBuilder
+	// WithOpenRequest adds OpenRequest (property field)
+	WithOpenRequest(OpenChannelMessage) OpcuaOpenRequestBuilder
+	// WithOpenRequestBuilder adds OpenRequest (property field) which is build by the builder
+	WithOpenRequestBuilder(func(OpenChannelMessageBuilder) OpenChannelMessageBuilder) OpcuaOpenRequestBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(Payload) OpcuaOpenRequestBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaOpenRequestBuilder
+	// Build builds the OpcuaOpenRequest or returns an error if something is wrong
+	Build() (OpcuaOpenRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaOpenRequest
+}
+
+// NewOpcuaOpenRequestBuilder() creates a OpcuaOpenRequestBuilder
+func NewOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder {
+	return &_OpcuaOpenRequestBuilder{_OpcuaOpenRequest: new(_OpcuaOpenRequest)}
+}
+
+type _OpcuaOpenRequestBuilder struct {
+	*_OpcuaOpenRequest
+
+	parentBuilder *_MessagePDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaOpenRequestBuilder) = (*_OpcuaOpenRequestBuilder)(nil)
+
+func (b *_OpcuaOpenRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithMandatoryFields(openRequest OpenChannelMessage, message Payload) OpcuaOpenRequestBuilder {
+	return b.WithOpenRequest(openRequest).WithMessage(message)
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithOpenRequest(openRequest OpenChannelMessage) OpcuaOpenRequestBuilder {
+	b.OpenRequest = openRequest
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithOpenRequestBuilder(builderSupplier func(OpenChannelMessageBuilder) OpenChannelMessageBuilder) OpcuaOpenRequestBuilder {
+	builder := builderSupplier(b.OpenRequest.CreateOpenChannelMessageBuilder())
+	var err error
+	b.OpenRequest, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "OpenChannelMessageBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithMessage(message Payload) OpcuaOpenRequestBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaOpenRequestBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaOpenRequestBuilder) Build() (OpcuaOpenRequest, error) {
+	if b.OpenRequest == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openRequest' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaOpenRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaOpenRequestBuilder) MustBuild() OpcuaOpenRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaOpenRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaOpenRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaOpenRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaOpenRequestBuilder().(*_OpcuaOpenRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaOpenRequestBuilder creates a OpcuaOpenRequestBuilder
+func (b *_OpcuaOpenRequest) CreateOpcuaOpenRequestBuilder() OpcuaOpenRequestBuilder {
+	if b == nil {
+		return NewOpcuaOpenRequestBuilder()
+	}
+	return &_OpcuaOpenRequestBuilder{_OpcuaOpenRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,23 +259,6 @@ func (m *_OpcuaOpenRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaOpenRequest factory function for _OpcuaOpenRequest
-func NewOpcuaOpenRequest(openRequest OpenChannelMessage, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaOpenRequest {
-	if openRequest == nil {
-		panic("openRequest of type OpenChannelMessage for OpcuaOpenRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaOpenRequest must not be nil")
-	}
-	_result := &_OpcuaOpenRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		OpenRequest:        openRequest,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaOpenRequest(structType any) OpcuaOpenRequest {
@@ -224,13 +367,35 @@ func (m *_OpcuaOpenRequest) GetTotalLength() uint32 {
 
 func (m *_OpcuaOpenRequest) IsOpcuaOpenRequest() {}
 
+func (m *_OpcuaOpenRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaOpenRequest) deepCopy() *_OpcuaOpenRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaOpenRequestCopy := &_OpcuaOpenRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.OpenRequest.DeepCopy().(OpenChannelMessage),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaOpenRequestCopy
+}
+
 func (m *_OpcuaOpenRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

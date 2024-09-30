@@ -38,11 +38,14 @@ type ErrorReportingSystemCategoryTypeBuildingManagementSystems interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForBuildingManagementSystems
 	// IsErrorReportingSystemCategoryTypeBuildingManagementSystems is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryTypeBuildingManagementSystems()
+	// CreateBuilder creates a ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+	CreateErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder() ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
 }
 
 // _ErrorReportingSystemCategoryTypeBuildingManagementSystems is the data-structure of this message
@@ -53,6 +56,107 @@ type _ErrorReportingSystemCategoryTypeBuildingManagementSystems struct {
 
 var _ ErrorReportingSystemCategoryTypeBuildingManagementSystems = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystems)(nil)
+
+// NewErrorReportingSystemCategoryTypeBuildingManagementSystems factory function for _ErrorReportingSystemCategoryTypeBuildingManagementSystems
+func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+	_result := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder is a builder for ErrorReportingSystemCategoryTypeBuildingManagementSystems
+type ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+	// WithCategoryForType adds CategoryForType (property field)
+	WithCategoryForType(ErrorReportingSystemCategoryTypeForBuildingManagementSystems) ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+	// Build builds the ErrorReportingSystemCategoryTypeBuildingManagementSystems or returns an error if something is wrong
+	Build() (ErrorReportingSystemCategoryTypeBuildingManagementSystems, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingSystemCategoryTypeBuildingManagementSystems
+}
+
+// NewErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder() creates a ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+func NewErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder() ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder {
+	return &_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder{_ErrorReportingSystemCategoryTypeBuildingManagementSystems: new(_ErrorReportingSystemCategoryTypeBuildingManagementSystems)}
+}
+
+type _ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder struct {
+	*_ErrorReportingSystemCategoryTypeBuildingManagementSystems
+
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) = (*_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder)(nil)
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder {
+	return b.WithCategoryForType(categoryForType)
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) Build() (ErrorReportingSystemCategoryTypeBuildingManagementSystems, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingSystemCategoryTypeBuildingManagementSystems.deepCopy(), nil
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) MustBuild() ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder().(*_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder creates a ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+func (b *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) CreateErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder() ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder {
+	if b == nil {
+		return NewErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder()
+	}
+	return &_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder{_ErrorReportingSystemCategoryTypeBuildingManagementSystems: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) GetCategory
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeBuildingManagementSystems factory function for _ErrorReportingSystemCategoryTypeBuildingManagementSystems
-func NewErrorReportingSystemCategoryTypeBuildingManagementSystems(categoryForType ErrorReportingSystemCategoryTypeForBuildingManagementSystems) *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
-	_result := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeBuildingManagementSystems(structType any) ErrorReportingSystemCategoryTypeBuildingManagementSystems {
@@ -181,13 +275,33 @@ func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) SerializeWi
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) IsErrorReportingSystemCategoryTypeBuildingManagementSystems() {
 }
 
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) deepCopy() *_ErrorReportingSystemCategoryTypeBuildingManagementSystems {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeBuildingManagementSystemsCopy := &_ErrorReportingSystemCategoryTypeBuildingManagementSystems{
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeBuildingManagementSystemsCopy
+}
+
 func (m *_ErrorReportingSystemCategoryTypeBuildingManagementSystems) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataPulseConverterAdjustValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataPulseConverterAdjustValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPulseConverterAdjustValue()
+	// CreateBuilder creates a BACnetConstructedDataPulseConverterAdjustValueBuilder
+	CreateBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructedDataPulseConverterAdjustValueBuilder
 }
 
 // _BACnetConstructedDataPulseConverterAdjustValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataPulseConverterAdjustValue struct {
 
 var _ BACnetConstructedDataPulseConverterAdjustValue = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPulseConverterAdjustValue)(nil)
+
+// NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
+func NewBACnetConstructedDataPulseConverterAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPulseConverterAdjustValueBuilder is a builder for BACnetConstructedDataPulseConverterAdjustValue
+type BACnetConstructedDataPulseConverterAdjustValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder
+	// WithAdjustValue adds AdjustValue (property field)
+	WithAdjustValue(BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder
+	// WithAdjustValueBuilder adds AdjustValue (property field) which is build by the builder
+	WithAdjustValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterAdjustValueBuilder
+	// Build builds the BACnetConstructedDataPulseConverterAdjustValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataPulseConverterAdjustValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPulseConverterAdjustValue
+}
+
+// NewBACnetConstructedDataPulseConverterAdjustValueBuilder() creates a BACnetConstructedDataPulseConverterAdjustValueBuilder
+func NewBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	return &_BACnetConstructedDataPulseConverterAdjustValueBuilder{_BACnetConstructedDataPulseConverterAdjustValue: new(_BACnetConstructedDataPulseConverterAdjustValue)}
+}
+
+type _BACnetConstructedDataPulseConverterAdjustValueBuilder struct {
+	*_BACnetConstructedDataPulseConverterAdjustValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPulseConverterAdjustValueBuilder) = (*_BACnetConstructedDataPulseConverterAdjustValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	return b.WithAdjustValue(adjustValue)
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagReal) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	b.AdjustValue = adjustValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	builder := builderSupplier(b.AdjustValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.AdjustValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) Build() (BACnetConstructedDataPulseConverterAdjustValue, error) {
+	if b.AdjustValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'adjustValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataPulseConverterAdjustValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) MustBuild() BACnetConstructedDataPulseConverterAdjustValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPulseConverterAdjustValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPulseConverterAdjustValueBuilder().(*_BACnetConstructedDataPulseConverterAdjustValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataPulseConverterAdjustValueBuilder creates a BACnetConstructedDataPulseConverterAdjustValueBuilder
+func (b *_BACnetConstructedDataPulseConverterAdjustValue) CreateBACnetConstructedDataPulseConverterAdjustValueBuilder() BACnetConstructedDataPulseConverterAdjustValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataPulseConverterAdjustValueBuilder()
+	}
+	return &_BACnetConstructedDataPulseConverterAdjustValueBuilder{_BACnetConstructedDataPulseConverterAdjustValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPulseConverterAdjustValue factory function for _BACnetConstructedDataPulseConverterAdjustValue
-func NewBACnetConstructedDataPulseConverterAdjustValue(adjustValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPulseConverterAdjustValue {
-	if adjustValue == nil {
-		panic("adjustValue of type BACnetApplicationTagReal for BACnetConstructedDataPulseConverterAdjustValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataPulseConverterAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AdjustValue:                   adjustValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPulseConverterAdjustValue(structType any) BACnetConstructedDataPulseConverterAdjustValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataPulseConverterAdjustValue) SerializeWithWriteBuff
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) IsBACnetConstructedDataPulseConverterAdjustValue() {
 }
 
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPulseConverterAdjustValue) deepCopy() *_BACnetConstructedDataPulseConverterAdjustValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPulseConverterAdjustValueCopy := &_BACnetConstructedDataPulseConverterAdjustValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AdjustValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPulseConverterAdjustValueCopy
+}
+
 func (m *_BACnetConstructedDataPulseConverterAdjustValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

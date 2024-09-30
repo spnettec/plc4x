@@ -38,6 +38,7 @@ type BACnetConstructedDataBACnetIPv6Mode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBacnetIpv6Mode returns BacnetIpv6Mode (property field)
 	GetBacnetIpv6Mode() BACnetIPModeTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataBACnetIPv6Mode interface {
 	GetActualValue() BACnetIPModeTagged
 	// IsBACnetConstructedDataBACnetIPv6Mode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBACnetIPv6Mode()
+	// CreateBuilder creates a BACnetConstructedDataBACnetIPv6ModeBuilder
+	CreateBACnetConstructedDataBACnetIPv6ModeBuilder() BACnetConstructedDataBACnetIPv6ModeBuilder
 }
 
 // _BACnetConstructedDataBACnetIPv6Mode is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBACnetIPv6Mode struct {
 
 var _ BACnetConstructedDataBACnetIPv6Mode = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBACnetIPv6Mode)(nil)
+
+// NewBACnetConstructedDataBACnetIPv6Mode factory function for _BACnetConstructedDataBACnetIPv6Mode
+func NewBACnetConstructedDataBACnetIPv6Mode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, bacnetIpv6Mode BACnetIPModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
+	if bacnetIpv6Mode == nil {
+		panic("bacnetIpv6Mode of type BACnetIPModeTagged for BACnetConstructedDataBACnetIPv6Mode must not be nil")
+	}
+	_result := &_BACnetConstructedDataBACnetIPv6Mode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BacnetIpv6Mode:                bacnetIpv6Mode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBACnetIPv6ModeBuilder is a builder for BACnetConstructedDataBACnetIPv6Mode
+type BACnetConstructedDataBACnetIPv6ModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bacnetIpv6Mode BACnetIPModeTagged) BACnetConstructedDataBACnetIPv6ModeBuilder
+	// WithBacnetIpv6Mode adds BacnetIpv6Mode (property field)
+	WithBacnetIpv6Mode(BACnetIPModeTagged) BACnetConstructedDataBACnetIPv6ModeBuilder
+	// WithBacnetIpv6ModeBuilder adds BacnetIpv6Mode (property field) which is build by the builder
+	WithBacnetIpv6ModeBuilder(func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetConstructedDataBACnetIPv6ModeBuilder
+	// Build builds the BACnetConstructedDataBACnetIPv6Mode or returns an error if something is wrong
+	Build() (BACnetConstructedDataBACnetIPv6Mode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBACnetIPv6Mode
+}
+
+// NewBACnetConstructedDataBACnetIPv6ModeBuilder() creates a BACnetConstructedDataBACnetIPv6ModeBuilder
+func NewBACnetConstructedDataBACnetIPv6ModeBuilder() BACnetConstructedDataBACnetIPv6ModeBuilder {
+	return &_BACnetConstructedDataBACnetIPv6ModeBuilder{_BACnetConstructedDataBACnetIPv6Mode: new(_BACnetConstructedDataBACnetIPv6Mode)}
+}
+
+type _BACnetConstructedDataBACnetIPv6ModeBuilder struct {
+	*_BACnetConstructedDataBACnetIPv6Mode
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBACnetIPv6ModeBuilder) = (*_BACnetConstructedDataBACnetIPv6ModeBuilder)(nil)
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) WithMandatoryFields(bacnetIpv6Mode BACnetIPModeTagged) BACnetConstructedDataBACnetIPv6ModeBuilder {
+	return b.WithBacnetIpv6Mode(bacnetIpv6Mode)
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) WithBacnetIpv6Mode(bacnetIpv6Mode BACnetIPModeTagged) BACnetConstructedDataBACnetIPv6ModeBuilder {
+	b.BacnetIpv6Mode = bacnetIpv6Mode
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) WithBacnetIpv6ModeBuilder(builderSupplier func(BACnetIPModeTaggedBuilder) BACnetIPModeTaggedBuilder) BACnetConstructedDataBACnetIPv6ModeBuilder {
+	builder := builderSupplier(b.BacnetIpv6Mode.CreateBACnetIPModeTaggedBuilder())
+	var err error
+	b.BacnetIpv6Mode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetIPModeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) Build() (BACnetConstructedDataBACnetIPv6Mode, error) {
+	if b.BacnetIpv6Mode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bacnetIpv6Mode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBACnetIPv6Mode.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) MustBuild() BACnetConstructedDataBACnetIPv6Mode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBACnetIPv6ModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBACnetIPv6ModeBuilder().(*_BACnetConstructedDataBACnetIPv6ModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBACnetIPv6ModeBuilder creates a BACnetConstructedDataBACnetIPv6ModeBuilder
+func (b *_BACnetConstructedDataBACnetIPv6Mode) CreateBACnetConstructedDataBACnetIPv6ModeBuilder() BACnetConstructedDataBACnetIPv6ModeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBACnetIPv6ModeBuilder()
+	}
+	return &_BACnetConstructedDataBACnetIPv6ModeBuilder{_BACnetConstructedDataBACnetIPv6Mode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) GetActualValue() BACnetIPModeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBACnetIPv6Mode factory function for _BACnetConstructedDataBACnetIPv6Mode
-func NewBACnetConstructedDataBACnetIPv6Mode(bacnetIpv6Mode BACnetIPModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBACnetIPv6Mode {
-	if bacnetIpv6Mode == nil {
-		panic("bacnetIpv6Mode of type BACnetIPModeTagged for BACnetConstructedDataBACnetIPv6Mode must not be nil")
-	}
-	_result := &_BACnetConstructedDataBACnetIPv6Mode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BacnetIpv6Mode:                bacnetIpv6Mode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBACnetIPv6Mode(structType any) BACnetConstructedDataBACnetIPv6Mode {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataBACnetIPv6Mode) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataBACnetIPv6Mode) IsBACnetConstructedDataBACnetIPv6Mode() {}
 
+func (m *_BACnetConstructedDataBACnetIPv6Mode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBACnetIPv6Mode) deepCopy() *_BACnetConstructedDataBACnetIPv6Mode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBACnetIPv6ModeCopy := &_BACnetConstructedDataBACnetIPv6Mode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BacnetIpv6Mode.DeepCopy().(BACnetIPModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBACnetIPv6ModeCopy
+}
+
 func (m *_BACnetConstructedDataBACnetIPv6Mode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

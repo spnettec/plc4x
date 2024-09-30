@@ -38,6 +38,7 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBackupAndRestoreState returns BackupAndRestoreState (property field)
 	GetBackupAndRestoreState() BACnetBackupStateTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataBackupAndRestoreState interface {
 	GetActualValue() BACnetBackupStateTagged
 	// IsBACnetConstructedDataBackupAndRestoreState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBackupAndRestoreState()
+	// CreateBuilder creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+	CreateBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder
 }
 
 // _BACnetConstructedDataBackupAndRestoreState is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBackupAndRestoreState struct {
 
 var _ BACnetConstructedDataBackupAndRestoreState = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBackupAndRestoreState)(nil)
+
+// NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
+func NewBACnetConstructedDataBackupAndRestoreState(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, backupAndRestoreState BACnetBackupStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
+	if backupAndRestoreState == nil {
+		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
+	}
+	_result := &_BACnetConstructedDataBackupAndRestoreState{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BackupAndRestoreState:         backupAndRestoreState,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBackupAndRestoreStateBuilder is a builder for BACnetConstructedDataBackupAndRestoreState
+type BACnetConstructedDataBackupAndRestoreStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// WithBackupAndRestoreState adds BackupAndRestoreState (property field)
+	WithBackupAndRestoreState(BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// WithBackupAndRestoreStateBuilder adds BackupAndRestoreState (property field) which is build by the builder
+	WithBackupAndRestoreStateBuilder(func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetConstructedDataBackupAndRestoreStateBuilder
+	// Build builds the BACnetConstructedDataBackupAndRestoreState or returns an error if something is wrong
+	Build() (BACnetConstructedDataBackupAndRestoreState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBackupAndRestoreState
+}
+
+// NewBACnetConstructedDataBackupAndRestoreStateBuilder() creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+func NewBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder {
+	return &_BACnetConstructedDataBackupAndRestoreStateBuilder{_BACnetConstructedDataBackupAndRestoreState: new(_BACnetConstructedDataBackupAndRestoreState)}
+}
+
+type _BACnetConstructedDataBackupAndRestoreStateBuilder struct {
+	*_BACnetConstructedDataBackupAndRestoreState
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBackupAndRestoreStateBuilder) = (*_BACnetConstructedDataBackupAndRestoreStateBuilder)(nil)
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithMandatoryFields(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	return b.WithBackupAndRestoreState(backupAndRestoreState)
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithBackupAndRestoreState(backupAndRestoreState BACnetBackupStateTagged) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	b.BackupAndRestoreState = backupAndRestoreState
+	return b
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) WithBackupAndRestoreStateBuilder(builderSupplier func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetConstructedDataBackupAndRestoreStateBuilder {
+	builder := builderSupplier(b.BackupAndRestoreState.CreateBACnetBackupStateTaggedBuilder())
+	var err error
+	b.BackupAndRestoreState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBackupStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) Build() (BACnetConstructedDataBackupAndRestoreState, error) {
+	if b.BackupAndRestoreState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'backupAndRestoreState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBackupAndRestoreState.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) MustBuild() BACnetConstructedDataBackupAndRestoreState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBackupAndRestoreStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBackupAndRestoreStateBuilder().(*_BACnetConstructedDataBackupAndRestoreStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBackupAndRestoreStateBuilder creates a BACnetConstructedDataBackupAndRestoreStateBuilder
+func (b *_BACnetConstructedDataBackupAndRestoreState) CreateBACnetConstructedDataBackupAndRestoreStateBuilder() BACnetConstructedDataBackupAndRestoreStateBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBackupAndRestoreStateBuilder()
+	}
+	return &_BACnetConstructedDataBackupAndRestoreStateBuilder{_BACnetConstructedDataBackupAndRestoreState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) GetActualValue() BACnetBac
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBackupAndRestoreState factory function for _BACnetConstructedDataBackupAndRestoreState
-func NewBACnetConstructedDataBackupAndRestoreState(backupAndRestoreState BACnetBackupStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBackupAndRestoreState {
-	if backupAndRestoreState == nil {
-		panic("backupAndRestoreState of type BACnetBackupStateTagged for BACnetConstructedDataBackupAndRestoreState must not be nil")
-	}
-	_result := &_BACnetConstructedDataBackupAndRestoreState{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BackupAndRestoreState:         backupAndRestoreState,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBackupAndRestoreState(structType any) BACnetConstructedDataBackupAndRestoreState {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataBackupAndRestoreState) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataBackupAndRestoreState) IsBACnetConstructedDataBackupAndRestoreState() {
 }
 
+func (m *_BACnetConstructedDataBackupAndRestoreState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBackupAndRestoreState) deepCopy() *_BACnetConstructedDataBackupAndRestoreState {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBackupAndRestoreStateCopy := &_BACnetConstructedDataBackupAndRestoreState{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BackupAndRestoreState.DeepCopy().(BACnetBackupStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBackupAndRestoreStateCopy
+}
+
 func (m *_BACnetConstructedDataBackupAndRestoreState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

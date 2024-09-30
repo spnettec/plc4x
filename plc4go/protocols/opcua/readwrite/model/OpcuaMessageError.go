@@ -38,6 +38,7 @@ type OpcuaMessageError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetError returns Error (property field)
 	GetError() OpcuaStatusCode
@@ -45,6 +46,8 @@ type OpcuaMessageError interface {
 	GetReason() PascalString
 	// IsOpcuaMessageError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaMessageError()
+	// CreateBuilder creates a OpcuaMessageErrorBuilder
+	CreateOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder
 }
 
 // _OpcuaMessageError is the data-structure of this message
@@ -56,6 +59,139 @@ type _OpcuaMessageError struct {
 
 var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
+
+// NewOpcuaMessageError factory function for _OpcuaMessageError
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
+	if reason == nil {
+		panic("reason of type PascalString for OpcuaMessageError must not be nil")
+	}
+	_result := &_OpcuaMessageError{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Error:              error,
+		Reason:             reason,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaMessageErrorBuilder is a builder for OpcuaMessageError
+type OpcuaMessageErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(error OpcuaStatusCode, reason PascalString) OpcuaMessageErrorBuilder
+	// WithError adds Error (property field)
+	WithError(OpcuaStatusCode) OpcuaMessageErrorBuilder
+	// WithReason adds Reason (property field)
+	WithReason(PascalString) OpcuaMessageErrorBuilder
+	// WithReasonBuilder adds Reason (property field) which is build by the builder
+	WithReasonBuilder(func(PascalStringBuilder) PascalStringBuilder) OpcuaMessageErrorBuilder
+	// Build builds the OpcuaMessageError or returns an error if something is wrong
+	Build() (OpcuaMessageError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaMessageError
+}
+
+// NewOpcuaMessageErrorBuilder() creates a OpcuaMessageErrorBuilder
+func NewOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder {
+	return &_OpcuaMessageErrorBuilder{_OpcuaMessageError: new(_OpcuaMessageError)}
+}
+
+type _OpcuaMessageErrorBuilder struct {
+	*_OpcuaMessageError
+
+	parentBuilder *_MessagePDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaMessageErrorBuilder) = (*_OpcuaMessageErrorBuilder)(nil)
+
+func (b *_OpcuaMessageErrorBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
+}
+
+func (b *_OpcuaMessageErrorBuilder) WithMandatoryFields(error OpcuaStatusCode, reason PascalString) OpcuaMessageErrorBuilder {
+	return b.WithError(error).WithReason(reason)
+}
+
+func (b *_OpcuaMessageErrorBuilder) WithError(error OpcuaStatusCode) OpcuaMessageErrorBuilder {
+	b.Error = error
+	return b
+}
+
+func (b *_OpcuaMessageErrorBuilder) WithReason(reason PascalString) OpcuaMessageErrorBuilder {
+	b.Reason = reason
+	return b
+}
+
+func (b *_OpcuaMessageErrorBuilder) WithReasonBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpcuaMessageErrorBuilder {
+	builder := builderSupplier(b.Reason.CreatePascalStringBuilder())
+	var err error
+	b.Reason, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaMessageErrorBuilder) Build() (OpcuaMessageError, error) {
+	if b.Reason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'reason' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaMessageError.deepCopy(), nil
+}
+
+func (b *_OpcuaMessageErrorBuilder) MustBuild() OpcuaMessageError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaMessageErrorBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaMessageErrorBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaMessageErrorBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaMessageErrorBuilder().(*_OpcuaMessageErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaMessageErrorBuilder creates a OpcuaMessageErrorBuilder
+func (b *_OpcuaMessageError) CreateOpcuaMessageErrorBuilder() OpcuaMessageErrorBuilder {
+	if b == nil {
+		return NewOpcuaMessageErrorBuilder()
+	}
+	return &_OpcuaMessageErrorBuilder{_OpcuaMessageError: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +232,6 @@ func (m *_OpcuaMessageError) GetReason() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(error OpcuaStatusCode, reason PascalString, chunk ChunkType) *_OpcuaMessageError {
-	if reason == nil {
-		panic("reason of type PascalString for OpcuaMessageError must not be nil")
-	}
-	_result := &_OpcuaMessageError{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Error:              error,
-		Reason:             reason,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageError(structType any) OpcuaMessageError {
@@ -208,13 +330,34 @@ func (m *_OpcuaMessageError) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_OpcuaMessageError) IsOpcuaMessageError() {}
 
+func (m *_OpcuaMessageError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageError) deepCopy() *_OpcuaMessageError {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageErrorCopy := &_OpcuaMessageError{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Error,
+		m.Reason.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageErrorCopy
+}
+
 func (m *_OpcuaMessageError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

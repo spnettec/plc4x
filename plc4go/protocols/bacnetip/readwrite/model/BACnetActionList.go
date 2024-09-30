@@ -38,6 +38,7 @@ type BACnetActionList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
 	// GetAction returns Action (property field)
@@ -46,6 +47,8 @@ type BACnetActionList interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetActionList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetActionList()
+	// CreateBuilder creates a BACnetActionListBuilder
+	CreateBACnetActionListBuilder() BACnetActionListBuilder
 }
 
 // _BACnetActionList is the data-structure of this message
@@ -56,6 +59,149 @@ type _BACnetActionList struct {
 }
 
 var _ BACnetActionList = (*_BACnetActionList)(nil)
+
+// NewBACnetActionList factory function for _BACnetActionList
+func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
+	}
+	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetActionListBuilder is a builder for BACnetActionList
+type BACnetActionListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) BACnetActionListBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetActionListBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetActionListBuilder
+	// WithAction adds Action (property field)
+	WithAction(...BACnetActionCommand) BACnetActionListBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetActionListBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetActionListBuilder
+	// Build builds the BACnetActionList or returns an error if something is wrong
+	Build() (BACnetActionList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetActionList
+}
+
+// NewBACnetActionListBuilder() creates a BACnetActionListBuilder
+func NewBACnetActionListBuilder() BACnetActionListBuilder {
+	return &_BACnetActionListBuilder{_BACnetActionList: new(_BACnetActionList)}
+}
+
+type _BACnetActionListBuilder struct {
+	*_BACnetActionList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetActionListBuilder) = (*_BACnetActionListBuilder)(nil)
+
+func (b *_BACnetActionListBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithAction(action...).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetActionListBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetActionListBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetActionListBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetActionListBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetActionListBuilder) WithAction(action ...BACnetActionCommand) BACnetActionListBuilder {
+	b.Action = action
+	return b
+}
+
+func (b *_BACnetActionListBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetActionListBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetActionListBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetActionListBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetActionListBuilder) Build() (BACnetActionList, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetActionList.deepCopy(), nil
+}
+
+func (b *_BACnetActionListBuilder) MustBuild() BACnetActionList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetActionListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetActionListBuilder().(*_BACnetActionListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetActionListBuilder creates a BACnetActionListBuilder
+func (b *_BACnetActionList) CreateBACnetActionListBuilder() BACnetActionListBuilder {
+	if b == nil {
+		return NewBACnetActionListBuilder()
+	}
+	return &_BACnetActionListBuilder{_BACnetActionList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +224,6 @@ func (m *_BACnetActionList) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetActionList factory function for _BACnetActionList
-func NewBACnetActionList(innerOpeningTag BACnetOpeningTag, action []BACnetActionCommand, innerClosingTag BACnetClosingTag) *_BACnetActionList {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetActionList must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetActionList must not be nil")
-	}
-	return &_BACnetActionList{InnerOpeningTag: innerOpeningTag, Action: action, InnerClosingTag: innerClosingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetActionList(structType any) BACnetActionList {
@@ -143,7 +278,7 @@ func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetActionList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetActionList BACnetActionList, err error) {
@@ -217,13 +352,33 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_BACnetActionList) IsBACnetActionList() {}
 
+func (m *_BACnetActionList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetActionList) deepCopy() *_BACnetActionList {
+	if m == nil {
+		return nil
+	}
+	_BACnetActionListCopy := &_BACnetActionList{
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetActionCommand, BACnetActionCommand](m.Action),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetActionListCopy
+}
+
 func (m *_BACnetActionList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

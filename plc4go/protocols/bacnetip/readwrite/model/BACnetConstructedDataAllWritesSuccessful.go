@@ -38,6 +38,7 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAllWritesSuccessful returns AllWritesSuccessful (property field)
 	GetAllWritesSuccessful() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataAllWritesSuccessful interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataAllWritesSuccessful is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAllWritesSuccessful()
+	// CreateBuilder creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+	CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder
 }
 
 // _BACnetConstructedDataAllWritesSuccessful is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAllWritesSuccessful struct {
 
 var _ BACnetConstructedDataAllWritesSuccessful = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAllWritesSuccessful)(nil)
+
+// NewBACnetConstructedDataAllWritesSuccessful factory function for _BACnetConstructedDataAllWritesSuccessful
+func NewBACnetConstructedDataAllWritesSuccessful(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, allWritesSuccessful BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllWritesSuccessful {
+	if allWritesSuccessful == nil {
+		panic("allWritesSuccessful of type BACnetApplicationTagBoolean for BACnetConstructedDataAllWritesSuccessful must not be nil")
+	}
+	_result := &_BACnetConstructedDataAllWritesSuccessful{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AllWritesSuccessful:           allWritesSuccessful,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAllWritesSuccessfulBuilder is a builder for BACnetConstructedDataAllWritesSuccessful
+type BACnetConstructedDataAllWritesSuccessfulBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// WithAllWritesSuccessful adds AllWritesSuccessful (property field)
+	WithAllWritesSuccessful(BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// WithAllWritesSuccessfulBuilder adds AllWritesSuccessful (property field) which is build by the builder
+	WithAllWritesSuccessfulBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder
+	// Build builds the BACnetConstructedDataAllWritesSuccessful or returns an error if something is wrong
+	Build() (BACnetConstructedDataAllWritesSuccessful, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAllWritesSuccessful
+}
+
+// NewBACnetConstructedDataAllWritesSuccessfulBuilder() creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+func NewBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
+	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: new(_BACnetConstructedDataAllWritesSuccessful)}
+}
+
+type _BACnetConstructedDataAllWritesSuccessfulBuilder struct {
+	*_BACnetConstructedDataAllWritesSuccessful
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAllWritesSuccessfulBuilder) = (*_BACnetConstructedDataAllWritesSuccessfulBuilder)(nil)
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithMandatoryFields(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	return b.WithAllWritesSuccessful(allWritesSuccessful)
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	b.AllWritesSuccessful = allWritesSuccessful
+	return b
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) WithAllWritesSuccessfulBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataAllWritesSuccessfulBuilder {
+	builder := builderSupplier(b.AllWritesSuccessful.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.AllWritesSuccessful, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) Build() (BACnetConstructedDataAllWritesSuccessful, error) {
+	if b.AllWritesSuccessful == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'allWritesSuccessful' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAllWritesSuccessful.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) MustBuild() BACnetConstructedDataAllWritesSuccessful {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAllWritesSuccessfulBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAllWritesSuccessfulBuilder().(*_BACnetConstructedDataAllWritesSuccessfulBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAllWritesSuccessfulBuilder creates a BACnetConstructedDataAllWritesSuccessfulBuilder
+func (b *_BACnetConstructedDataAllWritesSuccessful) CreateBACnetConstructedDataAllWritesSuccessfulBuilder() BACnetConstructedDataAllWritesSuccessfulBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAllWritesSuccessfulBuilder()
+	}
+	return &_BACnetConstructedDataAllWritesSuccessfulBuilder{_BACnetConstructedDataAllWritesSuccessful: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) GetActualValue() BACnetAppli
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAllWritesSuccessful factory function for _BACnetConstructedDataAllWritesSuccessful
-func NewBACnetConstructedDataAllWritesSuccessful(allWritesSuccessful BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAllWritesSuccessful {
-	if allWritesSuccessful == nil {
-		panic("allWritesSuccessful of type BACnetApplicationTagBoolean for BACnetConstructedDataAllWritesSuccessful must not be nil")
-	}
-	_result := &_BACnetConstructedDataAllWritesSuccessful{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AllWritesSuccessful:           allWritesSuccessful,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAllWritesSuccessful(structType any) BACnetConstructedDataAllWritesSuccessful {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataAllWritesSuccessful) SerializeWithWriteBuffer(ctx
 
 func (m *_BACnetConstructedDataAllWritesSuccessful) IsBACnetConstructedDataAllWritesSuccessful() {}
 
+func (m *_BACnetConstructedDataAllWritesSuccessful) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAllWritesSuccessful) deepCopy() *_BACnetConstructedDataAllWritesSuccessful {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAllWritesSuccessfulCopy := &_BACnetConstructedDataAllWritesSuccessful{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AllWritesSuccessful.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAllWritesSuccessfulCopy
+}
+
 func (m *_BACnetConstructedDataAllWritesSuccessful) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type ApduDataMemoryResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -45,6 +46,8 @@ type ApduDataMemoryResponse interface {
 	GetData() []byte
 	// IsApduDataMemoryResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataMemoryResponse()
+	// CreateBuilder creates a ApduDataMemoryResponseBuilder
+	CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder
 }
 
 // _ApduDataMemoryResponse is the data-structure of this message
@@ -56,6 +59,115 @@ type _ApduDataMemoryResponse struct {
 
 var _ ApduDataMemoryResponse = (*_ApduDataMemoryResponse)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryResponse)(nil)
+
+// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
+func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
+	_result := &_ApduDataMemoryResponse{
+		ApduDataContract: NewApduData(dataLength),
+		Address:          address,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataMemoryResponseBuilder is a builder for ApduDataMemoryResponse
+type ApduDataMemoryResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) ApduDataMemoryResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataMemoryResponseBuilder
+	// Build builds the ApduDataMemoryResponse or returns an error if something is wrong
+	Build() (ApduDataMemoryResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataMemoryResponse
+}
+
+// NewApduDataMemoryResponseBuilder() creates a ApduDataMemoryResponseBuilder
+func NewApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
+	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: new(_ApduDataMemoryResponse)}
+}
+
+type _ApduDataMemoryResponseBuilder struct {
+	*_ApduDataMemoryResponse
+
+	parentBuilder *_ApduDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataMemoryResponseBuilder) = (*_ApduDataMemoryResponseBuilder)(nil)
+
+func (b *_ApduDataMemoryResponseBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
+}
+
+func (b *_ApduDataMemoryResponseBuilder) WithMandatoryFields(address uint16, data []byte) ApduDataMemoryResponseBuilder {
+	return b.WithAddress(address).WithData(data...)
+}
+
+func (b *_ApduDataMemoryResponseBuilder) WithAddress(address uint16) ApduDataMemoryResponseBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_ApduDataMemoryResponseBuilder) WithData(data ...byte) ApduDataMemoryResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataMemoryResponseBuilder) Build() (ApduDataMemoryResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataMemoryResponse.deepCopy(), nil
+}
+
+func (b *_ApduDataMemoryResponseBuilder) MustBuild() ApduDataMemoryResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataMemoryResponseBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataMemoryResponseBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataMemoryResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataMemoryResponseBuilder().(*_ApduDataMemoryResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataMemoryResponseBuilder creates a ApduDataMemoryResponseBuilder
+func (b *_ApduDataMemoryResponse) CreateApduDataMemoryResponseBuilder() ApduDataMemoryResponseBuilder {
+	if b == nil {
+		return NewApduDataMemoryResponseBuilder()
+	}
+	return &_ApduDataMemoryResponseBuilder{_ApduDataMemoryResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ApduDataMemoryResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataMemoryResponse factory function for _ApduDataMemoryResponse
-func NewApduDataMemoryResponse(address uint16, data []byte, dataLength uint8) *_ApduDataMemoryResponse {
-	_result := &_ApduDataMemoryResponse{
-		ApduDataContract: NewApduData(dataLength),
-		Address:          address,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataMemoryResponse(structType any) ApduDataMemoryResponse {
@@ -216,13 +317,34 @@ func (m *_ApduDataMemoryResponse) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_ApduDataMemoryResponse) IsApduDataMemoryResponse() {}
 
+func (m *_ApduDataMemoryResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryResponse) deepCopy() *_ApduDataMemoryResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryResponseCopy := &_ApduDataMemoryResponse{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.Address,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryResponseCopy
+}
+
 func (m *_ApduDataMemoryResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

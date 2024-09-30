@@ -38,11 +38,14 @@ type BACnetPriorityValueDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetDoubleValue returns DoubleValue (property field)
 	GetDoubleValue() BACnetApplicationTagDouble
 	// IsBACnetPriorityValueDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueDouble()
+	// CreateBuilder creates a BACnetPriorityValueDoubleBuilder
+	CreateBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder
 }
 
 // _BACnetPriorityValueDouble is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPriorityValueDouble struct {
 
 var _ BACnetPriorityValueDouble = (*_BACnetPriorityValueDouble)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueDouble)(nil)
+
+// NewBACnetPriorityValueDouble factory function for _BACnetPriorityValueDouble
+func NewBACnetPriorityValueDouble(peekedTagHeader BACnetTagHeader, doubleValue BACnetApplicationTagDouble, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
+	if doubleValue == nil {
+		panic("doubleValue of type BACnetApplicationTagDouble for BACnetPriorityValueDouble must not be nil")
+	}
+	_result := &_BACnetPriorityValueDouble{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		DoubleValue:                 doubleValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueDoubleBuilder is a builder for BACnetPriorityValueDouble
+type BACnetPriorityValueDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithDoubleValue(BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder
+	// WithDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetPriorityValueDoubleBuilder
+	// Build builds the BACnetPriorityValueDouble or returns an error if something is wrong
+	Build() (BACnetPriorityValueDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueDouble
+}
+
+// NewBACnetPriorityValueDoubleBuilder() creates a BACnetPriorityValueDoubleBuilder
+func NewBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder {
+	return &_BACnetPriorityValueDoubleBuilder{_BACnetPriorityValueDouble: new(_BACnetPriorityValueDouble)}
+}
+
+type _BACnetPriorityValueDoubleBuilder struct {
+	*_BACnetPriorityValueDouble
+
+	parentBuilder *_BACnetPriorityValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueDoubleBuilder) = (*_BACnetPriorityValueDoubleBuilder)(nil)
+
+func (b *_BACnetPriorityValueDoubleBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) WithMandatoryFields(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder {
+	return b.WithDoubleValue(doubleValue)
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) WithDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetPriorityValueDoubleBuilder {
+	b.DoubleValue = doubleValue
+	return b
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) WithDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetPriorityValueDoubleBuilder {
+	builder := builderSupplier(b.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	b.DoubleValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) Build() (BACnetPriorityValueDouble, error) {
+	if b.DoubleValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'doubleValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValueDouble.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) MustBuild() BACnetPriorityValueDouble {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueDoubleBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueDoubleBuilder().(*_BACnetPriorityValueDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityValueDoubleBuilder creates a BACnetPriorityValueDoubleBuilder
+func (b *_BACnetPriorityValueDouble) CreateBACnetPriorityValueDoubleBuilder() BACnetPriorityValueDoubleBuilder {
+	if b == nil {
+		return NewBACnetPriorityValueDoubleBuilder()
+	}
+	return &_BACnetPriorityValueDoubleBuilder{_BACnetPriorityValueDouble: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPriorityValueDouble) GetDoubleValue() BACnetApplicationTagDouble
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueDouble factory function for _BACnetPriorityValueDouble
-func NewBACnetPriorityValueDouble(doubleValue BACnetApplicationTagDouble, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueDouble {
-	if doubleValue == nil {
-		panic("doubleValue of type BACnetApplicationTagDouble for BACnetPriorityValueDouble must not be nil")
-	}
-	_result := &_BACnetPriorityValueDouble{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		DoubleValue:                 doubleValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueDouble(structType any) BACnetPriorityValueDouble {
@@ -179,13 +294,33 @@ func (m *_BACnetPriorityValueDouble) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_BACnetPriorityValueDouble) IsBACnetPriorityValueDouble() {}
 
+func (m *_BACnetPriorityValueDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueDouble) deepCopy() *_BACnetPriorityValueDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueDoubleCopy := &_BACnetPriorityValueDouble{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueDoubleCopy
+}
+
 func (m *_BACnetPriorityValueDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

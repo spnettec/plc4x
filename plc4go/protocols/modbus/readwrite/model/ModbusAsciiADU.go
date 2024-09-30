@@ -40,6 +40,7 @@ type ModbusAsciiADU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusADU
 	// GetAddress returns Address (property field)
 	GetAddress() uint8
@@ -47,6 +48,8 @@ type ModbusAsciiADU interface {
 	GetPdu() ModbusPDU
 	// IsModbusAsciiADU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusAsciiADU()
+	// CreateBuilder creates a ModbusAsciiADUBuilder
+	CreateModbusAsciiADUBuilder() ModbusAsciiADUBuilder
 }
 
 // _ModbusAsciiADU is the data-structure of this message
@@ -58,6 +61,139 @@ type _ModbusAsciiADU struct {
 
 var _ ModbusAsciiADU = (*_ModbusAsciiADU)(nil)
 var _ ModbusADURequirements = (*_ModbusAsciiADU)(nil)
+
+// NewModbusAsciiADU factory function for _ModbusAsciiADU
+func NewModbusAsciiADU(address uint8, pdu ModbusPDU, response bool) *_ModbusAsciiADU {
+	if pdu == nil {
+		panic("pdu of type ModbusPDU for ModbusAsciiADU must not be nil")
+	}
+	_result := &_ModbusAsciiADU{
+		ModbusADUContract: NewModbusADU(response),
+		Address:           address,
+		Pdu:               pdu,
+	}
+	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusAsciiADUBuilder is a builder for ModbusAsciiADU
+type ModbusAsciiADUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusAsciiADUBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint8) ModbusAsciiADUBuilder
+	// WithPdu adds Pdu (property field)
+	WithPdu(ModbusPDU) ModbusAsciiADUBuilder
+	// WithPduBuilder adds Pdu (property field) which is build by the builder
+	WithPduBuilder(func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusAsciiADUBuilder
+	// Build builds the ModbusAsciiADU or returns an error if something is wrong
+	Build() (ModbusAsciiADU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusAsciiADU
+}
+
+// NewModbusAsciiADUBuilder() creates a ModbusAsciiADUBuilder
+func NewModbusAsciiADUBuilder() ModbusAsciiADUBuilder {
+	return &_ModbusAsciiADUBuilder{_ModbusAsciiADU: new(_ModbusAsciiADU)}
+}
+
+type _ModbusAsciiADUBuilder struct {
+	*_ModbusAsciiADU
+
+	parentBuilder *_ModbusADUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModbusAsciiADUBuilder) = (*_ModbusAsciiADUBuilder)(nil)
+
+func (b *_ModbusAsciiADUBuilder) setParent(contract ModbusADUContract) {
+	b.ModbusADUContract = contract
+}
+
+func (b *_ModbusAsciiADUBuilder) WithMandatoryFields(address uint8, pdu ModbusPDU) ModbusAsciiADUBuilder {
+	return b.WithAddress(address).WithPdu(pdu)
+}
+
+func (b *_ModbusAsciiADUBuilder) WithAddress(address uint8) ModbusAsciiADUBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_ModbusAsciiADUBuilder) WithPdu(pdu ModbusPDU) ModbusAsciiADUBuilder {
+	b.Pdu = pdu
+	return b
+}
+
+func (b *_ModbusAsciiADUBuilder) WithPduBuilder(builderSupplier func(ModbusPDUBuilder) ModbusPDUBuilder) ModbusAsciiADUBuilder {
+	builder := builderSupplier(b.Pdu.CreateModbusPDUBuilder())
+	var err error
+	b.Pdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ModbusPDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ModbusAsciiADUBuilder) Build() (ModbusAsciiADU, error) {
+	if b.Pdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'pdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusAsciiADU.deepCopy(), nil
+}
+
+func (b *_ModbusAsciiADUBuilder) MustBuild() ModbusAsciiADU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusAsciiADUBuilder) Done() ModbusADUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusAsciiADUBuilder) buildForModbusADU() (ModbusADU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusAsciiADUBuilder) DeepCopy() any {
+	_copy := b.CreateModbusAsciiADUBuilder().(*_ModbusAsciiADUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusAsciiADUBuilder creates a ModbusAsciiADUBuilder
+func (b *_ModbusAsciiADU) CreateModbusAsciiADUBuilder() ModbusAsciiADUBuilder {
+	if b == nil {
+		return NewModbusAsciiADUBuilder()
+	}
+	return &_ModbusAsciiADUBuilder{_ModbusAsciiADU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,20 +230,6 @@ func (m *_ModbusAsciiADU) GetPdu() ModbusPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusAsciiADU factory function for _ModbusAsciiADU
-func NewModbusAsciiADU(address uint8, pdu ModbusPDU, response bool) *_ModbusAsciiADU {
-	if pdu == nil {
-		panic("pdu of type ModbusPDU for ModbusAsciiADU must not be nil")
-	}
-	_result := &_ModbusAsciiADU{
-		ModbusADUContract: NewModbusADU(response),
-		Address:           address,
-		Pdu:               pdu,
-	}
-	_result.ModbusADUContract.(*_ModbusADU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusAsciiADU(structType any) ModbusAsciiADU {
@@ -219,13 +341,34 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_ModbusAsciiADU) IsModbusAsciiADU() {}
 
+func (m *_ModbusAsciiADU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusAsciiADU) deepCopy() *_ModbusAsciiADU {
+	if m == nil {
+		return nil
+	}
+	_ModbusAsciiADUCopy := &_ModbusAsciiADU{
+		m.ModbusADUContract.(*_ModbusADU).deepCopy(),
+		m.Address,
+		m.Pdu.DeepCopy().(ModbusPDU),
+	}
+	m.ModbusADUContract.(*_ModbusADU)._SubType = m
+	return _ModbusAsciiADUCopy
+}
+
 func (m *_ModbusAsciiADU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

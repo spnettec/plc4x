@@ -38,6 +38,7 @@ type QueryDataSet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() ExpandedNodeId
@@ -49,6 +50,8 @@ type QueryDataSet interface {
 	GetValues() []Variant
 	// IsQueryDataSet is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQueryDataSet()
+	// CreateBuilder creates a QueryDataSetBuilder
+	CreateQueryDataSetBuilder() QueryDataSetBuilder
 }
 
 // _QueryDataSet is the data-structure of this message
@@ -62,6 +65,179 @@ type _QueryDataSet struct {
 
 var _ QueryDataSet = (*_QueryDataSet)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QueryDataSet)(nil)
+
+// NewQueryDataSet factory function for _QueryDataSet
+func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	if typeDefinitionNode == nil {
+		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
+	}
+	_result := &_QueryDataSet{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		TypeDefinitionNode:                typeDefinitionNode,
+		NoOfValues:                        noOfValues,
+		Values:                            values,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QueryDataSetBuilder is a builder for QueryDataSet
+type QueryDataSetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(ExpandedNodeId) QueryDataSetBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder
+	// WithTypeDefinitionNode adds TypeDefinitionNode (property field)
+	WithTypeDefinitionNode(ExpandedNodeId) QueryDataSetBuilder
+	// WithTypeDefinitionNodeBuilder adds TypeDefinitionNode (property field) which is build by the builder
+	WithTypeDefinitionNodeBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder
+	// WithNoOfValues adds NoOfValues (property field)
+	WithNoOfValues(int32) QueryDataSetBuilder
+	// WithValues adds Values (property field)
+	WithValues(...Variant) QueryDataSetBuilder
+	// Build builds the QueryDataSet or returns an error if something is wrong
+	Build() (QueryDataSet, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QueryDataSet
+}
+
+// NewQueryDataSetBuilder() creates a QueryDataSetBuilder
+func NewQueryDataSetBuilder() QueryDataSetBuilder {
+	return &_QueryDataSetBuilder{_QueryDataSet: new(_QueryDataSet)}
+}
+
+type _QueryDataSetBuilder struct {
+	*_QueryDataSet
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (QueryDataSetBuilder) = (*_QueryDataSetBuilder)(nil)
+
+func (b *_QueryDataSetBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_QueryDataSetBuilder) WithMandatoryFields(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) QueryDataSetBuilder {
+	return b.WithNodeId(nodeId).WithTypeDefinitionNode(typeDefinitionNode).WithNoOfValues(noOfValues).WithValues(values...)
+}
+
+func (b *_QueryDataSetBuilder) WithNodeId(nodeId ExpandedNodeId) QueryDataSetBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
+	builder := builderSupplier(b.NodeId.CreateExpandedNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithTypeDefinitionNode(typeDefinitionNode ExpandedNodeId) QueryDataSetBuilder {
+	b.TypeDefinitionNode = typeDefinitionNode
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithTypeDefinitionNodeBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) QueryDataSetBuilder {
+	builder := builderSupplier(b.TypeDefinitionNode.CreateExpandedNodeIdBuilder())
+	var err error
+	b.TypeDefinitionNode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithNoOfValues(noOfValues int32) QueryDataSetBuilder {
+	b.NoOfValues = noOfValues
+	return b
+}
+
+func (b *_QueryDataSetBuilder) WithValues(values ...Variant) QueryDataSetBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_QueryDataSetBuilder) Build() (QueryDataSet, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.TypeDefinitionNode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'typeDefinitionNode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QueryDataSet.deepCopy(), nil
+}
+
+func (b *_QueryDataSetBuilder) MustBuild() QueryDataSet {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QueryDataSetBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QueryDataSetBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QueryDataSetBuilder) DeepCopy() any {
+	_copy := b.CreateQueryDataSetBuilder().(*_QueryDataSetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateQueryDataSetBuilder creates a QueryDataSetBuilder
+func (b *_QueryDataSet) CreateQueryDataSetBuilder() QueryDataSetBuilder {
+	if b == nil {
+		return NewQueryDataSetBuilder()
+	}
+	return &_QueryDataSetBuilder{_QueryDataSet: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +282,6 @@ func (m *_QueryDataSet) GetValues() []Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQueryDataSet factory function for _QueryDataSet
-func NewQueryDataSet(nodeId ExpandedNodeId, typeDefinitionNode ExpandedNodeId, noOfValues int32, values []Variant) *_QueryDataSet {
-	if nodeId == nil {
-		panic("nodeId of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	if typeDefinitionNode == nil {
-		panic("typeDefinitionNode of type ExpandedNodeId for QueryDataSet must not be nil")
-	}
-	_result := &_QueryDataSet{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		TypeDefinitionNode:                typeDefinitionNode,
-		NoOfValues:                        noOfValues,
-		Values:                            values,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQueryDataSet(structType any) QueryDataSet {
@@ -256,13 +413,36 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_QueryDataSet) IsQueryDataSet() {}
 
+func (m *_QueryDataSet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QueryDataSet) deepCopy() *_QueryDataSet {
+	if m == nil {
+		return nil
+	}
+	_QueryDataSetCopy := &_QueryDataSet{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(ExpandedNodeId),
+		m.TypeDefinitionNode.DeepCopy().(ExpandedNodeId),
+		m.NoOfValues,
+		utils.DeepCopySlice[Variant, Variant](m.Values),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QueryDataSetCopy
+}
+
 func (m *_QueryDataSet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

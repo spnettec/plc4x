@@ -38,6 +38,7 @@ type BACnetNetworkTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetNetworkTypeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetNetworkTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNetworkTypeTagged()
+	// CreateBuilder creates a BACnetNetworkTypeTaggedBuilder
+	CreateBACnetNetworkTypeTaggedBuilder() BACnetNetworkTypeTaggedBuilder
 }
 
 // _BACnetNetworkTypeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetNetworkTypeTagged struct {
 }
 
 var _ BACnetNetworkTypeTagged = (*_BACnetNetworkTypeTagged)(nil)
+
+// NewBACnetNetworkTypeTagged factory function for _BACnetNetworkTypeTagged
+func NewBACnetNetworkTypeTagged(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkTypeTagged must not be nil")
+	}
+	return &_BACnetNetworkTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNetworkTypeTaggedBuilder is a builder for BACnetNetworkTypeTagged
+type BACnetNetworkTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32) BACnetNetworkTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetNetworkTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetNetworkType) BACnetNetworkTypeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetNetworkTypeTaggedBuilder
+	// Build builds the BACnetNetworkTypeTagged or returns an error if something is wrong
+	Build() (BACnetNetworkTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNetworkTypeTagged
+}
+
+// NewBACnetNetworkTypeTaggedBuilder() creates a BACnetNetworkTypeTaggedBuilder
+func NewBACnetNetworkTypeTaggedBuilder() BACnetNetworkTypeTaggedBuilder {
+	return &_BACnetNetworkTypeTaggedBuilder{_BACnetNetworkTypeTagged: new(_BACnetNetworkTypeTagged)}
+}
+
+type _BACnetNetworkTypeTaggedBuilder struct {
+	*_BACnetNetworkTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNetworkTypeTaggedBuilder) = (*_BACnetNetworkTypeTaggedBuilder)(nil)
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32) BACnetNetworkTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNetworkTypeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithValue(value BACnetNetworkType) BACnetNetworkTypeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetNetworkTypeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) Build() (BACnetNetworkTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNetworkTypeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) MustBuild() BACnetNetworkTypeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNetworkTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNetworkTypeTaggedBuilder().(*_BACnetNetworkTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNetworkTypeTaggedBuilder creates a BACnetNetworkTypeTaggedBuilder
+func (b *_BACnetNetworkTypeTagged) CreateBACnetNetworkTypeTaggedBuilder() BACnetNetworkTypeTaggedBuilder {
+	if b == nil {
+		return NewBACnetNetworkTypeTaggedBuilder()
+	}
+	return &_BACnetNetworkTypeTaggedBuilder{_BACnetNetworkTypeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetNetworkTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkTypeTagged factory function for _BACnetNetworkTypeTagged
-func NewBACnetNetworkTypeTagged(header BACnetTagHeader, value BACnetNetworkType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetNetworkTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkTypeTagged must not be nil")
-	}
-	return &_BACnetNetworkTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkTypeTagged(structType any) BACnetNetworkTypeTagged {
@@ -159,7 +273,7 @@ func BACnetNetworkTypeTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetNetworkTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetNetworkTypeTagged BACnetNetworkTypeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetNetworkTypeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetNetworkTypeTagged) IsBACnetNetworkTypeTagged() {}
 
+func (m *_BACnetNetworkTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkTypeTagged) deepCopy() *_BACnetNetworkTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkTypeTaggedCopy := &_BACnetNetworkTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkTypeTaggedCopy
+}
+
 func (m *_BACnetNetworkTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

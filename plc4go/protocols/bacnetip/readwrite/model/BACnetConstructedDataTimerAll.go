@@ -36,9 +36,12 @@ type BACnetConstructedDataTimerAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTimerAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerAll()
+	// CreateBuilder creates a BACnetConstructedDataTimerAllBuilder
+	CreateBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuilder
 }
 
 // _BACnetConstructedDataTimerAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataTimerAll struct {
 
 var _ BACnetConstructedDataTimerAll = (*_BACnetConstructedDataTimerAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerAll)(nil)
+
+// NewBACnetConstructedDataTimerAll factory function for _BACnetConstructedDataTimerAll
+func NewBACnetConstructedDataTimerAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerAll {
+	_result := &_BACnetConstructedDataTimerAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerAllBuilder is a builder for BACnetConstructedDataTimerAll
+type BACnetConstructedDataTimerAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataTimerAllBuilder
+	// Build builds the BACnetConstructedDataTimerAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerAll
+}
+
+// NewBACnetConstructedDataTimerAllBuilder() creates a BACnetConstructedDataTimerAllBuilder
+func NewBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuilder {
+	return &_BACnetConstructedDataTimerAllBuilder{_BACnetConstructedDataTimerAll: new(_BACnetConstructedDataTimerAll)}
+}
+
+type _BACnetConstructedDataTimerAllBuilder struct {
+	*_BACnetConstructedDataTimerAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerAllBuilder) = (*_BACnetConstructedDataTimerAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataTimerAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) WithMandatoryFields() BACnetConstructedDataTimerAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) Build() (BACnetConstructedDataTimerAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTimerAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) MustBuild() BACnetConstructedDataTimerAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimerAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimerAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimerAllBuilder().(*_BACnetConstructedDataTimerAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTimerAllBuilder creates a BACnetConstructedDataTimerAllBuilder
+func (b *_BACnetConstructedDataTimerAll) CreateBACnetConstructedDataTimerAllBuilder() BACnetConstructedDataTimerAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTimerAllBuilder()
+	}
+	return &_BACnetConstructedDataTimerAllBuilder{_BACnetConstructedDataTimerAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataTimerAll) GetPropertyIdentifierArgument() BACnetP
 
 func (m *_BACnetConstructedDataTimerAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataTimerAll factory function for _BACnetConstructedDataTimerAll
-func NewBACnetConstructedDataTimerAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerAll {
-	_result := &_BACnetConstructedDataTimerAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataTimerAll) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataTimerAll) IsBACnetConstructedDataTimerAll() {}
 
+func (m *_BACnetConstructedDataTimerAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerAll) deepCopy() *_BACnetConstructedDataTimerAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerAllCopy := &_BACnetConstructedDataTimerAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerAllCopy
+}
+
 func (m *_BACnetConstructedDataTimerAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

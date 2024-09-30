@@ -41,6 +41,7 @@ type SendUnitData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// GetTimeout returns Timeout (property field)
 	GetTimeout() uint16
@@ -48,6 +49,8 @@ type SendUnitData interface {
 	GetTypeIds() []TypeId
 	// IsSendUnitData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSendUnitData()
+	// CreateBuilder creates a SendUnitDataBuilder
+	CreateSendUnitDataBuilder() SendUnitDataBuilder
 }
 
 // _SendUnitData is the data-structure of this message
@@ -59,6 +62,115 @@ type _SendUnitData struct {
 
 var _ SendUnitData = (*_SendUnitData)(nil)
 var _ EipPacketRequirements = (*_SendUnitData)(nil)
+
+// NewSendUnitData factory function for _SendUnitData
+func NewSendUnitData(sessionHandle uint32, status uint32, senderContext []byte, options uint32, timeout uint16, typeIds []TypeId) *_SendUnitData {
+	_result := &_SendUnitData{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+		Timeout:           timeout,
+		TypeIds:           typeIds,
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SendUnitDataBuilder is a builder for SendUnitData
+type SendUnitDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeout uint16, typeIds []TypeId) SendUnitDataBuilder
+	// WithTimeout adds Timeout (property field)
+	WithTimeout(uint16) SendUnitDataBuilder
+	// WithTypeIds adds TypeIds (property field)
+	WithTypeIds(...TypeId) SendUnitDataBuilder
+	// Build builds the SendUnitData or returns an error if something is wrong
+	Build() (SendUnitData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SendUnitData
+}
+
+// NewSendUnitDataBuilder() creates a SendUnitDataBuilder
+func NewSendUnitDataBuilder() SendUnitDataBuilder {
+	return &_SendUnitDataBuilder{_SendUnitData: new(_SendUnitData)}
+}
+
+type _SendUnitDataBuilder struct {
+	*_SendUnitData
+
+	parentBuilder *_EipPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SendUnitDataBuilder) = (*_SendUnitDataBuilder)(nil)
+
+func (b *_SendUnitDataBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
+}
+
+func (b *_SendUnitDataBuilder) WithMandatoryFields(timeout uint16, typeIds []TypeId) SendUnitDataBuilder {
+	return b.WithTimeout(timeout).WithTypeIds(typeIds...)
+}
+
+func (b *_SendUnitDataBuilder) WithTimeout(timeout uint16) SendUnitDataBuilder {
+	b.Timeout = timeout
+	return b
+}
+
+func (b *_SendUnitDataBuilder) WithTypeIds(typeIds ...TypeId) SendUnitDataBuilder {
+	b.TypeIds = typeIds
+	return b
+}
+
+func (b *_SendUnitDataBuilder) Build() (SendUnitData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SendUnitData.deepCopy(), nil
+}
+
+func (b *_SendUnitDataBuilder) MustBuild() SendUnitData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SendUnitDataBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SendUnitDataBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_SendUnitDataBuilder) DeepCopy() any {
+	_copy := b.CreateSendUnitDataBuilder().(*_SendUnitDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSendUnitDataBuilder creates a SendUnitDataBuilder
+func (b *_SendUnitData) CreateSendUnitDataBuilder() SendUnitDataBuilder {
+	if b == nil {
+		return NewSendUnitDataBuilder()
+	}
+	return &_SendUnitDataBuilder{_SendUnitData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,17 +228,6 @@ func (m *_SendUnitData) GetInterfaceHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSendUnitData factory function for _SendUnitData
-func NewSendUnitData(timeout uint16, typeIds []TypeId, sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_SendUnitData {
-	_result := &_SendUnitData{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-		Timeout:           timeout,
-		TypeIds:           typeIds,
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSendUnitData(structType any) SendUnitData {
@@ -258,13 +359,34 @@ func (m *_SendUnitData) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_SendUnitData) IsSendUnitData() {}
 
+func (m *_SendUnitData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SendUnitData) deepCopy() *_SendUnitData {
+	if m == nil {
+		return nil
+	}
+	_SendUnitDataCopy := &_SendUnitData{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+		m.Timeout,
+		utils.DeepCopySlice[TypeId, TypeId](m.TypeIds),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _SendUnitDataCopy
+}
+
 func (m *_SendUnitData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

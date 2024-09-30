@@ -38,6 +38,7 @@ type AlarmMessageAckPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
 	// GetFunctionId returns FunctionId (property field)
@@ -48,6 +49,8 @@ type AlarmMessageAckPushType interface {
 	GetMessageObjects() []AlarmMessageAckObjectPushType
 	// IsAlarmMessageAckPushType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlarmMessageAckPushType()
+	// CreateBuilder creates a AlarmMessageAckPushTypeBuilder
+	CreateAlarmMessageAckPushTypeBuilder() AlarmMessageAckPushTypeBuilder
 }
 
 // _AlarmMessageAckPushType is the data-structure of this message
@@ -59,6 +62,132 @@ type _AlarmMessageAckPushType struct {
 }
 
 var _ AlarmMessageAckPushType = (*_AlarmMessageAckPushType)(nil)
+
+// NewAlarmMessageAckPushType factory function for _AlarmMessageAckPushType
+func NewAlarmMessageAckPushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) *_AlarmMessageAckPushType {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for AlarmMessageAckPushType must not be nil")
+	}
+	return &_AlarmMessageAckPushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlarmMessageAckPushTypeBuilder is a builder for AlarmMessageAckPushType
+type AlarmMessageAckPushTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) AlarmMessageAckPushTypeBuilder
+	// WithTimeStamp adds TimeStamp (property field)
+	WithTimeStamp(DateAndTime) AlarmMessageAckPushTypeBuilder
+	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
+	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageAckPushTypeBuilder
+	// WithFunctionId adds FunctionId (property field)
+	WithFunctionId(uint8) AlarmMessageAckPushTypeBuilder
+	// WithNumberOfObjects adds NumberOfObjects (property field)
+	WithNumberOfObjects(uint8) AlarmMessageAckPushTypeBuilder
+	// WithMessageObjects adds MessageObjects (property field)
+	WithMessageObjects(...AlarmMessageAckObjectPushType) AlarmMessageAckPushTypeBuilder
+	// Build builds the AlarmMessageAckPushType or returns an error if something is wrong
+	Build() (AlarmMessageAckPushType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AlarmMessageAckPushType
+}
+
+// NewAlarmMessageAckPushTypeBuilder() creates a AlarmMessageAckPushTypeBuilder
+func NewAlarmMessageAckPushTypeBuilder() AlarmMessageAckPushTypeBuilder {
+	return &_AlarmMessageAckPushTypeBuilder{_AlarmMessageAckPushType: new(_AlarmMessageAckPushType)}
+}
+
+type _AlarmMessageAckPushTypeBuilder struct {
+	*_AlarmMessageAckPushType
+
+	err *utils.MultiError
+}
+
+var _ (AlarmMessageAckPushTypeBuilder) = (*_AlarmMessageAckPushTypeBuilder)(nil)
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithMandatoryFields(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) AlarmMessageAckPushTypeBuilder {
+	return b.WithTimeStamp(timeStamp).WithFunctionId(functionId).WithNumberOfObjects(numberOfObjects).WithMessageObjects(messageObjects...)
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithTimeStamp(timeStamp DateAndTime) AlarmMessageAckPushTypeBuilder {
+	b.TimeStamp = timeStamp
+	return b
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) AlarmMessageAckPushTypeBuilder {
+	builder := builderSupplier(b.TimeStamp.CreateDateAndTimeBuilder())
+	var err error
+	b.TimeStamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithFunctionId(functionId uint8) AlarmMessageAckPushTypeBuilder {
+	b.FunctionId = functionId
+	return b
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithNumberOfObjects(numberOfObjects uint8) AlarmMessageAckPushTypeBuilder {
+	b.NumberOfObjects = numberOfObjects
+	return b
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) WithMessageObjects(messageObjects ...AlarmMessageAckObjectPushType) AlarmMessageAckPushTypeBuilder {
+	b.MessageObjects = messageObjects
+	return b
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) Build() (AlarmMessageAckPushType, error) {
+	if b.TimeStamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AlarmMessageAckPushType.deepCopy(), nil
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) MustBuild() AlarmMessageAckPushType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AlarmMessageAckPushTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckPushTypeBuilder().(*_AlarmMessageAckPushTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAlarmMessageAckPushTypeBuilder creates a AlarmMessageAckPushTypeBuilder
+func (b *_AlarmMessageAckPushType) CreateAlarmMessageAckPushTypeBuilder() AlarmMessageAckPushTypeBuilder {
+	if b == nil {
+		return NewAlarmMessageAckPushTypeBuilder()
+	}
+	return &_AlarmMessageAckPushTypeBuilder{_AlarmMessageAckPushType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,14 +214,6 @@ func (m *_AlarmMessageAckPushType) GetMessageObjects() []AlarmMessageAckObjectPu
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckPushType factory function for _AlarmMessageAckPushType
-func NewAlarmMessageAckPushType(timeStamp DateAndTime, functionId uint8, numberOfObjects uint8, messageObjects []AlarmMessageAckObjectPushType) *_AlarmMessageAckPushType {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for AlarmMessageAckPushType must not be nil")
-	}
-	return &_AlarmMessageAckPushType{TimeStamp: timeStamp, FunctionId: functionId, NumberOfObjects: numberOfObjects, MessageObjects: messageObjects}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckPushType(structType any) AlarmMessageAckPushType {
@@ -153,7 +274,7 @@ func AlarmMessageAckPushTypeParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AlarmMessageAckPushType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageAckPushType AlarmMessageAckPushType, err error) {
@@ -237,13 +358,34 @@ func (m *_AlarmMessageAckPushType) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_AlarmMessageAckPushType) IsAlarmMessageAckPushType() {}
 
+func (m *_AlarmMessageAckPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckPushType) deepCopy() *_AlarmMessageAckPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckPushTypeCopy := &_AlarmMessageAckPushType{
+		m.TimeStamp.DeepCopy().(DateAndTime),
+		m.FunctionId,
+		m.NumberOfObjects,
+		utils.DeepCopySlice[AlarmMessageAckObjectPushType, AlarmMessageAckObjectPushType](m.MessageObjects),
+	}
+	return _AlarmMessageAckPushTypeCopy
+}
+
 func (m *_AlarmMessageAckPushType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

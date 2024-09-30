@@ -36,9 +36,12 @@ type ApduDataUserMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataUserMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataUserMessage()
+	// CreateBuilder creates a ApduDataUserMessageBuilder
+	CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder
 }
 
 // _ApduDataUserMessage is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataUserMessage struct {
 
 var _ ApduDataUserMessage = (*_ApduDataUserMessage)(nil)
 var _ ApduDataRequirements = (*_ApduDataUserMessage)(nil)
+
+// NewApduDataUserMessage factory function for _ApduDataUserMessage
+func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
+	_result := &_ApduDataUserMessage{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataUserMessageBuilder is a builder for ApduDataUserMessage
+type ApduDataUserMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataUserMessageBuilder
+	// Build builds the ApduDataUserMessage or returns an error if something is wrong
+	Build() (ApduDataUserMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataUserMessage
+}
+
+// NewApduDataUserMessageBuilder() creates a ApduDataUserMessageBuilder
+func NewApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
+	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: new(_ApduDataUserMessage)}
+}
+
+type _ApduDataUserMessageBuilder struct {
+	*_ApduDataUserMessage
+
+	parentBuilder *_ApduDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataUserMessageBuilder) = (*_ApduDataUserMessageBuilder)(nil)
+
+func (b *_ApduDataUserMessageBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
+}
+
+func (b *_ApduDataUserMessageBuilder) WithMandatoryFields() ApduDataUserMessageBuilder {
+	return b
+}
+
+func (b *_ApduDataUserMessageBuilder) Build() (ApduDataUserMessage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataUserMessage.deepCopy(), nil
+}
+
+func (b *_ApduDataUserMessageBuilder) MustBuild() ApduDataUserMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataUserMessageBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataUserMessageBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataUserMessageBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataUserMessageBuilder().(*_ApduDataUserMessageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataUserMessageBuilder creates a ApduDataUserMessageBuilder
+func (b *_ApduDataUserMessage) CreateApduDataUserMessageBuilder() ApduDataUserMessageBuilder {
+	if b == nil {
+		return NewApduDataUserMessageBuilder()
+	}
+	return &_ApduDataUserMessageBuilder{_ApduDataUserMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataUserMessage) GetApciType() uint8 {
 
 func (m *_ApduDataUserMessage) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataUserMessage factory function for _ApduDataUserMessage
-func NewApduDataUserMessage(dataLength uint8) *_ApduDataUserMessage {
-	_result := &_ApduDataUserMessage{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataUserMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_ApduDataUserMessage) IsApduDataUserMessage() {}
 
+func (m *_ApduDataUserMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataUserMessage) deepCopy() *_ApduDataUserMessage {
+	if m == nil {
+		return nil
+	}
+	_ApduDataUserMessageCopy := &_ApduDataUserMessage{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataUserMessageCopy
+}
+
 func (m *_ApduDataUserMessage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

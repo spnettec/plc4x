@@ -38,6 +38,7 @@ type ErrorCodeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type ErrorCodeTagged interface {
 	GetIsProprietary() bool
 	// IsErrorCodeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorCodeTagged()
+	// CreateBuilder creates a ErrorCodeTaggedBuilder
+	CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder
 }
 
 // _ErrorCodeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _ErrorCodeTagged struct {
 }
 
 var _ ErrorCodeTagged = (*_ErrorCodeTagged)(nil)
+
+// NewErrorCodeTagged factory function for _ErrorCodeTagged
+func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for ErrorCodeTagged must not be nil")
+	}
+	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorCodeTaggedBuilder is a builder for ErrorCodeTagged
+type ErrorCodeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) ErrorCodeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(ErrorCode) ErrorCodeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) ErrorCodeTaggedBuilder
+	// Build builds the ErrorCodeTagged or returns an error if something is wrong
+	Build() (ErrorCodeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorCodeTagged
+}
+
+// NewErrorCodeTaggedBuilder() creates a ErrorCodeTaggedBuilder
+func NewErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
+	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: new(_ErrorCodeTagged)}
+}
+
+type _ErrorCodeTaggedBuilder struct {
+	*_ErrorCodeTagged
+
+	err *utils.MultiError
+}
+
+var _ (ErrorCodeTaggedBuilder) = (*_ErrorCodeTaggedBuilder)(nil)
+
+func (b *_ErrorCodeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_ErrorCodeTaggedBuilder) WithHeader(header BACnetTagHeader) ErrorCodeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_ErrorCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) ErrorCodeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorCodeTaggedBuilder) WithValue(value ErrorCode) ErrorCodeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ErrorCodeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) ErrorCodeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_ErrorCodeTaggedBuilder) Build() (ErrorCodeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorCodeTagged.deepCopy(), nil
+}
+
+func (b *_ErrorCodeTaggedBuilder) MustBuild() ErrorCodeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorCodeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateErrorCodeTaggedBuilder().(*_ErrorCodeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorCodeTaggedBuilder creates a ErrorCodeTaggedBuilder
+func (b *_ErrorCodeTagged) CreateErrorCodeTaggedBuilder() ErrorCodeTaggedBuilder {
+	if b == nil {
+		return NewErrorCodeTaggedBuilder()
+	}
+	return &_ErrorCodeTaggedBuilder{_ErrorCodeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_ErrorCodeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorCodeTagged factory function for _ErrorCodeTagged
-func NewErrorCodeTagged(header BACnetTagHeader, value ErrorCode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_ErrorCodeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for ErrorCodeTagged must not be nil")
-	}
-	return &_ErrorCodeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorCodeTagged(structType any) ErrorCodeTagged {
@@ -159,7 +273,7 @@ func ErrorCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ErrorCodeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__errorCodeTagged ErrorCodeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_ErrorCodeTagged) GetTagClass() TagClass {
 
 func (m *_ErrorCodeTagged) IsErrorCodeTagged() {}
 
+func (m *_ErrorCodeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorCodeTagged) deepCopy() *_ErrorCodeTagged {
+	if m == nil {
+		return nil
+	}
+	_ErrorCodeTaggedCopy := &_ErrorCodeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _ErrorCodeTaggedCopy
+}
+
 func (m *_ErrorCodeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type SecurityResponseCodeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() SecurityResponseCode
 	// IsSecurityResponseCodeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityResponseCodeTagged()
+	// CreateBuilder creates a SecurityResponseCodeTaggedBuilder
+	CreateSecurityResponseCodeTaggedBuilder() SecurityResponseCodeTaggedBuilder
 }
 
 // _SecurityResponseCodeTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _SecurityResponseCodeTagged struct {
 }
 
 var _ SecurityResponseCodeTagged = (*_SecurityResponseCodeTagged)(nil)
+
+// NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
+func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
+	}
+	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityResponseCodeTaggedBuilder is a builder for SecurityResponseCodeTagged
+type SecurityResponseCodeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value SecurityResponseCode) SecurityResponseCodeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) SecurityResponseCodeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) SecurityResponseCodeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(SecurityResponseCode) SecurityResponseCodeTaggedBuilder
+	// Build builds the SecurityResponseCodeTagged or returns an error if something is wrong
+	Build() (SecurityResponseCodeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityResponseCodeTagged
+}
+
+// NewSecurityResponseCodeTaggedBuilder() creates a SecurityResponseCodeTaggedBuilder
+func NewSecurityResponseCodeTaggedBuilder() SecurityResponseCodeTaggedBuilder {
+	return &_SecurityResponseCodeTaggedBuilder{_SecurityResponseCodeTagged: new(_SecurityResponseCodeTagged)}
+}
+
+type _SecurityResponseCodeTaggedBuilder struct {
+	*_SecurityResponseCodeTagged
+
+	err *utils.MultiError
+}
+
+var _ (SecurityResponseCodeTaggedBuilder) = (*_SecurityResponseCodeTaggedBuilder)(nil)
+
+func (b *_SecurityResponseCodeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value SecurityResponseCode) SecurityResponseCodeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) WithHeader(header BACnetTagHeader) SecurityResponseCodeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) SecurityResponseCodeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) WithValue(value SecurityResponseCode) SecurityResponseCodeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) Build() (SecurityResponseCodeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityResponseCodeTagged.deepCopy(), nil
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) MustBuild() SecurityResponseCodeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SecurityResponseCodeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityResponseCodeTaggedBuilder().(*_SecurityResponseCodeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityResponseCodeTaggedBuilder creates a SecurityResponseCodeTaggedBuilder
+func (b *_SecurityResponseCodeTagged) CreateSecurityResponseCodeTaggedBuilder() SecurityResponseCodeTaggedBuilder {
+	if b == nil {
+		return NewSecurityResponseCodeTaggedBuilder()
+	}
+	return &_SecurityResponseCodeTaggedBuilder{_SecurityResponseCodeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_SecurityResponseCodeTagged) GetValue() SecurityResponseCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityResponseCodeTagged factory function for _SecurityResponseCodeTagged
-func NewSecurityResponseCodeTagged(header BACnetTagHeader, value SecurityResponseCode, tagNumber uint8, tagClass TagClass) *_SecurityResponseCodeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for SecurityResponseCodeTagged must not be nil")
-	}
-	return &_SecurityResponseCodeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityResponseCodeTagged(structType any) SecurityResponseCodeTagged {
@@ -130,7 +237,7 @@ func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SecurityResponseCodeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__securityResponseCodeTagged SecurityResponseCodeTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_SecurityResponseCodeTagged) GetTagClass() TagClass {
 
 func (m *_SecurityResponseCodeTagged) IsSecurityResponseCodeTagged() {}
 
+func (m *_SecurityResponseCodeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityResponseCodeTagged) deepCopy() *_SecurityResponseCodeTagged {
+	if m == nil {
+		return nil
+	}
+	_SecurityResponseCodeTaggedCopy := &_SecurityResponseCodeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _SecurityResponseCodeTaggedCopy
+}
+
 func (m *_SecurityResponseCodeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

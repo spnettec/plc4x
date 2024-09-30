@@ -38,6 +38,7 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetAddress returns Address (property field)
 	GetAddress() uint16
@@ -45,6 +46,8 @@ type ModbusPDUWriteSingleRegisterRequest interface {
 	GetValue() uint16
 	// IsModbusPDUWriteSingleRegisterRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUWriteSingleRegisterRequest()
+	// CreateBuilder creates a ModbusPDUWriteSingleRegisterRequestBuilder
+	CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder
 }
 
 // _ModbusPDUWriteSingleRegisterRequest is the data-structure of this message
@@ -56,6 +59,115 @@ type _ModbusPDUWriteSingleRegisterRequest struct {
 
 var _ ModbusPDUWriteSingleRegisterRequest = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUWriteSingleRegisterRequest)(nil)
+
+// NewModbusPDUWriteSingleRegisterRequest factory function for _ModbusPDUWriteSingleRegisterRequest
+func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterRequest {
+	_result := &_ModbusPDUWriteSingleRegisterRequest{
+		ModbusPDUContract: NewModbusPDU(),
+		Address:           address,
+		Value:             value,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUWriteSingleRegisterRequestBuilder is a builder for ModbusPDUWriteSingleRegisterRequest
+type ModbusPDUWriteSingleRegisterRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// WithValue adds Value (property field)
+	WithValue(uint16) ModbusPDUWriteSingleRegisterRequestBuilder
+	// Build builds the ModbusPDUWriteSingleRegisterRequest or returns an error if something is wrong
+	Build() (ModbusPDUWriteSingleRegisterRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUWriteSingleRegisterRequest
+}
+
+// NewModbusPDUWriteSingleRegisterRequestBuilder() creates a ModbusPDUWriteSingleRegisterRequestBuilder
+func NewModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
+	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: new(_ModbusPDUWriteSingleRegisterRequest)}
+}
+
+type _ModbusPDUWriteSingleRegisterRequestBuilder struct {
+	*_ModbusPDUWriteSingleRegisterRequest
+
+	parentBuilder *_ModbusPDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUWriteSingleRegisterRequestBuilder) = (*_ModbusPDUWriteSingleRegisterRequestBuilder)(nil)
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithMandatoryFields(address uint16, value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	return b.WithAddress(address).WithValue(value)
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithAddress(address uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) WithValue(value uint16) ModbusPDUWriteSingleRegisterRequestBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) Build() (ModbusPDUWriteSingleRegisterRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusPDUWriteSingleRegisterRequest.deepCopy(), nil
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) MustBuild() ModbusPDUWriteSingleRegisterRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUWriteSingleRegisterRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUWriteSingleRegisterRequestBuilder().(*_ModbusPDUWriteSingleRegisterRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusPDUWriteSingleRegisterRequestBuilder creates a ModbusPDUWriteSingleRegisterRequestBuilder
+func (b *_ModbusPDUWriteSingleRegisterRequest) CreateModbusPDUWriteSingleRegisterRequestBuilder() ModbusPDUWriteSingleRegisterRequestBuilder {
+	if b == nil {
+		return NewModbusPDUWriteSingleRegisterRequestBuilder()
+	}
+	return &_ModbusPDUWriteSingleRegisterRequestBuilder{_ModbusPDUWriteSingleRegisterRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +212,6 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) GetValue() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUWriteSingleRegisterRequest factory function for _ModbusPDUWriteSingleRegisterRequest
-func NewModbusPDUWriteSingleRegisterRequest(address uint16, value uint16) *_ModbusPDUWriteSingleRegisterRequest {
-	_result := &_ModbusPDUWriteSingleRegisterRequest{
-		ModbusPDUContract: NewModbusPDU(),
-		Address:           address,
-		Value:             value,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUWriteSingleRegisterRequest(structType any) ModbusPDUWriteSingleRegisterRequest {
@@ -209,13 +310,34 @@ func (m *_ModbusPDUWriteSingleRegisterRequest) SerializeWithWriteBuffer(ctx cont
 
 func (m *_ModbusPDUWriteSingleRegisterRequest) IsModbusPDUWriteSingleRegisterRequest() {}
 
+func (m *_ModbusPDUWriteSingleRegisterRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUWriteSingleRegisterRequest) deepCopy() *_ModbusPDUWriteSingleRegisterRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUWriteSingleRegisterRequestCopy := &_ModbusPDUWriteSingleRegisterRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.Address,
+		m.Value,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUWriteSingleRegisterRequestCopy
+}
+
 func (m *_ModbusPDUWriteSingleRegisterRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

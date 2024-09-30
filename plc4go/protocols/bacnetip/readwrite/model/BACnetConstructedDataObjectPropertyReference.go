@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectPropertyReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPropertyReference returns PropertyReference (property field)
 	GetPropertyReference() BACnetDeviceObjectPropertyReference
@@ -45,6 +46,8 @@ type BACnetConstructedDataObjectPropertyReference interface {
 	GetActualValue() BACnetDeviceObjectPropertyReference
 	// IsBACnetConstructedDataObjectPropertyReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectPropertyReference()
+	// CreateBuilder creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+	CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder
 }
 
 // _BACnetConstructedDataObjectPropertyReference is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataObjectPropertyReference struct {
 
 var _ BACnetConstructedDataObjectPropertyReference = (*_BACnetConstructedDataObjectPropertyReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectPropertyReference)(nil)
+
+// NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
+func NewBACnetConstructedDataObjectPropertyReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, propertyReference BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
+	if propertyReference == nil {
+		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectPropertyReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PropertyReference:             propertyReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectPropertyReferenceBuilder is a builder for BACnetConstructedDataObjectPropertyReference
+type BACnetConstructedDataObjectPropertyReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// WithPropertyReference adds PropertyReference (property field)
+	WithPropertyReference(BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// WithPropertyReferenceBuilder adds PropertyReference (property field) which is build by the builder
+	WithPropertyReferenceBuilder(func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder
+	// Build builds the BACnetConstructedDataObjectPropertyReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectPropertyReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectPropertyReference
+}
+
+// NewBACnetConstructedDataObjectPropertyReferenceBuilder() creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+func NewBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
+	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: new(_BACnetConstructedDataObjectPropertyReference)}
+}
+
+type _BACnetConstructedDataObjectPropertyReferenceBuilder struct {
+	*_BACnetConstructedDataObjectPropertyReference
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectPropertyReferenceBuilder) = (*_BACnetConstructedDataObjectPropertyReferenceBuilder)(nil)
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithMandatoryFields(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	return b.WithPropertyReference(propertyReference)
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReference(propertyReference BACnetDeviceObjectPropertyReference) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	b.PropertyReference = propertyReference
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) WithPropertyReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceBuilder) BACnetDeviceObjectPropertyReferenceBuilder) BACnetConstructedDataObjectPropertyReferenceBuilder {
+	builder := builderSupplier(b.PropertyReference.CreateBACnetDeviceObjectPropertyReferenceBuilder())
+	var err error
+	b.PropertyReference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) Build() (BACnetConstructedDataObjectPropertyReference, error) {
+	if b.PropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyReference' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataObjectPropertyReference.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) MustBuild() BACnetConstructedDataObjectPropertyReference {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataObjectPropertyReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataObjectPropertyReferenceBuilder().(*_BACnetConstructedDataObjectPropertyReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataObjectPropertyReferenceBuilder creates a BACnetConstructedDataObjectPropertyReferenceBuilder
+func (b *_BACnetConstructedDataObjectPropertyReference) CreateBACnetConstructedDataObjectPropertyReferenceBuilder() BACnetConstructedDataObjectPropertyReferenceBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataObjectPropertyReferenceBuilder()
+	}
+	return &_BACnetConstructedDataObjectPropertyReferenceBuilder{_BACnetConstructedDataObjectPropertyReference: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataObjectPropertyReference) GetActualValue() BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectPropertyReference factory function for _BACnetConstructedDataObjectPropertyReference
-func NewBACnetConstructedDataObjectPropertyReference(propertyReference BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectPropertyReference {
-	if propertyReference == nil {
-		panic("propertyReference of type BACnetDeviceObjectPropertyReference for BACnetConstructedDataObjectPropertyReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectPropertyReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PropertyReference:             propertyReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectPropertyReference(structType any) BACnetConstructedDataObjectPropertyReference {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataObjectPropertyReference) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataObjectPropertyReference) IsBACnetConstructedDataObjectPropertyReference() {
 }
 
+func (m *_BACnetConstructedDataObjectPropertyReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectPropertyReference) deepCopy() *_BACnetConstructedDataObjectPropertyReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectPropertyReferenceCopy := &_BACnetConstructedDataObjectPropertyReference{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PropertyReference.DeepCopy().(BACnetDeviceObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectPropertyReferenceCopy
+}
+
 func (m *_BACnetConstructedDataObjectPropertyReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

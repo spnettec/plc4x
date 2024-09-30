@@ -38,6 +38,7 @@ type TunnelingResponseDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -46,6 +47,8 @@ type TunnelingResponseDataBlock interface {
 	GetStatus() Status
 	// IsTunnelingResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTunnelingResponseDataBlock()
+	// CreateBuilder creates a TunnelingResponseDataBlockBuilder
+	CreateTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder
 }
 
 // _TunnelingResponseDataBlock is the data-structure of this message
@@ -56,6 +59,101 @@ type _TunnelingResponseDataBlock struct {
 }
 
 var _ TunnelingResponseDataBlock = (*_TunnelingResponseDataBlock)(nil)
+
+// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
+func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
+	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TunnelingResponseDataBlockBuilder is a builder for TunnelingResponseDataBlock
+type TunnelingResponseDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) TunnelingResponseDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) TunnelingResponseDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) TunnelingResponseDataBlockBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) TunnelingResponseDataBlockBuilder
+	// Build builds the TunnelingResponseDataBlock or returns an error if something is wrong
+	Build() (TunnelingResponseDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TunnelingResponseDataBlock
+}
+
+// NewTunnelingResponseDataBlockBuilder() creates a TunnelingResponseDataBlockBuilder
+func NewTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder {
+	return &_TunnelingResponseDataBlockBuilder{_TunnelingResponseDataBlock: new(_TunnelingResponseDataBlock)}
+}
+
+type _TunnelingResponseDataBlockBuilder struct {
+	*_TunnelingResponseDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (TunnelingResponseDataBlockBuilder) = (*_TunnelingResponseDataBlockBuilder)(nil)
+
+func (b *_TunnelingResponseDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) TunnelingResponseDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) TunnelingResponseDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) TunnelingResponseDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) WithStatus(status Status) TunnelingResponseDataBlockBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) Build() (TunnelingResponseDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TunnelingResponseDataBlock.deepCopy(), nil
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) MustBuild() TunnelingResponseDataBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TunnelingResponseDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateTunnelingResponseDataBlockBuilder().(*_TunnelingResponseDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTunnelingResponseDataBlockBuilder creates a TunnelingResponseDataBlockBuilder
+func (b *_TunnelingResponseDataBlock) CreateTunnelingResponseDataBlockBuilder() TunnelingResponseDataBlockBuilder {
+	if b == nil {
+		return NewTunnelingResponseDataBlockBuilder()
+	}
+	return &_TunnelingResponseDataBlockBuilder{_TunnelingResponseDataBlock: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_TunnelingResponseDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTunnelingResponseDataBlock factory function for _TunnelingResponseDataBlock
-func NewTunnelingResponseDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_TunnelingResponseDataBlock {
-	return &_TunnelingResponseDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTunnelingResponseDataBlock(structType any) TunnelingResponseDataBlock {
@@ -136,7 +229,7 @@ func TunnelingResponseDataBlockParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TunnelingResponseDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__tunnelingResponseDataBlock TunnelingResponseDataBlock, err error) {
@@ -220,13 +313,33 @@ func (m *_TunnelingResponseDataBlock) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_TunnelingResponseDataBlock) IsTunnelingResponseDataBlock() {}
 
+func (m *_TunnelingResponseDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TunnelingResponseDataBlock) deepCopy() *_TunnelingResponseDataBlock {
+	if m == nil {
+		return nil
+	}
+	_TunnelingResponseDataBlockCopy := &_TunnelingResponseDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.Status,
+	}
+	return _TunnelingResponseDataBlockCopy
+}
+
 func (m *_TunnelingResponseDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

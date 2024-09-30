@@ -38,6 +38,7 @@ type HPAIDiscoveryEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -46,6 +47,8 @@ type HPAIDiscoveryEndpoint interface {
 	GetIpPort() uint16
 	// IsHPAIDiscoveryEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHPAIDiscoveryEndpoint()
+	// CreateBuilder creates a HPAIDiscoveryEndpointBuilder
+	CreateHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder
 }
 
 // _HPAIDiscoveryEndpoint is the data-structure of this message
@@ -56,6 +59,125 @@ type _HPAIDiscoveryEndpoint struct {
 }
 
 var _ HPAIDiscoveryEndpoint = (*_HPAIDiscoveryEndpoint)(nil)
+
+// NewHPAIDiscoveryEndpoint factory function for _HPAIDiscoveryEndpoint
+func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDiscoveryEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIDiscoveryEndpoint must not be nil")
+	}
+	return &_HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HPAIDiscoveryEndpointBuilder is a builder for HPAIDiscoveryEndpoint
+type HPAIDiscoveryEndpointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDiscoveryEndpointBuilder
+	// WithHostProtocolCode adds HostProtocolCode (property field)
+	WithHostProtocolCode(HostProtocolCode) HPAIDiscoveryEndpointBuilder
+	// WithIpAddress adds IpAddress (property field)
+	WithIpAddress(IPAddress) HPAIDiscoveryEndpointBuilder
+	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
+	WithIpAddressBuilder(func(IPAddressBuilder) IPAddressBuilder) HPAIDiscoveryEndpointBuilder
+	// WithIpPort adds IpPort (property field)
+	WithIpPort(uint16) HPAIDiscoveryEndpointBuilder
+	// Build builds the HPAIDiscoveryEndpoint or returns an error if something is wrong
+	Build() (HPAIDiscoveryEndpoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HPAIDiscoveryEndpoint
+}
+
+// NewHPAIDiscoveryEndpointBuilder() creates a HPAIDiscoveryEndpointBuilder
+func NewHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder {
+	return &_HPAIDiscoveryEndpointBuilder{_HPAIDiscoveryEndpoint: new(_HPAIDiscoveryEndpoint)}
+}
+
+type _HPAIDiscoveryEndpointBuilder struct {
+	*_HPAIDiscoveryEndpoint
+
+	err *utils.MultiError
+}
+
+var _ (HPAIDiscoveryEndpointBuilder) = (*_HPAIDiscoveryEndpointBuilder)(nil)
+
+func (b *_HPAIDiscoveryEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIDiscoveryEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIDiscoveryEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIDiscoveryEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIDiscoveryEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
+	var err error
+	b.IpAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) WithIpPort(ipPort uint16) HPAIDiscoveryEndpointBuilder {
+	b.IpPort = ipPort
+	return b
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) Build() (HPAIDiscoveryEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HPAIDiscoveryEndpoint.deepCopy(), nil
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) MustBuild() HPAIDiscoveryEndpoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HPAIDiscoveryEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIDiscoveryEndpointBuilder().(*_HPAIDiscoveryEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHPAIDiscoveryEndpointBuilder creates a HPAIDiscoveryEndpointBuilder
+func (b *_HPAIDiscoveryEndpoint) CreateHPAIDiscoveryEndpointBuilder() HPAIDiscoveryEndpointBuilder {
+	if b == nil {
+		return NewHPAIDiscoveryEndpointBuilder()
+	}
+	return &_HPAIDiscoveryEndpointBuilder{_HPAIDiscoveryEndpoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +200,6 @@ func (m *_HPAIDiscoveryEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIDiscoveryEndpoint factory function for _HPAIDiscoveryEndpoint
-func NewHPAIDiscoveryEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIDiscoveryEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIDiscoveryEndpoint must not be nil")
-	}
-	return &_HPAIDiscoveryEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIDiscoveryEndpoint(structType any) HPAIDiscoveryEndpoint {
@@ -139,7 +253,7 @@ func HPAIDiscoveryEndpointParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HPAIDiscoveryEndpoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hPAIDiscoveryEndpoint HPAIDiscoveryEndpoint, err error) {
@@ -223,13 +337,33 @@ func (m *_HPAIDiscoveryEndpoint) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_HPAIDiscoveryEndpoint) IsHPAIDiscoveryEndpoint() {}
 
+func (m *_HPAIDiscoveryEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIDiscoveryEndpoint) deepCopy() *_HPAIDiscoveryEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIDiscoveryEndpointCopy := &_HPAIDiscoveryEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIDiscoveryEndpointCopy
+}
+
 func (m *_HPAIDiscoveryEndpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

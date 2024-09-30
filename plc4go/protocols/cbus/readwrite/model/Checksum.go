@@ -38,10 +38,13 @@ type Checksum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() byte
 	// IsChecksum is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsChecksum()
+	// CreateBuilder creates a ChecksumBuilder
+	CreateChecksumBuilder() ChecksumBuilder
 }
 
 // _Checksum is the data-structure of this message
@@ -50,6 +53,87 @@ type _Checksum struct {
 }
 
 var _ Checksum = (*_Checksum)(nil)
+
+// NewChecksum factory function for _Checksum
+func NewChecksum(value byte) *_Checksum {
+	return &_Checksum{Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ChecksumBuilder is a builder for Checksum
+type ChecksumBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value byte) ChecksumBuilder
+	// WithValue adds Value (property field)
+	WithValue(byte) ChecksumBuilder
+	// Build builds the Checksum or returns an error if something is wrong
+	Build() (Checksum, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Checksum
+}
+
+// NewChecksumBuilder() creates a ChecksumBuilder
+func NewChecksumBuilder() ChecksumBuilder {
+	return &_ChecksumBuilder{_Checksum: new(_Checksum)}
+}
+
+type _ChecksumBuilder struct {
+	*_Checksum
+
+	err *utils.MultiError
+}
+
+var _ (ChecksumBuilder) = (*_ChecksumBuilder)(nil)
+
+func (b *_ChecksumBuilder) WithMandatoryFields(value byte) ChecksumBuilder {
+	return b.WithValue(value)
+}
+
+func (b *_ChecksumBuilder) WithValue(value byte) ChecksumBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ChecksumBuilder) Build() (Checksum, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Checksum.deepCopy(), nil
+}
+
+func (b *_ChecksumBuilder) MustBuild() Checksum {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ChecksumBuilder) DeepCopy() any {
+	_copy := b.CreateChecksumBuilder().(*_ChecksumBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateChecksumBuilder creates a ChecksumBuilder
+func (b *_Checksum) CreateChecksumBuilder() ChecksumBuilder {
+	if b == nil {
+		return NewChecksumBuilder()
+	}
+	return &_ChecksumBuilder{_Checksum: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_Checksum) GetValue() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChecksum factory function for _Checksum
-func NewChecksum(value byte) *_Checksum {
-	return &_Checksum{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChecksum(structType any) Checksum {
@@ -113,7 +192,7 @@ func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Checksum) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__checksum Checksum, err error) {
@@ -167,13 +246,31 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_Checksum) IsChecksum() {}
 
+func (m *_Checksum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Checksum) deepCopy() *_Checksum {
+	if m == nil {
+		return nil
+	}
+	_ChecksumCopy := &_Checksum{
+		m.Value,
+	}
+	return _ChecksumCopy
+}
+
 func (m *_Checksum) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

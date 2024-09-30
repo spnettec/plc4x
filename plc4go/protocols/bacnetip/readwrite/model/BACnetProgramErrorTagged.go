@@ -38,6 +38,7 @@ type BACnetProgramErrorTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetProgramErrorTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetProgramErrorTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProgramErrorTagged()
+	// CreateBuilder creates a BACnetProgramErrorTaggedBuilder
+	CreateBACnetProgramErrorTaggedBuilder() BACnetProgramErrorTaggedBuilder
 }
 
 // _BACnetProgramErrorTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetProgramErrorTagged struct {
 }
 
 var _ BACnetProgramErrorTagged = (*_BACnetProgramErrorTagged)(nil)
+
+// NewBACnetProgramErrorTagged factory function for _BACnetProgramErrorTagged
+func NewBACnetProgramErrorTagged(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetProgramErrorTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetProgramErrorTagged must not be nil")
+	}
+	return &_BACnetProgramErrorTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProgramErrorTaggedBuilder is a builder for BACnetProgramErrorTagged
+type BACnetProgramErrorTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32) BACnetProgramErrorTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetProgramErrorTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramErrorTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetProgramError) BACnetProgramErrorTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetProgramErrorTaggedBuilder
+	// Build builds the BACnetProgramErrorTagged or returns an error if something is wrong
+	Build() (BACnetProgramErrorTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProgramErrorTagged
+}
+
+// NewBACnetProgramErrorTaggedBuilder() creates a BACnetProgramErrorTaggedBuilder
+func NewBACnetProgramErrorTaggedBuilder() BACnetProgramErrorTaggedBuilder {
+	return &_BACnetProgramErrorTaggedBuilder{_BACnetProgramErrorTagged: new(_BACnetProgramErrorTagged)}
+}
+
+type _BACnetProgramErrorTaggedBuilder struct {
+	*_BACnetProgramErrorTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProgramErrorTaggedBuilder) = (*_BACnetProgramErrorTaggedBuilder)(nil)
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32) BACnetProgramErrorTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetProgramErrorTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProgramErrorTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithValue(value BACnetProgramError) BACnetProgramErrorTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetProgramErrorTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) Build() (BACnetProgramErrorTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetProgramErrorTagged.deepCopy(), nil
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) MustBuild() BACnetProgramErrorTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetProgramErrorTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProgramErrorTaggedBuilder().(*_BACnetProgramErrorTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetProgramErrorTaggedBuilder creates a BACnetProgramErrorTaggedBuilder
+func (b *_BACnetProgramErrorTagged) CreateBACnetProgramErrorTaggedBuilder() BACnetProgramErrorTaggedBuilder {
+	if b == nil {
+		return NewBACnetProgramErrorTaggedBuilder()
+	}
+	return &_BACnetProgramErrorTaggedBuilder{_BACnetProgramErrorTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetProgramErrorTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProgramErrorTagged factory function for _BACnetProgramErrorTagged
-func NewBACnetProgramErrorTagged(header BACnetTagHeader, value BACnetProgramError, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetProgramErrorTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetProgramErrorTagged must not be nil")
-	}
-	return &_BACnetProgramErrorTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProgramErrorTagged(structType any) BACnetProgramErrorTagged {
@@ -159,7 +273,7 @@ func BACnetProgramErrorTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetProgramErrorTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetProgramErrorTagged BACnetProgramErrorTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetProgramErrorTagged) GetTagClass() TagClass {
 
 func (m *_BACnetProgramErrorTagged) IsBACnetProgramErrorTagged() {}
 
+func (m *_BACnetProgramErrorTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProgramErrorTagged) deepCopy() *_BACnetProgramErrorTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetProgramErrorTaggedCopy := &_BACnetProgramErrorTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetProgramErrorTaggedCopy
+}
+
 func (m *_BACnetProgramErrorTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

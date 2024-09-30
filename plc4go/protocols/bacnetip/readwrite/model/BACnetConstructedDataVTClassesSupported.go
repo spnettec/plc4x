@@ -38,11 +38,14 @@ type BACnetConstructedDataVTClassesSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVtClassesSupported returns VtClassesSupported (property field)
 	GetVtClassesSupported() []BACnetVTClassTagged
 	// IsBACnetConstructedDataVTClassesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataVTClassesSupported()
+	// CreateBuilder creates a BACnetConstructedDataVTClassesSupportedBuilder
+	CreateBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVTClassesSupportedBuilder
 }
 
 // _BACnetConstructedDataVTClassesSupported is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataVTClassesSupported struct {
 
 var _ BACnetConstructedDataVTClassesSupported = (*_BACnetConstructedDataVTClassesSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVTClassesSupported)(nil)
+
+// NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
+func NewBACnetConstructedDataVTClassesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vtClassesSupported []BACnetVTClassTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
+	_result := &_BACnetConstructedDataVTClassesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VtClassesSupported:            vtClassesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataVTClassesSupportedBuilder is a builder for BACnetConstructedDataVTClassesSupported
+type BACnetConstructedDataVTClassesSupportedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder
+	// WithVtClassesSupported adds VtClassesSupported (property field)
+	WithVtClassesSupported(...BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder
+	// Build builds the BACnetConstructedDataVTClassesSupported or returns an error if something is wrong
+	Build() (BACnetConstructedDataVTClassesSupported, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataVTClassesSupported
+}
+
+// NewBACnetConstructedDataVTClassesSupportedBuilder() creates a BACnetConstructedDataVTClassesSupportedBuilder
+func NewBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVTClassesSupportedBuilder {
+	return &_BACnetConstructedDataVTClassesSupportedBuilder{_BACnetConstructedDataVTClassesSupported: new(_BACnetConstructedDataVTClassesSupported)}
+}
+
+type _BACnetConstructedDataVTClassesSupportedBuilder struct {
+	*_BACnetConstructedDataVTClassesSupported
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataVTClassesSupportedBuilder) = (*_BACnetConstructedDataVTClassesSupportedBuilder)(nil)
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) WithMandatoryFields(vtClassesSupported []BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
+	return b.WithVtClassesSupported(vtClassesSupported...)
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) WithVtClassesSupported(vtClassesSupported ...BACnetVTClassTagged) BACnetConstructedDataVTClassesSupportedBuilder {
+	b.VtClassesSupported = vtClassesSupported
+	return b
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) Build() (BACnetConstructedDataVTClassesSupported, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataVTClassesSupported.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) MustBuild() BACnetConstructedDataVTClassesSupported {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVTClassesSupportedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVTClassesSupportedBuilder().(*_BACnetConstructedDataVTClassesSupportedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataVTClassesSupportedBuilder creates a BACnetConstructedDataVTClassesSupportedBuilder
+func (b *_BACnetConstructedDataVTClassesSupported) CreateBACnetConstructedDataVTClassesSupportedBuilder() BACnetConstructedDataVTClassesSupportedBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataVTClassesSupportedBuilder()
+	}
+	return &_BACnetConstructedDataVTClassesSupportedBuilder{_BACnetConstructedDataVTClassesSupported: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataVTClassesSupported) GetVtClassesSupported() []BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVTClassesSupported factory function for _BACnetConstructedDataVTClassesSupported
-func NewBACnetConstructedDataVTClassesSupported(vtClassesSupported []BACnetVTClassTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVTClassesSupported {
-	_result := &_BACnetConstructedDataVTClassesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VtClassesSupported:            vtClassesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVTClassesSupported(structType any) BACnetConstructedDataVTClassesSupported {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataVTClassesSupported) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetConstructedDataVTClassesSupported) IsBACnetConstructedDataVTClassesSupported() {}
 
+func (m *_BACnetConstructedDataVTClassesSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVTClassesSupported) deepCopy() *_BACnetConstructedDataVTClassesSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVTClassesSupportedCopy := &_BACnetConstructedDataVTClassesSupported{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetVTClassTagged, BACnetVTClassTagged](m.VtClassesSupported),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVTClassesSupportedCopy
+}
+
 func (m *_BACnetConstructedDataVTClassesSupported) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

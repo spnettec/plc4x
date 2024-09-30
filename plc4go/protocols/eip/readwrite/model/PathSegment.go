@@ -40,14 +40,19 @@ type PathSegment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPathSegment()
+	// CreateBuilder creates a PathSegmentBuilder
+	CreatePathSegmentBuilder() PathSegmentBuilder
 }
 
 // PathSegmentContract provides a set of functions which can be overwritten by a sub struct
 type PathSegmentContract interface {
 	// IsPathSegment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPathSegment()
+	// CreateBuilder creates a PathSegmentBuilder
+	CreatePathSegmentBuilder() PathSegmentBuilder
 }
 
 // PathSegmentRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,172 @@ var _ PathSegmentContract = (*_PathSegment)(nil)
 func NewPathSegment() *_PathSegment {
 	return &_PathSegment{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PathSegmentBuilder is a builder for PathSegment
+type PathSegmentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() PathSegmentBuilder
+	// AsPortSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsPortSegment() interface {
+		PortSegmentBuilder
+		Done() PathSegmentBuilder
+	}
+	// AsLogicalSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsLogicalSegment() interface {
+		LogicalSegmentBuilder
+		Done() PathSegmentBuilder
+	}
+	// AsDataSegment converts this build to a subType of PathSegment. It is always possible to return to current builder using Done()
+	AsDataSegment() interface {
+		DataSegmentBuilder
+		Done() PathSegmentBuilder
+	}
+	// Build builds the PathSegment or returns an error if something is wrong
+	PartialBuild() (PathSegmentContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() PathSegmentContract
+	// Build builds the PathSegment or returns an error if something is wrong
+	Build() (PathSegment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PathSegment
+}
+
+// NewPathSegmentBuilder() creates a PathSegmentBuilder
+func NewPathSegmentBuilder() PathSegmentBuilder {
+	return &_PathSegmentBuilder{_PathSegment: new(_PathSegment)}
+}
+
+type _PathSegmentChildBuilder interface {
+	utils.Copyable
+	setParent(PathSegmentContract)
+	buildForPathSegment() (PathSegment, error)
+}
+
+type _PathSegmentBuilder struct {
+	*_PathSegment
+
+	childBuilder _PathSegmentChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PathSegmentBuilder) = (*_PathSegmentBuilder)(nil)
+
+func (b *_PathSegmentBuilder) WithMandatoryFields() PathSegmentBuilder {
+	return b
+}
+
+func (b *_PathSegmentBuilder) PartialBuild() (PathSegmentContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PathSegment.deepCopy(), nil
+}
+
+func (b *_PathSegmentBuilder) PartialMustBuild() PathSegmentContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PathSegmentBuilder) AsPortSegment() interface {
+	PortSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortSegmentBuilder().(*_PortSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) AsLogicalSegment() interface {
+	LogicalSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		LogicalSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewLogicalSegmentBuilder().(*_LogicalSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) AsDataSegment() interface {
+	DataSegmentBuilder
+	Done() PathSegmentBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DataSegmentBuilder
+		Done() PathSegmentBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDataSegmentBuilder().(*_DataSegmentBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PathSegmentBuilder) Build() (PathSegment, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForPathSegment()
+}
+
+func (b *_PathSegmentBuilder) MustBuild() PathSegment {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PathSegmentBuilder) DeepCopy() any {
+	_copy := b.CreatePathSegmentBuilder().(*_PathSegmentBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_PathSegmentChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePathSegmentBuilder creates a PathSegmentBuilder
+func (b *_PathSegment) CreatePathSegmentBuilder() PathSegmentBuilder {
+	if b == nil {
+		return NewPathSegmentBuilder()
+	}
+	return &_PathSegmentBuilder{_PathSegment: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastPathSegment(structType any) PathSegment {
@@ -108,7 +279,7 @@ func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +289,12 @@ func PathSegmentParseWithBuffer[T PathSegment](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_PathSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pathSegment PathSegment, err error) {
@@ -139,15 +315,15 @@ func (m *_PathSegment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child PathSegment
 	switch {
 	case pathSegment == 0x00: // PortSegment
-		if _child, err = (&_PortSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegment for type-switch of PathSegment")
 		}
 	case pathSegment == 0x01: // LogicalSegment
-		if _child, err = (&_LogicalSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_LogicalSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type LogicalSegment for type-switch of PathSegment")
 		}
 	case pathSegment == 0x04: // DataSegment
-		if _child, err = (&_DataSegment{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DataSegment).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DataSegment for type-switch of PathSegment")
 		}
 	default:
@@ -189,3 +365,17 @@ func (pm *_PathSegment) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_PathSegment) IsPathSegment() {}
+
+func (m *_PathSegment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PathSegment) deepCopy() *_PathSegment {
+	if m == nil {
+		return nil
+	}
+	_PathSegmentCopy := &_PathSegment{
+		nil, // will be set by child
+	}
+	return _PathSegmentCopy
+}

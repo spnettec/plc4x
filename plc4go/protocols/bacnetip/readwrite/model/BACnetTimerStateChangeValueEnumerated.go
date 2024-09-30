@@ -38,11 +38,14 @@ type BACnetTimerStateChangeValueEnumerated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetTimerStateChangeValue
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetApplicationTagEnumerated
 	// IsBACnetTimerStateChangeValueEnumerated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValueEnumerated()
+	// CreateBuilder creates a BACnetTimerStateChangeValueEnumeratedBuilder
+	CreateBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeValueEnumeratedBuilder
 }
 
 // _BACnetTimerStateChangeValueEnumerated is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetTimerStateChangeValueEnumerated struct {
 
 var _ BACnetTimerStateChangeValueEnumerated = (*_BACnetTimerStateChangeValueEnumerated)(nil)
 var _ BACnetTimerStateChangeValueRequirements = (*_BACnetTimerStateChangeValueEnumerated)(nil)
+
+// NewBACnetTimerStateChangeValueEnumerated factory function for _BACnetTimerStateChangeValueEnumerated
+func NewBACnetTimerStateChangeValueEnumerated(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetApplicationTagEnumerated, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueEnumerated {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetTimerStateChangeValueEnumerated must not be nil")
+	}
+	_result := &_BACnetTimerStateChangeValueEnumerated{
+		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
+		EnumeratedValue:                     enumeratedValue,
+	}
+	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueEnumeratedBuilder is a builder for BACnetTimerStateChangeValueEnumerated
+type BACnetTimerStateChangeValueEnumeratedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetTimerStateChangeValueEnumeratedBuilder
+	// Build builds the BACnetTimerStateChangeValueEnumerated or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValueEnumerated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValueEnumerated
+}
+
+// NewBACnetTimerStateChangeValueEnumeratedBuilder() creates a BACnetTimerStateChangeValueEnumeratedBuilder
+func NewBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeValueEnumeratedBuilder {
+	return &_BACnetTimerStateChangeValueEnumeratedBuilder{_BACnetTimerStateChangeValueEnumerated: new(_BACnetTimerStateChangeValueEnumerated)}
+}
+
+type _BACnetTimerStateChangeValueEnumeratedBuilder struct {
+	*_BACnetTimerStateChangeValueEnumerated
+
+	parentBuilder *_BACnetTimerStateChangeValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueEnumeratedBuilder) = (*_BACnetTimerStateChangeValueEnumeratedBuilder)(nil)
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) setParent(contract BACnetTimerStateChangeValueContract) {
+	b.BACnetTimerStateChangeValueContract = contract
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithMandatoryFields(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetTimerStateChangeValueEnumeratedBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetTimerStateChangeValueEnumeratedBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	b.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) Build() (BACnetTimerStateChangeValueEnumerated, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimerStateChangeValueEnumerated.deepCopy(), nil
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) MustBuild() BACnetTimerStateChangeValueEnumerated {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) Done() BACnetTimerStateChangeValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetTimerStateChangeValueEnumeratedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueEnumeratedBuilder().(*_BACnetTimerStateChangeValueEnumeratedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTimerStateChangeValueEnumeratedBuilder creates a BACnetTimerStateChangeValueEnumeratedBuilder
+func (b *_BACnetTimerStateChangeValueEnumerated) CreateBACnetTimerStateChangeValueEnumeratedBuilder() BACnetTimerStateChangeValueEnumeratedBuilder {
+	if b == nil {
+		return NewBACnetTimerStateChangeValueEnumeratedBuilder()
+	}
+	return &_BACnetTimerStateChangeValueEnumeratedBuilder{_BACnetTimerStateChangeValueEnumerated: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetTimerStateChangeValueEnumerated) GetEnumeratedValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValueEnumerated factory function for _BACnetTimerStateChangeValueEnumerated
-func NewBACnetTimerStateChangeValueEnumerated(enumeratedValue BACnetApplicationTagEnumerated, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValueEnumerated {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetApplicationTagEnumerated for BACnetTimerStateChangeValueEnumerated must not be nil")
-	}
-	_result := &_BACnetTimerStateChangeValueEnumerated{
-		BACnetTimerStateChangeValueContract: NewBACnetTimerStateChangeValue(peekedTagHeader, objectTypeArgument),
-		EnumeratedValue:                     enumeratedValue,
-	}
-	_result.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValueEnumerated(structType any) BACnetTimerStateChangeValueEnumerated {
@@ -179,13 +294,33 @@ func (m *_BACnetTimerStateChangeValueEnumerated) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetTimerStateChangeValueEnumerated) IsBACnetTimerStateChangeValueEnumerated() {}
 
+func (m *_BACnetTimerStateChangeValueEnumerated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValueEnumerated) deepCopy() *_BACnetTimerStateChangeValueEnumerated {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueEnumeratedCopy := &_BACnetTimerStateChangeValueEnumerated{
+		m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+	}
+	m.BACnetTimerStateChangeValueContract.(*_BACnetTimerStateChangeValue)._SubType = m
+	return _BACnetTimerStateChangeValueEnumeratedCopy
+}
+
 func (m *_BACnetTimerStateChangeValueEnumerated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,12 +38,15 @@ type BACnetReadAccessResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
 	// GetListOfResults returns ListOfResults (property field)
 	GetListOfResults() BACnetReadAccessResultListOfResults
 	// IsBACnetReadAccessResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReadAccessResult()
+	// CreateBuilder creates a BACnetReadAccessResultBuilder
+	CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder
 }
 
 // _BACnetReadAccessResult is the data-structure of this message
@@ -53,6 +56,133 @@ type _BACnetReadAccessResult struct {
 }
 
 var _ BACnetReadAccessResult = (*_BACnetReadAccessResult)(nil)
+
+// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
+func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
+	}
+	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReadAccessResultBuilder is a builder for BACnetReadAccessResult
+type BACnetReadAccessResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder
+	// WithListOfResults adds ListOfResults (property field)
+	WithOptionalListOfResults(BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder
+	// WithOptionalListOfResultsBuilder adds ListOfResults (property field) which is build by the builder
+	WithOptionalListOfResultsBuilder(func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder
+	// Build builds the BACnetReadAccessResult or returns an error if something is wrong
+	Build() (BACnetReadAccessResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReadAccessResult
+}
+
+// NewBACnetReadAccessResultBuilder() creates a BACnetReadAccessResultBuilder
+func NewBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
+	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: new(_BACnetReadAccessResult)}
+}
+
+type _BACnetReadAccessResultBuilder struct {
+	*_BACnetReadAccessResult
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReadAccessResultBuilder) = (*_BACnetReadAccessResultBuilder)(nil)
+
+func (b *_BACnetReadAccessResultBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	return b.WithObjectIdentifier(objectIdentifier)
+}
+
+func (b *_BACnetReadAccessResultBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetReadAccessResultBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetReadAccessResultBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessResultBuilder) WithOptionalListOfResults(listOfResults BACnetReadAccessResultListOfResults) BACnetReadAccessResultBuilder {
+	b.ListOfResults = listOfResults
+	return b
+}
+
+func (b *_BACnetReadAccessResultBuilder) WithOptionalListOfResultsBuilder(builderSupplier func(BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultListOfResultsBuilder) BACnetReadAccessResultBuilder {
+	builder := builderSupplier(b.ListOfResults.CreateBACnetReadAccessResultListOfResultsBuilder())
+	var err error
+	b.ListOfResults, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetReadAccessResultListOfResultsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessResultBuilder) Build() (BACnetReadAccessResult, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetReadAccessResult.deepCopy(), nil
+}
+
+func (b *_BACnetReadAccessResultBuilder) MustBuild() BACnetReadAccessResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetReadAccessResultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetReadAccessResultBuilder().(*_BACnetReadAccessResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetReadAccessResultBuilder creates a BACnetReadAccessResultBuilder
+func (b *_BACnetReadAccessResult) CreateBACnetReadAccessResultBuilder() BACnetReadAccessResultBuilder {
+	if b == nil {
+		return NewBACnetReadAccessResultBuilder()
+	}
+	return &_BACnetReadAccessResultBuilder{_BACnetReadAccessResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +201,6 @@ func (m *_BACnetReadAccessResult) GetListOfResults() BACnetReadAccessResultListO
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessResult factory function for _BACnetReadAccessResult
-func NewBACnetReadAccessResult(objectIdentifier BACnetContextTagObjectIdentifier, listOfResults BACnetReadAccessResultListOfResults) *_BACnetReadAccessResult {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetReadAccessResult must not be nil")
-	}
-	return &_BACnetReadAccessResult{ObjectIdentifier: objectIdentifier, ListOfResults: listOfResults}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessResult(structType any) BACnetReadAccessResult {
@@ -128,7 +250,7 @@ func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetReadAccessResult) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetReadAccessResult BACnetReadAccessResult, err error) {
@@ -196,13 +318,32 @@ func (m *_BACnetReadAccessResult) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetReadAccessResult) IsBACnetReadAccessResult() {}
 
+func (m *_BACnetReadAccessResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessResult) deepCopy() *_BACnetReadAccessResult {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessResultCopy := &_BACnetReadAccessResult{
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.ListOfResults.DeepCopy().(BACnetReadAccessResultListOfResults),
+	}
+	return _BACnetReadAccessResultCopy
+}
+
 func (m *_BACnetReadAccessResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

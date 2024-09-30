@@ -38,6 +38,7 @@ type CBusPointToPointCommandIndirect interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToPointCommand
 	// GetBridgeAddress returns BridgeAddress (property field)
 	GetBridgeAddress() BridgeAddress
@@ -47,6 +48,8 @@ type CBusPointToPointCommandIndirect interface {
 	GetUnitAddress() UnitAddress
 	// IsCBusPointToPointCommandIndirect is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommandIndirect()
+	// CreateBuilder creates a CBusPointToPointCommandIndirectBuilder
+	CreateCBusPointToPointCommandIndirectBuilder() CBusPointToPointCommandIndirectBuilder
 }
 
 // _CBusPointToPointCommandIndirect is the data-structure of this message
@@ -59,6 +62,195 @@ type _CBusPointToPointCommandIndirect struct {
 
 var _ CBusPointToPointCommandIndirect = (*_CBusPointToPointCommandIndirect)(nil)
 var _ CBusPointToPointCommandRequirements = (*_CBusPointToPointCommandIndirect)(nil)
+
+// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
+func NewCBusPointToPointCommandIndirect(bridgeAddressCountPeek uint16, calData CALData, bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
+	if bridgeAddress == nil {
+		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if networkRoute == nil {
+		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
+	}
+	if unitAddress == nil {
+		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
+	}
+	_result := &_CBusPointToPointCommandIndirect{
+		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
+		BridgeAddress:                   bridgeAddress,
+		NetworkRoute:                    networkRoute,
+		UnitAddress:                     unitAddress,
+	}
+	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToPointCommandIndirectBuilder is a builder for CBusPointToPointCommandIndirect
+type CBusPointToPointCommandIndirectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress) CBusPointToPointCommandIndirectBuilder
+	// WithBridgeAddress adds BridgeAddress (property field)
+	WithBridgeAddress(BridgeAddress) CBusPointToPointCommandIndirectBuilder
+	// WithBridgeAddressBuilder adds BridgeAddress (property field) which is build by the builder
+	WithBridgeAddressBuilder(func(BridgeAddressBuilder) BridgeAddressBuilder) CBusPointToPointCommandIndirectBuilder
+	// WithNetworkRoute adds NetworkRoute (property field)
+	WithNetworkRoute(NetworkRoute) CBusPointToPointCommandIndirectBuilder
+	// WithNetworkRouteBuilder adds NetworkRoute (property field) which is build by the builder
+	WithNetworkRouteBuilder(func(NetworkRouteBuilder) NetworkRouteBuilder) CBusPointToPointCommandIndirectBuilder
+	// WithUnitAddress adds UnitAddress (property field)
+	WithUnitAddress(UnitAddress) CBusPointToPointCommandIndirectBuilder
+	// WithUnitAddressBuilder adds UnitAddress (property field) which is build by the builder
+	WithUnitAddressBuilder(func(UnitAddressBuilder) UnitAddressBuilder) CBusPointToPointCommandIndirectBuilder
+	// Build builds the CBusPointToPointCommandIndirect or returns an error if something is wrong
+	Build() (CBusPointToPointCommandIndirect, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToPointCommandIndirect
+}
+
+// NewCBusPointToPointCommandIndirectBuilder() creates a CBusPointToPointCommandIndirectBuilder
+func NewCBusPointToPointCommandIndirectBuilder() CBusPointToPointCommandIndirectBuilder {
+	return &_CBusPointToPointCommandIndirectBuilder{_CBusPointToPointCommandIndirect: new(_CBusPointToPointCommandIndirect)}
+}
+
+type _CBusPointToPointCommandIndirectBuilder struct {
+	*_CBusPointToPointCommandIndirect
+
+	parentBuilder *_CBusPointToPointCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToPointCommandIndirectBuilder) = (*_CBusPointToPointCommandIndirectBuilder)(nil)
+
+func (b *_CBusPointToPointCommandIndirectBuilder) setParent(contract CBusPointToPointCommandContract) {
+	b.CBusPointToPointCommandContract = contract
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithMandatoryFields(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress) CBusPointToPointCommandIndirectBuilder {
+	return b.WithBridgeAddress(bridgeAddress).WithNetworkRoute(networkRoute).WithUnitAddress(unitAddress)
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithBridgeAddress(bridgeAddress BridgeAddress) CBusPointToPointCommandIndirectBuilder {
+	b.BridgeAddress = bridgeAddress
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) CBusPointToPointCommandIndirectBuilder {
+	builder := builderSupplier(b.BridgeAddress.CreateBridgeAddressBuilder())
+	var err error
+	b.BridgeAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithNetworkRoute(networkRoute NetworkRoute) CBusPointToPointCommandIndirectBuilder {
+	b.NetworkRoute = networkRoute
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithNetworkRouteBuilder(builderSupplier func(NetworkRouteBuilder) NetworkRouteBuilder) CBusPointToPointCommandIndirectBuilder {
+	builder := builderSupplier(b.NetworkRoute.CreateNetworkRouteBuilder())
+	var err error
+	b.NetworkRoute, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NetworkRouteBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithUnitAddress(unitAddress UnitAddress) CBusPointToPointCommandIndirectBuilder {
+	b.UnitAddress = unitAddress
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) WithUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) CBusPointToPointCommandIndirectBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
+	var err error
+	b.UnitAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) Build() (CBusPointToPointCommandIndirect, error) {
+	if b.BridgeAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bridgeAddress' not set"))
+	}
+	if b.NetworkRoute == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'networkRoute' not set"))
+	}
+	if b.UnitAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'unitAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusPointToPointCommandIndirect.deepCopy(), nil
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) MustBuild() CBusPointToPointCommandIndirect {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusPointToPointCommandIndirectBuilder) Done() CBusPointToPointCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) buildForCBusPointToPointCommand() (CBusPointToPointCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusPointToPointCommandIndirectBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToPointCommandIndirectBuilder().(*_CBusPointToPointCommandIndirectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusPointToPointCommandIndirectBuilder creates a CBusPointToPointCommandIndirectBuilder
+func (b *_CBusPointToPointCommandIndirect) CreateCBusPointToPointCommandIndirectBuilder() CBusPointToPointCommandIndirectBuilder {
+	if b == nil {
+		return NewCBusPointToPointCommandIndirectBuilder()
+	}
+	return &_CBusPointToPointCommandIndirectBuilder{_CBusPointToPointCommandIndirect: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,27 +287,6 @@ func (m *_CBusPointToPointCommandIndirect) GetUnitAddress() UnitAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommandIndirect factory function for _CBusPointToPointCommandIndirect
-func NewCBusPointToPointCommandIndirect(bridgeAddress BridgeAddress, networkRoute NetworkRoute, unitAddress UnitAddress, bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommandIndirect {
-	if bridgeAddress == nil {
-		panic("bridgeAddress of type BridgeAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if networkRoute == nil {
-		panic("networkRoute of type NetworkRoute for CBusPointToPointCommandIndirect must not be nil")
-	}
-	if unitAddress == nil {
-		panic("unitAddress of type UnitAddress for CBusPointToPointCommandIndirect must not be nil")
-	}
-	_result := &_CBusPointToPointCommandIndirect{
-		CBusPointToPointCommandContract: NewCBusPointToPointCommand(bridgeAddressCountPeek, calData, cBusOptions),
-		BridgeAddress:                   bridgeAddress,
-		NetworkRoute:                    networkRoute,
-		UnitAddress:                     unitAddress,
-	}
-	_result.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommandIndirect(structType any) CBusPointToPointCommandIndirect {
@@ -227,13 +398,35 @@ func (m *_CBusPointToPointCommandIndirect) SerializeWithWriteBuffer(ctx context.
 
 func (m *_CBusPointToPointCommandIndirect) IsCBusPointToPointCommandIndirect() {}
 
+func (m *_CBusPointToPointCommandIndirect) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommandIndirect) deepCopy() *_CBusPointToPointCommandIndirect {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandIndirectCopy := &_CBusPointToPointCommandIndirect{
+		m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand).deepCopy(),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.NetworkRoute.DeepCopy().(NetworkRoute),
+		m.UnitAddress.DeepCopy().(UnitAddress),
+	}
+	m.CBusPointToPointCommandContract.(*_CBusPointToPointCommand)._SubType = m
+	return _CBusPointToPointCommandIndirectCopy
+}
+
 func (m *_CBusPointToPointCommandIndirect) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

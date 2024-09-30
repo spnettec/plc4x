@@ -38,11 +38,14 @@ type SecurityDataZoneUnsealed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
 	// IsSecurityDataZoneUnsealed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneUnsealed()
+	// CreateBuilder creates a SecurityDataZoneUnsealedBuilder
+	CreateSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder
 }
 
 // _SecurityDataZoneUnsealed is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataZoneUnsealed struct {
 
 var _ SecurityDataZoneUnsealed = (*_SecurityDataZoneUnsealed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneUnsealed)(nil)
+
+// NewSecurityDataZoneUnsealed factory function for _SecurityDataZoneUnsealed
+func NewSecurityDataZoneUnsealed(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneUnsealed {
+	_result := &_SecurityDataZoneUnsealed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneUnsealedBuilder is a builder for SecurityDataZoneUnsealed
+type SecurityDataZoneUnsealedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneUnsealedBuilder
+	// Build builds the SecurityDataZoneUnsealed or returns an error if something is wrong
+	Build() (SecurityDataZoneUnsealed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneUnsealed
+}
+
+// NewSecurityDataZoneUnsealedBuilder() creates a SecurityDataZoneUnsealedBuilder
+func NewSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder {
+	return &_SecurityDataZoneUnsealedBuilder{_SecurityDataZoneUnsealed: new(_SecurityDataZoneUnsealed)}
+}
+
+type _SecurityDataZoneUnsealedBuilder struct {
+	*_SecurityDataZoneUnsealed
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneUnsealedBuilder) = (*_SecurityDataZoneUnsealedBuilder)(nil)
+
+func (b *_SecurityDataZoneUnsealedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
+	return b.WithZoneNumber(zoneNumber)
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneUnsealedBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) Build() (SecurityDataZoneUnsealed, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataZoneUnsealed.deepCopy(), nil
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) MustBuild() SecurityDataZoneUnsealed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataZoneUnsealedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataZoneUnsealedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataZoneUnsealedBuilder().(*_SecurityDataZoneUnsealedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataZoneUnsealedBuilder creates a SecurityDataZoneUnsealedBuilder
+func (b *_SecurityDataZoneUnsealed) CreateSecurityDataZoneUnsealedBuilder() SecurityDataZoneUnsealedBuilder {
+	if b == nil {
+		return NewSecurityDataZoneUnsealedBuilder()
+	}
+	return &_SecurityDataZoneUnsealedBuilder{_SecurityDataZoneUnsealed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataZoneUnsealed) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneUnsealed factory function for _SecurityDataZoneUnsealed
-func NewSecurityDataZoneUnsealed(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneUnsealed {
-	_result := &_SecurityDataZoneUnsealed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneUnsealed(structType any) SecurityDataZoneUnsealed {
@@ -176,13 +270,33 @@ func (m *_SecurityDataZoneUnsealed) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_SecurityDataZoneUnsealed) IsSecurityDataZoneUnsealed() {}
 
+func (m *_SecurityDataZoneUnsealed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneUnsealed) deepCopy() *_SecurityDataZoneUnsealed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneUnsealedCopy := &_SecurityDataZoneUnsealed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneUnsealedCopy
+}
+
 func (m *_SecurityDataZoneUnsealed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

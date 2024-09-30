@@ -38,6 +38,7 @@ type CancelRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -45,6 +46,8 @@ type CancelRequest interface {
 	GetRequestHandle() uint32
 	// IsCancelRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCancelRequest()
+	// CreateBuilder creates a CancelRequestBuilder
+	CreateCancelRequestBuilder() CancelRequestBuilder
 }
 
 // _CancelRequest is the data-structure of this message
@@ -56,6 +59,139 @@ type _CancelRequest struct {
 
 var _ CancelRequest = (*_CancelRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CancelRequest)(nil)
+
+// NewCancelRequest factory function for _CancelRequest
+func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
+	}
+	_result := &_CancelRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		RequestHandle:                     requestHandle,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CancelRequestBuilder is a builder for CancelRequest
+type CancelRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) CancelRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder
+	// WithRequestHandle adds RequestHandle (property field)
+	WithRequestHandle(uint32) CancelRequestBuilder
+	// Build builds the CancelRequest or returns an error if something is wrong
+	Build() (CancelRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CancelRequest
+}
+
+// NewCancelRequestBuilder() creates a CancelRequestBuilder
+func NewCancelRequestBuilder() CancelRequestBuilder {
+	return &_CancelRequestBuilder{_CancelRequest: new(_CancelRequest)}
+}
+
+type _CancelRequestBuilder struct {
+	*_CancelRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CancelRequestBuilder) = (*_CancelRequestBuilder)(nil)
+
+func (b *_CancelRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_CancelRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, requestHandle uint32) CancelRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithRequestHandle(requestHandle)
+}
+
+func (b *_CancelRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) CancelRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_CancelRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CancelRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CancelRequestBuilder) WithRequestHandle(requestHandle uint32) CancelRequestBuilder {
+	b.RequestHandle = requestHandle
+	return b
+}
+
+func (b *_CancelRequestBuilder) Build() (CancelRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CancelRequest.deepCopy(), nil
+}
+
+func (b *_CancelRequestBuilder) MustBuild() CancelRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CancelRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CancelRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CancelRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCancelRequestBuilder().(*_CancelRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCancelRequestBuilder creates a CancelRequestBuilder
+func (b *_CancelRequest) CreateCancelRequestBuilder() CancelRequestBuilder {
+	if b == nil {
+		return NewCancelRequestBuilder()
+	}
+	return &_CancelRequestBuilder{_CancelRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_CancelRequest) GetRequestHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCancelRequest factory function for _CancelRequest
-func NewCancelRequest(requestHeader ExtensionObjectDefinition, requestHandle uint32) *_CancelRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for CancelRequest must not be nil")
-	}
-	_result := &_CancelRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		RequestHandle:                     requestHandle,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCancelRequest(structType any) CancelRequest {
@@ -204,13 +326,34 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_CancelRequest) IsCancelRequest() {}
 
+func (m *_CancelRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CancelRequest) deepCopy() *_CancelRequest {
+	if m == nil {
+		return nil
+	}
+	_CancelRequestCopy := &_CancelRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.RequestHandle,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CancelRequestCopy
+}
+
 func (m *_CancelRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

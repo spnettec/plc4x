@@ -38,6 +38,7 @@ type BACnetAccessUserTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetAccessUserTypeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessUserTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessUserTypeTagged()
+	// CreateBuilder creates a BACnetAccessUserTypeTaggedBuilder
+	CreateBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder
 }
 
 // _BACnetAccessUserTypeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetAccessUserTypeTagged struct {
 }
 
 var _ BACnetAccessUserTypeTagged = (*_BACnetAccessUserTypeTagged)(nil)
+
+// NewBACnetAccessUserTypeTagged factory function for _BACnetAccessUserTypeTagged
+func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessUserTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessUserTypeTagged must not be nil")
+	}
+	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessUserTypeTaggedBuilder is a builder for BACnetAccessUserTypeTagged
+type BACnetAccessUserTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessUserTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessUserTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessUserType) BACnetAccessUserTypeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessUserTypeTaggedBuilder
+	// Build builds the BACnetAccessUserTypeTagged or returns an error if something is wrong
+	Build() (BACnetAccessUserTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessUserTypeTagged
+}
+
+// NewBACnetAccessUserTypeTaggedBuilder() creates a BACnetAccessUserTypeTaggedBuilder
+func NewBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder {
+	return &_BACnetAccessUserTypeTaggedBuilder{_BACnetAccessUserTypeTagged: new(_BACnetAccessUserTypeTagged)}
+}
+
+type _BACnetAccessUserTypeTaggedBuilder struct {
+	*_BACnetAccessUserTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessUserTypeTaggedBuilder) = (*_BACnetAccessUserTypeTaggedBuilder)(nil)
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessUserTypeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessUserTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) WithValue(value BACnetAccessUserType) BACnetAccessUserTypeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessUserTypeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) Build() (BACnetAccessUserTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessUserTypeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) MustBuild() BACnetAccessUserTypeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessUserTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessUserTypeTaggedBuilder().(*_BACnetAccessUserTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessUserTypeTaggedBuilder creates a BACnetAccessUserTypeTaggedBuilder
+func (b *_BACnetAccessUserTypeTagged) CreateBACnetAccessUserTypeTaggedBuilder() BACnetAccessUserTypeTaggedBuilder {
+	if b == nil {
+		return NewBACnetAccessUserTypeTaggedBuilder()
+	}
+	return &_BACnetAccessUserTypeTaggedBuilder{_BACnetAccessUserTypeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetAccessUserTypeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessUserTypeTagged factory function for _BACnetAccessUserTypeTagged
-func NewBACnetAccessUserTypeTagged(header BACnetTagHeader, value BACnetAccessUserType, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessUserTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessUserTypeTagged must not be nil")
-	}
-	return &_BACnetAccessUserTypeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessUserTypeTagged(structType any) BACnetAccessUserTypeTagged {
@@ -159,7 +273,7 @@ func BACnetAccessUserTypeTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessUserTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessUserTypeTagged BACnetAccessUserTypeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetAccessUserTypeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAccessUserTypeTagged) IsBACnetAccessUserTypeTagged() {}
 
+func (m *_BACnetAccessUserTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessUserTypeTagged) deepCopy() *_BACnetAccessUserTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessUserTypeTaggedCopy := &_BACnetAccessUserTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessUserTypeTaggedCopy
+}
+
 func (m *_BACnetAccessUserTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

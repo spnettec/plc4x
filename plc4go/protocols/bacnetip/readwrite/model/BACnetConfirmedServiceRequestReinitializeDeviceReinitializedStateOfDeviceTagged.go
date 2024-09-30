@@ -38,12 +38,15 @@ type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
 	// IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	CreateBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
 }
 
 // _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceT
 }
 
 var _ BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged = (*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)(nil)
+
+// NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged factory function for _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
+func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder is a builder for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
+type BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+	// Build builds the BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
+}
+
+// NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder() creates a BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder{_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged: new(_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)}
+}
+
+type _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder struct {
+	*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) = (*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) WithValue(value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) Build() (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) MustBuild() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder().(*_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder creates a BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder
+func (b *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) CreateBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder() BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedBuilder{_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged factory function for _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
-func NewBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(header BACnetTagHeader, value BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, tagNumber uint8, tagClass TagClass) *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged(structType any) BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
@@ -130,7 +237,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged, err error) {
@@ -218,13 +325,34 @@ func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDev
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) IsBACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged() {
 }
 
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) deepCopy() *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy := &_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

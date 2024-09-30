@@ -38,6 +38,7 @@ type BACnetReadAccessProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -46,6 +47,8 @@ type BACnetReadAccessProperty interface {
 	GetReadResult() BACnetReadAccessPropertyReadResult
 	// IsBACnetReadAccessProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetReadAccessProperty()
+	// CreateBuilder creates a BACnetReadAccessPropertyBuilder
+	CreateBACnetReadAccessPropertyBuilder() BACnetReadAccessPropertyBuilder
 }
 
 // _BACnetReadAccessProperty is the data-structure of this message
@@ -59,6 +62,155 @@ type _BACnetReadAccessProperty struct {
 }
 
 var _ BACnetReadAccessProperty = (*_BACnetReadAccessProperty)(nil)
+
+// NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
+func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
+	}
+	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetReadAccessPropertyBuilder is a builder for BACnetReadAccessProperty
+type BACnetReadAccessPropertyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetReadAccessPropertyBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetReadAccessPropertyBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetReadAccessPropertyBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) BACnetReadAccessPropertyBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetReadAccessPropertyBuilder
+	// WithReadResult adds ReadResult (property field)
+	WithOptionalReadResult(BACnetReadAccessPropertyReadResult) BACnetReadAccessPropertyBuilder
+	// WithOptionalReadResultBuilder adds ReadResult (property field) which is build by the builder
+	WithOptionalReadResultBuilder(func(BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyBuilder
+	// Build builds the BACnetReadAccessProperty or returns an error if something is wrong
+	Build() (BACnetReadAccessProperty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetReadAccessProperty
+}
+
+// NewBACnetReadAccessPropertyBuilder() creates a BACnetReadAccessPropertyBuilder
+func NewBACnetReadAccessPropertyBuilder() BACnetReadAccessPropertyBuilder {
+	return &_BACnetReadAccessPropertyBuilder{_BACnetReadAccessProperty: new(_BACnetReadAccessProperty)}
+}
+
+type _BACnetReadAccessPropertyBuilder struct {
+	*_BACnetReadAccessProperty
+
+	err *utils.MultiError
+}
+
+var _ (BACnetReadAccessPropertyBuilder) = (*_BACnetReadAccessPropertyBuilder)(nil)
+
+func (b *_BACnetReadAccessPropertyBuilder) WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetReadAccessPropertyBuilder {
+	return b.WithPropertyIdentifier(propertyIdentifier)
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetReadAccessPropertyBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetReadAccessPropertyBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetReadAccessPropertyBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetReadAccessPropertyBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithOptionalReadResult(readResult BACnetReadAccessPropertyReadResult) BACnetReadAccessPropertyBuilder {
+	b.ReadResult = readResult
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) WithOptionalReadResultBuilder(builderSupplier func(BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyReadResultBuilder) BACnetReadAccessPropertyBuilder {
+	builder := builderSupplier(b.ReadResult.CreateBACnetReadAccessPropertyReadResultBuilder())
+	var err error
+	b.ReadResult, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetReadAccessPropertyReadResultBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) Build() (BACnetReadAccessProperty, error) {
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetReadAccessProperty.deepCopy(), nil
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) MustBuild() BACnetReadAccessProperty {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetReadAccessPropertyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetReadAccessPropertyBuilder().(*_BACnetReadAccessPropertyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetReadAccessPropertyBuilder creates a BACnetReadAccessPropertyBuilder
+func (b *_BACnetReadAccessProperty) CreateBACnetReadAccessPropertyBuilder() BACnetReadAccessPropertyBuilder {
+	if b == nil {
+		return NewBACnetReadAccessPropertyBuilder()
+	}
+	return &_BACnetReadAccessPropertyBuilder{_BACnetReadAccessProperty: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,14 +233,6 @@ func (m *_BACnetReadAccessProperty) GetReadResult() BACnetReadAccessPropertyRead
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetReadAccessProperty factory function for _BACnetReadAccessProperty
-func NewBACnetReadAccessProperty(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, readResult BACnetReadAccessPropertyReadResult, objectTypeArgument BACnetObjectType) *_BACnetReadAccessProperty {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetReadAccessProperty must not be nil")
-	}
-	return &_BACnetReadAccessProperty{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, ReadResult: readResult, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetReadAccessProperty(structType any) BACnetReadAccessProperty {
@@ -143,7 +287,7 @@ func BACnetReadAccessPropertyParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetReadAccessProperty) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetReadAccessProperty BACnetReadAccessProperty, err error) {
@@ -235,13 +379,34 @@ func (m *_BACnetReadAccessProperty) GetObjectTypeArgument() BACnetObjectType {
 
 func (m *_BACnetReadAccessProperty) IsBACnetReadAccessProperty() {}
 
+func (m *_BACnetReadAccessProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetReadAccessProperty) deepCopy() *_BACnetReadAccessProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetReadAccessPropertyCopy := &_BACnetReadAccessProperty{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ReadResult.DeepCopy().(BACnetReadAccessPropertyReadResult),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetReadAccessPropertyCopy
+}
+
 func (m *_BACnetReadAccessProperty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

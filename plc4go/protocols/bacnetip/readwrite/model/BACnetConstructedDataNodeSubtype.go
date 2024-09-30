@@ -38,6 +38,7 @@ type BACnetConstructedDataNodeSubtype interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNodeSubType returns NodeSubType (property field)
 	GetNodeSubType() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataNodeSubtype interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataNodeSubtype is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNodeSubtype()
+	// CreateBuilder creates a BACnetConstructedDataNodeSubtypeBuilder
+	CreateBACnetConstructedDataNodeSubtypeBuilder() BACnetConstructedDataNodeSubtypeBuilder
 }
 
 // _BACnetConstructedDataNodeSubtype is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataNodeSubtype struct {
 
 var _ BACnetConstructedDataNodeSubtype = (*_BACnetConstructedDataNodeSubtype)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNodeSubtype)(nil)
+
+// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
+func NewBACnetConstructedDataNodeSubtype(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, nodeSubType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
+	if nodeSubType == nil {
+		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
+	}
+	_result := &_BACnetConstructedDataNodeSubtype{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NodeSubType:                   nodeSubType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNodeSubtypeBuilder is a builder for BACnetConstructedDataNodeSubtype
+type BACnetConstructedDataNodeSubtypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeSubType BACnetApplicationTagCharacterString) BACnetConstructedDataNodeSubtypeBuilder
+	// WithNodeSubType adds NodeSubType (property field)
+	WithNodeSubType(BACnetApplicationTagCharacterString) BACnetConstructedDataNodeSubtypeBuilder
+	// WithNodeSubTypeBuilder adds NodeSubType (property field) which is build by the builder
+	WithNodeSubTypeBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataNodeSubtypeBuilder
+	// Build builds the BACnetConstructedDataNodeSubtype or returns an error if something is wrong
+	Build() (BACnetConstructedDataNodeSubtype, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNodeSubtype
+}
+
+// NewBACnetConstructedDataNodeSubtypeBuilder() creates a BACnetConstructedDataNodeSubtypeBuilder
+func NewBACnetConstructedDataNodeSubtypeBuilder() BACnetConstructedDataNodeSubtypeBuilder {
+	return &_BACnetConstructedDataNodeSubtypeBuilder{_BACnetConstructedDataNodeSubtype: new(_BACnetConstructedDataNodeSubtype)}
+}
+
+type _BACnetConstructedDataNodeSubtypeBuilder struct {
+	*_BACnetConstructedDataNodeSubtype
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNodeSubtypeBuilder) = (*_BACnetConstructedDataNodeSubtypeBuilder)(nil)
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) WithMandatoryFields(nodeSubType BACnetApplicationTagCharacterString) BACnetConstructedDataNodeSubtypeBuilder {
+	return b.WithNodeSubType(nodeSubType)
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) WithNodeSubType(nodeSubType BACnetApplicationTagCharacterString) BACnetConstructedDataNodeSubtypeBuilder {
+	b.NodeSubType = nodeSubType
+	return b
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) WithNodeSubTypeBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataNodeSubtypeBuilder {
+	builder := builderSupplier(b.NodeSubType.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.NodeSubType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) Build() (BACnetConstructedDataNodeSubtype, error) {
+	if b.NodeSubType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeSubType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataNodeSubtype.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) MustBuild() BACnetConstructedDataNodeSubtype {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNodeSubtypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNodeSubtypeBuilder().(*_BACnetConstructedDataNodeSubtypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataNodeSubtypeBuilder creates a BACnetConstructedDataNodeSubtypeBuilder
+func (b *_BACnetConstructedDataNodeSubtype) CreateBACnetConstructedDataNodeSubtypeBuilder() BACnetConstructedDataNodeSubtypeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataNodeSubtypeBuilder()
+	}
+	return &_BACnetConstructedDataNodeSubtypeBuilder{_BACnetConstructedDataNodeSubtype: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataNodeSubtype) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNodeSubtype factory function for _BACnetConstructedDataNodeSubtype
-func NewBACnetConstructedDataNodeSubtype(nodeSubType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNodeSubtype {
-	if nodeSubType == nil {
-		panic("nodeSubType of type BACnetApplicationTagCharacterString for BACnetConstructedDataNodeSubtype must not be nil")
-	}
-	_result := &_BACnetConstructedDataNodeSubtype{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NodeSubType:                   nodeSubType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNodeSubtype(structType any) BACnetConstructedDataNodeSubtype {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataNodeSubtype) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataNodeSubtype) IsBACnetConstructedDataNodeSubtype() {}
 
+func (m *_BACnetConstructedDataNodeSubtype) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNodeSubtype) deepCopy() *_BACnetConstructedDataNodeSubtype {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNodeSubtypeCopy := &_BACnetConstructedDataNodeSubtype{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NodeSubType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNodeSubtypeCopy
+}
+
 func (m *_BACnetConstructedDataNodeSubtype) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

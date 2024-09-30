@@ -38,6 +38,7 @@ type NLMUpdateKeyUpdateKeyEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetKeyIdentifier returns KeyIdentifier (property field)
 	GetKeyIdentifier() uint16
 	// GetKeySize returns KeySize (property field)
@@ -46,6 +47,8 @@ type NLMUpdateKeyUpdateKeyEntry interface {
 	GetKey() []byte
 	// IsNLMUpdateKeyUpdateKeyEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMUpdateKeyUpdateKeyEntry()
+	// CreateBuilder creates a NLMUpdateKeyUpdateKeyEntryBuilder
+	CreateNLMUpdateKeyUpdateKeyEntryBuilder() NLMUpdateKeyUpdateKeyEntryBuilder
 }
 
 // _NLMUpdateKeyUpdateKeyEntry is the data-structure of this message
@@ -56,6 +59,101 @@ type _NLMUpdateKeyUpdateKeyEntry struct {
 }
 
 var _ NLMUpdateKeyUpdateKeyEntry = (*_NLMUpdateKeyUpdateKeyEntry)(nil)
+
+// NewNLMUpdateKeyUpdateKeyEntry factory function for _NLMUpdateKeyUpdateKeyEntry
+func NewNLMUpdateKeyUpdateKeyEntry(keyIdentifier uint16, keySize uint8, key []byte) *_NLMUpdateKeyUpdateKeyEntry {
+	return &_NLMUpdateKeyUpdateKeyEntry{KeyIdentifier: keyIdentifier, KeySize: keySize, Key: key}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMUpdateKeyUpdateKeyEntryBuilder is a builder for NLMUpdateKeyUpdateKeyEntry
+type NLMUpdateKeyUpdateKeyEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(keyIdentifier uint16, keySize uint8, key []byte) NLMUpdateKeyUpdateKeyEntryBuilder
+	// WithKeyIdentifier adds KeyIdentifier (property field)
+	WithKeyIdentifier(uint16) NLMUpdateKeyUpdateKeyEntryBuilder
+	// WithKeySize adds KeySize (property field)
+	WithKeySize(uint8) NLMUpdateKeyUpdateKeyEntryBuilder
+	// WithKey adds Key (property field)
+	WithKey(...byte) NLMUpdateKeyUpdateKeyEntryBuilder
+	// Build builds the NLMUpdateKeyUpdateKeyEntry or returns an error if something is wrong
+	Build() (NLMUpdateKeyUpdateKeyEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMUpdateKeyUpdateKeyEntry
+}
+
+// NewNLMUpdateKeyUpdateKeyEntryBuilder() creates a NLMUpdateKeyUpdateKeyEntryBuilder
+func NewNLMUpdateKeyUpdateKeyEntryBuilder() NLMUpdateKeyUpdateKeyEntryBuilder {
+	return &_NLMUpdateKeyUpdateKeyEntryBuilder{_NLMUpdateKeyUpdateKeyEntry: new(_NLMUpdateKeyUpdateKeyEntry)}
+}
+
+type _NLMUpdateKeyUpdateKeyEntryBuilder struct {
+	*_NLMUpdateKeyUpdateKeyEntry
+
+	err *utils.MultiError
+}
+
+var _ (NLMUpdateKeyUpdateKeyEntryBuilder) = (*_NLMUpdateKeyUpdateKeyEntryBuilder)(nil)
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithMandatoryFields(keyIdentifier uint16, keySize uint8, key []byte) NLMUpdateKeyUpdateKeyEntryBuilder {
+	return b.WithKeyIdentifier(keyIdentifier).WithKeySize(keySize).WithKey(key...)
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeyIdentifier(keyIdentifier uint16) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.KeyIdentifier = keyIdentifier
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKeySize(keySize uint8) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.KeySize = keySize
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) WithKey(key ...byte) NLMUpdateKeyUpdateKeyEntryBuilder {
+	b.Key = key
+	return b
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) Build() (NLMUpdateKeyUpdateKeyEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMUpdateKeyUpdateKeyEntry.deepCopy(), nil
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) MustBuild() NLMUpdateKeyUpdateKeyEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NLMUpdateKeyUpdateKeyEntryBuilder) DeepCopy() any {
+	_copy := b.CreateNLMUpdateKeyUpdateKeyEntryBuilder().(*_NLMUpdateKeyUpdateKeyEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMUpdateKeyUpdateKeyEntryBuilder creates a NLMUpdateKeyUpdateKeyEntryBuilder
+func (b *_NLMUpdateKeyUpdateKeyEntry) CreateNLMUpdateKeyUpdateKeyEntryBuilder() NLMUpdateKeyUpdateKeyEntryBuilder {
+	if b == nil {
+		return NewNLMUpdateKeyUpdateKeyEntryBuilder()
+	}
+	return &_NLMUpdateKeyUpdateKeyEntryBuilder{_NLMUpdateKeyUpdateKeyEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) GetKey() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMUpdateKeyUpdateKeyEntry factory function for _NLMUpdateKeyUpdateKeyEntry
-func NewNLMUpdateKeyUpdateKeyEntry(keyIdentifier uint16, keySize uint8, key []byte) *_NLMUpdateKeyUpdateKeyEntry {
-	return &_NLMUpdateKeyUpdateKeyEntry{KeyIdentifier: keyIdentifier, KeySize: keySize, Key: key}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMUpdateKeyUpdateKeyEntry(structType any) NLMUpdateKeyUpdateKeyEntry {
@@ -135,7 +228,7 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NLMUpdateKeyUpdateKeyEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nLMUpdateKeyUpdateKeyEntry NLMUpdateKeyUpdateKeyEntry, err error) {
@@ -209,13 +302,33 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_NLMUpdateKeyUpdateKeyEntry) IsNLMUpdateKeyUpdateKeyEntry() {}
 
+func (m *_NLMUpdateKeyUpdateKeyEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMUpdateKeyUpdateKeyEntry) deepCopy() *_NLMUpdateKeyUpdateKeyEntry {
+	if m == nil {
+		return nil
+	}
+	_NLMUpdateKeyUpdateKeyEntryCopy := &_NLMUpdateKeyUpdateKeyEntry{
+		m.KeyIdentifier,
+		m.KeySize,
+		utils.DeepCopySlice[byte, byte](m.Key),
+	}
+	return _NLMUpdateKeyUpdateKeyEntryCopy
+}
+
 func (m *_NLMUpdateKeyUpdateKeyEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

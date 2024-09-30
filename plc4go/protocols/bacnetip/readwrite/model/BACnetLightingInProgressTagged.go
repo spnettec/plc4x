@@ -38,12 +38,15 @@ type BACnetLightingInProgressTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetLightingInProgress
 	// IsBACnetLightingInProgressTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLightingInProgressTagged()
+	// CreateBuilder creates a BACnetLightingInProgressTaggedBuilder
+	CreateBACnetLightingInProgressTaggedBuilder() BACnetLightingInProgressTaggedBuilder
 }
 
 // _BACnetLightingInProgressTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetLightingInProgressTagged struct {
 }
 
 var _ BACnetLightingInProgressTagged = (*_BACnetLightingInProgressTagged)(nil)
+
+// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
+func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
+	}
+	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLightingInProgressTaggedBuilder is a builder for BACnetLightingInProgressTagged
+type BACnetLightingInProgressTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLightingInProgressTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingInProgressTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder
+	// Build builds the BACnetLightingInProgressTagged or returns an error if something is wrong
+	Build() (BACnetLightingInProgressTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLightingInProgressTagged
+}
+
+// NewBACnetLightingInProgressTaggedBuilder() creates a BACnetLightingInProgressTaggedBuilder
+func NewBACnetLightingInProgressTaggedBuilder() BACnetLightingInProgressTaggedBuilder {
+	return &_BACnetLightingInProgressTaggedBuilder{_BACnetLightingInProgressTagged: new(_BACnetLightingInProgressTagged)}
+}
+
+type _BACnetLightingInProgressTaggedBuilder struct {
+	*_BACnetLightingInProgressTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLightingInProgressTaggedBuilder) = (*_BACnetLightingInProgressTaggedBuilder)(nil)
+
+func (b *_BACnetLightingInProgressTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLightingInProgressTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLightingInProgressTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) WithValue(value BACnetLightingInProgress) BACnetLightingInProgressTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) Build() (BACnetLightingInProgressTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLightingInProgressTagged.deepCopy(), nil
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) MustBuild() BACnetLightingInProgressTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLightingInProgressTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLightingInProgressTaggedBuilder().(*_BACnetLightingInProgressTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLightingInProgressTaggedBuilder creates a BACnetLightingInProgressTaggedBuilder
+func (b *_BACnetLightingInProgressTagged) CreateBACnetLightingInProgressTaggedBuilder() BACnetLightingInProgressTaggedBuilder {
+	if b == nil {
+		return NewBACnetLightingInProgressTaggedBuilder()
+	}
+	return &_BACnetLightingInProgressTaggedBuilder{_BACnetLightingInProgressTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetLightingInProgressTagged) GetValue() BACnetLightingInProgress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingInProgressTagged factory function for _BACnetLightingInProgressTagged
-func NewBACnetLightingInProgressTagged(header BACnetTagHeader, value BACnetLightingInProgress, tagNumber uint8, tagClass TagClass) *_BACnetLightingInProgressTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLightingInProgressTagged must not be nil")
-	}
-	return &_BACnetLightingInProgressTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingInProgressTagged(structType any) BACnetLightingInProgressTagged {
@@ -130,7 +237,7 @@ func BACnetLightingInProgressTaggedParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLightingInProgressTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLightingInProgressTagged BACnetLightingInProgressTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetLightingInProgressTagged) GetTagClass() TagClass {
 
 func (m *_BACnetLightingInProgressTagged) IsBACnetLightingInProgressTagged() {}
 
+func (m *_BACnetLightingInProgressTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingInProgressTagged) deepCopy() *_BACnetLightingInProgressTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingInProgressTaggedCopy := &_BACnetLightingInProgressTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLightingInProgressTaggedCopy
+}
+
 func (m *_BACnetLightingInProgressTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

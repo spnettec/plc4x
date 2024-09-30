@@ -19,6 +19,70 @@
 
 package object
 
-type Property struct {
-	//TODO: implement me
+import . "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+
+// TODO: big WIP
+type Property interface {
+	ReadProperty(args Args, kwArgs KWArgs) error
+	WriteProperty(args Args, kwArgs KWArgs) error
+	IsOptional() bool
+	Get_Default() any
+	IsMutable() bool
+}
+
+type PropertyKlass interface {
+	Encode(Arg) error
+}
+
+func NewProperty(name string, klass func(Args, KWArgs) (PropertyKlass, error), options ...Option) Property {
+	i := &_Property{
+		name:  name,
+		klass: klass,
+	}
+	ApplyAppliers(options, i)
+	return i
+}
+
+type _Property struct {
+	name     string
+	klass    func(Args, KWArgs) (PropertyKlass, error)
+	optional bool
+	_default any
+	mutable  bool
+}
+
+var _ Property = (*_Property)(nil)
+
+func WithPropertyOptional(optional bool) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e.optional = optional })
+}
+
+func WithPropertyDefault(_default any) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e._default = _default })
+}
+
+func WithPropertyMutable(mutable bool) GenericApplier[*_Property] {
+	return WrapGenericApplier(func(e *_Property) { e.mutable = mutable })
+}
+
+func (p *_Property) IsOptional() bool {
+	return p.optional
+}
+
+func (p *_Property) Get_Default() any {
+	return p._default
+}
+
+func (p *_Property) IsMutable() bool {
+	return p.mutable
+}
+
+func (p *_Property) ReadProperty(Args, KWArgs) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (p *_Property) WriteProperty(Args, KWArgs) error {
+	//TODO implement me
+	panic("implement me")
 }

@@ -38,12 +38,15 @@ type BACnetPrescale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMultiplier returns Multiplier (property field)
 	GetMultiplier() BACnetContextTagUnsignedInteger
 	// GetModuloDivide returns ModuloDivide (property field)
 	GetModuloDivide() BACnetContextTagUnsignedInteger
 	// IsBACnetPrescale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPrescale()
+	// CreateBuilder creates a BACnetPrescaleBuilder
+	CreateBACnetPrescaleBuilder() BACnetPrescaleBuilder
 }
 
 // _BACnetPrescale is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetPrescale struct {
 }
 
 var _ BACnetPrescale = (*_BACnetPrescale)(nil)
+
+// NewBACnetPrescale factory function for _BACnetPrescale
+func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
+	if multiplier == nil {
+		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	if moduloDivide == nil {
+		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
+	}
+	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPrescaleBuilder is a builder for BACnetPrescale
+type BACnetPrescaleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder
+	// WithMultiplier adds Multiplier (property field)
+	WithMultiplier(BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder
+	// WithMultiplierBuilder adds Multiplier (property field) which is build by the builder
+	WithMultiplierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder
+	// WithModuloDivide adds ModuloDivide (property field)
+	WithModuloDivide(BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder
+	// WithModuloDivideBuilder adds ModuloDivide (property field) which is build by the builder
+	WithModuloDivideBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder
+	// Build builds the BACnetPrescale or returns an error if something is wrong
+	Build() (BACnetPrescale, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPrescale
+}
+
+// NewBACnetPrescaleBuilder() creates a BACnetPrescaleBuilder
+func NewBACnetPrescaleBuilder() BACnetPrescaleBuilder {
+	return &_BACnetPrescaleBuilder{_BACnetPrescale: new(_BACnetPrescale)}
+}
+
+type _BACnetPrescaleBuilder struct {
+	*_BACnetPrescale
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPrescaleBuilder) = (*_BACnetPrescaleBuilder)(nil)
+
+func (b *_BACnetPrescaleBuilder) WithMandatoryFields(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	return b.WithMultiplier(multiplier).WithModuloDivide(moduloDivide)
+}
+
+func (b *_BACnetPrescaleBuilder) WithMultiplier(multiplier BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	b.Multiplier = multiplier
+	return b
+}
+
+func (b *_BACnetPrescaleBuilder) WithMultiplierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
+	builder := builderSupplier(b.Multiplier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Multiplier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPrescaleBuilder) WithModuloDivide(moduloDivide BACnetContextTagUnsignedInteger) BACnetPrescaleBuilder {
+	b.ModuloDivide = moduloDivide
+	return b
+}
+
+func (b *_BACnetPrescaleBuilder) WithModuloDivideBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPrescaleBuilder {
+	builder := builderSupplier(b.ModuloDivide.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ModuloDivide, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPrescaleBuilder) Build() (BACnetPrescale, error) {
+	if b.Multiplier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'multiplier' not set"))
+	}
+	if b.ModuloDivide == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'moduloDivide' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPrescale.deepCopy(), nil
+}
+
+func (b *_BACnetPrescaleBuilder) MustBuild() BACnetPrescale {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPrescaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPrescaleBuilder().(*_BACnetPrescaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPrescaleBuilder creates a BACnetPrescaleBuilder
+func (b *_BACnetPrescale) CreateBACnetPrescaleBuilder() BACnetPrescaleBuilder {
+	if b == nil {
+		return NewBACnetPrescaleBuilder()
+	}
+	return &_BACnetPrescaleBuilder{_BACnetPrescale: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetPrescale) GetModuloDivide() BACnetContextTagUnsignedInteger {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPrescale factory function for _BACnetPrescale
-func NewBACnetPrescale(multiplier BACnetContextTagUnsignedInteger, moduloDivide BACnetContextTagUnsignedInteger) *_BACnetPrescale {
-	if multiplier == nil {
-		panic("multiplier of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	if moduloDivide == nil {
-		panic("moduloDivide of type BACnetContextTagUnsignedInteger for BACnetPrescale must not be nil")
-	}
-	return &_BACnetPrescale{Multiplier: multiplier, ModuloDivide: moduloDivide}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPrescale(structType any) BACnetPrescale {
@@ -129,7 +257,7 @@ func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPrescale) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetPrescale BACnetPrescale, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetPrescale) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_BACnetPrescale) IsBACnetPrescale() {}
 
+func (m *_BACnetPrescale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPrescale) deepCopy() *_BACnetPrescale {
+	if m == nil {
+		return nil
+	}
+	_BACnetPrescaleCopy := &_BACnetPrescale{
+		m.Multiplier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ModuloDivide.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetPrescaleCopy
+}
+
 func (m *_BACnetPrescale) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

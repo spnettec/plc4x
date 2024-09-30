@@ -38,12 +38,15 @@ type PascalByteString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStringLength returns StringLength (property field)
 	GetStringLength() int32
 	// GetStringValue returns StringValue (property field)
 	GetStringValue() []byte
 	// IsPascalByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPascalByteString()
+	// CreateBuilder creates a PascalByteStringBuilder
+	CreatePascalByteStringBuilder() PascalByteStringBuilder
 }
 
 // _PascalByteString is the data-structure of this message
@@ -53,6 +56,94 @@ type _PascalByteString struct {
 }
 
 var _ PascalByteString = (*_PascalByteString)(nil)
+
+// NewPascalByteString factory function for _PascalByteString
+func NewPascalByteString(stringLength int32, stringValue []byte) *_PascalByteString {
+	return &_PascalByteString{StringLength: stringLength, StringValue: stringValue}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PascalByteStringBuilder is a builder for PascalByteString
+type PascalByteStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(stringLength int32, stringValue []byte) PascalByteStringBuilder
+	// WithStringLength adds StringLength (property field)
+	WithStringLength(int32) PascalByteStringBuilder
+	// WithStringValue adds StringValue (property field)
+	WithStringValue(...byte) PascalByteStringBuilder
+	// Build builds the PascalByteString or returns an error if something is wrong
+	Build() (PascalByteString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PascalByteString
+}
+
+// NewPascalByteStringBuilder() creates a PascalByteStringBuilder
+func NewPascalByteStringBuilder() PascalByteStringBuilder {
+	return &_PascalByteStringBuilder{_PascalByteString: new(_PascalByteString)}
+}
+
+type _PascalByteStringBuilder struct {
+	*_PascalByteString
+
+	err *utils.MultiError
+}
+
+var _ (PascalByteStringBuilder) = (*_PascalByteStringBuilder)(nil)
+
+func (b *_PascalByteStringBuilder) WithMandatoryFields(stringLength int32, stringValue []byte) PascalByteStringBuilder {
+	return b.WithStringLength(stringLength).WithStringValue(stringValue...)
+}
+
+func (b *_PascalByteStringBuilder) WithStringLength(stringLength int32) PascalByteStringBuilder {
+	b.StringLength = stringLength
+	return b
+}
+
+func (b *_PascalByteStringBuilder) WithStringValue(stringValue ...byte) PascalByteStringBuilder {
+	b.StringValue = stringValue
+	return b
+}
+
+func (b *_PascalByteStringBuilder) Build() (PascalByteString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PascalByteString.deepCopy(), nil
+}
+
+func (b *_PascalByteStringBuilder) MustBuild() PascalByteString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PascalByteStringBuilder) DeepCopy() any {
+	_copy := b.CreatePascalByteStringBuilder().(*_PascalByteStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePascalByteStringBuilder creates a PascalByteStringBuilder
+func (b *_PascalByteString) CreatePascalByteStringBuilder() PascalByteStringBuilder {
+	if b == nil {
+		return NewPascalByteStringBuilder()
+	}
+	return &_PascalByteStringBuilder{_PascalByteString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_PascalByteString) GetStringValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPascalByteString factory function for _PascalByteString
-func NewPascalByteString(stringLength int32, stringValue []byte) *_PascalByteString {
-	return &_PascalByteString{StringLength: stringLength, StringValue: stringValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPascalByteString(structType any) PascalByteString {
@@ -125,7 +211,7 @@ func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PascalByteString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__pascalByteString PascalByteString, err error) {
@@ -189,13 +275,32 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_PascalByteString) IsPascalByteString() {}
 
+func (m *_PascalByteString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PascalByteString) deepCopy() *_PascalByteString {
+	if m == nil {
+		return nil
+	}
+	_PascalByteStringCopy := &_PascalByteString{
+		m.StringLength,
+		utils.DeepCopySlice[byte, byte](m.StringValue),
+	}
+	return _PascalByteStringCopy
+}
+
 func (m *_PascalByteString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

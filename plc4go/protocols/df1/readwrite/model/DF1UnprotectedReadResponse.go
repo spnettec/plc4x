@@ -37,11 +37,14 @@ type DF1UnprotectedReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Command
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsDF1UnprotectedReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1UnprotectedReadResponse()
+	// CreateBuilder creates a DF1UnprotectedReadResponseBuilder
+	CreateDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder
 }
 
 // _DF1UnprotectedReadResponse is the data-structure of this message
@@ -52,6 +55,107 @@ type _DF1UnprotectedReadResponse struct {
 
 var _ DF1UnprotectedReadResponse = (*_DF1UnprotectedReadResponse)(nil)
 var _ DF1CommandRequirements = (*_DF1UnprotectedReadResponse)(nil)
+
+// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
+func NewDF1UnprotectedReadResponse(status uint8, transactionCounter uint16, data []byte) *_DF1UnprotectedReadResponse {
+	_result := &_DF1UnprotectedReadResponse{
+		DF1CommandContract: NewDF1Command(status, transactionCounter),
+		Data:               data,
+	}
+	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1UnprotectedReadResponseBuilder is a builder for DF1UnprotectedReadResponse
+type DF1UnprotectedReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) DF1UnprotectedReadResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) DF1UnprotectedReadResponseBuilder
+	// Build builds the DF1UnprotectedReadResponse or returns an error if something is wrong
+	Build() (DF1UnprotectedReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1UnprotectedReadResponse
+}
+
+// NewDF1UnprotectedReadResponseBuilder() creates a DF1UnprotectedReadResponseBuilder
+func NewDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder {
+	return &_DF1UnprotectedReadResponseBuilder{_DF1UnprotectedReadResponse: new(_DF1UnprotectedReadResponse)}
+}
+
+type _DF1UnprotectedReadResponseBuilder struct {
+	*_DF1UnprotectedReadResponse
+
+	parentBuilder *_DF1CommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1UnprotectedReadResponseBuilder) = (*_DF1UnprotectedReadResponseBuilder)(nil)
+
+func (b *_DF1UnprotectedReadResponseBuilder) setParent(contract DF1CommandContract) {
+	b.DF1CommandContract = contract
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) WithMandatoryFields(data []byte) DF1UnprotectedReadResponseBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) WithData(data ...byte) DF1UnprotectedReadResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) Build() (DF1UnprotectedReadResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1UnprotectedReadResponse.deepCopy(), nil
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) MustBuild() DF1UnprotectedReadResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1UnprotectedReadResponseBuilder) Done() DF1CommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) buildForDF1Command() (DF1Command, error) {
+	return b.Build()
+}
+
+func (b *_DF1UnprotectedReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDF1UnprotectedReadResponseBuilder().(*_DF1UnprotectedReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1UnprotectedReadResponseBuilder creates a DF1UnprotectedReadResponseBuilder
+func (b *_DF1UnprotectedReadResponse) CreateDF1UnprotectedReadResponseBuilder() DF1UnprotectedReadResponseBuilder {
+	if b == nil {
+		return NewDF1UnprotectedReadResponseBuilder()
+	}
+	return &_DF1UnprotectedReadResponseBuilder{_DF1UnprotectedReadResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -84,16 +188,6 @@ func (m *_DF1UnprotectedReadResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1UnprotectedReadResponse factory function for _DF1UnprotectedReadResponse
-func NewDF1UnprotectedReadResponse(data []byte, status uint8, transactionCounter uint16) *_DF1UnprotectedReadResponse {
-	_result := &_DF1UnprotectedReadResponse{
-		DF1CommandContract: NewDF1Command(status, transactionCounter),
-		Data:               data,
-	}
-	_result.DF1CommandContract.(*_DF1Command)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1UnprotectedReadResponse(structType any) DF1UnprotectedReadResponse {
@@ -181,13 +275,33 @@ func (m *_DF1UnprotectedReadResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_DF1UnprotectedReadResponse) IsDF1UnprotectedReadResponse() {}
 
+func (m *_DF1UnprotectedReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1UnprotectedReadResponse) deepCopy() *_DF1UnprotectedReadResponse {
+	if m == nil {
+		return nil
+	}
+	_DF1UnprotectedReadResponseCopy := &_DF1UnprotectedReadResponse{
+		m.DF1CommandContract.(*_DF1Command).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.DF1CommandContract.(*_DF1Command)._SubType = m
+	return _DF1UnprotectedReadResponseCopy
+}
+
 func (m *_DF1UnprotectedReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

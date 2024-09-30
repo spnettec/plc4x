@@ -38,11 +38,14 @@ type BACnetPropertyStatesTimerState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetTimerState returns TimerState (property field)
 	GetTimerState() BACnetTimerStateTagged
 	// IsBACnetPropertyStatesTimerState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesTimerState()
+	// CreateBuilder creates a BACnetPropertyStatesTimerStateBuilder
+	CreateBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBuilder
 }
 
 // _BACnetPropertyStatesTimerState is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesTimerState struct {
 
 var _ BACnetPropertyStatesTimerState = (*_BACnetPropertyStatesTimerState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesTimerState)(nil)
+
+// NewBACnetPropertyStatesTimerState factory function for _BACnetPropertyStatesTimerState
+func NewBACnetPropertyStatesTimerState(peekedTagHeader BACnetTagHeader, timerState BACnetTimerStateTagged) *_BACnetPropertyStatesTimerState {
+	if timerState == nil {
+		panic("timerState of type BACnetTimerStateTagged for BACnetPropertyStatesTimerState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesTimerState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		TimerState:                   timerState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesTimerStateBuilder is a builder for BACnetPropertyStatesTimerState
+type BACnetPropertyStatesTimerStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder
+	// WithTimerState adds TimerState (property field)
+	WithTimerState(BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder
+	// WithTimerStateBuilder adds TimerState (property field) which is build by the builder
+	WithTimerStateBuilder(func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetPropertyStatesTimerStateBuilder
+	// Build builds the BACnetPropertyStatesTimerState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesTimerState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesTimerState
+}
+
+// NewBACnetPropertyStatesTimerStateBuilder() creates a BACnetPropertyStatesTimerStateBuilder
+func NewBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBuilder {
+	return &_BACnetPropertyStatesTimerStateBuilder{_BACnetPropertyStatesTimerState: new(_BACnetPropertyStatesTimerState)}
+}
+
+type _BACnetPropertyStatesTimerStateBuilder struct {
+	*_BACnetPropertyStatesTimerState
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesTimerStateBuilder) = (*_BACnetPropertyStatesTimerStateBuilder)(nil)
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithMandatoryFields(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
+	return b.WithTimerState(timerState)
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithTimerState(timerState BACnetTimerStateTagged) BACnetPropertyStatesTimerStateBuilder {
+	b.TimerState = timerState
+	return b
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) WithTimerStateBuilder(builderSupplier func(BACnetTimerStateTaggedBuilder) BACnetTimerStateTaggedBuilder) BACnetPropertyStatesTimerStateBuilder {
+	builder := builderSupplier(b.TimerState.CreateBACnetTimerStateTaggedBuilder())
+	var err error
+	b.TimerState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimerStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) Build() (BACnetPropertyStatesTimerState, error) {
+	if b.TimerState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timerState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesTimerState.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) MustBuild() BACnetPropertyStatesTimerState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesTimerStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesTimerStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesTimerStateBuilder().(*_BACnetPropertyStatesTimerStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesTimerStateBuilder creates a BACnetPropertyStatesTimerStateBuilder
+func (b *_BACnetPropertyStatesTimerState) CreateBACnetPropertyStatesTimerStateBuilder() BACnetPropertyStatesTimerStateBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesTimerStateBuilder()
+	}
+	return &_BACnetPropertyStatesTimerStateBuilder{_BACnetPropertyStatesTimerState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesTimerState) GetTimerState() BACnetTimerStateTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesTimerState factory function for _BACnetPropertyStatesTimerState
-func NewBACnetPropertyStatesTimerState(timerState BACnetTimerStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesTimerState {
-	if timerState == nil {
-		panic("timerState of type BACnetTimerStateTagged for BACnetPropertyStatesTimerState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesTimerState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		TimerState:                   timerState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesTimerState(structType any) BACnetPropertyStatesTimerState {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesTimerState) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetPropertyStatesTimerState) IsBACnetPropertyStatesTimerState() {}
 
+func (m *_BACnetPropertyStatesTimerState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesTimerState) deepCopy() *_BACnetPropertyStatesTimerState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesTimerStateCopy := &_BACnetPropertyStatesTimerState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.TimerState.DeepCopy().(BACnetTimerStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesTimerStateCopy
+}
+
 func (m *_BACnetPropertyStatesTimerState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

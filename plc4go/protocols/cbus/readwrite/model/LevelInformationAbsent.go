@@ -38,9 +38,12 @@ type LevelInformationAbsent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LevelInformation
 	// IsLevelInformationAbsent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLevelInformationAbsent()
+	// CreateBuilder creates a LevelInformationAbsentBuilder
+	CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder
 }
 
 // _LevelInformationAbsent is the data-structure of this message
@@ -52,6 +55,99 @@ type _LevelInformationAbsent struct {
 
 var _ LevelInformationAbsent = (*_LevelInformationAbsent)(nil)
 var _ LevelInformationRequirements = (*_LevelInformationAbsent)(nil)
+
+// NewLevelInformationAbsent factory function for _LevelInformationAbsent
+func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
+	_result := &_LevelInformationAbsent{
+		LevelInformationContract: NewLevelInformation(raw),
+	}
+	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LevelInformationAbsentBuilder is a builder for LevelInformationAbsent
+type LevelInformationAbsentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LevelInformationAbsentBuilder
+	// Build builds the LevelInformationAbsent or returns an error if something is wrong
+	Build() (LevelInformationAbsent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LevelInformationAbsent
+}
+
+// NewLevelInformationAbsentBuilder() creates a LevelInformationAbsentBuilder
+func NewLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
+	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: new(_LevelInformationAbsent)}
+}
+
+type _LevelInformationAbsentBuilder struct {
+	*_LevelInformationAbsent
+
+	parentBuilder *_LevelInformationBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LevelInformationAbsentBuilder) = (*_LevelInformationAbsentBuilder)(nil)
+
+func (b *_LevelInformationAbsentBuilder) setParent(contract LevelInformationContract) {
+	b.LevelInformationContract = contract
+}
+
+func (b *_LevelInformationAbsentBuilder) WithMandatoryFields() LevelInformationAbsentBuilder {
+	return b
+}
+
+func (b *_LevelInformationAbsentBuilder) Build() (LevelInformationAbsent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LevelInformationAbsent.deepCopy(), nil
+}
+
+func (b *_LevelInformationAbsentBuilder) MustBuild() LevelInformationAbsent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LevelInformationAbsentBuilder) Done() LevelInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LevelInformationAbsentBuilder) buildForLevelInformation() (LevelInformation, error) {
+	return b.Build()
+}
+
+func (b *_LevelInformationAbsentBuilder) DeepCopy() any {
+	_copy := b.CreateLevelInformationAbsentBuilder().(*_LevelInformationAbsentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLevelInformationAbsentBuilder creates a LevelInformationAbsentBuilder
+func (b *_LevelInformationAbsent) CreateLevelInformationAbsentBuilder() LevelInformationAbsentBuilder {
+	if b == nil {
+		return NewLevelInformationAbsentBuilder()
+	}
+	return &_LevelInformationAbsentBuilder{_LevelInformationAbsent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ var _ LevelInformationRequirements = (*_LevelInformationAbsent)(nil)
 
 func (m *_LevelInformationAbsent) GetParent() LevelInformationContract {
 	return m.LevelInformationContract
-}
-
-// NewLevelInformationAbsent factory function for _LevelInformationAbsent
-func NewLevelInformationAbsent(raw uint16) *_LevelInformationAbsent {
-	_result := &_LevelInformationAbsent{
-		LevelInformationContract: NewLevelInformation(raw),
-	}
-	_result.LevelInformationContract.(*_LevelInformation)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -160,13 +247,33 @@ func (m *_LevelInformationAbsent) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_LevelInformationAbsent) IsLevelInformationAbsent() {}
 
+func (m *_LevelInformationAbsent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LevelInformationAbsent) deepCopy() *_LevelInformationAbsent {
+	if m == nil {
+		return nil
+	}
+	_LevelInformationAbsentCopy := &_LevelInformationAbsent{
+		m.LevelInformationContract.(*_LevelInformation).deepCopy(),
+		m.reservedField0,
+	}
+	m.LevelInformationContract.(*_LevelInformation)._SubType = m
+	return _LevelInformationAbsentCopy
+}
+
 func (m *_LevelInformationAbsent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -28,7 +28,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/apdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/app"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/appservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
@@ -53,10 +53,12 @@ type _NetworkServiceElement struct {
 	*NetworkServiceElement
 }
 
-func new_NetworkServiceElement(localLog zerolog.Logger) (*_NetworkServiceElement, error) {
+func new_NetworkServiceElement(localLog zerolog.Logger, options ...Option) (*_NetworkServiceElement, error) {
 	n := &_NetworkServiceElement{}
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
 	var err error
-	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, WithNetworkServiceElementStartupDisabled(true))
+	n.NetworkServiceElement, err = NewNetworkServiceElement(localLog, Combine(optionsForParent, WithNetworkServiceElementStartupDisabled(true))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -75,7 +77,7 @@ type ApplicationNetwork struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject *LocalDeviceObject) (*ApplicationNetwork, error) {
+func NewApplicationNetwork(localLog zerolog.Logger, tdDeviceObject, iutDeviceObject LocalDeviceObject) (*ApplicationNetwork, error) {
 	a := &ApplicationNetwork{
 		log: localLog,
 	}
@@ -247,15 +249,14 @@ type ApplicationStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDeviceObject, vlan *Network, opts ...func(*ApplicationStateMachine)) (*ApplicationStateMachine, error) {
+func NewApplicationStateMachine(localLog zerolog.Logger, localDevice LocalDeviceObject, vlan *Network, options ...Option) (*ApplicationStateMachine, error) {
 	a := &ApplicationStateMachine{
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(a)
-	}
+	ApplyAppliers(options, a)
+	optionsForParent := AddLeafTypeIfAbundant(options, a)
 	// build and address and save it
-	_, instance := ObjectIdentifierStringToTuple(localDevice.ObjectIdentifier)
+	_, instance := ObjectIdentifierStringToTuple(localDevice.GetObjectIdentifier())
 	var err error
 	a.address, err = NewAddress(NA(instance))
 	if err != nil {
@@ -264,16 +265,16 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	a.log.Debug().Stringer("address", a.address).Msg("address")
 
 	// continue with initialization
-	a.Application, err = NewApplication(a.log, localDevice)
+	a.Application, err = NewApplication(a.log, Combine(optionsForParent, WithApplicationLocalDeviceObject(localDevice))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}
 	var init func()
-	a.StateMachineContract, init = NewStateMachine(a.log, a, WithStateMachineName(localDevice.ObjectName))
+	a.StateMachineContract, init = NewStateMachine(a.log, a, Combine(optionsForParent, WithStateMachineName(localDevice.GetObjectName()))...)
 	init()
 
 	// include a application decoder
-	a.asap, err = NewApplicationServiceAccessPoint(a.log)
+	a.asap, err = NewApplicationServiceAccessPoint(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service access point")
 	}
@@ -284,19 +285,19 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	// the segmentation state machines need access to the same device
 	// information cache as the application
 	deviceInfoCache := a.GetDeviceInfoCache()
-	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))
+	a.smap, err = NewStateMachineAccessPoint(a.log, localDevice, Combine(options, WithStateMachineAccessPointDeviceInfoCache(deviceInfoCache))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating state machine access point")
 	}
 
 	// a network service access point will be needed
-	a.nsap, err = NewNetworkServiceAccessPoint(a.log)
+	a.nsap, err = NewNetworkServiceAccessPoint(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service access point")
 	}
 
 	// give the NSAP a generic network layer service element
-	a.nse, err = new_NetworkServiceElement(a.log)
+	a.nse, err = new_NetworkServiceElement(a.log, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating network service element")
 	}
@@ -312,7 +313,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *LocalDevic
 	}
 
 	// create a node, added to the network
-	a.node, err = NewNode(a.log, a.address, WithNodeLan(vlan))
+	a.node, err = NewNode(a.log, a.address, Combine(options, WithNodeLan(vlan))...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating node")
 	}
@@ -367,25 +368,33 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 	octets206 := model.MaxApduLengthAccepted_NUM_OCTETS_206
 	segmentation := model.BACnetSegmentation_SEGMENTED_BOTH
 	maxSegmentsAccepted := model.MaxSegmentsAccepted_NUM_SEGMENTS_04
-	tdDeviceObject := &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets206,
-		SegmentationSupported:     &segmentation,
-		MaxSegmentsAccepted:       &maxSegmentsAccepted,
-		VendorIdentifier:          999,
-	}
+	tdDeviceObject, err := NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets206,
+			KWSegmentationSupported, &segmentation,
+			KWMaxSegmentsAccepted, &maxSegmentsAccepted,
+			KWVendorIdentifier, 999,
+		),
+	)
+	require.NoError(t, err)
 
 	// server device object
 	maxSegmentsAccepted = model.MaxSegmentsAccepted_NUM_SEGMENTS_64
-	iutDeviceObject := &LocalDeviceObject{
-		ObjectName:                "td",
-		ObjectIdentifier:          "device:10",
-		MaximumApduLengthAccepted: &octets206,
-		SegmentationSupported:     &segmentation,
-		MaxSegmentsAccepted:       &maxSegmentsAccepted,
-		VendorIdentifier:          999,
-	}
+	iutDeviceObject, err := NewLocalDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, "td",
+			KWObjectIdentifier, "device:10",
+			KWMaximumApduLengthAccepted, &octets206,
+			KWSegmentationSupported, &segmentation,
+			KWMaxSegmentsAccepted, &maxSegmentsAccepted,
+			KWVendorIdentifier, 999,
+		),
+	)
+	require.NoError(t, err)
 
 	// create a network
 	anet, err := NewApplicationNetwork(testingLogger, tdDeviceObject, iutDeviceObject)
@@ -433,7 +442,7 @@ func SegmentationTest(t *testing.T, prefix string, cLen, sLen int) {
 			KnownKey("serviceParameters"), requestString,
 			KnownKey("destination"), anet.iut.address,
 		)), nil).Doc(prefix+"-1").
-		Receive(NA((*apdu.ConfirmedPrivateTransferRequest)(nil)), NoKWArgs()).Doc(prefix + "-2").
+		Receive(NA((*ConfirmedPrivateTransferRequest)(nil)), NoKWArgs()).Doc(prefix + "-2").
 		Success("")
 
 	// no IUT application layer matching

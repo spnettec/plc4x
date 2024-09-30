@@ -38,6 +38,7 @@ type BACnetConstructedDataProgramChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProgramChange returns ProgramChange (property field)
 	GetProgramChange() BACnetProgramRequestTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataProgramChange interface {
 	GetActualValue() BACnetProgramRequestTagged
 	// IsBACnetConstructedDataProgramChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProgramChange()
+	// CreateBuilder creates a BACnetConstructedDataProgramChangeBuilder
+	CreateBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgramChangeBuilder
 }
 
 // _BACnetConstructedDataProgramChange is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataProgramChange struct {
 
 var _ BACnetConstructedDataProgramChange = (*_BACnetConstructedDataProgramChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProgramChange)(nil)
+
+// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
+func NewBACnetConstructedDataProgramChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, programChange BACnetProgramRequestTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
+	if programChange == nil {
+		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataProgramChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProgramChange:                 programChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProgramChangeBuilder is a builder for BACnetConstructedDataProgramChange
+type BACnetConstructedDataProgramChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder
+	// WithProgramChange adds ProgramChange (property field)
+	WithProgramChange(BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder
+	// WithProgramChangeBuilder adds ProgramChange (property field) which is build by the builder
+	WithProgramChangeBuilder(func(BACnetProgramRequestTaggedBuilder) BACnetProgramRequestTaggedBuilder) BACnetConstructedDataProgramChangeBuilder
+	// Build builds the BACnetConstructedDataProgramChange or returns an error if something is wrong
+	Build() (BACnetConstructedDataProgramChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProgramChange
+}
+
+// NewBACnetConstructedDataProgramChangeBuilder() creates a BACnetConstructedDataProgramChangeBuilder
+func NewBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgramChangeBuilder {
+	return &_BACnetConstructedDataProgramChangeBuilder{_BACnetConstructedDataProgramChange: new(_BACnetConstructedDataProgramChange)}
+}
+
+type _BACnetConstructedDataProgramChangeBuilder struct {
+	*_BACnetConstructedDataProgramChange
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProgramChangeBuilder) = (*_BACnetConstructedDataProgramChangeBuilder)(nil)
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithMandatoryFields(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
+	return b.WithProgramChange(programChange)
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithProgramChange(programChange BACnetProgramRequestTagged) BACnetConstructedDataProgramChangeBuilder {
+	b.ProgramChange = programChange
+	return b
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) WithProgramChangeBuilder(builderSupplier func(BACnetProgramRequestTaggedBuilder) BACnetProgramRequestTaggedBuilder) BACnetConstructedDataProgramChangeBuilder {
+	builder := builderSupplier(b.ProgramChange.CreateBACnetProgramRequestTaggedBuilder())
+	var err error
+	b.ProgramChange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetProgramRequestTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) Build() (BACnetConstructedDataProgramChange, error) {
+	if b.ProgramChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'programChange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataProgramChange.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) MustBuild() BACnetConstructedDataProgramChange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProgramChangeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProgramChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProgramChangeBuilder().(*_BACnetConstructedDataProgramChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataProgramChangeBuilder creates a BACnetConstructedDataProgramChangeBuilder
+func (b *_BACnetConstructedDataProgramChange) CreateBACnetConstructedDataProgramChangeBuilder() BACnetConstructedDataProgramChangeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataProgramChangeBuilder()
+	}
+	return &_BACnetConstructedDataProgramChangeBuilder{_BACnetConstructedDataProgramChange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataProgramChange) GetActualValue() BACnetProgramRequ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProgramChange factory function for _BACnetConstructedDataProgramChange
-func NewBACnetConstructedDataProgramChange(programChange BACnetProgramRequestTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProgramChange {
-	if programChange == nil {
-		panic("programChange of type BACnetProgramRequestTagged for BACnetConstructedDataProgramChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataProgramChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProgramChange:                 programChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProgramChange(structType any) BACnetConstructedDataProgramChange {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataProgramChange) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataProgramChange) IsBACnetConstructedDataProgramChange() {}
 
+func (m *_BACnetConstructedDataProgramChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProgramChange) deepCopy() *_BACnetConstructedDataProgramChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProgramChangeCopy := &_BACnetConstructedDataProgramChange{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProgramChange.DeepCopy().(BACnetProgramRequestTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProgramChangeCopy
+}
+
 func (m *_BACnetConstructedDataProgramChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

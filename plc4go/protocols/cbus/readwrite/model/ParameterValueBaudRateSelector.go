@@ -38,6 +38,7 @@ type ParameterValueBaudRateSelector interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() BaudRateSelector
@@ -45,6 +46,8 @@ type ParameterValueBaudRateSelector interface {
 	GetData() []byte
 	// IsParameterValueBaudRateSelector is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueBaudRateSelector()
+	// CreateBuilder creates a ParameterValueBaudRateSelectorBuilder
+	CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder
 }
 
 // _ParameterValueBaudRateSelector is the data-structure of this message
@@ -56,6 +59,115 @@ type _ParameterValueBaudRateSelector struct {
 
 var _ ParameterValueBaudRateSelector = (*_ParameterValueBaudRateSelector)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueBaudRateSelector)(nil)
+
+// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
+func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
+	_result := &_ParameterValueBaudRateSelector{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueBaudRateSelectorBuilder is a builder for ParameterValueBaudRateSelector
+type ParameterValueBaudRateSelectorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder
+	// WithValue adds Value (property field)
+	WithValue(BaudRateSelector) ParameterValueBaudRateSelectorBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueBaudRateSelectorBuilder
+	// Build builds the ParameterValueBaudRateSelector or returns an error if something is wrong
+	Build() (ParameterValueBaudRateSelector, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueBaudRateSelector
+}
+
+// NewParameterValueBaudRateSelectorBuilder() creates a ParameterValueBaudRateSelectorBuilder
+func NewParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
+	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: new(_ParameterValueBaudRateSelector)}
+}
+
+type _ParameterValueBaudRateSelectorBuilder struct {
+	*_ParameterValueBaudRateSelector
+
+	parentBuilder *_ParameterValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueBaudRateSelectorBuilder) = (*_ParameterValueBaudRateSelectorBuilder)(nil)
+
+func (b *_ParameterValueBaudRateSelectorBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) WithMandatoryFields(value BaudRateSelector, data []byte) ParameterValueBaudRateSelectorBuilder {
+	return b.WithValue(value).WithData(data...)
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) WithValue(value BaudRateSelector) ParameterValueBaudRateSelectorBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) WithData(data ...byte) ParameterValueBaudRateSelectorBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) Build() (ParameterValueBaudRateSelector, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterValueBaudRateSelector.deepCopy(), nil
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) MustBuild() ParameterValueBaudRateSelector {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueBaudRateSelectorBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueBaudRateSelectorBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueBaudRateSelectorBuilder().(*_ParameterValueBaudRateSelectorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterValueBaudRateSelectorBuilder creates a ParameterValueBaudRateSelectorBuilder
+func (b *_ParameterValueBaudRateSelector) CreateParameterValueBaudRateSelectorBuilder() ParameterValueBaudRateSelectorBuilder {
+	if b == nil {
+		return NewParameterValueBaudRateSelectorBuilder()
+	}
+	return &_ParameterValueBaudRateSelectorBuilder{_ParameterValueBaudRateSelector: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ParameterValueBaudRateSelector) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueBaudRateSelector factory function for _ParameterValueBaudRateSelector
-func NewParameterValueBaudRateSelector(value BaudRateSelector, data []byte, numBytes uint8) *_ParameterValueBaudRateSelector {
-	_result := &_ParameterValueBaudRateSelector{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueBaudRateSelector(structType any) ParameterValueBaudRateSelector {
@@ -208,13 +309,34 @@ func (m *_ParameterValueBaudRateSelector) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_ParameterValueBaudRateSelector) IsParameterValueBaudRateSelector() {}
 
+func (m *_ParameterValueBaudRateSelector) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueBaudRateSelector) deepCopy() *_ParameterValueBaudRateSelector {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueBaudRateSelectorCopy := &_ParameterValueBaudRateSelector{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueBaudRateSelectorCopy
+}
+
 func (m *_ParameterValueBaudRateSelector) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

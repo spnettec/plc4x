@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyUpperLimitEnforced interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyUpperLimitEnforced returns OccupancyUpperLimitEnforced (property field)
 	GetOccupancyUpperLimitEnforced() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataOccupancyUpperLimitEnforced interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataOccupancyUpperLimitEnforced is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOccupancyUpperLimitEnforced()
+	// CreateBuilder creates a BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+	CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
 }
 
 // _BACnetConstructedDataOccupancyUpperLimitEnforced is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataOccupancyUpperLimitEnforced struct {
 
 var _ BACnetConstructedDataOccupancyUpperLimitEnforced = (*_BACnetConstructedDataOccupancyUpperLimitEnforced)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyUpperLimitEnforced)(nil)
+
+// NewBACnetConstructedDataOccupancyUpperLimitEnforced factory function for _BACnetConstructedDataOccupancyUpperLimitEnforced
+func NewBACnetConstructedDataOccupancyUpperLimitEnforced(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyUpperLimitEnforced BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimitEnforced {
+	if occupancyUpperLimitEnforced == nil {
+		panic("occupancyUpperLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyUpperLimitEnforced must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyUpperLimitEnforced{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyUpperLimitEnforced:   occupancyUpperLimitEnforced,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder is a builder for BACnetConstructedDataOccupancyUpperLimitEnforced
+type BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+	// WithOccupancyUpperLimitEnforced adds OccupancyUpperLimitEnforced (property field)
+	WithOccupancyUpperLimitEnforced(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+	// WithOccupancyUpperLimitEnforcedBuilder adds OccupancyUpperLimitEnforced (property field) which is build by the builder
+	WithOccupancyUpperLimitEnforcedBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+	// Build builds the BACnetConstructedDataOccupancyUpperLimitEnforced or returns an error if something is wrong
+	Build() (BACnetConstructedDataOccupancyUpperLimitEnforced, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOccupancyUpperLimitEnforced
+}
+
+// NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() creates a BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+func NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	return &_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder{_BACnetConstructedDataOccupancyUpperLimitEnforced: new(_BACnetConstructedDataOccupancyUpperLimitEnforced)}
+}
+
+type _BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder struct {
+	*_BACnetConstructedDataOccupancyUpperLimitEnforced
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) = (*_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder)(nil)
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithMandatoryFields(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	return b.WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced)
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	b.OccupancyUpperLimitEnforced = occupancyUpperLimitEnforced
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) WithOccupancyUpperLimitEnforcedBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	builder := builderSupplier(b.OccupancyUpperLimitEnforced.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.OccupancyUpperLimitEnforced, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) Build() (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+	if b.OccupancyUpperLimitEnforced == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'occupancyUpperLimitEnforced' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataOccupancyUpperLimitEnforced.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) MustBuild() BACnetConstructedDataOccupancyUpperLimitEnforced {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder().(*_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder creates a BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder
+func (b *_BACnetConstructedDataOccupancyUpperLimitEnforced) CreateBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder() BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataOccupancyUpperLimitEnforcedBuilder()
+	}
+	return &_BACnetConstructedDataOccupancyUpperLimitEnforcedBuilder{_BACnetConstructedDataOccupancyUpperLimitEnforced: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyUpperLimitEnforced factory function for _BACnetConstructedDataOccupancyUpperLimitEnforced
-func NewBACnetConstructedDataOccupancyUpperLimitEnforced(occupancyUpperLimitEnforced BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyUpperLimitEnforced {
-	if occupancyUpperLimitEnforced == nil {
-		panic("occupancyUpperLimitEnforced of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyUpperLimitEnforced must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyUpperLimitEnforced{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyUpperLimitEnforced:   occupancyUpperLimitEnforced,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyUpperLimitEnforced(structType any) BACnetConstructedDataOccupancyUpperLimitEnforced {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) SerializeWithWriteBu
 func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) IsBACnetConstructedDataOccupancyUpperLimitEnforced() {
 }
 
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) deepCopy() *_BACnetConstructedDataOccupancyUpperLimitEnforced {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyUpperLimitEnforcedCopy := &_BACnetConstructedDataOccupancyUpperLimitEnforced{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OccupancyUpperLimitEnforced.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyUpperLimitEnforcedCopy
+}
+
 func (m *_BACnetConstructedDataOccupancyUpperLimitEnforced) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

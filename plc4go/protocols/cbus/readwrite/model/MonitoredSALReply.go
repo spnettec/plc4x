@@ -38,11 +38,14 @@ type MonitoredSALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetMonitoredSAL returns MonitoredSAL (property field)
 	GetMonitoredSAL() MonitoredSAL
 	// IsMonitoredSALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSALReply()
+	// CreateBuilder creates a MonitoredSALReplyBuilder
+	CreateMonitoredSALReplyBuilder() MonitoredSALReplyBuilder
 }
 
 // _MonitoredSALReply is the data-structure of this message
@@ -53,6 +56,131 @@ type _MonitoredSALReply struct {
 
 var _ MonitoredSALReply = (*_MonitoredSALReply)(nil)
 var _ EncodedReplyRequirements = (*_MonitoredSALReply)(nil)
+
+// NewMonitoredSALReply factory function for _MonitoredSALReply
+func NewMonitoredSALReply(peekedByte byte, monitoredSAL MonitoredSAL, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
+	if monitoredSAL == nil {
+		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
+	}
+	_result := &_MonitoredSALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		MonitoredSAL:         monitoredSAL,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredSALReplyBuilder is a builder for MonitoredSALReply
+type MonitoredSALReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder
+	// WithMonitoredSAL adds MonitoredSAL (property field)
+	WithMonitoredSAL(MonitoredSAL) MonitoredSALReplyBuilder
+	// WithMonitoredSALBuilder adds MonitoredSAL (property field) which is build by the builder
+	WithMonitoredSALBuilder(func(MonitoredSALBuilder) MonitoredSALBuilder) MonitoredSALReplyBuilder
+	// Build builds the MonitoredSALReply or returns an error if something is wrong
+	Build() (MonitoredSALReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredSALReply
+}
+
+// NewMonitoredSALReplyBuilder() creates a MonitoredSALReplyBuilder
+func NewMonitoredSALReplyBuilder() MonitoredSALReplyBuilder {
+	return &_MonitoredSALReplyBuilder{_MonitoredSALReply: new(_MonitoredSALReply)}
+}
+
+type _MonitoredSALReplyBuilder struct {
+	*_MonitoredSALReply
+
+	parentBuilder *_EncodedReplyBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredSALReplyBuilder) = (*_MonitoredSALReplyBuilder)(nil)
+
+func (b *_MonitoredSALReplyBuilder) setParent(contract EncodedReplyContract) {
+	b.EncodedReplyContract = contract
+}
+
+func (b *_MonitoredSALReplyBuilder) WithMandatoryFields(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
+	return b.WithMonitoredSAL(monitoredSAL)
+}
+
+func (b *_MonitoredSALReplyBuilder) WithMonitoredSAL(monitoredSAL MonitoredSAL) MonitoredSALReplyBuilder {
+	b.MonitoredSAL = monitoredSAL
+	return b
+}
+
+func (b *_MonitoredSALReplyBuilder) WithMonitoredSALBuilder(builderSupplier func(MonitoredSALBuilder) MonitoredSALBuilder) MonitoredSALReplyBuilder {
+	builder := builderSupplier(b.MonitoredSAL.CreateMonitoredSALBuilder())
+	var err error
+	b.MonitoredSAL, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "MonitoredSALBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALReplyBuilder) Build() (MonitoredSALReply, error) {
+	if b.MonitoredSAL == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredSAL' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSALReply.deepCopy(), nil
+}
+
+func (b *_MonitoredSALReplyBuilder) MustBuild() MonitoredSALReply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredSALReplyBuilder) Done() EncodedReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredSALReplyBuilder) buildForEncodedReply() (EncodedReply, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredSALReplyBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALReplyBuilder().(*_MonitoredSALReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredSALReplyBuilder creates a MonitoredSALReplyBuilder
+func (b *_MonitoredSALReply) CreateMonitoredSALReplyBuilder() MonitoredSALReplyBuilder {
+	if b == nil {
+		return NewMonitoredSALReplyBuilder()
+	}
+	return &_MonitoredSALReplyBuilder{_MonitoredSALReply: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_MonitoredSALReply) GetMonitoredSAL() MonitoredSAL {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALReply factory function for _MonitoredSALReply
-func NewMonitoredSALReply(monitoredSAL MonitoredSAL, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_MonitoredSALReply {
-	if monitoredSAL == nil {
-		panic("monitoredSAL of type MonitoredSAL for MonitoredSALReply must not be nil")
-	}
-	_result := &_MonitoredSALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
-		MonitoredSAL:         monitoredSAL,
-	}
-	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALReply(structType any) MonitoredSALReply {
@@ -179,13 +294,33 @@ func (m *_MonitoredSALReply) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_MonitoredSALReply) IsMonitoredSALReply() {}
 
+func (m *_MonitoredSALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALReply) deepCopy() *_MonitoredSALReply {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALReplyCopy := &_MonitoredSALReply{
+		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
+		m.MonitoredSAL.DeepCopy().(MonitoredSAL),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _MonitoredSALReplyCopy
+}
+
 func (m *_MonitoredSALReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

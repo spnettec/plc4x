@@ -38,6 +38,7 @@ type BACnetConstructedDataBinaryOutputFeedbackValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetBinaryPVTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataBinaryOutputFeedbackValue interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataBinaryOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryOutputFeedbackValue()
+	// CreateBuilder creates a BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	CreateBACnetConstructedDataBinaryOutputFeedbackValueBuilder() BACnetConstructedDataBinaryOutputFeedbackValueBuilder
 }
 
 // _BACnetConstructedDataBinaryOutputFeedbackValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataBinaryOutputFeedbackValue struct {
 
 var _ BACnetConstructedDataBinaryOutputFeedbackValue = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryOutputFeedbackValue)(nil)
+
+// NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
+func NewBACnetConstructedDataBinaryOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryOutputFeedbackValueBuilder is a builder for BACnetConstructedDataBinaryOutputFeedbackValue
+type BACnetConstructedDataBinaryOutputFeedbackValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(feedbackValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	// WithFeedbackValue adds FeedbackValue (property field)
+	WithFeedbackValue(BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
+	WithFeedbackValueBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+	// Build builds the BACnetConstructedDataBinaryOutputFeedbackValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryOutputFeedbackValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryOutputFeedbackValue
+}
+
+// NewBACnetConstructedDataBinaryOutputFeedbackValueBuilder() creates a BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+func NewBACnetConstructedDataBinaryOutputFeedbackValueBuilder() BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
+	return &_BACnetConstructedDataBinaryOutputFeedbackValueBuilder{_BACnetConstructedDataBinaryOutputFeedbackValue: new(_BACnetConstructedDataBinaryOutputFeedbackValue)}
+}
+
+type _BACnetConstructedDataBinaryOutputFeedbackValueBuilder struct {
+	*_BACnetConstructedDataBinaryOutputFeedbackValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryOutputFeedbackValueBuilder) = (*_BACnetConstructedDataBinaryOutputFeedbackValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
+	return b.WithFeedbackValue(feedbackValue)
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetBinaryPVTagged) BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
+	b.FeedbackValue = feedbackValue
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
+	builder := builderSupplier(b.FeedbackValue.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	b.FeedbackValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) Build() (BACnetConstructedDataBinaryOutputFeedbackValue, error) {
+	if b.FeedbackValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBinaryOutputFeedbackValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataBinaryOutputFeedbackValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryOutputFeedbackValueBuilder().(*_BACnetConstructedDataBinaryOutputFeedbackValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBinaryOutputFeedbackValueBuilder creates a BACnetConstructedDataBinaryOutputFeedbackValueBuilder
+func (b *_BACnetConstructedDataBinaryOutputFeedbackValue) CreateBACnetConstructedDataBinaryOutputFeedbackValueBuilder() BACnetConstructedDataBinaryOutputFeedbackValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBinaryOutputFeedbackValueBuilder()
+	}
+	return &_BACnetConstructedDataBinaryOutputFeedbackValueBuilder{_BACnetConstructedDataBinaryOutputFeedbackValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) GetActualValue() BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBinaryOutputFeedbackValue factory function for _BACnetConstructedDataBinaryOutputFeedbackValue
-func NewBACnetConstructedDataBinaryOutputFeedbackValue(feedbackValue BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryOutputFeedbackValue {
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetBinaryPVTagged for BACnetConstructedDataBinaryOutputFeedbackValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataBinaryOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FeedbackValue:                 feedbackValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBinaryOutputFeedbackValue(structType any) BACnetConstructedDataBinaryOutputFeedbackValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) SerializeWithWriteBuff
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) IsBACnetConstructedDataBinaryOutputFeedbackValue() {
 }
 
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) deepCopy() *_BACnetConstructedDataBinaryOutputFeedbackValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryOutputFeedbackValueCopy := &_BACnetConstructedDataBinaryOutputFeedbackValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FeedbackValue.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryOutputFeedbackValueCopy
+}
+
 func (m *_BACnetConstructedDataBinaryOutputFeedbackValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

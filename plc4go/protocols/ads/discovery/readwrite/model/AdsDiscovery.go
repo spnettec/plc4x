@@ -43,6 +43,7 @@ type AdsDiscovery interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() uint32
 	// GetOperation returns Operation (property field)
@@ -55,6 +56,8 @@ type AdsDiscovery interface {
 	GetBlocks() []AdsDiscoveryBlock
 	// IsAdsDiscovery is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscovery()
+	// CreateBuilder creates a AdsDiscoveryBuilder
+	CreateAdsDiscoveryBuilder() AdsDiscoveryBuilder
 }
 
 // _AdsDiscovery is the data-structure of this message
@@ -67,6 +70,139 @@ type _AdsDiscovery struct {
 }
 
 var _ AdsDiscovery = (*_AdsDiscovery)(nil)
+
+// NewAdsDiscovery factory function for _AdsDiscovery
+func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
+	if amsNetId == nil {
+		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
+	}
+	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBuilder is a builder for AdsDiscovery
+type AdsDiscoveryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) AdsDiscoveryBuilder
+	// WithRequestId adds RequestId (property field)
+	WithRequestId(uint32) AdsDiscoveryBuilder
+	// WithOperation adds Operation (property field)
+	WithOperation(Operation) AdsDiscoveryBuilder
+	// WithAmsNetId adds AmsNetId (property field)
+	WithAmsNetId(AmsNetId) AdsDiscoveryBuilder
+	// WithAmsNetIdBuilder adds AmsNetId (property field) which is build by the builder
+	WithAmsNetIdBuilder(func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBuilder
+	// WithPortNumber adds PortNumber (property field)
+	WithPortNumber(AdsPortNumbers) AdsDiscoveryBuilder
+	// WithBlocks adds Blocks (property field)
+	WithBlocks(...AdsDiscoveryBlock) AdsDiscoveryBuilder
+	// Build builds the AdsDiscovery or returns an error if something is wrong
+	Build() (AdsDiscovery, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscovery
+}
+
+// NewAdsDiscoveryBuilder() creates a AdsDiscoveryBuilder
+func NewAdsDiscoveryBuilder() AdsDiscoveryBuilder {
+	return &_AdsDiscoveryBuilder{_AdsDiscovery: new(_AdsDiscovery)}
+}
+
+type _AdsDiscoveryBuilder struct {
+	*_AdsDiscovery
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBuilder) = (*_AdsDiscoveryBuilder)(nil)
+
+func (b *_AdsDiscoveryBuilder) WithMandatoryFields(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) AdsDiscoveryBuilder {
+	return b.WithRequestId(requestId).WithOperation(operation).WithAmsNetId(amsNetId).WithPortNumber(portNumber).WithBlocks(blocks...)
+}
+
+func (b *_AdsDiscoveryBuilder) WithRequestId(requestId uint32) AdsDiscoveryBuilder {
+	b.RequestId = requestId
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) WithOperation(operation Operation) AdsDiscoveryBuilder {
+	b.Operation = operation
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) WithAmsNetId(amsNetId AmsNetId) AdsDiscoveryBuilder {
+	b.AmsNetId = amsNetId
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) WithAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AdsDiscoveryBuilder {
+	builder := builderSupplier(b.AmsNetId.CreateAmsNetIdBuilder())
+	var err error
+	b.AmsNetId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) WithPortNumber(portNumber AdsPortNumbers) AdsDiscoveryBuilder {
+	b.PortNumber = portNumber
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) WithBlocks(blocks ...AdsDiscoveryBlock) AdsDiscoveryBuilder {
+	b.Blocks = blocks
+	return b
+}
+
+func (b *_AdsDiscoveryBuilder) Build() (AdsDiscovery, error) {
+	if b.AmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'amsNetId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDiscovery.deepCopy(), nil
+}
+
+func (b *_AdsDiscoveryBuilder) MustBuild() AdsDiscovery {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDiscoveryBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBuilder().(*_AdsDiscoveryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDiscoveryBuilder creates a AdsDiscoveryBuilder
+func (b *_AdsDiscovery) CreateAdsDiscoveryBuilder() AdsDiscoveryBuilder {
+	if b == nil {
+		return NewAdsDiscoveryBuilder()
+	}
+	return &_AdsDiscoveryBuilder{_AdsDiscovery: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +246,6 @@ func (m *_AdsDiscovery) GetHeader() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscovery factory function for _AdsDiscovery
-func NewAdsDiscovery(requestId uint32, operation Operation, amsNetId AmsNetId, portNumber AdsPortNumbers, blocks []AdsDiscoveryBlock) *_AdsDiscovery {
-	if amsNetId == nil {
-		panic("amsNetId of type AmsNetId for AdsDiscovery must not be nil")
-	}
-	return &_AdsDiscovery{RequestId: requestId, Operation: operation, AmsNetId: amsNetId, PortNumber: portNumber, Blocks: blocks}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscovery(structType any) AdsDiscovery {
@@ -187,7 +315,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsDiscovery) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDiscovery AdsDiscovery, err error) {
@@ -301,13 +429,35 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_AdsDiscovery) IsAdsDiscovery() {}
 
+func (m *_AdsDiscovery) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscovery) deepCopy() *_AdsDiscovery {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryCopy := &_AdsDiscovery{
+		m.RequestId,
+		m.Operation,
+		m.AmsNetId.DeepCopy().(AmsNetId),
+		m.PortNumber,
+		utils.DeepCopySlice[AdsDiscoveryBlock, AdsDiscoveryBlock](m.Blocks),
+	}
+	return _AdsDiscoveryCopy
+}
+
 func (m *_AdsDiscovery) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

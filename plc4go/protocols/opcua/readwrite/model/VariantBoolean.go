@@ -38,6 +38,7 @@ type VariantBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantBoolean interface {
 	GetValue() []byte
 	// IsVariantBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantBoolean()
+	// CreateBuilder creates a VariantBooleanBuilder
+	CreateVariantBooleanBuilder() VariantBooleanBuilder
 }
 
 // _VariantBoolean is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantBoolean struct {
 
 var _ VariantBoolean = (*_VariantBoolean)(nil)
 var _ VariantRequirements = (*_VariantBoolean)(nil)
+
+// NewVariantBoolean factory function for _VariantBoolean
+func NewVariantBoolean(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []byte) *_VariantBoolean {
+	_result := &_VariantBoolean{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantBooleanBuilder is a builder for VariantBoolean
+type VariantBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []byte) VariantBooleanBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantBooleanBuilder
+	// WithValue adds Value (property field)
+	WithValue(...byte) VariantBooleanBuilder
+	// Build builds the VariantBoolean or returns an error if something is wrong
+	Build() (VariantBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantBoolean
+}
+
+// NewVariantBooleanBuilder() creates a VariantBooleanBuilder
+func NewVariantBooleanBuilder() VariantBooleanBuilder {
+	return &_VariantBooleanBuilder{_VariantBoolean: new(_VariantBoolean)}
+}
+
+type _VariantBooleanBuilder struct {
+	*_VariantBoolean
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantBooleanBuilder) = (*_VariantBooleanBuilder)(nil)
+
+func (b *_VariantBooleanBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantBooleanBuilder) WithMandatoryFields(value []byte) VariantBooleanBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantBooleanBuilder) WithOptionalArrayLength(arrayLength int32) VariantBooleanBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantBooleanBuilder) WithValue(value ...byte) VariantBooleanBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantBooleanBuilder) Build() (VariantBoolean, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantBoolean.deepCopy(), nil
+}
+
+func (b *_VariantBooleanBuilder) MustBuild() VariantBoolean {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantBooleanBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantBooleanBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateVariantBooleanBuilder().(*_VariantBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantBooleanBuilder creates a VariantBooleanBuilder
+func (b *_VariantBoolean) CreateVariantBooleanBuilder() VariantBooleanBuilder {
+	if b == nil {
+		return NewVariantBooleanBuilder()
+	}
+	return &_VariantBooleanBuilder{_VariantBoolean: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantBoolean) GetValue() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantBoolean factory function for _VariantBoolean
-func NewVariantBoolean(arrayLength *int32, value []byte, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantBoolean {
-	_result := &_VariantBoolean{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantBoolean(structType any) VariantBoolean {
@@ -206,13 +307,34 @@ func (m *_VariantBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_VariantBoolean) IsVariantBoolean() {}
 
+func (m *_VariantBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantBoolean) deepCopy() *_VariantBoolean {
+	if m == nil {
+		return nil
+	}
+	_VariantBooleanCopy := &_VariantBoolean{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[byte, byte](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantBooleanCopy
+}
+
 func (m *_VariantBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

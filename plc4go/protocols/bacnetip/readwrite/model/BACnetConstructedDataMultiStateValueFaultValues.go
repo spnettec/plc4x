@@ -38,11 +38,14 @@ type BACnetConstructedDataMultiStateValueFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMultiStateValueFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateValueFaultValues()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateValueFaultValuesBuilder
+	CreateBACnetConstructedDataMultiStateValueFaultValuesBuilder() BACnetConstructedDataMultiStateValueFaultValuesBuilder
 }
 
 // _BACnetConstructedDataMultiStateValueFaultValues is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataMultiStateValueFaultValues struct {
 
 var _ BACnetConstructedDataMultiStateValueFaultValues = (*_BACnetConstructedDataMultiStateValueFaultValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateValueFaultValues)(nil)
+
+// NewBACnetConstructedDataMultiStateValueFaultValues factory function for _BACnetConstructedDataMultiStateValueFaultValues
+func NewBACnetConstructedDataMultiStateValueFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueFaultValues {
+	_result := &_BACnetConstructedDataMultiStateValueFaultValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultValues:                   faultValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateValueFaultValuesBuilder is a builder for BACnetConstructedDataMultiStateValueFaultValues
+type BACnetConstructedDataMultiStateValueFaultValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueFaultValuesBuilder
+	// WithFaultValues adds FaultValues (property field)
+	WithFaultValues(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueFaultValuesBuilder
+	// Build builds the BACnetConstructedDataMultiStateValueFaultValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateValueFaultValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateValueFaultValues
+}
+
+// NewBACnetConstructedDataMultiStateValueFaultValuesBuilder() creates a BACnetConstructedDataMultiStateValueFaultValuesBuilder
+func NewBACnetConstructedDataMultiStateValueFaultValuesBuilder() BACnetConstructedDataMultiStateValueFaultValuesBuilder {
+	return &_BACnetConstructedDataMultiStateValueFaultValuesBuilder{_BACnetConstructedDataMultiStateValueFaultValues: new(_BACnetConstructedDataMultiStateValueFaultValues)}
+}
+
+type _BACnetConstructedDataMultiStateValueFaultValuesBuilder struct {
+	*_BACnetConstructedDataMultiStateValueFaultValues
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateValueFaultValuesBuilder) = (*_BACnetConstructedDataMultiStateValueFaultValuesBuilder)(nil)
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) WithFaultValues(faultValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateValueFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) Build() (BACnetConstructedDataMultiStateValueFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMultiStateValueFaultValues.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) MustBuild() BACnetConstructedDataMultiStateValueFaultValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateValueFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateValueFaultValuesBuilder().(*_BACnetConstructedDataMultiStateValueFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMultiStateValueFaultValuesBuilder creates a BACnetConstructedDataMultiStateValueFaultValuesBuilder
+func (b *_BACnetConstructedDataMultiStateValueFaultValues) CreateBACnetConstructedDataMultiStateValueFaultValuesBuilder() BACnetConstructedDataMultiStateValueFaultValuesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMultiStateValueFaultValuesBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateValueFaultValuesBuilder{_BACnetConstructedDataMultiStateValueFaultValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataMultiStateValueFaultValues) GetFaultValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateValueFaultValues factory function for _BACnetConstructedDataMultiStateValueFaultValues
-func NewBACnetConstructedDataMultiStateValueFaultValues(faultValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateValueFaultValues {
-	_result := &_BACnetConstructedDataMultiStateValueFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultValues:                   faultValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateValueFaultValues(structType any) BACnetConstructedDataMultiStateValueFaultValues {
@@ -189,13 +283,33 @@ func (m *_BACnetConstructedDataMultiStateValueFaultValues) SerializeWithWriteBuf
 func (m *_BACnetConstructedDataMultiStateValueFaultValues) IsBACnetConstructedDataMultiStateValueFaultValues() {
 }
 
+func (m *_BACnetConstructedDataMultiStateValueFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateValueFaultValues) deepCopy() *_BACnetConstructedDataMultiStateValueFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateValueFaultValuesCopy := &_BACnetConstructedDataMultiStateValueFaultValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateValueFaultValuesCopy
+}
+
 func (m *_BACnetConstructedDataMultiStateValueFaultValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

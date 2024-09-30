@@ -38,10 +38,13 @@ type BACnetTagPayloadReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() float32
 	// IsBACnetTagPayloadReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadReal()
+	// CreateBuilder creates a BACnetTagPayloadRealBuilder
+	CreateBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder
 }
 
 // _BACnetTagPayloadReal is the data-structure of this message
@@ -50,6 +53,87 @@ type _BACnetTagPayloadReal struct {
 }
 
 var _ BACnetTagPayloadReal = (*_BACnetTagPayloadReal)(nil)
+
+// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
+func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
+	return &_BACnetTagPayloadReal{Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadRealBuilder is a builder for BACnetTagPayloadReal
+type BACnetTagPayloadRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value float32) BACnetTagPayloadRealBuilder
+	// WithValue adds Value (property field)
+	WithValue(float32) BACnetTagPayloadRealBuilder
+	// Build builds the BACnetTagPayloadReal or returns an error if something is wrong
+	Build() (BACnetTagPayloadReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadReal
+}
+
+// NewBACnetTagPayloadRealBuilder() creates a BACnetTagPayloadRealBuilder
+func NewBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder {
+	return &_BACnetTagPayloadRealBuilder{_BACnetTagPayloadReal: new(_BACnetTagPayloadReal)}
+}
+
+type _BACnetTagPayloadRealBuilder struct {
+	*_BACnetTagPayloadReal
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadRealBuilder) = (*_BACnetTagPayloadRealBuilder)(nil)
+
+func (b *_BACnetTagPayloadRealBuilder) WithMandatoryFields(value float32) BACnetTagPayloadRealBuilder {
+	return b.WithValue(value)
+}
+
+func (b *_BACnetTagPayloadRealBuilder) WithValue(value float32) BACnetTagPayloadRealBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetTagPayloadRealBuilder) Build() (BACnetTagPayloadReal, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadReal.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadRealBuilder) MustBuild() BACnetTagPayloadReal {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadRealBuilder().(*_BACnetTagPayloadRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadRealBuilder creates a BACnetTagPayloadRealBuilder
+func (b *_BACnetTagPayloadReal) CreateBACnetTagPayloadRealBuilder() BACnetTagPayloadRealBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadRealBuilder()
+	}
+	return &_BACnetTagPayloadRealBuilder{_BACnetTagPayloadReal: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_BACnetTagPayloadReal) GetValue() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadReal factory function for _BACnetTagPayloadReal
-func NewBACnetTagPayloadReal(value float32) *_BACnetTagPayloadReal {
-	return &_BACnetTagPayloadReal{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadReal(structType any) BACnetTagPayloadReal {
@@ -113,7 +192,7 @@ func BACnetTagPayloadRealParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadReal) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadReal BACnetTagPayloadReal, err error) {
@@ -167,13 +246,31 @@ func (m *_BACnetTagPayloadReal) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetTagPayloadReal) IsBACnetTagPayloadReal() {}
 
+func (m *_BACnetTagPayloadReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadReal) deepCopy() *_BACnetTagPayloadReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadRealCopy := &_BACnetTagPayloadReal{
+		m.Value,
+	}
+	return _BACnetTagPayloadRealCopy
+}
+
 func (m *_BACnetTagPayloadReal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

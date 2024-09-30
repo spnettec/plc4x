@@ -38,11 +38,14 @@ type BACnetPropertyStatesLightningInProgress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetLightningInProgress returns LightningInProgress (property field)
 	GetLightningInProgress() BACnetLightingInProgressTagged
 	// IsBACnetPropertyStatesLightningInProgress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesLightningInProgress()
+	// CreateBuilder creates a BACnetPropertyStatesLightningInProgressBuilder
+	CreateBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLightningInProgressBuilder
 }
 
 // _BACnetPropertyStatesLightningInProgress is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesLightningInProgress struct {
 
 var _ BACnetPropertyStatesLightningInProgress = (*_BACnetPropertyStatesLightningInProgress)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesLightningInProgress)(nil)
+
+// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
+func NewBACnetPropertyStatesLightningInProgress(peekedTagHeader BACnetTagHeader, lightningInProgress BACnetLightingInProgressTagged) *_BACnetPropertyStatesLightningInProgress {
+	if lightningInProgress == nil {
+		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
+	}
+	_result := &_BACnetPropertyStatesLightningInProgress{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		LightningInProgress:          lightningInProgress,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesLightningInProgressBuilder is a builder for BACnetPropertyStatesLightningInProgress
+type BACnetPropertyStatesLightningInProgressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder
+	// WithLightningInProgress adds LightningInProgress (property field)
+	WithLightningInProgress(BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder
+	// WithLightningInProgressBuilder adds LightningInProgress (property field) which is build by the builder
+	WithLightningInProgressBuilder(func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetPropertyStatesLightningInProgressBuilder
+	// Build builds the BACnetPropertyStatesLightningInProgress or returns an error if something is wrong
+	Build() (BACnetPropertyStatesLightningInProgress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesLightningInProgress
+}
+
+// NewBACnetPropertyStatesLightningInProgressBuilder() creates a BACnetPropertyStatesLightningInProgressBuilder
+func NewBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLightningInProgressBuilder {
+	return &_BACnetPropertyStatesLightningInProgressBuilder{_BACnetPropertyStatesLightningInProgress: new(_BACnetPropertyStatesLightningInProgress)}
+}
+
+type _BACnetPropertyStatesLightningInProgressBuilder struct {
+	*_BACnetPropertyStatesLightningInProgress
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesLightningInProgressBuilder) = (*_BACnetPropertyStatesLightningInProgressBuilder)(nil)
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithMandatoryFields(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
+	return b.WithLightningInProgress(lightningInProgress)
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgress(lightningInProgress BACnetLightingInProgressTagged) BACnetPropertyStatesLightningInProgressBuilder {
+	b.LightningInProgress = lightningInProgress
+	return b
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) WithLightningInProgressBuilder(builderSupplier func(BACnetLightingInProgressTaggedBuilder) BACnetLightingInProgressTaggedBuilder) BACnetPropertyStatesLightningInProgressBuilder {
+	builder := builderSupplier(b.LightningInProgress.CreateBACnetLightingInProgressTaggedBuilder())
+	var err error
+	b.LightningInProgress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLightingInProgressTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) Build() (BACnetPropertyStatesLightningInProgress, error) {
+	if b.LightningInProgress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lightningInProgress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesLightningInProgress.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) MustBuild() BACnetPropertyStatesLightningInProgress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesLightningInProgressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesLightningInProgressBuilder().(*_BACnetPropertyStatesLightningInProgressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesLightningInProgressBuilder creates a BACnetPropertyStatesLightningInProgressBuilder
+func (b *_BACnetPropertyStatesLightningInProgress) CreateBACnetPropertyStatesLightningInProgressBuilder() BACnetPropertyStatesLightningInProgressBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesLightningInProgressBuilder()
+	}
+	return &_BACnetPropertyStatesLightningInProgressBuilder{_BACnetPropertyStatesLightningInProgress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesLightningInProgress) GetLightningInProgress() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesLightningInProgress factory function for _BACnetPropertyStatesLightningInProgress
-func NewBACnetPropertyStatesLightningInProgress(lightningInProgress BACnetLightingInProgressTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesLightningInProgress {
-	if lightningInProgress == nil {
-		panic("lightningInProgress of type BACnetLightingInProgressTagged for BACnetPropertyStatesLightningInProgress must not be nil")
-	}
-	_result := &_BACnetPropertyStatesLightningInProgress{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		LightningInProgress:          lightningInProgress,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesLightningInProgress(structType any) BACnetPropertyStatesLightningInProgress {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesLightningInProgress) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetPropertyStatesLightningInProgress) IsBACnetPropertyStatesLightningInProgress() {}
 
+func (m *_BACnetPropertyStatesLightningInProgress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesLightningInProgress) deepCopy() *_BACnetPropertyStatesLightningInProgress {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesLightningInProgressCopy := &_BACnetPropertyStatesLightningInProgress{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.LightningInProgress.DeepCopy().(BACnetLightingInProgressTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesLightningInProgressCopy
+}
+
 func (m *_BACnetPropertyStatesLightningInProgress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

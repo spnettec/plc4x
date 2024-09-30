@@ -36,9 +36,12 @@ type BACnetConstructedDataAnalogValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataAnalogValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAnalogValueAll()
+	// CreateBuilder creates a BACnetConstructedDataAnalogValueAllBuilder
+	CreateBACnetConstructedDataAnalogValueAllBuilder() BACnetConstructedDataAnalogValueAllBuilder
 }
 
 // _BACnetConstructedDataAnalogValueAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataAnalogValueAll struct {
 
 var _ BACnetConstructedDataAnalogValueAll = (*_BACnetConstructedDataAnalogValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAnalogValueAll)(nil)
+
+// NewBACnetConstructedDataAnalogValueAll factory function for _BACnetConstructedDataAnalogValueAll
+func NewBACnetConstructedDataAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueAll {
+	_result := &_BACnetConstructedDataAnalogValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAnalogValueAllBuilder is a builder for BACnetConstructedDataAnalogValueAll
+type BACnetConstructedDataAnalogValueAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataAnalogValueAllBuilder
+	// Build builds the BACnetConstructedDataAnalogValueAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataAnalogValueAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAnalogValueAll
+}
+
+// NewBACnetConstructedDataAnalogValueAllBuilder() creates a BACnetConstructedDataAnalogValueAllBuilder
+func NewBACnetConstructedDataAnalogValueAllBuilder() BACnetConstructedDataAnalogValueAllBuilder {
+	return &_BACnetConstructedDataAnalogValueAllBuilder{_BACnetConstructedDataAnalogValueAll: new(_BACnetConstructedDataAnalogValueAll)}
+}
+
+type _BACnetConstructedDataAnalogValueAllBuilder struct {
+	*_BACnetConstructedDataAnalogValueAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAnalogValueAllBuilder) = (*_BACnetConstructedDataAnalogValueAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) WithMandatoryFields() BACnetConstructedDataAnalogValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) Build() (BACnetConstructedDataAnalogValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAnalogValueAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) MustBuild() BACnetConstructedDataAnalogValueAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAnalogValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAnalogValueAllBuilder().(*_BACnetConstructedDataAnalogValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAnalogValueAllBuilder creates a BACnetConstructedDataAnalogValueAllBuilder
+func (b *_BACnetConstructedDataAnalogValueAll) CreateBACnetConstructedDataAnalogValueAllBuilder() BACnetConstructedDataAnalogValueAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAnalogValueAllBuilder()
+	}
+	return &_BACnetConstructedDataAnalogValueAllBuilder{_BACnetConstructedDataAnalogValueAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataAnalogValueAll) GetPropertyIdentifierArgument() B
 
 func (m *_BACnetConstructedDataAnalogValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataAnalogValueAll factory function for _BACnetConstructedDataAnalogValueAll
-func NewBACnetConstructedDataAnalogValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAnalogValueAll {
-	_result := &_BACnetConstructedDataAnalogValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataAnalogValueAll) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataAnalogValueAll) IsBACnetConstructedDataAnalogValueAll() {}
 
+func (m *_BACnetConstructedDataAnalogValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAnalogValueAll) deepCopy() *_BACnetConstructedDataAnalogValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAnalogValueAllCopy := &_BACnetConstructedDataAnalogValueAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAnalogValueAllCopy
+}
+
 func (m *_BACnetConstructedDataAnalogValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

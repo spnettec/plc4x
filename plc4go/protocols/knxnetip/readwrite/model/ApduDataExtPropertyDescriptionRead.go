@@ -38,6 +38,7 @@ type ApduDataExtPropertyDescriptionRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -47,6 +48,8 @@ type ApduDataExtPropertyDescriptionRead interface {
 	GetIndex() uint8
 	// IsApduDataExtPropertyDescriptionRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtPropertyDescriptionRead()
+	// CreateBuilder creates a ApduDataExtPropertyDescriptionReadBuilder
+	CreateApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescriptionReadBuilder
 }
 
 // _ApduDataExtPropertyDescriptionRead is the data-structure of this message
@@ -59,6 +62,123 @@ type _ApduDataExtPropertyDescriptionRead struct {
 
 var _ ApduDataExtPropertyDescriptionRead = (*_ApduDataExtPropertyDescriptionRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyDescriptionRead)(nil)
+
+// NewApduDataExtPropertyDescriptionRead factory function for _ApduDataExtPropertyDescriptionRead
+func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *_ApduDataExtPropertyDescriptionRead {
+	_result := &_ApduDataExtPropertyDescriptionRead{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Index:               index,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtPropertyDescriptionReadBuilder is a builder for ApduDataExtPropertyDescriptionRead
+type ApduDataExtPropertyDescriptionReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8) ApduDataExtPropertyDescriptionReadBuilder
+	// WithObjectIndex adds ObjectIndex (property field)
+	WithObjectIndex(uint8) ApduDataExtPropertyDescriptionReadBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) ApduDataExtPropertyDescriptionReadBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(uint8) ApduDataExtPropertyDescriptionReadBuilder
+	// Build builds the ApduDataExtPropertyDescriptionRead or returns an error if something is wrong
+	Build() (ApduDataExtPropertyDescriptionRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtPropertyDescriptionRead
+}
+
+// NewApduDataExtPropertyDescriptionReadBuilder() creates a ApduDataExtPropertyDescriptionReadBuilder
+func NewApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescriptionReadBuilder {
+	return &_ApduDataExtPropertyDescriptionReadBuilder{_ApduDataExtPropertyDescriptionRead: new(_ApduDataExtPropertyDescriptionRead)}
+}
+
+type _ApduDataExtPropertyDescriptionReadBuilder struct {
+	*_ApduDataExtPropertyDescriptionRead
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtPropertyDescriptionReadBuilder) = (*_ApduDataExtPropertyDescriptionReadBuilder)(nil)
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, index uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	return b.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithIndex(index)
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.ObjectIndex = objectIndex
+	return b
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.PropertyId = propertyId
+	return b
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) WithIndex(index uint8) ApduDataExtPropertyDescriptionReadBuilder {
+	b.Index = index
+	return b
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) Build() (ApduDataExtPropertyDescriptionRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtPropertyDescriptionRead.deepCopy(), nil
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) MustBuild() ApduDataExtPropertyDescriptionRead {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtPropertyDescriptionReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtPropertyDescriptionReadBuilder().(*_ApduDataExtPropertyDescriptionReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtPropertyDescriptionReadBuilder creates a ApduDataExtPropertyDescriptionReadBuilder
+func (b *_ApduDataExtPropertyDescriptionRead) CreateApduDataExtPropertyDescriptionReadBuilder() ApduDataExtPropertyDescriptionReadBuilder {
+	if b == nil {
+		return NewApduDataExtPropertyDescriptionReadBuilder()
+	}
+	return &_ApduDataExtPropertyDescriptionReadBuilder{_ApduDataExtPropertyDescriptionRead: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +219,6 @@ func (m *_ApduDataExtPropertyDescriptionRead) GetIndex() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyDescriptionRead factory function for _ApduDataExtPropertyDescriptionRead
-func NewApduDataExtPropertyDescriptionRead(objectIndex uint8, propertyId uint8, index uint8, length uint8) *_ApduDataExtPropertyDescriptionRead {
-	_result := &_ApduDataExtPropertyDescriptionRead{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Index:               index,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyDescriptionRead(structType any) ApduDataExtPropertyDescriptionRead {
@@ -222,13 +330,35 @@ func (m *_ApduDataExtPropertyDescriptionRead) SerializeWithWriteBuffer(ctx conte
 
 func (m *_ApduDataExtPropertyDescriptionRead) IsApduDataExtPropertyDescriptionRead() {}
 
+func (m *_ApduDataExtPropertyDescriptionRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyDescriptionRead) deepCopy() *_ApduDataExtPropertyDescriptionRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyDescriptionReadCopy := &_ApduDataExtPropertyDescriptionRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Index,
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyDescriptionReadCopy
+}
+
 func (m *_ApduDataExtPropertyDescriptionRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

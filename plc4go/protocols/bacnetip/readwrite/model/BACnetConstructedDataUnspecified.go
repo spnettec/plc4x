@@ -38,6 +38,7 @@ type BACnetConstructedDataUnspecified interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataUnspecified interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataUnspecified is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUnspecified()
+	// CreateBuilder creates a BACnetConstructedDataUnspecifiedBuilder
+	CreateBACnetConstructedDataUnspecifiedBuilder() BACnetConstructedDataUnspecifiedBuilder
 }
 
 // _BACnetConstructedDataUnspecified is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataUnspecified struct {
 
 var _ BACnetConstructedDataUnspecified = (*_BACnetConstructedDataUnspecified)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUnspecified)(nil)
+
+// NewBACnetConstructedDataUnspecified factory function for _BACnetConstructedDataUnspecified
+func NewBACnetConstructedDataUnspecified(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetConstructedDataElement, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUnspecified {
+	_result := &_BACnetConstructedDataUnspecified{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		Data:                          data,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUnspecifiedBuilder is a builder for BACnetConstructedDataUnspecified
+type BACnetConstructedDataUnspecifiedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUnspecifiedBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUnspecifiedBuilder
+	// WithData adds Data (property field)
+	WithData(...BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder
+	// Build builds the BACnetConstructedDataUnspecified or returns an error if something is wrong
+	Build() (BACnetConstructedDataUnspecified, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUnspecified
+}
+
+// NewBACnetConstructedDataUnspecifiedBuilder() creates a BACnetConstructedDataUnspecifiedBuilder
+func NewBACnetConstructedDataUnspecifiedBuilder() BACnetConstructedDataUnspecifiedBuilder {
+	return &_BACnetConstructedDataUnspecifiedBuilder{_BACnetConstructedDataUnspecified: new(_BACnetConstructedDataUnspecified)}
+}
+
+type _BACnetConstructedDataUnspecifiedBuilder struct {
+	*_BACnetConstructedDataUnspecified
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUnspecifiedBuilder) = (*_BACnetConstructedDataUnspecifiedBuilder)(nil)
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) WithMandatoryFields(data []BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataUnspecifiedBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataUnspecifiedBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) WithData(data ...BACnetConstructedDataElement) BACnetConstructedDataUnspecifiedBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) Build() (BACnetConstructedDataUnspecified, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataUnspecified.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) MustBuild() BACnetConstructedDataUnspecified {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUnspecifiedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUnspecifiedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUnspecifiedBuilder().(*_BACnetConstructedDataUnspecifiedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataUnspecifiedBuilder creates a BACnetConstructedDataUnspecifiedBuilder
+func (b *_BACnetConstructedDataUnspecified) CreateBACnetConstructedDataUnspecifiedBuilder() BACnetConstructedDataUnspecifiedBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataUnspecifiedBuilder()
+	}
+	return &_BACnetConstructedDataUnspecifiedBuilder{_BACnetConstructedDataUnspecified: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataUnspecified) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUnspecified factory function for _BACnetConstructedDataUnspecified
-func NewBACnetConstructedDataUnspecified(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetConstructedDataElement, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUnspecified {
-	_result := &_BACnetConstructedDataUnspecified{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		Data:                          data,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUnspecified(structType any) BACnetConstructedDataUnspecified {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataUnspecified) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataUnspecified) IsBACnetConstructedDataUnspecified() {}
 
+func (m *_BACnetConstructedDataUnspecified) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUnspecified) deepCopy() *_BACnetConstructedDataUnspecified {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUnspecifiedCopy := &_BACnetConstructedDataUnspecified{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetConstructedDataElement, BACnetConstructedDataElement](m.Data),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUnspecifiedCopy
+}
+
 func (m *_BACnetConstructedDataUnspecified) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataCarAssignedDirection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAssignedDirection returns AssignedDirection (property field)
 	GetAssignedDirection() BACnetLiftCarDirectionTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataCarAssignedDirection interface {
 	GetActualValue() BACnetLiftCarDirectionTagged
 	// IsBACnetConstructedDataCarAssignedDirection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarAssignedDirection()
+	// CreateBuilder creates a BACnetConstructedDataCarAssignedDirectionBuilder
+	CreateBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedDataCarAssignedDirectionBuilder
 }
 
 // _BACnetConstructedDataCarAssignedDirection is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCarAssignedDirection struct {
 
 var _ BACnetConstructedDataCarAssignedDirection = (*_BACnetConstructedDataCarAssignedDirection)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarAssignedDirection)(nil)
+
+// NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
+func NewBACnetConstructedDataCarAssignedDirection(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, assignedDirection BACnetLiftCarDirectionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
+	if assignedDirection == nil {
+		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarAssignedDirection{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AssignedDirection:             assignedDirection,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarAssignedDirectionBuilder is a builder for BACnetConstructedDataCarAssignedDirection
+type BACnetConstructedDataCarAssignedDirectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder
+	// WithAssignedDirection adds AssignedDirection (property field)
+	WithAssignedDirection(BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder
+	// WithAssignedDirectionBuilder adds AssignedDirection (property field) which is build by the builder
+	WithAssignedDirectionBuilder(func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarAssignedDirectionBuilder
+	// Build builds the BACnetConstructedDataCarAssignedDirection or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarAssignedDirection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarAssignedDirection
+}
+
+// NewBACnetConstructedDataCarAssignedDirectionBuilder() creates a BACnetConstructedDataCarAssignedDirectionBuilder
+func NewBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedDataCarAssignedDirectionBuilder {
+	return &_BACnetConstructedDataCarAssignedDirectionBuilder{_BACnetConstructedDataCarAssignedDirection: new(_BACnetConstructedDataCarAssignedDirection)}
+}
+
+type _BACnetConstructedDataCarAssignedDirectionBuilder struct {
+	*_BACnetConstructedDataCarAssignedDirection
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarAssignedDirectionBuilder) = (*_BACnetConstructedDataCarAssignedDirectionBuilder)(nil)
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithMandatoryFields(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
+	return b.WithAssignedDirection(assignedDirection)
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged) BACnetConstructedDataCarAssignedDirectionBuilder {
+	b.AssignedDirection = assignedDirection
+	return b
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) WithAssignedDirectionBuilder(builderSupplier func(BACnetLiftCarDirectionTaggedBuilder) BACnetLiftCarDirectionTaggedBuilder) BACnetConstructedDataCarAssignedDirectionBuilder {
+	builder := builderSupplier(b.AssignedDirection.CreateBACnetLiftCarDirectionTaggedBuilder())
+	var err error
+	b.AssignedDirection, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDirectionTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) Build() (BACnetConstructedDataCarAssignedDirection, error) {
+	if b.AssignedDirection == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'assignedDirection' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCarAssignedDirection.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) MustBuild() BACnetConstructedDataCarAssignedDirection {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarAssignedDirectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarAssignedDirectionBuilder().(*_BACnetConstructedDataCarAssignedDirectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCarAssignedDirectionBuilder creates a BACnetConstructedDataCarAssignedDirectionBuilder
+func (b *_BACnetConstructedDataCarAssignedDirection) CreateBACnetConstructedDataCarAssignedDirectionBuilder() BACnetConstructedDataCarAssignedDirectionBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCarAssignedDirectionBuilder()
+	}
+	return &_BACnetConstructedDataCarAssignedDirectionBuilder{_BACnetConstructedDataCarAssignedDirection: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCarAssignedDirection) GetActualValue() BACnetLift
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarAssignedDirection factory function for _BACnetConstructedDataCarAssignedDirection
-func NewBACnetConstructedDataCarAssignedDirection(assignedDirection BACnetLiftCarDirectionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarAssignedDirection {
-	if assignedDirection == nil {
-		panic("assignedDirection of type BACnetLiftCarDirectionTagged for BACnetConstructedDataCarAssignedDirection must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarAssignedDirection{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AssignedDirection:             assignedDirection,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarAssignedDirection(structType any) BACnetConstructedDataCarAssignedDirection {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCarAssignedDirection) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataCarAssignedDirection) IsBACnetConstructedDataCarAssignedDirection() {}
 
+func (m *_BACnetConstructedDataCarAssignedDirection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarAssignedDirection) deepCopy() *_BACnetConstructedDataCarAssignedDirection {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarAssignedDirectionCopy := &_BACnetConstructedDataCarAssignedDirection{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AssignedDirection.DeepCopy().(BACnetLiftCarDirectionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarAssignedDirectionCopy
+}
+
 func (m *_BACnetConstructedDataCarAssignedDirection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

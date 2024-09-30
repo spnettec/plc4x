@@ -38,10 +38,13 @@ type RequestContext interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSendIdentifyRequestBefore returns SendIdentifyRequestBefore (property field)
 	GetSendIdentifyRequestBefore() bool
 	// IsRequestContext is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestContext()
+	// CreateBuilder creates a RequestContextBuilder
+	CreateRequestContextBuilder() RequestContextBuilder
 }
 
 // _RequestContext is the data-structure of this message
@@ -50,6 +53,87 @@ type _RequestContext struct {
 }
 
 var _ RequestContext = (*_RequestContext)(nil)
+
+// NewRequestContext factory function for _RequestContext
+func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
+	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestContextBuilder is a builder for RequestContext
+type RequestContextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder
+	// WithSendIdentifyRequestBefore adds SendIdentifyRequestBefore (property field)
+	WithSendIdentifyRequestBefore(bool) RequestContextBuilder
+	// Build builds the RequestContext or returns an error if something is wrong
+	Build() (RequestContext, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestContext
+}
+
+// NewRequestContextBuilder() creates a RequestContextBuilder
+func NewRequestContextBuilder() RequestContextBuilder {
+	return &_RequestContextBuilder{_RequestContext: new(_RequestContext)}
+}
+
+type _RequestContextBuilder struct {
+	*_RequestContext
+
+	err *utils.MultiError
+}
+
+var _ (RequestContextBuilder) = (*_RequestContextBuilder)(nil)
+
+func (b *_RequestContextBuilder) WithMandatoryFields(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	return b.WithSendIdentifyRequestBefore(sendIdentifyRequestBefore)
+}
+
+func (b *_RequestContextBuilder) WithSendIdentifyRequestBefore(sendIdentifyRequestBefore bool) RequestContextBuilder {
+	b.SendIdentifyRequestBefore = sendIdentifyRequestBefore
+	return b
+}
+
+func (b *_RequestContextBuilder) Build() (RequestContext, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestContext.deepCopy(), nil
+}
+
+func (b *_RequestContextBuilder) MustBuild() RequestContext {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RequestContextBuilder) DeepCopy() any {
+	_copy := b.CreateRequestContextBuilder().(*_RequestContextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestContextBuilder creates a RequestContextBuilder
+func (b *_RequestContext) CreateRequestContextBuilder() RequestContextBuilder {
+	if b == nil {
+		return NewRequestContextBuilder()
+	}
+	return &_RequestContextBuilder{_RequestContext: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_RequestContext) GetSendIdentifyRequestBefore() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestContext factory function for _RequestContext
-func NewRequestContext(sendIdentifyRequestBefore bool) *_RequestContext {
-	return &_RequestContext{SendIdentifyRequestBefore: sendIdentifyRequestBefore}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestContext(structType any) RequestContext {
@@ -113,7 +192,7 @@ func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_RequestContext) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestContext RequestContext, err error) {
@@ -167,13 +246,31 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_RequestContext) IsRequestContext() {}
 
+func (m *_RequestContext) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestContext) deepCopy() *_RequestContext {
+	if m == nil {
+		return nil
+	}
+	_RequestContextCopy := &_RequestContext{
+		m.SendIdentifyRequestBefore,
+	}
+	return _RequestContextCopy
+}
+
 func (m *_RequestContext) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

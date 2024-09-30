@@ -38,6 +38,7 @@ type NodeIdFourByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint8
@@ -47,6 +48,8 @@ type NodeIdFourByte interface {
 	GetIdentifier() string
 	// IsNodeIdFourByte is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdFourByte()
+	// CreateBuilder creates a NodeIdFourByteBuilder
+	CreateNodeIdFourByteBuilder() NodeIdFourByteBuilder
 }
 
 // _NodeIdFourByte is the data-structure of this message
@@ -58,6 +61,115 @@ type _NodeIdFourByte struct {
 
 var _ NodeIdFourByte = (*_NodeIdFourByte)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdFourByte)(nil)
+
+// NewNodeIdFourByte factory function for _NodeIdFourByte
+func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
+	_result := &_NodeIdFourByte{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdFourByteBuilder is a builder for NodeIdFourByte
+type NodeIdFourByteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint8, id uint16) NodeIdFourByteBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint8) NodeIdFourByteBuilder
+	// WithId adds Id (property field)
+	WithId(uint16) NodeIdFourByteBuilder
+	// Build builds the NodeIdFourByte or returns an error if something is wrong
+	Build() (NodeIdFourByte, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdFourByte
+}
+
+// NewNodeIdFourByteBuilder() creates a NodeIdFourByteBuilder
+func NewNodeIdFourByteBuilder() NodeIdFourByteBuilder {
+	return &_NodeIdFourByteBuilder{_NodeIdFourByte: new(_NodeIdFourByte)}
+}
+
+type _NodeIdFourByteBuilder struct {
+	*_NodeIdFourByte
+
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdFourByteBuilder) = (*_NodeIdFourByteBuilder)(nil)
+
+func (b *_NodeIdFourByteBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
+}
+
+func (b *_NodeIdFourByteBuilder) WithMandatoryFields(namespaceIndex uint8, id uint16) NodeIdFourByteBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id)
+}
+
+func (b *_NodeIdFourByteBuilder) WithNamespaceIndex(namespaceIndex uint8) NodeIdFourByteBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_NodeIdFourByteBuilder) WithId(id uint16) NodeIdFourByteBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdFourByteBuilder) Build() (NodeIdFourByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NodeIdFourByte.deepCopy(), nil
+}
+
+func (b *_NodeIdFourByteBuilder) MustBuild() NodeIdFourByte {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdFourByteBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdFourByteBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdFourByteBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdFourByteBuilder().(*_NodeIdFourByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNodeIdFourByteBuilder creates a NodeIdFourByteBuilder
+func (b *_NodeIdFourByte) CreateNodeIdFourByteBuilder() NodeIdFourByteBuilder {
+	if b == nil {
+		return NewNodeIdFourByteBuilder()
+	}
+	return &_NodeIdFourByteBuilder{_NodeIdFourByte: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,17 +221,6 @@ func (m *_NodeIdFourByte) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdFourByte factory function for _NodeIdFourByte
-func NewNodeIdFourByte(namespaceIndex uint8, id uint16) *_NodeIdFourByte {
-	_result := &_NodeIdFourByte{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdFourByte(structType any) NodeIdFourByte {
@@ -232,13 +333,34 @@ func (m *_NodeIdFourByte) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_NodeIdFourByte) IsNodeIdFourByte() {}
 
+func (m *_NodeIdFourByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdFourByte) deepCopy() *_NodeIdFourByte {
+	if m == nil {
+		return nil
+	}
+	_NodeIdFourByteCopy := &_NodeIdFourByte{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		m.Id,
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdFourByteCopy
+}
+
 func (m *_NodeIdFourByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

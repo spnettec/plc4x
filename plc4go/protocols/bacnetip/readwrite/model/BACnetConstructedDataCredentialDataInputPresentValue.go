@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialDataInputPresentValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPresentValue returns PresentValue (property field)
 	GetPresentValue() BACnetAuthenticationFactor
@@ -45,6 +46,8 @@ type BACnetConstructedDataCredentialDataInputPresentValue interface {
 	GetActualValue() BACnetAuthenticationFactor
 	// IsBACnetConstructedDataCredentialDataInputPresentValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialDataInputPresentValue()
+	// CreateBuilder creates a BACnetConstructedDataCredentialDataInputPresentValueBuilder
+	CreateBACnetConstructedDataCredentialDataInputPresentValueBuilder() BACnetConstructedDataCredentialDataInputPresentValueBuilder
 }
 
 // _BACnetConstructedDataCredentialDataInputPresentValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCredentialDataInputPresentValue struct {
 
 var _ BACnetConstructedDataCredentialDataInputPresentValue = (*_BACnetConstructedDataCredentialDataInputPresentValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputPresentValue)(nil)
+
+// NewBACnetConstructedDataCredentialDataInputPresentValue factory function for _BACnetConstructedDataCredentialDataInputPresentValue
+func NewBACnetConstructedDataCredentialDataInputPresentValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, presentValue BACnetAuthenticationFactor, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
+	if presentValue == nil {
+		panic("presentValue of type BACnetAuthenticationFactor for BACnetConstructedDataCredentialDataInputPresentValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PresentValue:                  presentValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialDataInputPresentValueBuilder is a builder for BACnetConstructedDataCredentialDataInputPresentValue
+type BACnetConstructedDataCredentialDataInputPresentValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(presentValue BACnetAuthenticationFactor) BACnetConstructedDataCredentialDataInputPresentValueBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetAuthenticationFactor) BACnetConstructedDataCredentialDataInputPresentValueBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetConstructedDataCredentialDataInputPresentValueBuilder
+	// Build builds the BACnetConstructedDataCredentialDataInputPresentValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialDataInputPresentValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialDataInputPresentValue
+}
+
+// NewBACnetConstructedDataCredentialDataInputPresentValueBuilder() creates a BACnetConstructedDataCredentialDataInputPresentValueBuilder
+func NewBACnetConstructedDataCredentialDataInputPresentValueBuilder() BACnetConstructedDataCredentialDataInputPresentValueBuilder {
+	return &_BACnetConstructedDataCredentialDataInputPresentValueBuilder{_BACnetConstructedDataCredentialDataInputPresentValue: new(_BACnetConstructedDataCredentialDataInputPresentValue)}
+}
+
+type _BACnetConstructedDataCredentialDataInputPresentValueBuilder struct {
+	*_BACnetConstructedDataCredentialDataInputPresentValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialDataInputPresentValueBuilder) = (*_BACnetConstructedDataCredentialDataInputPresentValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) WithMandatoryFields(presentValue BACnetAuthenticationFactor) BACnetConstructedDataCredentialDataInputPresentValueBuilder {
+	return b.WithPresentValue(presentValue)
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) WithPresentValue(presentValue BACnetAuthenticationFactor) BACnetConstructedDataCredentialDataInputPresentValueBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) WithPresentValueBuilder(builderSupplier func(BACnetAuthenticationFactorBuilder) BACnetAuthenticationFactorBuilder) BACnetConstructedDataCredentialDataInputPresentValueBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetAuthenticationFactorBuilder())
+	var err error
+	b.PresentValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) Build() (BACnetConstructedDataCredentialDataInputPresentValue, error) {
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentialDataInputPresentValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) MustBuild() BACnetConstructedDataCredentialDataInputPresentValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputPresentValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialDataInputPresentValueBuilder().(*_BACnetConstructedDataCredentialDataInputPresentValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCredentialDataInputPresentValueBuilder creates a BACnetConstructedDataCredentialDataInputPresentValueBuilder
+func (b *_BACnetConstructedDataCredentialDataInputPresentValue) CreateBACnetConstructedDataCredentialDataInputPresentValueBuilder() BACnetConstructedDataCredentialDataInputPresentValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCredentialDataInputPresentValueBuilder()
+	}
+	return &_BACnetConstructedDataCredentialDataInputPresentValueBuilder{_BACnetConstructedDataCredentialDataInputPresentValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) GetActualValue()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDataInputPresentValue factory function for _BACnetConstructedDataCredentialDataInputPresentValue
-func NewBACnetConstructedDataCredentialDataInputPresentValue(presentValue BACnetAuthenticationFactor, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputPresentValue {
-	if presentValue == nil {
-		panic("presentValue of type BACnetAuthenticationFactor for BACnetConstructedDataCredentialDataInputPresentValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDataInputPresentValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PresentValue:                  presentValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDataInputPresentValue(structType any) BACnetConstructedDataCredentialDataInputPresentValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataCredentialDataInputPresentValue) SerializeWithWri
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) IsBACnetConstructedDataCredentialDataInputPresentValue() {
 }
 
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputPresentValue) deepCopy() *_BACnetConstructedDataCredentialDataInputPresentValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialDataInputPresentValueCopy := &_BACnetConstructedDataCredentialDataInputPresentValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PresentValue.DeepCopy().(BACnetAuthenticationFactor),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialDataInputPresentValueCopy
+}
+
 func (m *_BACnetConstructedDataCredentialDataInputPresentValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

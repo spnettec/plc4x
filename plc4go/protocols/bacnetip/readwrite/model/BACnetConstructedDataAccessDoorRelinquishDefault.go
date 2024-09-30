@@ -38,6 +38,7 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDoorValueTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataAccessDoorRelinquishDefault interface {
 	GetActualValue() BACnetDoorValueTagged
 	// IsBACnetConstructedDataAccessDoorRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoorRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataAccessDoorRelinquishDefault is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAccessDoorRelinquishDefault struct {
 
 var _ BACnetConstructedDataAccessDoorRelinquishDefault = (*_BACnetConstructedDataAccessDoorRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataAccessDoorRelinquishDefault factory function for _BACnetConstructedDataAccessDoorRelinquishDefault
+func NewBACnetConstructedDataAccessDoorRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDoorValueTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetDoorValueTagged for BACnetConstructedDataAccessDoorRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataAccessDoorRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessDoorRelinquishDefaultBuilder is a builder for BACnetConstructedDataAccessDoorRelinquishDefault
+type BACnetConstructedDataAccessDoorRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataAccessDoorRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessDoorRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessDoorRelinquishDefault
+}
+
+// NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() creates a BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+func NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder{_BACnetConstructedDataAccessDoorRelinquishDefault: new(_BACnetConstructedDataAccessDoorRelinquishDefault)}
+}
+
+type _BACnetConstructedDataAccessDoorRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataAccessDoorRelinquishDefault
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) = (*_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder)(nil)
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDoorValueTagged) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDoorValueTaggedBuilder) BACnetDoorValueTaggedBuilder) BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetDoorValueTaggedBuilder())
+	var err error
+	b.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDoorValueTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Build() (BACnetConstructedDataAccessDoorRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAccessDoorRelinquishDefault.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataAccessDoorRelinquishDefault {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder().(*_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder creates a BACnetConstructedDataAccessDoorRelinquishDefaultBuilder
+func (b *_BACnetConstructedDataAccessDoorRelinquishDefault) CreateBACnetConstructedDataAccessDoorRelinquishDefaultBuilder() BACnetConstructedDataAccessDoorRelinquishDefaultBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAccessDoorRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataAccessDoorRelinquishDefaultBuilder{_BACnetConstructedDataAccessDoorRelinquishDefault: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessDoorRelinquishDefault factory function for _BACnetConstructedDataAccessDoorRelinquishDefault
-func NewBACnetConstructedDataAccessDoorRelinquishDefault(relinquishDefault BACnetDoorValueTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetDoorValueTagged for BACnetConstructedDataAccessDoorRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataAccessDoorRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessDoorRelinquishDefault(structType any) BACnetConstructedDataAccessDoorRelinquishDefault {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) SerializeWithWriteBu
 func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) IsBACnetConstructedDataAccessDoorRelinquishDefault() {
 }
 
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) deepCopy() *_BACnetConstructedDataAccessDoorRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorRelinquishDefaultCopy := &_BACnetConstructedDataAccessDoorRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetDoorValueTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorRelinquishDefaultCopy
+}
+
 func (m *_BACnetConstructedDataAccessDoorRelinquishDefault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

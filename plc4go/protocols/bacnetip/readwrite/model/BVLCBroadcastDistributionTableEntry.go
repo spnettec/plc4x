@@ -38,6 +38,7 @@ type BVLCBroadcastDistributionTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
 	// GetPort returns Port (property field)
@@ -46,6 +47,8 @@ type BVLCBroadcastDistributionTableEntry interface {
 	GetBroadcastDistributionMap() []uint8
 	// IsBVLCBroadcastDistributionTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCBroadcastDistributionTableEntry()
+	// CreateBuilder creates a BVLCBroadcastDistributionTableEntryBuilder
+	CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder
 }
 
 // _BVLCBroadcastDistributionTableEntry is the data-structure of this message
@@ -56,6 +59,101 @@ type _BVLCBroadcastDistributionTableEntry struct {
 }
 
 var _ BVLCBroadcastDistributionTableEntry = (*_BVLCBroadcastDistributionTableEntry)(nil)
+
+// NewBVLCBroadcastDistributionTableEntry factory function for _BVLCBroadcastDistributionTableEntry
+func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *_BVLCBroadcastDistributionTableEntry {
+	return &_BVLCBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCBroadcastDistributionTableEntryBuilder is a builder for BVLCBroadcastDistributionTableEntry
+type BVLCBroadcastDistributionTableEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// WithIp adds Ip (property field)
+	WithIp(...uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// WithPort adds Port (property field)
+	WithPort(uint16) BVLCBroadcastDistributionTableEntryBuilder
+	// WithBroadcastDistributionMap adds BroadcastDistributionMap (property field)
+	WithBroadcastDistributionMap(...uint8) BVLCBroadcastDistributionTableEntryBuilder
+	// Build builds the BVLCBroadcastDistributionTableEntry or returns an error if something is wrong
+	Build() (BVLCBroadcastDistributionTableEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCBroadcastDistributionTableEntry
+}
+
+// NewBVLCBroadcastDistributionTableEntryBuilder() creates a BVLCBroadcastDistributionTableEntryBuilder
+func NewBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
+	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: new(_BVLCBroadcastDistributionTableEntry)}
+}
+
+type _BVLCBroadcastDistributionTableEntryBuilder struct {
+	*_BVLCBroadcastDistributionTableEntry
+
+	err *utils.MultiError
+}
+
+var _ (BVLCBroadcastDistributionTableEntryBuilder) = (*_BVLCBroadcastDistributionTableEntryBuilder)(nil)
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithMandatoryFields(ip []uint8, port uint16, broadcastDistributionMap []uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	return b.WithIp(ip...).WithPort(port).WithBroadcastDistributionMap(broadcastDistributionMap...)
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithIp(ip ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	b.Ip = ip
+	return b
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithPort(port uint16) BVLCBroadcastDistributionTableEntryBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) WithBroadcastDistributionMap(broadcastDistributionMap ...uint8) BVLCBroadcastDistributionTableEntryBuilder {
+	b.BroadcastDistributionMap = broadcastDistributionMap
+	return b
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) Build() (BVLCBroadcastDistributionTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCBroadcastDistributionTableEntry.deepCopy(), nil
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) MustBuild() BVLCBroadcastDistributionTableEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BVLCBroadcastDistributionTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCBroadcastDistributionTableEntryBuilder().(*_BVLCBroadcastDistributionTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCBroadcastDistributionTableEntryBuilder creates a BVLCBroadcastDistributionTableEntryBuilder
+func (b *_BVLCBroadcastDistributionTableEntry) CreateBVLCBroadcastDistributionTableEntryBuilder() BVLCBroadcastDistributionTableEntryBuilder {
+	if b == nil {
+		return NewBVLCBroadcastDistributionTableEntryBuilder()
+	}
+	return &_BVLCBroadcastDistributionTableEntryBuilder{_BVLCBroadcastDistributionTableEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_BVLCBroadcastDistributionTableEntry) GetBroadcastDistributionMap() []u
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCBroadcastDistributionTableEntry factory function for _BVLCBroadcastDistributionTableEntry
-func NewBVLCBroadcastDistributionTableEntry(ip []uint8, port uint16, broadcastDistributionMap []uint8) *_BVLCBroadcastDistributionTableEntry {
-	return &_BVLCBroadcastDistributionTableEntry{Ip: ip, Port: port, BroadcastDistributionMap: broadcastDistributionMap}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCBroadcastDistributionTableEntry(structType any) BVLCBroadcastDistributionTableEntry {
@@ -137,7 +230,7 @@ func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BVLCBroadcastDistributionTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bVLCBroadcastDistributionTableEntry BVLCBroadcastDistributionTableEntry, err error) {
@@ -211,13 +304,33 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BVLCBroadcastDistributionTableEntry) IsBVLCBroadcastDistributionTableEntry() {}
 
+func (m *_BVLCBroadcastDistributionTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCBroadcastDistributionTableEntry) deepCopy() *_BVLCBroadcastDistributionTableEntry {
+	if m == nil {
+		return nil
+	}
+	_BVLCBroadcastDistributionTableEntryCopy := &_BVLCBroadcastDistributionTableEntry{
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		utils.DeepCopySlice[uint8, uint8](m.BroadcastDistributionMap),
+	}
+	return _BVLCBroadcastDistributionTableEntryCopy
+}
+
 func (m *_BVLCBroadcastDistributionTableEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

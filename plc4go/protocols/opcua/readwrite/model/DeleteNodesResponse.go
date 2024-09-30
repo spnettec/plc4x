@@ -38,6 +38,7 @@ type DeleteNodesResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type DeleteNodesResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteNodesResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteNodesResponse()
+	// CreateBuilder creates a DeleteNodesResponseBuilder
+	CreateDeleteNodesResponseBuilder() DeleteNodesResponseBuilder
 }
 
 // _DeleteNodesResponse is the data-structure of this message
@@ -65,6 +68,163 @@ type _DeleteNodesResponse struct {
 
 var _ DeleteNodesResponse = (*_DeleteNodesResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesResponse)(nil)
+
+// NewDeleteNodesResponse factory function for _DeleteNodesResponse
+func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
+	}
+	_result := &_DeleteNodesResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteNodesResponseBuilder is a builder for DeleteNodesResponse
+type DeleteNodesResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteNodesResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) DeleteNodesResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) DeleteNodesResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) DeleteNodesResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) DeleteNodesResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) DeleteNodesResponseBuilder
+	// Build builds the DeleteNodesResponse or returns an error if something is wrong
+	Build() (DeleteNodesResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteNodesResponse
+}
+
+// NewDeleteNodesResponseBuilder() creates a DeleteNodesResponseBuilder
+func NewDeleteNodesResponseBuilder() DeleteNodesResponseBuilder {
+	return &_DeleteNodesResponseBuilder{_DeleteNodesResponse: new(_DeleteNodesResponse)}
+}
+
+type _DeleteNodesResponseBuilder struct {
+	*_DeleteNodesResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteNodesResponseBuilder) = (*_DeleteNodesResponseBuilder)(nil)
+
+func (b *_DeleteNodesResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteNodesResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteNodesResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_DeleteNodesResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteNodesResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) WithNoOfResults(noOfResults int32) DeleteNodesResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) WithResults(results ...StatusCode) DeleteNodesResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteNodesResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteNodesResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_DeleteNodesResponseBuilder) Build() (DeleteNodesResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteNodesResponse.deepCopy(), nil
+}
+
+func (b *_DeleteNodesResponseBuilder) MustBuild() DeleteNodesResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteNodesResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteNodesResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteNodesResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteNodesResponseBuilder().(*_DeleteNodesResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteNodesResponseBuilder creates a DeleteNodesResponseBuilder
+func (b *_DeleteNodesResponse) CreateDeleteNodesResponseBuilder() DeleteNodesResponseBuilder {
+	if b == nil {
+		return NewDeleteNodesResponseBuilder()
+	}
+	return &_DeleteNodesResponseBuilder{_DeleteNodesResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_DeleteNodesResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesResponse factory function for _DeleteNodesResponse
-func NewDeleteNodesResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteNodesResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteNodesResponse must not be nil")
-	}
-	_result := &_DeleteNodesResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesResponse(structType any) DeleteNodesResponse {
@@ -281,13 +424,37 @@ func (m *_DeleteNodesResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_DeleteNodesResponse) IsDeleteNodesResponse() {}
 
+func (m *_DeleteNodesResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesResponse) deepCopy() *_DeleteNodesResponse {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesResponseCopy := &_DeleteNodesResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesResponseCopy
+}
+
 func (m *_DeleteNodesResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

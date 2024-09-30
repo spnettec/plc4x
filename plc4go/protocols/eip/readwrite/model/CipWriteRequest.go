@@ -38,6 +38,7 @@ type CipWriteRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetTag returns Tag (property field)
 	GetTag() []byte
@@ -49,6 +50,8 @@ type CipWriteRequest interface {
 	GetData() []byte
 	// IsCipWriteRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipWriteRequest()
+	// CreateBuilder creates a CipWriteRequestBuilder
+	CreateCipWriteRequestBuilder() CipWriteRequestBuilder
 }
 
 // _CipWriteRequest is the data-structure of this message
@@ -62,6 +65,131 @@ type _CipWriteRequest struct {
 
 var _ CipWriteRequest = (*_CipWriteRequest)(nil)
 var _ CipServiceRequirements = (*_CipWriteRequest)(nil)
+
+// NewCipWriteRequest factory function for _CipWriteRequest
+func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
+	_result := &_CipWriteRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		Tag:                tag,
+		DataType:           dataType,
+		ElementNb:          elementNb,
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipWriteRequestBuilder is a builder for CipWriteRequest
+type CipWriteRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder
+	// WithTag adds Tag (property field)
+	WithTag(...byte) CipWriteRequestBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(CIPDataTypeCode) CipWriteRequestBuilder
+	// WithElementNb adds ElementNb (property field)
+	WithElementNb(uint16) CipWriteRequestBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) CipWriteRequestBuilder
+	// Build builds the CipWriteRequest or returns an error if something is wrong
+	Build() (CipWriteRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipWriteRequest
+}
+
+// NewCipWriteRequestBuilder() creates a CipWriteRequestBuilder
+func NewCipWriteRequestBuilder() CipWriteRequestBuilder {
+	return &_CipWriteRequestBuilder{_CipWriteRequest: new(_CipWriteRequest)}
+}
+
+type _CipWriteRequestBuilder struct {
+	*_CipWriteRequest
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipWriteRequestBuilder) = (*_CipWriteRequestBuilder)(nil)
+
+func (b *_CipWriteRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipWriteRequestBuilder) WithMandatoryFields(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte) CipWriteRequestBuilder {
+	return b.WithTag(tag...).WithDataType(dataType).WithElementNb(elementNb).WithData(data...)
+}
+
+func (b *_CipWriteRequestBuilder) WithTag(tag ...byte) CipWriteRequestBuilder {
+	b.Tag = tag
+	return b
+}
+
+func (b *_CipWriteRequestBuilder) WithDataType(dataType CIPDataTypeCode) CipWriteRequestBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_CipWriteRequestBuilder) WithElementNb(elementNb uint16) CipWriteRequestBuilder {
+	b.ElementNb = elementNb
+	return b
+}
+
+func (b *_CipWriteRequestBuilder) WithData(data ...byte) CipWriteRequestBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipWriteRequestBuilder) Build() (CipWriteRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipWriteRequest.deepCopy(), nil
+}
+
+func (b *_CipWriteRequestBuilder) MustBuild() CipWriteRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipWriteRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipWriteRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipWriteRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCipWriteRequestBuilder().(*_CipWriteRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipWriteRequestBuilder creates a CipWriteRequestBuilder
+func (b *_CipWriteRequest) CreateCipWriteRequestBuilder() CipWriteRequestBuilder {
+	if b == nil {
+		return NewCipWriteRequestBuilder()
+	}
+	return &_CipWriteRequestBuilder{_CipWriteRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,19 +242,6 @@ func (m *_CipWriteRequest) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteRequest factory function for _CipWriteRequest
-func NewCipWriteRequest(tag []byte, dataType CIPDataTypeCode, elementNb uint16, data []byte, serviceLen uint16) *_CipWriteRequest {
-	_result := &_CipWriteRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		Tag:                tag,
-		DataType:           dataType,
-		ElementNb:          elementNb,
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteRequest(structType any) CipWriteRequest {
@@ -268,13 +383,36 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_CipWriteRequest) IsCipWriteRequest() {}
 
+func (m *_CipWriteRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipWriteRequest) deepCopy() *_CipWriteRequest {
+	if m == nil {
+		return nil
+	}
+	_CipWriteRequestCopy := &_CipWriteRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Tag),
+		m.DataType,
+		m.ElementNb,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipWriteRequestCopy
+}
+
 func (m *_CipWriteRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

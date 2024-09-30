@@ -36,9 +36,12 @@ type SecurityDataMainsRestoredOrApplied interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataMainsRestoredOrApplied is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataMainsRestoredOrApplied()
+	// CreateBuilder creates a SecurityDataMainsRestoredOrAppliedBuilder
+	CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder
 }
 
 // _SecurityDataMainsRestoredOrApplied is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataMainsRestoredOrApplied struct {
 
 var _ SecurityDataMainsRestoredOrApplied = (*_SecurityDataMainsRestoredOrApplied)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataMainsRestoredOrApplied)(nil)
+
+// NewSecurityDataMainsRestoredOrApplied factory function for _SecurityDataMainsRestoredOrApplied
+func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsRestoredOrApplied {
+	_result := &_SecurityDataMainsRestoredOrApplied{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataMainsRestoredOrAppliedBuilder is a builder for SecurityDataMainsRestoredOrApplied
+type SecurityDataMainsRestoredOrAppliedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder
+	// Build builds the SecurityDataMainsRestoredOrApplied or returns an error if something is wrong
+	Build() (SecurityDataMainsRestoredOrApplied, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataMainsRestoredOrApplied
+}
+
+// NewSecurityDataMainsRestoredOrAppliedBuilder() creates a SecurityDataMainsRestoredOrAppliedBuilder
+func NewSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
+	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: new(_SecurityDataMainsRestoredOrApplied)}
+}
+
+type _SecurityDataMainsRestoredOrAppliedBuilder struct {
+	*_SecurityDataMainsRestoredOrApplied
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataMainsRestoredOrAppliedBuilder) = (*_SecurityDataMainsRestoredOrAppliedBuilder)(nil)
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) WithMandatoryFields() SecurityDataMainsRestoredOrAppliedBuilder {
+	return b
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) Build() (SecurityDataMainsRestoredOrApplied, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataMainsRestoredOrApplied.deepCopy(), nil
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) MustBuild() SecurityDataMainsRestoredOrApplied {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataMainsRestoredOrAppliedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataMainsRestoredOrAppliedBuilder().(*_SecurityDataMainsRestoredOrAppliedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataMainsRestoredOrAppliedBuilder creates a SecurityDataMainsRestoredOrAppliedBuilder
+func (b *_SecurityDataMainsRestoredOrApplied) CreateSecurityDataMainsRestoredOrAppliedBuilder() SecurityDataMainsRestoredOrAppliedBuilder {
+	if b == nil {
+		return NewSecurityDataMainsRestoredOrAppliedBuilder()
+	}
+	return &_SecurityDataMainsRestoredOrAppliedBuilder{_SecurityDataMainsRestoredOrApplied: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataMainsRestoredOrApplied)(nil)
 
 func (m *_SecurityDataMainsRestoredOrApplied) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataMainsRestoredOrApplied factory function for _SecurityDataMainsRestoredOrApplied
-func NewSecurityDataMainsRestoredOrApplied(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataMainsRestoredOrApplied {
-	_result := &_SecurityDataMainsRestoredOrApplied{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataMainsRestoredOrApplied) SerializeWithWriteBuffer(ctx conte
 
 func (m *_SecurityDataMainsRestoredOrApplied) IsSecurityDataMainsRestoredOrApplied() {}
 
+func (m *_SecurityDataMainsRestoredOrApplied) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataMainsRestoredOrApplied) deepCopy() *_SecurityDataMainsRestoredOrApplied {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataMainsRestoredOrAppliedCopy := &_SecurityDataMainsRestoredOrApplied{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataMainsRestoredOrAppliedCopy
+}
+
 func (m *_SecurityDataMainsRestoredOrApplied) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

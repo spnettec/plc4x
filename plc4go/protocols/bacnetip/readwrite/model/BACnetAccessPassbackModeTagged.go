@@ -38,12 +38,15 @@ type BACnetAccessPassbackModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessPassbackMode
 	// IsBACnetAccessPassbackModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessPassbackModeTagged()
+	// CreateBuilder creates a BACnetAccessPassbackModeTaggedBuilder
+	CreateBACnetAccessPassbackModeTaggedBuilder() BACnetAccessPassbackModeTaggedBuilder
 }
 
 // _BACnetAccessPassbackModeTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetAccessPassbackModeTagged struct {
 }
 
 var _ BACnetAccessPassbackModeTagged = (*_BACnetAccessPassbackModeTagged)(nil)
+
+// NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
+func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
+	}
+	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessPassbackModeTaggedBuilder is a builder for BACnetAccessPassbackModeTagged
+type BACnetAccessPassbackModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessPassbackModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessPassbackModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder
+	// Build builds the BACnetAccessPassbackModeTagged or returns an error if something is wrong
+	Build() (BACnetAccessPassbackModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessPassbackModeTagged
+}
+
+// NewBACnetAccessPassbackModeTaggedBuilder() creates a BACnetAccessPassbackModeTaggedBuilder
+func NewBACnetAccessPassbackModeTaggedBuilder() BACnetAccessPassbackModeTaggedBuilder {
+	return &_BACnetAccessPassbackModeTaggedBuilder{_BACnetAccessPassbackModeTagged: new(_BACnetAccessPassbackModeTagged)}
+}
+
+type _BACnetAccessPassbackModeTaggedBuilder struct {
+	*_BACnetAccessPassbackModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessPassbackModeTaggedBuilder) = (*_BACnetAccessPassbackModeTaggedBuilder)(nil)
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessPassbackModeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessPassbackModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) WithValue(value BACnetAccessPassbackMode) BACnetAccessPassbackModeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) Build() (BACnetAccessPassbackModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessPassbackModeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) MustBuild() BACnetAccessPassbackModeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessPassbackModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessPassbackModeTaggedBuilder().(*_BACnetAccessPassbackModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessPassbackModeTaggedBuilder creates a BACnetAccessPassbackModeTaggedBuilder
+func (b *_BACnetAccessPassbackModeTagged) CreateBACnetAccessPassbackModeTaggedBuilder() BACnetAccessPassbackModeTaggedBuilder {
+	if b == nil {
+		return NewBACnetAccessPassbackModeTaggedBuilder()
+	}
+	return &_BACnetAccessPassbackModeTaggedBuilder{_BACnetAccessPassbackModeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetAccessPassbackModeTagged) GetValue() BACnetAccessPassbackMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessPassbackModeTagged factory function for _BACnetAccessPassbackModeTagged
-func NewBACnetAccessPassbackModeTagged(header BACnetTagHeader, value BACnetAccessPassbackMode, tagNumber uint8, tagClass TagClass) *_BACnetAccessPassbackModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessPassbackModeTagged must not be nil")
-	}
-	return &_BACnetAccessPassbackModeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessPassbackModeTagged(structType any) BACnetAccessPassbackModeTagged {
@@ -130,7 +237,7 @@ func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessPassbackModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessPassbackModeTagged BACnetAccessPassbackModeTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetAccessPassbackModeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAccessPassbackModeTagged) IsBACnetAccessPassbackModeTagged() {}
 
+func (m *_BACnetAccessPassbackModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessPassbackModeTagged) deepCopy() *_BACnetAccessPassbackModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessPassbackModeTaggedCopy := &_BACnetAccessPassbackModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessPassbackModeTaggedCopy
+}
+
 func (m *_BACnetAccessPassbackModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

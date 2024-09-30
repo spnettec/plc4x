@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,35 @@ type IAmRouterToNetwork struct {
 	iartnNetworkList []uint16
 }
 
-func NewIAmRouterToNetwork(opts ...func(*IAmRouterToNetwork)) (*IAmRouterToNetwork, error) {
+func NewIAmRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*IAmRouterToNetwork, error) {
 	i := &IAmRouterToNetwork{
 		messageType: 0x01,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMIAmRouterToNetwork(i.iartnNetworkList, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "iartnNetworkList")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
-func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) func(*IAmRouterToNetwork) {
-	return func(n *IAmRouterToNetwork) {
-		n.iartnNetworkList = iartnNetworkList
+// TODO: check if this is rather a KWArgs
+func WithIAmRouterToNetworkNetworkList(iartnNetworkList ...uint16) GenericApplier[*IAmRouterToNetwork] {
+	return WrapGenericApplier(func(n *IAmRouterToNetwork) { n.iartnNetworkList = iartnNetworkList })
+}
+
+func (i *IAmRouterToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "iartnNetworkList":
+		return i.iartnNetworkList
 	}
+	return nil
 }
 
 func (i *IAmRouterToNetwork) GetIartnNetworkList() []uint16 {
@@ -102,11 +108,4 @@ func (i *IAmRouterToNetwork) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *IAmRouterToNetwork) String() string {
-	if i == nil {
-		return "(*IAmRouterToNetwork)(nil)"
-	}
-	return fmt.Sprintf("IAmRouterToNetwork{%s, iartnNetworkList: %v}", i._NPDU, i.iartnNetworkList)
 }

@@ -38,6 +38,7 @@ type GenericAttributeValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAttributeId returns AttributeId (property field)
 	GetAttributeId() uint32
@@ -45,6 +46,8 @@ type GenericAttributeValue interface {
 	GetValue() Variant
 	// IsGenericAttributeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGenericAttributeValue()
+	// CreateBuilder creates a GenericAttributeValueBuilder
+	CreateGenericAttributeValueBuilder() GenericAttributeValueBuilder
 }
 
 // _GenericAttributeValue is the data-structure of this message
@@ -56,6 +59,139 @@ type _GenericAttributeValue struct {
 
 var _ GenericAttributeValue = (*_GenericAttributeValue)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_GenericAttributeValue)(nil)
+
+// NewGenericAttributeValue factory function for _GenericAttributeValue
+func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
+	if value == nil {
+		panic("value of type Variant for GenericAttributeValue must not be nil")
+	}
+	_result := &_GenericAttributeValue{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		AttributeId:                       attributeId,
+		Value:                             value,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GenericAttributeValueBuilder is a builder for GenericAttributeValue
+type GenericAttributeValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(attributeId uint32, value Variant) GenericAttributeValueBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) GenericAttributeValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(Variant) GenericAttributeValueBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(VariantBuilder) VariantBuilder) GenericAttributeValueBuilder
+	// Build builds the GenericAttributeValue or returns an error if something is wrong
+	Build() (GenericAttributeValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GenericAttributeValue
+}
+
+// NewGenericAttributeValueBuilder() creates a GenericAttributeValueBuilder
+func NewGenericAttributeValueBuilder() GenericAttributeValueBuilder {
+	return &_GenericAttributeValueBuilder{_GenericAttributeValue: new(_GenericAttributeValue)}
+}
+
+type _GenericAttributeValueBuilder struct {
+	*_GenericAttributeValue
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (GenericAttributeValueBuilder) = (*_GenericAttributeValueBuilder)(nil)
+
+func (b *_GenericAttributeValueBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_GenericAttributeValueBuilder) WithMandatoryFields(attributeId uint32, value Variant) GenericAttributeValueBuilder {
+	return b.WithAttributeId(attributeId).WithValue(value)
+}
+
+func (b *_GenericAttributeValueBuilder) WithAttributeId(attributeId uint32) GenericAttributeValueBuilder {
+	b.AttributeId = attributeId
+	return b
+}
+
+func (b *_GenericAttributeValueBuilder) WithValue(value Variant) GenericAttributeValueBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_GenericAttributeValueBuilder) WithValueBuilder(builderSupplier func(VariantBuilder) VariantBuilder) GenericAttributeValueBuilder {
+	builder := builderSupplier(b.Value.CreateVariantBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VariantBuilder failed"))
+	}
+	return b
+}
+
+func (b *_GenericAttributeValueBuilder) Build() (GenericAttributeValue, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GenericAttributeValue.deepCopy(), nil
+}
+
+func (b *_GenericAttributeValueBuilder) MustBuild() GenericAttributeValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_GenericAttributeValueBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_GenericAttributeValueBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_GenericAttributeValueBuilder) DeepCopy() any {
+	_copy := b.CreateGenericAttributeValueBuilder().(*_GenericAttributeValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateGenericAttributeValueBuilder creates a GenericAttributeValueBuilder
+func (b *_GenericAttributeValue) CreateGenericAttributeValueBuilder() GenericAttributeValueBuilder {
+	if b == nil {
+		return NewGenericAttributeValueBuilder()
+	}
+	return &_GenericAttributeValueBuilder{_GenericAttributeValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_GenericAttributeValue) GetValue() Variant {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGenericAttributeValue factory function for _GenericAttributeValue
-func NewGenericAttributeValue(attributeId uint32, value Variant) *_GenericAttributeValue {
-	if value == nil {
-		panic("value of type Variant for GenericAttributeValue must not be nil")
-	}
-	_result := &_GenericAttributeValue{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		AttributeId:                       attributeId,
-		Value:                             value,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastGenericAttributeValue(structType any) GenericAttributeValue {
@@ -204,13 +326,34 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_GenericAttributeValue) IsGenericAttributeValue() {}
 
+func (m *_GenericAttributeValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GenericAttributeValue) deepCopy() *_GenericAttributeValue {
+	if m == nil {
+		return nil
+	}
+	_GenericAttributeValueCopy := &_GenericAttributeValue{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.AttributeId,
+		m.Value.DeepCopy().(Variant),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _GenericAttributeValueCopy
+}
+
 func (m *_GenericAttributeValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

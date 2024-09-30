@@ -37,6 +37,7 @@ type BACnetTagPayloadBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (virtual field)
 	GetValue() bool
 	// GetIsTrue returns IsTrue (virtual field)
@@ -45,6 +46,8 @@ type BACnetTagPayloadBoolean interface {
 	GetIsFalse() bool
 	// IsBACnetTagPayloadBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadBoolean()
+	// CreateBuilder creates a BACnetTagPayloadBooleanBuilder
+	CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder
 }
 
 // _BACnetTagPayloadBoolean is the data-structure of this message
@@ -55,6 +58,80 @@ type _BACnetTagPayloadBoolean struct {
 }
 
 var _ BACnetTagPayloadBoolean = (*_BACnetTagPayloadBoolean)(nil)
+
+// NewBACnetTagPayloadBoolean factory function for _BACnetTagPayloadBoolean
+func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
+	return &_BACnetTagPayloadBoolean{ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadBooleanBuilder is a builder for BACnetTagPayloadBoolean
+type BACnetTagPayloadBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetTagPayloadBooleanBuilder
+	// Build builds the BACnetTagPayloadBoolean or returns an error if something is wrong
+	Build() (BACnetTagPayloadBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadBoolean
+}
+
+// NewBACnetTagPayloadBooleanBuilder() creates a BACnetTagPayloadBooleanBuilder
+func NewBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
+	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: new(_BACnetTagPayloadBoolean)}
+}
+
+type _BACnetTagPayloadBooleanBuilder struct {
+	*_BACnetTagPayloadBoolean
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadBooleanBuilder) = (*_BACnetTagPayloadBooleanBuilder)(nil)
+
+func (b *_BACnetTagPayloadBooleanBuilder) WithMandatoryFields() BACnetTagPayloadBooleanBuilder {
+	return b
+}
+
+func (b *_BACnetTagPayloadBooleanBuilder) Build() (BACnetTagPayloadBoolean, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadBoolean.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadBooleanBuilder) MustBuild() BACnetTagPayloadBoolean {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadBooleanBuilder().(*_BACnetTagPayloadBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadBooleanBuilder creates a BACnetTagPayloadBooleanBuilder
+func (b *_BACnetTagPayloadBoolean) CreateBACnetTagPayloadBooleanBuilder() BACnetTagPayloadBooleanBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadBooleanBuilder()
+	}
+	return &_BACnetTagPayloadBooleanBuilder{_BACnetTagPayloadBoolean: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -83,11 +160,6 @@ func (m *_BACnetTagPayloadBoolean) GetIsFalse() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadBoolean factory function for _BACnetTagPayloadBoolean
-func NewBACnetTagPayloadBoolean(actualLength uint32) *_BACnetTagPayloadBoolean {
-	return &_BACnetTagPayloadBoolean{ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadBoolean(structType any) BACnetTagPayloadBoolean {
@@ -135,7 +207,7 @@ func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadBoolean) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadBoolean BACnetTagPayloadBoolean, err error) {
@@ -225,13 +297,31 @@ func (m *_BACnetTagPayloadBoolean) GetActualLength() uint32 {
 
 func (m *_BACnetTagPayloadBoolean) IsBACnetTagPayloadBoolean() {}
 
+func (m *_BACnetTagPayloadBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadBoolean) deepCopy() *_BACnetTagPayloadBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadBooleanCopy := &_BACnetTagPayloadBoolean{
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadBooleanCopy
+}
+
 func (m *_BACnetTagPayloadBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

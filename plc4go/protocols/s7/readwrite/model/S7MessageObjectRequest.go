@@ -42,6 +42,7 @@ type S7MessageObjectRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7DataAlarmMessage
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -51,6 +52,8 @@ type S7MessageObjectRequest interface {
 	GetAlarmType() AlarmType
 	// IsS7MessageObjectRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageObjectRequest()
+	// CreateBuilder creates a S7MessageObjectRequestBuilder
+	CreateS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder
 }
 
 // _S7MessageObjectRequest is the data-structure of this message
@@ -66,6 +69,123 @@ type _S7MessageObjectRequest struct {
 
 var _ S7MessageObjectRequest = (*_S7MessageObjectRequest)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectRequest)(nil)
+
+// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
+func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
+	_result := &_S7MessageObjectRequest{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		SyntaxId:                   syntaxId,
+		QueryType:                  queryType,
+		AlarmType:                  alarmType,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageObjectRequestBuilder is a builder for S7MessageObjectRequest
+type S7MessageObjectRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7MessageObjectRequestBuilder
+	// WithSyntaxId adds SyntaxId (property field)
+	WithSyntaxId(SyntaxIdType) S7MessageObjectRequestBuilder
+	// WithQueryType adds QueryType (property field)
+	WithQueryType(QueryType) S7MessageObjectRequestBuilder
+	// WithAlarmType adds AlarmType (property field)
+	WithAlarmType(AlarmType) S7MessageObjectRequestBuilder
+	// Build builds the S7MessageObjectRequest or returns an error if something is wrong
+	Build() (S7MessageObjectRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7MessageObjectRequest
+}
+
+// NewS7MessageObjectRequestBuilder() creates a S7MessageObjectRequestBuilder
+func NewS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder {
+	return &_S7MessageObjectRequestBuilder{_S7MessageObjectRequest: new(_S7MessageObjectRequest)}
+}
+
+type _S7MessageObjectRequestBuilder struct {
+	*_S7MessageObjectRequest
+
+	parentBuilder *_S7DataAlarmMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageObjectRequestBuilder) = (*_S7MessageObjectRequestBuilder)(nil)
+
+func (b *_S7MessageObjectRequestBuilder) setParent(contract S7DataAlarmMessageContract) {
+	b.S7DataAlarmMessageContract = contract
+}
+
+func (b *_S7MessageObjectRequestBuilder) WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7MessageObjectRequestBuilder {
+	return b.WithSyntaxId(syntaxId).WithQueryType(queryType).WithAlarmType(alarmType)
+}
+
+func (b *_S7MessageObjectRequestBuilder) WithSyntaxId(syntaxId SyntaxIdType) S7MessageObjectRequestBuilder {
+	b.SyntaxId = syntaxId
+	return b
+}
+
+func (b *_S7MessageObjectRequestBuilder) WithQueryType(queryType QueryType) S7MessageObjectRequestBuilder {
+	b.QueryType = queryType
+	return b
+}
+
+func (b *_S7MessageObjectRequestBuilder) WithAlarmType(alarmType AlarmType) S7MessageObjectRequestBuilder {
+	b.AlarmType = alarmType
+	return b
+}
+
+func (b *_S7MessageObjectRequestBuilder) Build() (S7MessageObjectRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7MessageObjectRequest.deepCopy(), nil
+}
+
+func (b *_S7MessageObjectRequestBuilder) MustBuild() S7MessageObjectRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageObjectRequestBuilder) Done() S7DataAlarmMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageObjectRequestBuilder) buildForS7DataAlarmMessage() (S7DataAlarmMessage, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageObjectRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageObjectRequestBuilder().(*_S7MessageObjectRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7MessageObjectRequestBuilder creates a S7MessageObjectRequestBuilder
+func (b *_S7MessageObjectRequest) CreateS7MessageObjectRequestBuilder() S7MessageObjectRequestBuilder {
+	if b == nil {
+		return NewS7MessageObjectRequestBuilder()
+	}
+	return &_S7MessageObjectRequestBuilder{_S7MessageObjectRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,18 +243,6 @@ func (m *_S7MessageObjectRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectRequest factory function for _S7MessageObjectRequest
-func NewS7MessageObjectRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7MessageObjectRequest {
-	_result := &_S7MessageObjectRequest{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		SyntaxId:                   syntaxId,
-		QueryType:                  queryType,
-		AlarmType:                  alarmType,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectRequest(structType any) S7MessageObjectRequest {
@@ -298,13 +406,37 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_S7MessageObjectRequest) IsS7MessageObjectRequest() {}
 
+func (m *_S7MessageObjectRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageObjectRequest) deepCopy() *_S7MessageObjectRequest {
+	if m == nil {
+		return nil
+	}
+	_S7MessageObjectRequestCopy := &_S7MessageObjectRequest{
+		m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).deepCopy(),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	return _S7MessageObjectRequestCopy
+}
+
 func (m *_S7MessageObjectRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

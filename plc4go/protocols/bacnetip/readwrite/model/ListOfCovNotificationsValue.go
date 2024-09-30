@@ -38,6 +38,7 @@ type ListOfCovNotificationsValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPropertyIdentifier returns PropertyIdentifier (property field)
 	GetPropertyIdentifier() BACnetPropertyIdentifierTagged
 	// GetArrayIndex returns ArrayIndex (property field)
@@ -48,6 +49,8 @@ type ListOfCovNotificationsValue interface {
 	GetTimeOfChange() BACnetContextTagTime
 	// IsListOfCovNotificationsValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsListOfCovNotificationsValue()
+	// CreateBuilder creates a ListOfCovNotificationsValueBuilder
+	CreateListOfCovNotificationsValueBuilder() ListOfCovNotificationsValueBuilder
 }
 
 // _ListOfCovNotificationsValue is the data-structure of this message
@@ -62,6 +65,186 @@ type _ListOfCovNotificationsValue struct {
 }
 
 var _ ListOfCovNotificationsValue = (*_ListOfCovNotificationsValue)(nil)
+
+// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
+func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
+	}
+	if propertyValue == nil {
+		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
+	}
+	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ListOfCovNotificationsValueBuilder is a builder for ListOfCovNotificationsValue
+type ListOfCovNotificationsValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged, propertyValue BACnetConstructedData) ListOfCovNotificationsValueBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) ListOfCovNotificationsValueBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) ListOfCovNotificationsValueBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) ListOfCovNotificationsValueBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ListOfCovNotificationsValueBuilder
+	// WithPropertyValue adds PropertyValue (property field)
+	WithPropertyValue(BACnetConstructedData) ListOfCovNotificationsValueBuilder
+	// WithPropertyValueBuilder adds PropertyValue (property field) which is build by the builder
+	WithPropertyValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) ListOfCovNotificationsValueBuilder
+	// WithTimeOfChange adds TimeOfChange (property field)
+	WithOptionalTimeOfChange(BACnetContextTagTime) ListOfCovNotificationsValueBuilder
+	// WithOptionalTimeOfChangeBuilder adds TimeOfChange (property field) which is build by the builder
+	WithOptionalTimeOfChangeBuilder(func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) ListOfCovNotificationsValueBuilder
+	// Build builds the ListOfCovNotificationsValue or returns an error if something is wrong
+	Build() (ListOfCovNotificationsValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ListOfCovNotificationsValue
+}
+
+// NewListOfCovNotificationsValueBuilder() creates a ListOfCovNotificationsValueBuilder
+func NewListOfCovNotificationsValueBuilder() ListOfCovNotificationsValueBuilder {
+	return &_ListOfCovNotificationsValueBuilder{_ListOfCovNotificationsValue: new(_ListOfCovNotificationsValue)}
+}
+
+type _ListOfCovNotificationsValueBuilder struct {
+	*_ListOfCovNotificationsValue
+
+	err *utils.MultiError
+}
+
+var _ (ListOfCovNotificationsValueBuilder) = (*_ListOfCovNotificationsValueBuilder)(nil)
+
+func (b *_ListOfCovNotificationsValueBuilder) WithMandatoryFields(propertyIdentifier BACnetPropertyIdentifierTagged, propertyValue BACnetConstructedData) ListOfCovNotificationsValueBuilder {
+	return b.WithPropertyIdentifier(propertyIdentifier).WithPropertyValue(propertyValue)
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) ListOfCovNotificationsValueBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) ListOfCovNotificationsValueBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) ListOfCovNotificationsValueBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ListOfCovNotificationsValueBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithPropertyValue(propertyValue BACnetConstructedData) ListOfCovNotificationsValueBuilder {
+	b.PropertyValue = propertyValue
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithPropertyValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) ListOfCovNotificationsValueBuilder {
+	builder := builderSupplier(b.PropertyValue.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.PropertyValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithOptionalTimeOfChange(timeOfChange BACnetContextTagTime) ListOfCovNotificationsValueBuilder {
+	b.TimeOfChange = timeOfChange
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) WithOptionalTimeOfChangeBuilder(builderSupplier func(BACnetContextTagTimeBuilder) BACnetContextTagTimeBuilder) ListOfCovNotificationsValueBuilder {
+	builder := builderSupplier(b.TimeOfChange.CreateBACnetContextTagTimeBuilder())
+	var err error
+	b.TimeOfChange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) Build() (ListOfCovNotificationsValue, error) {
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.PropertyValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ListOfCovNotificationsValue.deepCopy(), nil
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) MustBuild() ListOfCovNotificationsValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ListOfCovNotificationsValueBuilder) DeepCopy() any {
+	_copy := b.CreateListOfCovNotificationsValueBuilder().(*_ListOfCovNotificationsValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateListOfCovNotificationsValueBuilder creates a ListOfCovNotificationsValueBuilder
+func (b *_ListOfCovNotificationsValue) CreateListOfCovNotificationsValueBuilder() ListOfCovNotificationsValueBuilder {
+	if b == nil {
+		return NewListOfCovNotificationsValueBuilder()
+	}
+	return &_ListOfCovNotificationsValueBuilder{_ListOfCovNotificationsValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,17 +271,6 @@ func (m *_ListOfCovNotificationsValue) GetTimeOfChange() BACnetContextTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewListOfCovNotificationsValue factory function for _ListOfCovNotificationsValue
-func NewListOfCovNotificationsValue(propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, propertyValue BACnetConstructedData, timeOfChange BACnetContextTagTime, objectTypeArgument BACnetObjectType) *_ListOfCovNotificationsValue {
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for ListOfCovNotificationsValue must not be nil")
-	}
-	if propertyValue == nil {
-		panic("propertyValue of type BACnetConstructedData for ListOfCovNotificationsValue must not be nil")
-	}
-	return &_ListOfCovNotificationsValue{PropertyIdentifier: propertyIdentifier, ArrayIndex: arrayIndex, PropertyValue: propertyValue, TimeOfChange: timeOfChange, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastListOfCovNotificationsValue(structType any) ListOfCovNotificationsValue {
@@ -156,7 +328,7 @@ func ListOfCovNotificationsValueParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ListOfCovNotificationsValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__listOfCovNotificationsValue ListOfCovNotificationsValue, err error) {
@@ -258,13 +430,35 @@ func (m *_ListOfCovNotificationsValue) GetObjectTypeArgument() BACnetObjectType 
 
 func (m *_ListOfCovNotificationsValue) IsListOfCovNotificationsValue() {}
 
+func (m *_ListOfCovNotificationsValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ListOfCovNotificationsValue) deepCopy() *_ListOfCovNotificationsValue {
+	if m == nil {
+		return nil
+	}
+	_ListOfCovNotificationsValueCopy := &_ListOfCovNotificationsValue{
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.PropertyValue.DeepCopy().(BACnetConstructedData),
+		m.TimeOfChange.DeepCopy().(BACnetContextTagTime),
+		m.ObjectTypeArgument,
+	}
+	return _ListOfCovNotificationsValueCopy
+}
+
 func (m *_ListOfCovNotificationsValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

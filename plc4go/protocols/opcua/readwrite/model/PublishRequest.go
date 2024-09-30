@@ -38,6 +38,7 @@ type PublishRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type PublishRequest interface {
 	GetSubscriptionAcknowledgements() []ExtensionObjectDefinition
 	// IsPublishRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishRequest()
+	// CreateBuilder creates a PublishRequestBuilder
+	CreatePublishRequestBuilder() PublishRequestBuilder
 }
 
 // _PublishRequest is the data-structure of this message
@@ -59,6 +62,147 @@ type _PublishRequest struct {
 
 var _ PublishRequest = (*_PublishRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishRequest)(nil)
+
+// NewPublishRequest factory function for _PublishRequest
+func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
+	}
+	_result := &_PublishRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
+		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishRequestBuilder is a builder for PublishRequest
+type PublishRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) PublishRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishRequestBuilder
+	// WithNoOfSubscriptionAcknowledgements adds NoOfSubscriptionAcknowledgements (property field)
+	WithNoOfSubscriptionAcknowledgements(int32) PublishRequestBuilder
+	// WithSubscriptionAcknowledgements adds SubscriptionAcknowledgements (property field)
+	WithSubscriptionAcknowledgements(...ExtensionObjectDefinition) PublishRequestBuilder
+	// Build builds the PublishRequest or returns an error if something is wrong
+	Build() (PublishRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishRequest
+}
+
+// NewPublishRequestBuilder() creates a PublishRequestBuilder
+func NewPublishRequestBuilder() PublishRequestBuilder {
+	return &_PublishRequestBuilder{_PublishRequest: new(_PublishRequest)}
+}
+
+type _PublishRequestBuilder struct {
+	*_PublishRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PublishRequestBuilder) = (*_PublishRequestBuilder)(nil)
+
+func (b *_PublishRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PublishRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) PublishRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements).WithSubscriptionAcknowledgements(subscriptionAcknowledgements...)
+}
+
+func (b *_PublishRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) PublishRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_PublishRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) PublishRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_PublishRequestBuilder) WithNoOfSubscriptionAcknowledgements(noOfSubscriptionAcknowledgements int32) PublishRequestBuilder {
+	b.NoOfSubscriptionAcknowledgements = noOfSubscriptionAcknowledgements
+	return b
+}
+
+func (b *_PublishRequestBuilder) WithSubscriptionAcknowledgements(subscriptionAcknowledgements ...ExtensionObjectDefinition) PublishRequestBuilder {
+	b.SubscriptionAcknowledgements = subscriptionAcknowledgements
+	return b
+}
+
+func (b *_PublishRequestBuilder) Build() (PublishRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishRequest.deepCopy(), nil
+}
+
+func (b *_PublishRequestBuilder) MustBuild() PublishRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishRequestBuilder) DeepCopy() any {
+	_copy := b.CreatePublishRequestBuilder().(*_PublishRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePublishRequestBuilder creates a PublishRequestBuilder
+func (b *_PublishRequest) CreatePublishRequestBuilder() PublishRequestBuilder {
+	if b == nil {
+		return NewPublishRequestBuilder()
+	}
+	return &_PublishRequestBuilder{_PublishRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_PublishRequest) GetSubscriptionAcknowledgements() []ExtensionObjectDef
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPublishRequest factory function for _PublishRequest
-func NewPublishRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionAcknowledgements int32, subscriptionAcknowledgements []ExtensionObjectDefinition) *_PublishRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for PublishRequest must not be nil")
-	}
-	_result := &_PublishRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionAcknowledgements:  noOfSubscriptionAcknowledgements,
-		SubscriptionAcknowledgements:      subscriptionAcknowledgements,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastPublishRequest(structType any) PublishRequest {
@@ -232,13 +361,35 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_PublishRequest) IsPublishRequest() {}
 
+func (m *_PublishRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishRequest) deepCopy() *_PublishRequest {
+	if m == nil {
+		return nil
+	}
+	_PublishRequestCopy := &_PublishRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionAcknowledgements,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.SubscriptionAcknowledgements),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishRequestCopy
+}
+
 func (m *_PublishRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

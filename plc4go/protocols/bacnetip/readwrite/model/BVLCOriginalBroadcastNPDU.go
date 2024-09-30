@@ -40,11 +40,14 @@ type BVLCOriginalBroadcastNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
 	// IsBVLCOriginalBroadcastNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCOriginalBroadcastNPDU()
+	// CreateBuilder creates a BVLCOriginalBroadcastNPDUBuilder
+	CreateBVLCOriginalBroadcastNPDUBuilder() BVLCOriginalBroadcastNPDUBuilder
 }
 
 // _BVLCOriginalBroadcastNPDU is the data-structure of this message
@@ -58,6 +61,131 @@ type _BVLCOriginalBroadcastNPDU struct {
 
 var _ BVLCOriginalBroadcastNPDU = (*_BVLCOriginalBroadcastNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCOriginalBroadcastNPDU)(nil)
+
+// NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
+func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
+	}
+	_result := &_BVLCOriginalBroadcastNPDU{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCOriginalBroadcastNPDUBuilder is a builder for BVLCOriginalBroadcastNPDU
+type BVLCOriginalBroadcastNPDUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(npdu NPDU) BVLCOriginalBroadcastNPDUBuilder
+	// WithNpdu adds Npdu (property field)
+	WithNpdu(NPDU) BVLCOriginalBroadcastNPDUBuilder
+	// WithNpduBuilder adds Npdu (property field) which is build by the builder
+	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCOriginalBroadcastNPDUBuilder
+	// Build builds the BVLCOriginalBroadcastNPDU or returns an error if something is wrong
+	Build() (BVLCOriginalBroadcastNPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCOriginalBroadcastNPDU
+}
+
+// NewBVLCOriginalBroadcastNPDUBuilder() creates a BVLCOriginalBroadcastNPDUBuilder
+func NewBVLCOriginalBroadcastNPDUBuilder() BVLCOriginalBroadcastNPDUBuilder {
+	return &_BVLCOriginalBroadcastNPDUBuilder{_BVLCOriginalBroadcastNPDU: new(_BVLCOriginalBroadcastNPDU)}
+}
+
+type _BVLCOriginalBroadcastNPDUBuilder struct {
+	*_BVLCOriginalBroadcastNPDU
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCOriginalBroadcastNPDUBuilder) = (*_BVLCOriginalBroadcastNPDUBuilder)(nil)
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) WithMandatoryFields(npdu NPDU) BVLCOriginalBroadcastNPDUBuilder {
+	return b.WithNpdu(npdu)
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) WithNpdu(npdu NPDU) BVLCOriginalBroadcastNPDUBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCOriginalBroadcastNPDUBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
+	var err error
+	b.Npdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) Build() (BVLCOriginalBroadcastNPDU, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCOriginalBroadcastNPDU.deepCopy(), nil
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) MustBuild() BVLCOriginalBroadcastNPDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCOriginalBroadcastNPDUBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCOriginalBroadcastNPDUBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCOriginalBroadcastNPDUBuilder().(*_BVLCOriginalBroadcastNPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCOriginalBroadcastNPDUBuilder creates a BVLCOriginalBroadcastNPDUBuilder
+func (b *_BVLCOriginalBroadcastNPDU) CreateBVLCOriginalBroadcastNPDUBuilder() BVLCOriginalBroadcastNPDUBuilder {
+	if b == nil {
+		return NewBVLCOriginalBroadcastNPDUBuilder()
+	}
+	return &_BVLCOriginalBroadcastNPDUBuilder{_BVLCOriginalBroadcastNPDU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +218,6 @@ func (m *_BVLCOriginalBroadcastNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCOriginalBroadcastNPDU factory function for _BVLCOriginalBroadcastNPDU
-func NewBVLCOriginalBroadcastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalBroadcastNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCOriginalBroadcastNPDU must not be nil")
-	}
-	_result := &_BVLCOriginalBroadcastNPDU{
-		BVLCContract: NewBVLC(),
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCOriginalBroadcastNPDU(structType any) BVLCOriginalBroadcastNPDU {
@@ -198,13 +313,34 @@ func (m *_BVLCOriginalBroadcastNPDU) GetBvlcPayloadLength() uint16 {
 
 func (m *_BVLCOriginalBroadcastNPDU) IsBVLCOriginalBroadcastNPDU() {}
 
+func (m *_BVLCOriginalBroadcastNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCOriginalBroadcastNPDU) deepCopy() *_BVLCOriginalBroadcastNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCOriginalBroadcastNPDUCopy := &_BVLCOriginalBroadcastNPDU{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCOriginalBroadcastNPDUCopy
+}
+
 func (m *_BVLCOriginalBroadcastNPDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

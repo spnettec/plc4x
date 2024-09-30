@@ -38,6 +38,7 @@ type BACnetAccessAuthenticationFactorDisableTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetAccessAuthenticationFactorDisableTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAccessAuthenticationFactorDisableTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessAuthenticationFactorDisableTagged()
+	// CreateBuilder creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder
 }
 
 // _BACnetAccessAuthenticationFactorDisableTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetAccessAuthenticationFactorDisableTagged struct {
 }
 
 var _ BACnetAccessAuthenticationFactorDisableTagged = (*_BACnetAccessAuthenticationFactorDisableTagged)(nil)
+
+// NewBACnetAccessAuthenticationFactorDisableTagged factory function for _BACnetAccessAuthenticationFactorDisableTagged
+func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessAuthenticationFactorDisableTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessAuthenticationFactorDisableTagged must not be nil")
+	}
+	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessAuthenticationFactorDisableTaggedBuilder is a builder for BACnetAccessAuthenticationFactorDisableTagged
+type BACnetAccessAuthenticationFactorDisableTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessAuthenticationFactorDisable) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder
+	// Build builds the BACnetAccessAuthenticationFactorDisableTagged or returns an error if something is wrong
+	Build() (BACnetAccessAuthenticationFactorDisableTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessAuthenticationFactorDisableTagged
+}
+
+// NewBACnetAccessAuthenticationFactorDisableTaggedBuilder() creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+func NewBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	return &_BACnetAccessAuthenticationFactorDisableTaggedBuilder{_BACnetAccessAuthenticationFactorDisableTagged: new(_BACnetAccessAuthenticationFactorDisableTagged)}
+}
+
+type _BACnetAccessAuthenticationFactorDisableTaggedBuilder struct {
+	*_BACnetAccessAuthenticationFactorDisableTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessAuthenticationFactorDisableTaggedBuilder) = (*_BACnetAccessAuthenticationFactorDisableTaggedBuilder)(nil)
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithValue(value BACnetAccessAuthenticationFactorDisable) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) Build() (BACnetAccessAuthenticationFactorDisableTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessAuthenticationFactorDisableTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) MustBuild() BACnetAccessAuthenticationFactorDisableTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessAuthenticationFactorDisableTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder().(*_BACnetAccessAuthenticationFactorDisableTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder creates a BACnetAccessAuthenticationFactorDisableTaggedBuilder
+func (b *_BACnetAccessAuthenticationFactorDisableTagged) CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder() BACnetAccessAuthenticationFactorDisableTaggedBuilder {
+	if b == nil {
+		return NewBACnetAccessAuthenticationFactorDisableTaggedBuilder()
+	}
+	return &_BACnetAccessAuthenticationFactorDisableTaggedBuilder{_BACnetAccessAuthenticationFactorDisableTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetIsProprietary() bool
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessAuthenticationFactorDisableTagged factory function for _BACnetAccessAuthenticationFactorDisableTagged
-func NewBACnetAccessAuthenticationFactorDisableTagged(header BACnetTagHeader, value BACnetAccessAuthenticationFactorDisable, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAccessAuthenticationFactorDisableTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessAuthenticationFactorDisableTagged must not be nil")
-	}
-	return &_BACnetAccessAuthenticationFactorDisableTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessAuthenticationFactorDisableTagged(structType any) BACnetAccessAuthenticationFactorDisableTagged {
@@ -159,7 +273,7 @@ func BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx context.Co
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessAuthenticationFactorDisableTagged BACnetAccessAuthenticationFactorDisableTagged, err error) {
@@ -271,13 +385,35 @@ func (m *_BACnetAccessAuthenticationFactorDisableTagged) GetTagClass() TagClass 
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) IsBACnetAccessAuthenticationFactorDisableTagged() {
 }
 
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessAuthenticationFactorDisableTagged) deepCopy() *_BACnetAccessAuthenticationFactorDisableTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessAuthenticationFactorDisableTaggedCopy := &_BACnetAccessAuthenticationFactorDisableTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessAuthenticationFactorDisableTaggedCopy
+}
+
 func (m *_BACnetAccessAuthenticationFactorDisableTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

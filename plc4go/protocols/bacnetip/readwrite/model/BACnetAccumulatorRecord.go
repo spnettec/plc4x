@@ -38,6 +38,7 @@ type BACnetAccumulatorRecord interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() BACnetDateTimeEnclosed
 	// GetPresentValue returns PresentValue (property field)
@@ -48,6 +49,8 @@ type BACnetAccumulatorRecord interface {
 	GetAccumulatorStatus() BACnetAccumulatorRecordAccumulatorStatusTagged
 	// IsBACnetAccumulatorRecord is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccumulatorRecord()
+	// CreateBuilder creates a BACnetAccumulatorRecordBuilder
+	CreateBACnetAccumulatorRecordBuilder() BACnetAccumulatorRecordBuilder
 }
 
 // _BACnetAccumulatorRecord is the data-structure of this message
@@ -59,6 +62,204 @@ type _BACnetAccumulatorRecord struct {
 }
 
 var _ BACnetAccumulatorRecord = (*_BACnetAccumulatorRecord)(nil)
+
+// NewBACnetAccumulatorRecord factory function for _BACnetAccumulatorRecord
+func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) *_BACnetAccumulatorRecord {
+	if timestamp == nil {
+		panic("timestamp of type BACnetDateTimeEnclosed for BACnetAccumulatorRecord must not be nil")
+	}
+	if presentValue == nil {
+		panic("presentValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatedValue == nil {
+		panic("accumulatedValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
+	}
+	if accumulatorStatus == nil {
+		panic("accumulatorStatus of type BACnetAccumulatorRecordAccumulatorStatusTagged for BACnetAccumulatorRecord must not be nil")
+	}
+	return &_BACnetAccumulatorRecord{Timestamp: timestamp, PresentValue: presentValue, AccumulatedValue: accumulatedValue, AccumulatorStatus: accumulatorStatus}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccumulatorRecordBuilder is a builder for BACnetAccumulatorRecord
+type BACnetAccumulatorRecordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(BACnetDateTimeEnclosed) BACnetAccumulatorRecordBuilder
+	// WithTimestampBuilder adds Timestamp (property field) which is build by the builder
+	WithTimestampBuilder(func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetAccumulatorRecordBuilder
+	// WithPresentValue adds PresentValue (property field)
+	WithPresentValue(BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder
+	// WithPresentValueBuilder adds PresentValue (property field) which is build by the builder
+	WithPresentValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder
+	// WithAccumulatedValue adds AccumulatedValue (property field)
+	WithAccumulatedValue(BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder
+	// WithAccumulatedValueBuilder adds AccumulatedValue (property field) which is build by the builder
+	WithAccumulatedValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder
+	// WithAccumulatorStatus adds AccumulatorStatus (property field)
+	WithAccumulatorStatus(BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder
+	// WithAccumulatorStatusBuilder adds AccumulatorStatus (property field) which is build by the builder
+	WithAccumulatorStatusBuilder(func(BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordBuilder
+	// Build builds the BACnetAccumulatorRecord or returns an error if something is wrong
+	Build() (BACnetAccumulatorRecord, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccumulatorRecord
+}
+
+// NewBACnetAccumulatorRecordBuilder() creates a BACnetAccumulatorRecordBuilder
+func NewBACnetAccumulatorRecordBuilder() BACnetAccumulatorRecordBuilder {
+	return &_BACnetAccumulatorRecordBuilder{_BACnetAccumulatorRecord: new(_BACnetAccumulatorRecord)}
+}
+
+type _BACnetAccumulatorRecordBuilder struct {
+	*_BACnetAccumulatorRecord
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccumulatorRecordBuilder) = (*_BACnetAccumulatorRecordBuilder)(nil)
+
+func (b *_BACnetAccumulatorRecordBuilder) WithMandatoryFields(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
+	return b.WithTimestamp(timestamp).WithPresentValue(presentValue).WithAccumulatedValue(accumulatedValue).WithAccumulatorStatus(accumulatorStatus)
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithTimestamp(timestamp BACnetDateTimeEnclosed) BACnetAccumulatorRecordBuilder {
+	b.Timestamp = timestamp
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithTimestampBuilder(builderSupplier func(BACnetDateTimeEnclosedBuilder) BACnetDateTimeEnclosedBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.Timestamp.CreateBACnetDateTimeEnclosedBuilder())
+	var err error
+	b.Timestamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithPresentValue(presentValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
+	b.PresentValue = presentValue
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithPresentValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.PresentValue.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	b.PresentValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatedValue(accumulatedValue BACnetContextTagSignedInteger) BACnetAccumulatorRecordBuilder {
+	b.AccumulatedValue = accumulatedValue
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatedValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.AccumulatedValue.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	b.AccumulatedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatus(accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) BACnetAccumulatorRecordBuilder {
+	b.AccumulatorStatus = accumulatorStatus
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) WithAccumulatorStatusBuilder(builderSupplier func(BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder) BACnetAccumulatorRecordBuilder {
+	builder := builderSupplier(b.AccumulatorStatus.CreateBACnetAccumulatorRecordAccumulatorStatusTaggedBuilder())
+	var err error
+	b.AccumulatorStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccumulatorRecordAccumulatorStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) Build() (BACnetAccumulatorRecord, error) {
+	if b.Timestamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timestamp' not set"))
+	}
+	if b.PresentValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'presentValue' not set"))
+	}
+	if b.AccumulatedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accumulatedValue' not set"))
+	}
+	if b.AccumulatorStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accumulatorStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccumulatorRecord.deepCopy(), nil
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) MustBuild() BACnetAccumulatorRecord {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccumulatorRecordBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccumulatorRecordBuilder().(*_BACnetAccumulatorRecordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccumulatorRecordBuilder creates a BACnetAccumulatorRecordBuilder
+func (b *_BACnetAccumulatorRecord) CreateBACnetAccumulatorRecordBuilder() BACnetAccumulatorRecordBuilder {
+	if b == nil {
+		return NewBACnetAccumulatorRecordBuilder()
+	}
+	return &_BACnetAccumulatorRecordBuilder{_BACnetAccumulatorRecord: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,23 +286,6 @@ func (m *_BACnetAccumulatorRecord) GetAccumulatorStatus() BACnetAccumulatorRecor
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccumulatorRecord factory function for _BACnetAccumulatorRecord
-func NewBACnetAccumulatorRecord(timestamp BACnetDateTimeEnclosed, presentValue BACnetContextTagSignedInteger, accumulatedValue BACnetContextTagSignedInteger, accumulatorStatus BACnetAccumulatorRecordAccumulatorStatusTagged) *_BACnetAccumulatorRecord {
-	if timestamp == nil {
-		panic("timestamp of type BACnetDateTimeEnclosed for BACnetAccumulatorRecord must not be nil")
-	}
-	if presentValue == nil {
-		panic("presentValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
-	}
-	if accumulatedValue == nil {
-		panic("accumulatedValue of type BACnetContextTagSignedInteger for BACnetAccumulatorRecord must not be nil")
-	}
-	if accumulatorStatus == nil {
-		panic("accumulatorStatus of type BACnetAccumulatorRecordAccumulatorStatusTagged for BACnetAccumulatorRecord must not be nil")
-	}
-	return &_BACnetAccumulatorRecord{Timestamp: timestamp, PresentValue: presentValue, AccumulatedValue: accumulatedValue, AccumulatorStatus: accumulatorStatus}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccumulatorRecord(structType any) BACnetAccumulatorRecord {
@@ -155,7 +339,7 @@ func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccumulatorRecord) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAccumulatorRecord BACnetAccumulatorRecord, err error) {
@@ -239,13 +423,34 @@ func (m *_BACnetAccumulatorRecord) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetAccumulatorRecord) IsBACnetAccumulatorRecord() {}
 
+func (m *_BACnetAccumulatorRecord) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccumulatorRecord) deepCopy() *_BACnetAccumulatorRecord {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccumulatorRecordCopy := &_BACnetAccumulatorRecord{
+		m.Timestamp.DeepCopy().(BACnetDateTimeEnclosed),
+		m.PresentValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatedValue.DeepCopy().(BACnetContextTagSignedInteger),
+		m.AccumulatorStatus.DeepCopy().(BACnetAccumulatorRecordAccumulatorStatusTagged),
+	}
+	return _BACnetAccumulatorRecordCopy
+}
+
 func (m *_BACnetAccumulatorRecord) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

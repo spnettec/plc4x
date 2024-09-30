@@ -38,11 +38,14 @@ type BACnetOptionalBinaryPVNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetOptionalBinaryPV
 	// GetNullValue returns NullValue (property field)
 	GetNullValue() BACnetApplicationTagNull
 	// IsBACnetOptionalBinaryPVNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetOptionalBinaryPVNull()
+	// CreateBuilder creates a BACnetOptionalBinaryPVNullBuilder
+	CreateBACnetOptionalBinaryPVNullBuilder() BACnetOptionalBinaryPVNullBuilder
 }
 
 // _BACnetOptionalBinaryPVNull is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetOptionalBinaryPVNull struct {
 
 var _ BACnetOptionalBinaryPVNull = (*_BACnetOptionalBinaryPVNull)(nil)
 var _ BACnetOptionalBinaryPVRequirements = (*_BACnetOptionalBinaryPVNull)(nil)
+
+// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
+func NewBACnetOptionalBinaryPVNull(peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull) *_BACnetOptionalBinaryPVNull {
+	if nullValue == nil {
+		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
+	}
+	_result := &_BACnetOptionalBinaryPVNull{
+		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
+		NullValue:                      nullValue,
+	}
+	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetOptionalBinaryPVNullBuilder is a builder for BACnetOptionalBinaryPVNull
+type BACnetOptionalBinaryPVNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalBinaryPVNullBuilder
+	// WithNullValue adds NullValue (property field)
+	WithNullValue(BACnetApplicationTagNull) BACnetOptionalBinaryPVNullBuilder
+	// WithNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalBinaryPVNullBuilder
+	// Build builds the BACnetOptionalBinaryPVNull or returns an error if something is wrong
+	Build() (BACnetOptionalBinaryPVNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetOptionalBinaryPVNull
+}
+
+// NewBACnetOptionalBinaryPVNullBuilder() creates a BACnetOptionalBinaryPVNullBuilder
+func NewBACnetOptionalBinaryPVNullBuilder() BACnetOptionalBinaryPVNullBuilder {
+	return &_BACnetOptionalBinaryPVNullBuilder{_BACnetOptionalBinaryPVNull: new(_BACnetOptionalBinaryPVNull)}
+}
+
+type _BACnetOptionalBinaryPVNullBuilder struct {
+	*_BACnetOptionalBinaryPVNull
+
+	parentBuilder *_BACnetOptionalBinaryPVBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetOptionalBinaryPVNullBuilder) = (*_BACnetOptionalBinaryPVNullBuilder)(nil)
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) setParent(contract BACnetOptionalBinaryPVContract) {
+	b.BACnetOptionalBinaryPVContract = contract
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) WithMandatoryFields(nullValue BACnetApplicationTagNull) BACnetOptionalBinaryPVNullBuilder {
+	return b.WithNullValue(nullValue)
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) WithNullValue(nullValue BACnetApplicationTagNull) BACnetOptionalBinaryPVNullBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) WithNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetOptionalBinaryPVNullBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	b.NullValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) Build() (BACnetOptionalBinaryPVNull, error) {
+	if b.NullValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nullValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetOptionalBinaryPVNull.deepCopy(), nil
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) MustBuild() BACnetOptionalBinaryPVNull {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetOptionalBinaryPVNullBuilder) Done() BACnetOptionalBinaryPVBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) buildForBACnetOptionalBinaryPV() (BACnetOptionalBinaryPV, error) {
+	return b.Build()
+}
+
+func (b *_BACnetOptionalBinaryPVNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetOptionalBinaryPVNullBuilder().(*_BACnetOptionalBinaryPVNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetOptionalBinaryPVNullBuilder creates a BACnetOptionalBinaryPVNullBuilder
+func (b *_BACnetOptionalBinaryPVNull) CreateBACnetOptionalBinaryPVNullBuilder() BACnetOptionalBinaryPVNullBuilder {
+	if b == nil {
+		return NewBACnetOptionalBinaryPVNullBuilder()
+	}
+	return &_BACnetOptionalBinaryPVNullBuilder{_BACnetOptionalBinaryPVNull: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetOptionalBinaryPVNull) GetNullValue() BACnetApplicationTagNull {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetOptionalBinaryPVNull factory function for _BACnetOptionalBinaryPVNull
-func NewBACnetOptionalBinaryPVNull(nullValue BACnetApplicationTagNull, peekedTagHeader BACnetTagHeader) *_BACnetOptionalBinaryPVNull {
-	if nullValue == nil {
-		panic("nullValue of type BACnetApplicationTagNull for BACnetOptionalBinaryPVNull must not be nil")
-	}
-	_result := &_BACnetOptionalBinaryPVNull{
-		BACnetOptionalBinaryPVContract: NewBACnetOptionalBinaryPV(peekedTagHeader),
-		NullValue:                      nullValue,
-	}
-	_result.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetOptionalBinaryPVNull(structType any) BACnetOptionalBinaryPVNull {
@@ -179,13 +294,33 @@ func (m *_BACnetOptionalBinaryPVNull) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_BACnetOptionalBinaryPVNull) IsBACnetOptionalBinaryPVNull() {}
 
+func (m *_BACnetOptionalBinaryPVNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetOptionalBinaryPVNull) deepCopy() *_BACnetOptionalBinaryPVNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetOptionalBinaryPVNullCopy := &_BACnetOptionalBinaryPVNull{
+		m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV).deepCopy(),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+	}
+	m.BACnetOptionalBinaryPVContract.(*_BACnetOptionalBinaryPV)._SubType = m
+	return _BACnetOptionalBinaryPVNullCopy
+}
+
 func (m *_BACnetOptionalBinaryPVNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

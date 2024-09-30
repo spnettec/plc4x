@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetMinPriority returns MinPriority (property field)
@@ -48,6 +49,8 @@ type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
 }
 
 // _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter is the data-structure of this message
@@ -62,6 +65,204 @@ type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter struct {
 }
 
 var _ BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)(nil)
+
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if minPriority == nil {
+		panic("minPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if maxPriority == nil {
+		panic("maxPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder is a builder for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+type BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithMinPriority adds MinPriority (property field)
+	WithMinPriority(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithMinPriorityBuilder adds MinPriority (property field) which is build by the builder
+	WithMinPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithMaxPriority adds MaxPriority (property field)
+	WithMaxPriority(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithMaxPriorityBuilder adds MaxPriority (property field) which is build by the builder
+	WithMaxPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+	// Build builds the BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+}
+
+// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder() creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter: new(_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)}
+}
+
+type _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder struct {
+	*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) = (*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	return b.WithOpeningTag(openingTag).WithMinPriority(minPriority).WithMaxPriority(maxPriority).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithMinPriority(minPriority BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	b.MinPriority = minPriority
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithMinPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	builder := builderSupplier(b.MinPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.MinPriority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithMaxPriority(maxPriority BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	b.MaxPriority = maxPriority
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithMaxPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	builder := builderSupplier(b.MaxPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.MaxPriority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) Build() (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.MinPriority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'minPriority' not set"))
+	}
+	if b.MaxPriority == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxPriority' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) MustBuild() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder().(*_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder creates a BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder
+func (b *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) CreateBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder() BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterBuilder{_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +289,6 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetCl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter factory function for _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
-func NewBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(openingTag BACnetOpeningTag, minPriority BACnetContextTagUnsignedInteger, maxPriority BACnetContextTagUnsignedInteger, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
-	}
-	if minPriority == nil {
-		panic("minPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
-	}
-	if maxPriority == nil {
-		panic("maxPriority of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{OpeningTag: openingTag, MinPriority: minPriority, MaxPriority: maxPriority, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter(structType any) BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
@@ -158,7 +342,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, err error) {
@@ -253,13 +437,35 @@ func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) GetTa
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) IsBACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter() {
 }
 
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) deepCopy() *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy := &_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.MinPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MaxPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

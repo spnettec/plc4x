@@ -38,11 +38,14 @@ type SecurityDataZoneIsolated interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneNumber returns ZoneNumber (property field)
 	GetZoneNumber() uint8
 	// IsSecurityDataZoneIsolated is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataZoneIsolated()
+	// CreateBuilder creates a SecurityDataZoneIsolatedBuilder
+	CreateSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder
 }
 
 // _SecurityDataZoneIsolated is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataZoneIsolated struct {
 
 var _ SecurityDataZoneIsolated = (*_SecurityDataZoneIsolated)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataZoneIsolated)(nil)
+
+// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
+func NewSecurityDataZoneIsolated(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneNumber uint8) *_SecurityDataZoneIsolated {
+	_result := &_SecurityDataZoneIsolated{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneNumber:           zoneNumber,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataZoneIsolatedBuilder is a builder for SecurityDataZoneIsolated
+type SecurityDataZoneIsolatedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneNumber uint8) SecurityDataZoneIsolatedBuilder
+	// WithZoneNumber adds ZoneNumber (property field)
+	WithZoneNumber(uint8) SecurityDataZoneIsolatedBuilder
+	// Build builds the SecurityDataZoneIsolated or returns an error if something is wrong
+	Build() (SecurityDataZoneIsolated, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataZoneIsolated
+}
+
+// NewSecurityDataZoneIsolatedBuilder() creates a SecurityDataZoneIsolatedBuilder
+func NewSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder {
+	return &_SecurityDataZoneIsolatedBuilder{_SecurityDataZoneIsolated: new(_SecurityDataZoneIsolated)}
+}
+
+type _SecurityDataZoneIsolatedBuilder struct {
+	*_SecurityDataZoneIsolated
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataZoneIsolatedBuilder) = (*_SecurityDataZoneIsolatedBuilder)(nil)
+
+func (b *_SecurityDataZoneIsolatedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) WithMandatoryFields(zoneNumber uint8) SecurityDataZoneIsolatedBuilder {
+	return b.WithZoneNumber(zoneNumber)
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) WithZoneNumber(zoneNumber uint8) SecurityDataZoneIsolatedBuilder {
+	b.ZoneNumber = zoneNumber
+	return b
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) Build() (SecurityDataZoneIsolated, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataZoneIsolated.deepCopy(), nil
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) MustBuild() SecurityDataZoneIsolated {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataZoneIsolatedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataZoneIsolatedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataZoneIsolatedBuilder().(*_SecurityDataZoneIsolatedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataZoneIsolatedBuilder creates a SecurityDataZoneIsolatedBuilder
+func (b *_SecurityDataZoneIsolated) CreateSecurityDataZoneIsolatedBuilder() SecurityDataZoneIsolatedBuilder {
+	if b == nil {
+		return NewSecurityDataZoneIsolatedBuilder()
+	}
+	return &_SecurityDataZoneIsolatedBuilder{_SecurityDataZoneIsolated: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataZoneIsolated) GetZoneNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataZoneIsolated factory function for _SecurityDataZoneIsolated
-func NewSecurityDataZoneIsolated(zoneNumber uint8, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataZoneIsolated {
-	_result := &_SecurityDataZoneIsolated{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneNumber:           zoneNumber,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataZoneIsolated(structType any) SecurityDataZoneIsolated {
@@ -176,13 +270,33 @@ func (m *_SecurityDataZoneIsolated) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_SecurityDataZoneIsolated) IsSecurityDataZoneIsolated() {}
 
+func (m *_SecurityDataZoneIsolated) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataZoneIsolated) deepCopy() *_SecurityDataZoneIsolated {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataZoneIsolatedCopy := &_SecurityDataZoneIsolated{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ZoneNumber,
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataZoneIsolatedCopy
+}
+
 func (m *_SecurityDataZoneIsolated) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

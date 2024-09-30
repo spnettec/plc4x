@@ -38,6 +38,7 @@ type BACnetDeviceObjectReferenceEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetObjectReference returns ObjectReference (property field)
@@ -46,6 +47,8 @@ type BACnetDeviceObjectReferenceEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetDeviceObjectReferenceEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDeviceObjectReferenceEnclosed()
+	// CreateBuilder creates a BACnetDeviceObjectReferenceEnclosedBuilder
+	CreateBACnetDeviceObjectReferenceEnclosedBuilder() BACnetDeviceObjectReferenceEnclosedBuilder
 }
 
 // _BACnetDeviceObjectReferenceEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _BACnetDeviceObjectReferenceEnclosed struct {
 }
 
 var _ BACnetDeviceObjectReferenceEnclosed = (*_BACnetDeviceObjectReferenceEnclosed)(nil)
+
+// NewBACnetDeviceObjectReferenceEnclosed factory function for _BACnetDeviceObjectReferenceEnclosed
+func NewBACnetDeviceObjectReferenceEnclosed(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectReferenceEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	if objectReference == nil {
+		panic("objectReference of type BACnetDeviceObjectReference for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
+	}
+	return &_BACnetDeviceObjectReferenceEnclosed{OpeningTag: openingTag, ObjectReference: objectReference, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDeviceObjectReferenceEnclosedBuilder is a builder for BACnetDeviceObjectReferenceEnclosed
+type BACnetDeviceObjectReferenceEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithObjectReference adds ObjectReference (property field)
+	WithObjectReference(BACnetDeviceObjectReference) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithObjectReferenceBuilder adds ObjectReference (property field) which is build by the builder
+	WithObjectReferenceBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetDeviceObjectReferenceEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDeviceObjectReferenceEnclosedBuilder
+	// Build builds the BACnetDeviceObjectReferenceEnclosed or returns an error if something is wrong
+	Build() (BACnetDeviceObjectReferenceEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDeviceObjectReferenceEnclosed
+}
+
+// NewBACnetDeviceObjectReferenceEnclosedBuilder() creates a BACnetDeviceObjectReferenceEnclosedBuilder
+func NewBACnetDeviceObjectReferenceEnclosedBuilder() BACnetDeviceObjectReferenceEnclosedBuilder {
+	return &_BACnetDeviceObjectReferenceEnclosedBuilder{_BACnetDeviceObjectReferenceEnclosed: new(_BACnetDeviceObjectReferenceEnclosed)}
+}
+
+type _BACnetDeviceObjectReferenceEnclosedBuilder struct {
+	*_BACnetDeviceObjectReferenceEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDeviceObjectReferenceEnclosedBuilder) = (*_BACnetDeviceObjectReferenceEnclosedBuilder)(nil)
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag) BACnetDeviceObjectReferenceEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithObjectReference(objectReference).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDeviceObjectReferenceEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDeviceObjectReferenceEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithObjectReference(objectReference BACnetDeviceObjectReference) BACnetDeviceObjectReferenceEnclosedBuilder {
+	b.ObjectReference = objectReference
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithObjectReferenceBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceEnclosedBuilder {
+	builder := builderSupplier(b.ObjectReference.CreateBACnetDeviceObjectReferenceBuilder())
+	var err error
+	b.ObjectReference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDeviceObjectReferenceEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDeviceObjectReferenceEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) Build() (BACnetDeviceObjectReferenceEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ObjectReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectReference' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDeviceObjectReferenceEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) MustBuild() BACnetDeviceObjectReferenceEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDeviceObjectReferenceEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDeviceObjectReferenceEnclosedBuilder().(*_BACnetDeviceObjectReferenceEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDeviceObjectReferenceEnclosedBuilder creates a BACnetDeviceObjectReferenceEnclosedBuilder
+func (b *_BACnetDeviceObjectReferenceEnclosed) CreateBACnetDeviceObjectReferenceEnclosedBuilder() BACnetDeviceObjectReferenceEnclosedBuilder {
+	if b == nil {
+		return NewBACnetDeviceObjectReferenceEnclosedBuilder()
+	}
+	return &_BACnetDeviceObjectReferenceEnclosedBuilder{_BACnetDeviceObjectReferenceEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_BACnetDeviceObjectReferenceEnclosed) GetClosingTag() BACnetClosingTag 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDeviceObjectReferenceEnclosed factory function for _BACnetDeviceObjectReferenceEnclosed
-func NewBACnetDeviceObjectReferenceEnclosed(openingTag BACnetOpeningTag, objectReference BACnetDeviceObjectReference, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDeviceObjectReferenceEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	if objectReference == nil {
-		panic("objectReference of type BACnetDeviceObjectReference for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDeviceObjectReferenceEnclosed must not be nil")
-	}
-	return &_BACnetDeviceObjectReferenceEnclosed{OpeningTag: openingTag, ObjectReference: objectReference, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDeviceObjectReferenceEnclosed(structType any) BACnetDeviceObjectReferenceEnclosed {
@@ -145,7 +301,7 @@ func BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDeviceObjectReferenceEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetDeviceObjectReferenceEnclosed BACnetDeviceObjectReferenceEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_BACnetDeviceObjectReferenceEnclosed) GetTagNumber() uint8 {
 
 func (m *_BACnetDeviceObjectReferenceEnclosed) IsBACnetDeviceObjectReferenceEnclosed() {}
 
+func (m *_BACnetDeviceObjectReferenceEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDeviceObjectReferenceEnclosed) deepCopy() *_BACnetDeviceObjectReferenceEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDeviceObjectReferenceEnclosedCopy := &_BACnetDeviceObjectReferenceEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ObjectReference.DeepCopy().(BACnetDeviceObjectReference),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDeviceObjectReferenceEnclosedCopy
+}
+
 func (m *_BACnetDeviceObjectReferenceEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

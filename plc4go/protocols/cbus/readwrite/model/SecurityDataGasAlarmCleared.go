@@ -36,9 +36,12 @@ type SecurityDataGasAlarmCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataGasAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataGasAlarmCleared()
+	// CreateBuilder creates a SecurityDataGasAlarmClearedBuilder
+	CreateSecurityDataGasAlarmClearedBuilder() SecurityDataGasAlarmClearedBuilder
 }
 
 // _SecurityDataGasAlarmCleared is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataGasAlarmCleared struct {
 
 var _ SecurityDataGasAlarmCleared = (*_SecurityDataGasAlarmCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataGasAlarmCleared)(nil)
+
+// NewSecurityDataGasAlarmCleared factory function for _SecurityDataGasAlarmCleared
+func NewSecurityDataGasAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataGasAlarmCleared {
+	_result := &_SecurityDataGasAlarmCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataGasAlarmClearedBuilder is a builder for SecurityDataGasAlarmCleared
+type SecurityDataGasAlarmClearedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataGasAlarmClearedBuilder
+	// Build builds the SecurityDataGasAlarmCleared or returns an error if something is wrong
+	Build() (SecurityDataGasAlarmCleared, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataGasAlarmCleared
+}
+
+// NewSecurityDataGasAlarmClearedBuilder() creates a SecurityDataGasAlarmClearedBuilder
+func NewSecurityDataGasAlarmClearedBuilder() SecurityDataGasAlarmClearedBuilder {
+	return &_SecurityDataGasAlarmClearedBuilder{_SecurityDataGasAlarmCleared: new(_SecurityDataGasAlarmCleared)}
+}
+
+type _SecurityDataGasAlarmClearedBuilder struct {
+	*_SecurityDataGasAlarmCleared
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataGasAlarmClearedBuilder) = (*_SecurityDataGasAlarmClearedBuilder)(nil)
+
+func (b *_SecurityDataGasAlarmClearedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataGasAlarmClearedBuilder) WithMandatoryFields() SecurityDataGasAlarmClearedBuilder {
+	return b
+}
+
+func (b *_SecurityDataGasAlarmClearedBuilder) Build() (SecurityDataGasAlarmCleared, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataGasAlarmCleared.deepCopy(), nil
+}
+
+func (b *_SecurityDataGasAlarmClearedBuilder) MustBuild() SecurityDataGasAlarmCleared {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataGasAlarmClearedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataGasAlarmClearedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataGasAlarmClearedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataGasAlarmClearedBuilder().(*_SecurityDataGasAlarmClearedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataGasAlarmClearedBuilder creates a SecurityDataGasAlarmClearedBuilder
+func (b *_SecurityDataGasAlarmCleared) CreateSecurityDataGasAlarmClearedBuilder() SecurityDataGasAlarmClearedBuilder {
+	if b == nil {
+		return NewSecurityDataGasAlarmClearedBuilder()
+	}
+	return &_SecurityDataGasAlarmClearedBuilder{_SecurityDataGasAlarmCleared: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataGasAlarmCleared)(nil)
 
 func (m *_SecurityDataGasAlarmCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataGasAlarmCleared factory function for _SecurityDataGasAlarmCleared
-func NewSecurityDataGasAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataGasAlarmCleared {
-	_result := &_SecurityDataGasAlarmCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataGasAlarmCleared) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_SecurityDataGasAlarmCleared) IsSecurityDataGasAlarmCleared() {}
 
+func (m *_SecurityDataGasAlarmCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataGasAlarmCleared) deepCopy() *_SecurityDataGasAlarmCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataGasAlarmClearedCopy := &_SecurityDataGasAlarmCleared{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataGasAlarmClearedCopy
+}
+
 func (m *_SecurityDataGasAlarmCleared) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataAssignedLandingCalls interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataAssignedLandingCalls is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAssignedLandingCalls()
+	// CreateBuilder creates a BACnetConstructedDataAssignedLandingCallsBuilder
+	CreateBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder
 }
 
 // _BACnetConstructedDataAssignedLandingCalls is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataAssignedLandingCalls struct {
 
 var _ BACnetConstructedDataAssignedLandingCalls = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAssignedLandingCalls)(nil)
+
+// NewBACnetConstructedDataAssignedLandingCalls factory function for _BACnetConstructedDataAssignedLandingCalls
+func NewBACnetConstructedDataAssignedLandingCalls(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedLandingCalls {
+	_result := &_BACnetConstructedDataAssignedLandingCalls{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AssignedLandingCalls:          assignedLandingCalls,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAssignedLandingCallsBuilder is a builder for BACnetConstructedDataAssignedLandingCalls
+type BACnetConstructedDataAssignedLandingCallsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(assignedLandingCalls []BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedLandingCallsBuilder
+	// WithAssignedLandingCalls adds AssignedLandingCalls (property field)
+	WithAssignedLandingCalls(...BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder
+	// Build builds the BACnetConstructedDataAssignedLandingCalls or returns an error if something is wrong
+	Build() (BACnetConstructedDataAssignedLandingCalls, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAssignedLandingCalls
+}
+
+// NewBACnetConstructedDataAssignedLandingCallsBuilder() creates a BACnetConstructedDataAssignedLandingCallsBuilder
+func NewBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder {
+	return &_BACnetConstructedDataAssignedLandingCallsBuilder{_BACnetConstructedDataAssignedLandingCalls: new(_BACnetConstructedDataAssignedLandingCalls)}
+}
+
+type _BACnetConstructedDataAssignedLandingCallsBuilder struct {
+	*_BACnetConstructedDataAssignedLandingCalls
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAssignedLandingCallsBuilder) = (*_BACnetConstructedDataAssignedLandingCallsBuilder)(nil)
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) WithMandatoryFields(assignedLandingCalls []BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder {
+	return b.WithAssignedLandingCalls(assignedLandingCalls...)
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataAssignedLandingCallsBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataAssignedLandingCallsBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) WithAssignedLandingCalls(assignedLandingCalls ...BACnetAssignedLandingCalls) BACnetConstructedDataAssignedLandingCallsBuilder {
+	b.AssignedLandingCalls = assignedLandingCalls
+	return b
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) Build() (BACnetConstructedDataAssignedLandingCalls, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAssignedLandingCalls.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) MustBuild() BACnetConstructedDataAssignedLandingCalls {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAssignedLandingCallsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAssignedLandingCallsBuilder().(*_BACnetConstructedDataAssignedLandingCallsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAssignedLandingCallsBuilder creates a BACnetConstructedDataAssignedLandingCallsBuilder
+func (b *_BACnetConstructedDataAssignedLandingCalls) CreateBACnetConstructedDataAssignedLandingCallsBuilder() BACnetConstructedDataAssignedLandingCallsBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAssignedLandingCallsBuilder()
+	}
+	return &_BACnetConstructedDataAssignedLandingCallsBuilder{_BACnetConstructedDataAssignedLandingCalls: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAssignedLandingCalls factory function for _BACnetConstructedDataAssignedLandingCalls
-func NewBACnetConstructedDataAssignedLandingCalls(numberOfDataElements BACnetApplicationTagUnsignedInteger, assignedLandingCalls []BACnetAssignedLandingCalls, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAssignedLandingCalls {
-	_result := &_BACnetConstructedDataAssignedLandingCalls{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AssignedLandingCalls:          assignedLandingCalls,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAssignedLandingCalls(structType any) BACnetConstructedDataAssignedLandingCalls {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataAssignedLandingCalls) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataAssignedLandingCalls) IsBACnetConstructedDataAssignedLandingCalls() {}
 
+func (m *_BACnetConstructedDataAssignedLandingCalls) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAssignedLandingCalls) deepCopy() *_BACnetConstructedDataAssignedLandingCalls {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAssignedLandingCallsCopy := &_BACnetConstructedDataAssignedLandingCalls{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetAssignedLandingCalls, BACnetAssignedLandingCalls](m.AssignedLandingCalls),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAssignedLandingCallsCopy
+}
+
 func (m *_BACnetConstructedDataAssignedLandingCalls) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

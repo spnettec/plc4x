@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetResolution returns Resolution (property field)
 	GetResolution() BACnetApplicationTagDouble
@@ -45,6 +46,8 @@ type BACnetConstructedDataLargeAnalogValueResolution interface {
 	GetActualValue() BACnetApplicationTagDouble
 	// IsBACnetConstructedDataLargeAnalogValueResolution is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueResolution()
+	// CreateBuilder creates a BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstructedDataLargeAnalogValueResolutionBuilder
 }
 
 // _BACnetConstructedDataLargeAnalogValueResolution is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLargeAnalogValueResolution struct {
 
 var _ BACnetConstructedDataLargeAnalogValueResolution = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueResolution)(nil)
+
+// NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
+func NewBACnetConstructedDataLargeAnalogValueResolution(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, resolution BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
+	if resolution == nil {
+		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Resolution:                    resolution,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLargeAnalogValueResolutionBuilder is a builder for BACnetConstructedDataLargeAnalogValueResolution
+type BACnetConstructedDataLargeAnalogValueResolutionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	// WithResolution adds Resolution (property field)
+	WithResolution(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	// WithResolutionBuilder adds Resolution (property field) which is build by the builder
+	WithResolutionBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueResolutionBuilder
+	// Build builds the BACnetConstructedDataLargeAnalogValueResolution or returns an error if something is wrong
+	Build() (BACnetConstructedDataLargeAnalogValueResolution, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLargeAnalogValueResolution
+}
+
+// NewBACnetConstructedDataLargeAnalogValueResolutionBuilder() creates a BACnetConstructedDataLargeAnalogValueResolutionBuilder
+func NewBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	return &_BACnetConstructedDataLargeAnalogValueResolutionBuilder{_BACnetConstructedDataLargeAnalogValueResolution: new(_BACnetConstructedDataLargeAnalogValueResolution)}
+}
+
+type _BACnetConstructedDataLargeAnalogValueResolutionBuilder struct {
+	*_BACnetConstructedDataLargeAnalogValueResolution
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLargeAnalogValueResolutionBuilder) = (*_BACnetConstructedDataLargeAnalogValueResolutionBuilder)(nil)
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithMandatoryFields(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	return b.WithResolution(resolution)
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolution(resolution BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	b.Resolution = resolution
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) WithResolutionBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	builder := builderSupplier(b.Resolution.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	b.Resolution, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Build() (BACnetConstructedDataLargeAnalogValueResolution, error) {
+	if b.Resolution == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'resolution' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLargeAnalogValueResolution.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueResolution {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueResolutionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder().(*_BACnetConstructedDataLargeAnalogValueResolutionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder creates a BACnetConstructedDataLargeAnalogValueResolutionBuilder
+func (b *_BACnetConstructedDataLargeAnalogValueResolution) CreateBACnetConstructedDataLargeAnalogValueResolutionBuilder() BACnetConstructedDataLargeAnalogValueResolutionBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLargeAnalogValueResolutionBuilder()
+	}
+	return &_BACnetConstructedDataLargeAnalogValueResolutionBuilder{_BACnetConstructedDataLargeAnalogValueResolution: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) GetActualValue() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueResolution factory function for _BACnetConstructedDataLargeAnalogValueResolution
-func NewBACnetConstructedDataLargeAnalogValueResolution(resolution BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueResolution {
-	if resolution == nil {
-		panic("resolution of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueResolution must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueResolution{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Resolution:                    resolution,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueResolution(structType any) BACnetConstructedDataLargeAnalogValueResolution {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLargeAnalogValueResolution) SerializeWithWriteBuf
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) IsBACnetConstructedDataLargeAnalogValueResolution() {
 }
 
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueResolution) deepCopy() *_BACnetConstructedDataLargeAnalogValueResolution {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueResolutionCopy := &_BACnetConstructedDataLargeAnalogValueResolution{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Resolution.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueResolutionCopy
+}
+
 func (m *_BACnetConstructedDataLargeAnalogValueResolution) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

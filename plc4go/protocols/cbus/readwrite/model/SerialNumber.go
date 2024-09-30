@@ -38,6 +38,7 @@ type SerialNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() byte
 	// GetOctet2 returns Octet2 (property field)
@@ -48,6 +49,8 @@ type SerialNumber interface {
 	GetOctet4() byte
 	// IsSerialNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSerialNumber()
+	// CreateBuilder creates a SerialNumberBuilder
+	CreateSerialNumberBuilder() SerialNumberBuilder
 }
 
 // _SerialNumber is the data-structure of this message
@@ -59,6 +62,108 @@ type _SerialNumber struct {
 }
 
 var _ SerialNumber = (*_SerialNumber)(nil)
+
+// NewSerialNumber factory function for _SerialNumber
+func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
+	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SerialNumberBuilder is a builder for SerialNumber
+type SerialNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octet1 byte, octet2 byte, octet3 byte, octet4 byte) SerialNumberBuilder
+	// WithOctet1 adds Octet1 (property field)
+	WithOctet1(byte) SerialNumberBuilder
+	// WithOctet2 adds Octet2 (property field)
+	WithOctet2(byte) SerialNumberBuilder
+	// WithOctet3 adds Octet3 (property field)
+	WithOctet3(byte) SerialNumberBuilder
+	// WithOctet4 adds Octet4 (property field)
+	WithOctet4(byte) SerialNumberBuilder
+	// Build builds the SerialNumber or returns an error if something is wrong
+	Build() (SerialNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SerialNumber
+}
+
+// NewSerialNumberBuilder() creates a SerialNumberBuilder
+func NewSerialNumberBuilder() SerialNumberBuilder {
+	return &_SerialNumberBuilder{_SerialNumber: new(_SerialNumber)}
+}
+
+type _SerialNumberBuilder struct {
+	*_SerialNumber
+
+	err *utils.MultiError
+}
+
+var _ (SerialNumberBuilder) = (*_SerialNumberBuilder)(nil)
+
+func (b *_SerialNumberBuilder) WithMandatoryFields(octet1 byte, octet2 byte, octet3 byte, octet4 byte) SerialNumberBuilder {
+	return b.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4)
+}
+
+func (b *_SerialNumberBuilder) WithOctet1(octet1 byte) SerialNumberBuilder {
+	b.Octet1 = octet1
+	return b
+}
+
+func (b *_SerialNumberBuilder) WithOctet2(octet2 byte) SerialNumberBuilder {
+	b.Octet2 = octet2
+	return b
+}
+
+func (b *_SerialNumberBuilder) WithOctet3(octet3 byte) SerialNumberBuilder {
+	b.Octet3 = octet3
+	return b
+}
+
+func (b *_SerialNumberBuilder) WithOctet4(octet4 byte) SerialNumberBuilder {
+	b.Octet4 = octet4
+	return b
+}
+
+func (b *_SerialNumberBuilder) Build() (SerialNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SerialNumber.deepCopy(), nil
+}
+
+func (b *_SerialNumberBuilder) MustBuild() SerialNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SerialNumberBuilder) DeepCopy() any {
+	_copy := b.CreateSerialNumberBuilder().(*_SerialNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSerialNumberBuilder creates a SerialNumberBuilder
+func (b *_SerialNumber) CreateSerialNumberBuilder() SerialNumberBuilder {
+	if b == nil {
+		return NewSerialNumberBuilder()
+	}
+	return &_SerialNumberBuilder{_SerialNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +190,6 @@ func (m *_SerialNumber) GetOctet4() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSerialNumber factory function for _SerialNumber
-func NewSerialNumber(octet1 byte, octet2 byte, octet3 byte, octet4 byte) *_SerialNumber {
-	return &_SerialNumber{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSerialNumber(structType any) SerialNumber {
@@ -143,7 +243,7 @@ func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SerialNumber) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__serialNumber SerialNumber, err error) {
@@ -227,13 +327,34 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_SerialNumber) IsSerialNumber() {}
 
+func (m *_SerialNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SerialNumber) deepCopy() *_SerialNumber {
+	if m == nil {
+		return nil
+	}
+	_SerialNumberCopy := &_SerialNumber{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+	}
+	return _SerialNumberCopy
+}
+
 func (m *_SerialNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,10 +38,13 @@ type StatusCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() uint32
 	// IsStatusCode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStatusCode()
+	// CreateBuilder creates a StatusCodeBuilder
+	CreateStatusCodeBuilder() StatusCodeBuilder
 }
 
 // _StatusCode is the data-structure of this message
@@ -50,6 +53,87 @@ type _StatusCode struct {
 }
 
 var _ StatusCode = (*_StatusCode)(nil)
+
+// NewStatusCode factory function for _StatusCode
+func NewStatusCode(statusCode uint32) *_StatusCode {
+	return &_StatusCode{StatusCode: statusCode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StatusCodeBuilder is a builder for StatusCode
+type StatusCodeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode uint32) StatusCodeBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(uint32) StatusCodeBuilder
+	// Build builds the StatusCode or returns an error if something is wrong
+	Build() (StatusCode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StatusCode
+}
+
+// NewStatusCodeBuilder() creates a StatusCodeBuilder
+func NewStatusCodeBuilder() StatusCodeBuilder {
+	return &_StatusCodeBuilder{_StatusCode: new(_StatusCode)}
+}
+
+type _StatusCodeBuilder struct {
+	*_StatusCode
+
+	err *utils.MultiError
+}
+
+var _ (StatusCodeBuilder) = (*_StatusCodeBuilder)(nil)
+
+func (b *_StatusCodeBuilder) WithMandatoryFields(statusCode uint32) StatusCodeBuilder {
+	return b.WithStatusCode(statusCode)
+}
+
+func (b *_StatusCodeBuilder) WithStatusCode(statusCode uint32) StatusCodeBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_StatusCodeBuilder) Build() (StatusCode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._StatusCode.deepCopy(), nil
+}
+
+func (b *_StatusCodeBuilder) MustBuild() StatusCode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_StatusCodeBuilder) DeepCopy() any {
+	_copy := b.CreateStatusCodeBuilder().(*_StatusCodeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStatusCodeBuilder creates a StatusCodeBuilder
+func (b *_StatusCode) CreateStatusCodeBuilder() StatusCodeBuilder {
+	if b == nil {
+		return NewStatusCodeBuilder()
+	}
+	return &_StatusCodeBuilder{_StatusCode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_StatusCode) GetStatusCode() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStatusCode factory function for _StatusCode
-func NewStatusCode(statusCode uint32) *_StatusCode {
-	return &_StatusCode{StatusCode: statusCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStatusCode(structType any) StatusCode {
@@ -113,7 +192,7 @@ func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_StatusCode) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__statusCode StatusCode, err error) {
@@ -167,13 +246,31 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_StatusCode) IsStatusCode() {}
 
+func (m *_StatusCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StatusCode) deepCopy() *_StatusCode {
+	if m == nil {
+		return nil
+	}
+	_StatusCodeCopy := &_StatusCode{
+		m.StatusCode,
+	}
+	return _StatusCodeCopy
+}
+
 func (m *_StatusCode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

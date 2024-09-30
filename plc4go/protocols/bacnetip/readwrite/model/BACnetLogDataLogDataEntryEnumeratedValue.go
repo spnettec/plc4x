@@ -38,11 +38,14 @@ type BACnetLogDataLogDataEntryEnumeratedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
 	// IsBACnetLogDataLogDataEntryEnumeratedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntryEnumeratedValue()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryEnumeratedValueBuilder
+	CreateBACnetLogDataLogDataEntryEnumeratedValueBuilder() BACnetLogDataLogDataEntryEnumeratedValueBuilder
 }
 
 // _BACnetLogDataLogDataEntryEnumeratedValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogDataLogDataEntryEnumeratedValue struct {
 
 var _ BACnetLogDataLogDataEntryEnumeratedValue = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryEnumeratedValue)(nil)
+
+// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
+func NewBACnetLogDataLogDataEntryEnumeratedValue(peekedTagHeader BACnetTagHeader, enumeratedValue BACnetContextTagEnumerated) *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		EnumeratedValue:                   enumeratedValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryEnumeratedValueBuilder is a builder for BACnetLogDataLogDataEntryEnumeratedValue
+type BACnetLogDataLogDataEntryEnumeratedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogDataLogDataEntryEnumeratedValueBuilder
+	// Build builds the BACnetLogDataLogDataEntryEnumeratedValue or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryEnumeratedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryEnumeratedValue
+}
+
+// NewBACnetLogDataLogDataEntryEnumeratedValueBuilder() creates a BACnetLogDataLogDataEntryEnumeratedValueBuilder
+func NewBACnetLogDataLogDataEntryEnumeratedValueBuilder() BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	return &_BACnetLogDataLogDataEntryEnumeratedValueBuilder{_BACnetLogDataLogDataEntryEnumeratedValue: new(_BACnetLogDataLogDataEntryEnumeratedValue)}
+}
+
+type _BACnetLogDataLogDataEntryEnumeratedValueBuilder struct {
+	*_BACnetLogDataLogDataEntryEnumeratedValue
+
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryEnumeratedValueBuilder) = (*_BACnetLogDataLogDataEntryEnumeratedValueBuilder)(nil)
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) WithEnumeratedValue(enumeratedValue BACnetContextTagEnumerated) BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetContextTagEnumeratedBuilder())
+	var err error
+	b.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) Build() (BACnetLogDataLogDataEntryEnumeratedValue, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogDataEntryEnumeratedValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) MustBuild() BACnetLogDataLogDataEntryEnumeratedValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryEnumeratedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryEnumeratedValueBuilder().(*_BACnetLogDataLogDataEntryEnumeratedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataLogDataEntryEnumeratedValueBuilder creates a BACnetLogDataLogDataEntryEnumeratedValueBuilder
+func (b *_BACnetLogDataLogDataEntryEnumeratedValue) CreateBACnetLogDataLogDataEntryEnumeratedValueBuilder() BACnetLogDataLogDataEntryEnumeratedValueBuilder {
+	if b == nil {
+		return NewBACnetLogDataLogDataEntryEnumeratedValueBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryEnumeratedValueBuilder{_BACnetLogDataLogDataEntryEnumeratedValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) GetEnumeratedValue() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryEnumeratedValue factory function for _BACnetLogDataLogDataEntryEnumeratedValue
-func NewBACnetLogDataLogDataEntryEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryEnumeratedValue {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogDataLogDataEntryEnumeratedValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryEnumeratedValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		EnumeratedValue:                   enumeratedValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryEnumeratedValue(structType any) BACnetLogDataLogDataEntryEnumeratedValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogDataLogDataEntryEnumeratedValue) SerializeWithWriteBuffer(ctx
 
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) IsBACnetLogDataLogDataEntryEnumeratedValue() {}
 
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryEnumeratedValue) deepCopy() *_BACnetLogDataLogDataEntryEnumeratedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryEnumeratedValueCopy := &_BACnetLogDataLogDataEntryEnumeratedValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetContextTagEnumerated),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryEnumeratedValueCopy
+}
+
 func (m *_BACnetLogDataLogDataEntryEnumeratedValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

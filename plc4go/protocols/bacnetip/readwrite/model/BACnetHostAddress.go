@@ -40,8 +40,11 @@ type BACnetHostAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
+	// CreateBuilder creates a BACnetHostAddressBuilder
+	CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder
 }
 
 // BACnetHostAddressContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetHostAddressContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetHostAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetHostAddress()
+	// CreateBuilder creates a BACnetHostAddressBuilder
+	CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder
 }
 
 // BACnetHostAddressRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,208 @@ type _BACnetHostAddress struct {
 }
 
 var _ BACnetHostAddressContract = (*_BACnetHostAddress)(nil)
+
+// NewBACnetHostAddress factory function for _BACnetHostAddress
+func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
+	}
+	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetHostAddressBuilder is a builder for BACnetHostAddress
+type BACnetHostAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetHostAddressBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetHostAddressBuilder
+	// AsBACnetHostAddressNull converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
+	AsBACnetHostAddressNull() interface {
+		BACnetHostAddressNullBuilder
+		Done() BACnetHostAddressBuilder
+	}
+	// AsBACnetHostAddressIpAddress converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
+	AsBACnetHostAddressIpAddress() interface {
+		BACnetHostAddressIpAddressBuilder
+		Done() BACnetHostAddressBuilder
+	}
+	// AsBACnetHostAddressName converts this build to a subType of BACnetHostAddress. It is always possible to return to current builder using Done()
+	AsBACnetHostAddressName() interface {
+		BACnetHostAddressNameBuilder
+		Done() BACnetHostAddressBuilder
+	}
+	// Build builds the BACnetHostAddress or returns an error if something is wrong
+	PartialBuild() (BACnetHostAddressContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetHostAddressContract
+	// Build builds the BACnetHostAddress or returns an error if something is wrong
+	Build() (BACnetHostAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetHostAddress
+}
+
+// NewBACnetHostAddressBuilder() creates a BACnetHostAddressBuilder
+func NewBACnetHostAddressBuilder() BACnetHostAddressBuilder {
+	return &_BACnetHostAddressBuilder{_BACnetHostAddress: new(_BACnetHostAddress)}
+}
+
+type _BACnetHostAddressChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetHostAddressContract)
+	buildForBACnetHostAddress() (BACnetHostAddress, error)
+}
+
+type _BACnetHostAddressBuilder struct {
+	*_BACnetHostAddress
+
+	childBuilder _BACnetHostAddressChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetHostAddressBuilder) = (*_BACnetHostAddressBuilder)(nil)
+
+func (b *_BACnetHostAddressBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetHostAddressBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetHostAddressBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetHostAddressBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetHostAddressBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetHostAddressBuilder) PartialBuild() (BACnetHostAddressContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetHostAddress.deepCopy(), nil
+}
+
+func (b *_BACnetHostAddressBuilder) PartialMustBuild() BACnetHostAddressContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressNull() interface {
+	BACnetHostAddressNullBuilder
+	Done() BACnetHostAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetHostAddressNullBuilder
+		Done() BACnetHostAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetHostAddressNullBuilder().(*_BACnetHostAddressNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressIpAddress() interface {
+	BACnetHostAddressIpAddressBuilder
+	Done() BACnetHostAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetHostAddressIpAddressBuilder
+		Done() BACnetHostAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetHostAddressIpAddressBuilder().(*_BACnetHostAddressIpAddressBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetHostAddressBuilder) AsBACnetHostAddressName() interface {
+	BACnetHostAddressNameBuilder
+	Done() BACnetHostAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetHostAddressNameBuilder
+		Done() BACnetHostAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetHostAddressNameBuilder().(*_BACnetHostAddressNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetHostAddressBuilder) Build() (BACnetHostAddress, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetHostAddress()
+}
+
+func (b *_BACnetHostAddressBuilder) MustBuild() BACnetHostAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetHostAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetHostAddressBuilder().(*_BACnetHostAddressBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetHostAddressChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetHostAddressBuilder creates a BACnetHostAddressBuilder
+func (b *_BACnetHostAddress) CreateBACnetHostAddressBuilder() BACnetHostAddressBuilder {
+	if b == nil {
+		return NewBACnetHostAddressBuilder()
+	}
+	return &_BACnetHostAddressBuilder{_BACnetHostAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +306,6 @@ func (pm *_BACnetHostAddress) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetHostAddress factory function for _BACnetHostAddress
-func NewBACnetHostAddress(peekedTagHeader BACnetTagHeader) *_BACnetHostAddress {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetHostAddress must not be nil")
-	}
-	return &_BACnetHostAddress{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetHostAddress(structType any) BACnetHostAddress {
@@ -146,7 +345,7 @@ func BACnetHostAddressParseWithBufferProducer[T BACnetHostAddress]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +355,12 @@ func BACnetHostAddressParseWithBuffer[T BACnetHostAddress](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetHostAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetHostAddress BACnetHostAddress, err error) {
@@ -184,15 +388,15 @@ func (m *_BACnetHostAddress) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child BACnetHostAddress
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetHostAddressNull
-		if _child, err = (&_BACnetHostAddressNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressNull for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(1): // BACnetHostAddressIpAddress
-		if _child, err = (&_BACnetHostAddressIpAddress{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressIpAddress).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressIpAddress for type-switch of BACnetHostAddress")
 		}
 	case peekedTagNumber == uint8(2): // BACnetHostAddressName
-		if _child, err = (&_BACnetHostAddressName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetHostAddressName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetHostAddressName for type-switch of BACnetHostAddress")
 		}
 	default:
@@ -236,3 +440,18 @@ func (pm *_BACnetHostAddress) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_BACnetHostAddress) IsBACnetHostAddress() {}
+
+func (m *_BACnetHostAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetHostAddress) deepCopy() *_BACnetHostAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetHostAddressCopy := &_BACnetHostAddress{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetHostAddressCopy
+}

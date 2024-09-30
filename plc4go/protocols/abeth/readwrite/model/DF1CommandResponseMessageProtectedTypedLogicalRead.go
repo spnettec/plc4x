@@ -38,11 +38,14 @@ type DF1CommandResponseMessageProtectedTypedLogicalRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1ResponseMessage
 	// GetData returns Data (property field)
 	GetData() []uint8
 	// IsDF1CommandResponseMessageProtectedTypedLogicalRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1CommandResponseMessageProtectedTypedLogicalRead()
+	// CreateBuilder creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
 }
 
 // _DF1CommandResponseMessageProtectedTypedLogicalRead is the data-structure of this message
@@ -53,6 +56,107 @@ type _DF1CommandResponseMessageProtectedTypedLogicalRead struct {
 
 var _ DF1CommandResponseMessageProtectedTypedLogicalRead = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
 var _ DF1ResponseMessageRequirements = (*_DF1CommandResponseMessageProtectedTypedLogicalRead)(nil)
+
+// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
+func NewDF1CommandResponseMessageProtectedTypedLogicalRead(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, data []uint8, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
+		Data:                       data,
+	}
+	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1CommandResponseMessageProtectedTypedLogicalReadBuilder is a builder for DF1CommandResponseMessageProtectedTypedLogicalRead
+type DF1CommandResponseMessageProtectedTypedLogicalReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	// WithData adds Data (property field)
+	WithData(...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	// Build builds the DF1CommandResponseMessageProtectedTypedLogicalRead or returns an error if something is wrong
+	Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead
+}
+
+// NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+func NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: new(_DF1CommandResponseMessageProtectedTypedLogicalRead)}
+}
+
+type _DF1CommandResponseMessageProtectedTypedLogicalReadBuilder struct {
+	*_DF1CommandResponseMessageProtectedTypedLogicalRead
+
+	parentBuilder *_DF1ResponseMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) = (*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)(nil)
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) setParent(contract DF1ResponseMessageContract) {
+	b.DF1ResponseMessageContract = contract
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithMandatoryFields(data []uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) WithData(data ...uint8) DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Build() (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1CommandResponseMessageProtectedTypedLogicalRead.deepCopy(), nil
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) MustBuild() DF1CommandResponseMessageProtectedTypedLogicalRead {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) Done() DF1ResponseMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) buildForDF1ResponseMessage() (DF1ResponseMessage, error) {
+	return b.Build()
+}
+
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder) DeepCopy() any {
+	_copy := b.CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder().(*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder creates a DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+func (b *_DF1CommandResponseMessageProtectedTypedLogicalRead) CreateDF1CommandResponseMessageProtectedTypedLogicalReadBuilder() DF1CommandResponseMessageProtectedTypedLogicalReadBuilder {
+	if b == nil {
+		return NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder()
+	}
+	return &_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder{_DF1CommandResponseMessageProtectedTypedLogicalRead: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) GetData() []uint8 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1CommandResponseMessageProtectedTypedLogicalRead factory function for _DF1CommandResponseMessageProtectedTypedLogicalRead
-func NewDF1CommandResponseMessageProtectedTypedLogicalRead(data []uint8, destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1CommandResponseMessageProtectedTypedLogicalRead {
-	_result := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
-		DF1ResponseMessageContract: NewDF1ResponseMessage(destinationAddress, sourceAddress, status, transactionCounter, payloadLength),
-		Data:                       data,
-	}
-	_result.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1CommandResponseMessageProtectedTypedLogicalRead(structType any) DF1CommandResponseMessageProtectedTypedLogicalRead {
@@ -183,13 +277,33 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) IsDF1CommandResponseMessageProtectedTypedLogicalRead() {
 }
 
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) deepCopy() *_DF1CommandResponseMessageProtectedTypedLogicalRead {
+	if m == nil {
+		return nil
+	}
+	_DF1CommandResponseMessageProtectedTypedLogicalReadCopy := &_DF1CommandResponseMessageProtectedTypedLogicalRead{
+		m.DF1ResponseMessageContract.(*_DF1ResponseMessage).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.Data),
+	}
+	m.DF1ResponseMessageContract.(*_DF1ResponseMessage)._SubType = m
+	return _DF1CommandResponseMessageProtectedTypedLogicalReadCopy
+}
+
 func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

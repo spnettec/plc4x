@@ -36,9 +36,12 @@ type BACnetApplicationTagNull interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// IsBACnetApplicationTagNull is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagNull()
+	// CreateBuilder creates a BACnetApplicationTagNullBuilder
+	CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder
 }
 
 // _BACnetApplicationTagNull is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetApplicationTagNull struct {
 
 var _ BACnetApplicationTagNull = (*_BACnetApplicationTagNull)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
+
+// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
+func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
+	_result := &_BACnetApplicationTagNull{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetApplicationTagNullBuilder is a builder for BACnetApplicationTagNull
+type BACnetApplicationTagNullBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetApplicationTagNullBuilder
+	// Build builds the BACnetApplicationTagNull or returns an error if something is wrong
+	Build() (BACnetApplicationTagNull, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetApplicationTagNull
+}
+
+// NewBACnetApplicationTagNullBuilder() creates a BACnetApplicationTagNullBuilder
+func NewBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
+	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: new(_BACnetApplicationTagNull)}
+}
+
+type _BACnetApplicationTagNullBuilder struct {
+	*_BACnetApplicationTagNull
+
+	parentBuilder *_BACnetApplicationTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetApplicationTagNullBuilder) = (*_BACnetApplicationTagNullBuilder)(nil)
+
+func (b *_BACnetApplicationTagNullBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
+}
+
+func (b *_BACnetApplicationTagNullBuilder) WithMandatoryFields() BACnetApplicationTagNullBuilder {
+	return b
+}
+
+func (b *_BACnetApplicationTagNullBuilder) Build() (BACnetApplicationTagNull, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetApplicationTagNull.deepCopy(), nil
+}
+
+func (b *_BACnetApplicationTagNullBuilder) MustBuild() BACnetApplicationTagNull {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagNullBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagNullBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagNullBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagNullBuilder().(*_BACnetApplicationTagNullBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetApplicationTagNullBuilder creates a BACnetApplicationTagNullBuilder
+func (b *_BACnetApplicationTagNull) CreateBACnetApplicationTagNullBuilder() BACnetApplicationTagNullBuilder {
+	if b == nil {
+		return NewBACnetApplicationTagNullBuilder()
+	}
+	return &_BACnetApplicationTagNullBuilder{_BACnetApplicationTagNull: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagNull)(nil)
 
 func (m *_BACnetApplicationTagNull) GetParent() BACnetApplicationTagContract {
 	return m.BACnetApplicationTagContract
-}
-
-// NewBACnetApplicationTagNull factory function for _BACnetApplicationTagNull
-func NewBACnetApplicationTagNull(header BACnetTagHeader) *_BACnetApplicationTagNull {
-	_result := &_BACnetApplicationTagNull{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_BACnetApplicationTagNull) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_BACnetApplicationTagNull) IsBACnetApplicationTagNull() {}
 
+func (m *_BACnetApplicationTagNull) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagNull) deepCopy() *_BACnetApplicationTagNull {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagNullCopy := &_BACnetApplicationTagNull{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagNullCopy
+}
+
 func (m *_BACnetApplicationTagNull) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

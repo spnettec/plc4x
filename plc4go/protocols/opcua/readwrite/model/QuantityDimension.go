@@ -38,6 +38,7 @@ type QuantityDimension interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetMassExponent returns MassExponent (property field)
 	GetMassExponent() int8
@@ -57,6 +58,8 @@ type QuantityDimension interface {
 	GetDimensionlessExponent() int8
 	// IsQuantityDimension is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQuantityDimension()
+	// CreateBuilder creates a QuantityDimensionBuilder
+	CreateQuantityDimensionBuilder() QuantityDimensionBuilder
 }
 
 // _QuantityDimension is the data-structure of this message
@@ -74,6 +77,163 @@ type _QuantityDimension struct {
 
 var _ QuantityDimension = (*_QuantityDimension)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_QuantityDimension)(nil)
+
+// NewQuantityDimension factory function for _QuantityDimension
+func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
+	_result := &_QuantityDimension{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		MassExponent:                      massExponent,
+		LengthExponent:                    lengthExponent,
+		TimeExponent:                      timeExponent,
+		ElectricCurrentExponent:           electricCurrentExponent,
+		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
+		LuminousIntensityExponent:         luminousIntensityExponent,
+		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
+		DimensionlessExponent:             dimensionlessExponent,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QuantityDimensionBuilder is a builder for QuantityDimension
+type QuantityDimensionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) QuantityDimensionBuilder
+	// WithMassExponent adds MassExponent (property field)
+	WithMassExponent(int8) QuantityDimensionBuilder
+	// WithLengthExponent adds LengthExponent (property field)
+	WithLengthExponent(int8) QuantityDimensionBuilder
+	// WithTimeExponent adds TimeExponent (property field)
+	WithTimeExponent(int8) QuantityDimensionBuilder
+	// WithElectricCurrentExponent adds ElectricCurrentExponent (property field)
+	WithElectricCurrentExponent(int8) QuantityDimensionBuilder
+	// WithAmountOfSubstanceExponent adds AmountOfSubstanceExponent (property field)
+	WithAmountOfSubstanceExponent(int8) QuantityDimensionBuilder
+	// WithLuminousIntensityExponent adds LuminousIntensityExponent (property field)
+	WithLuminousIntensityExponent(int8) QuantityDimensionBuilder
+	// WithAbsoluteTemperatureExponent adds AbsoluteTemperatureExponent (property field)
+	WithAbsoluteTemperatureExponent(int8) QuantityDimensionBuilder
+	// WithDimensionlessExponent adds DimensionlessExponent (property field)
+	WithDimensionlessExponent(int8) QuantityDimensionBuilder
+	// Build builds the QuantityDimension or returns an error if something is wrong
+	Build() (QuantityDimension, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QuantityDimension
+}
+
+// NewQuantityDimensionBuilder() creates a QuantityDimensionBuilder
+func NewQuantityDimensionBuilder() QuantityDimensionBuilder {
+	return &_QuantityDimensionBuilder{_QuantityDimension: new(_QuantityDimension)}
+}
+
+type _QuantityDimensionBuilder struct {
+	*_QuantityDimension
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (QuantityDimensionBuilder) = (*_QuantityDimensionBuilder)(nil)
+
+func (b *_QuantityDimensionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_QuantityDimensionBuilder) WithMandatoryFields(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) QuantityDimensionBuilder {
+	return b.WithMassExponent(massExponent).WithLengthExponent(lengthExponent).WithTimeExponent(timeExponent).WithElectricCurrentExponent(electricCurrentExponent).WithAmountOfSubstanceExponent(amountOfSubstanceExponent).WithLuminousIntensityExponent(luminousIntensityExponent).WithAbsoluteTemperatureExponent(absoluteTemperatureExponent).WithDimensionlessExponent(dimensionlessExponent)
+}
+
+func (b *_QuantityDimensionBuilder) WithMassExponent(massExponent int8) QuantityDimensionBuilder {
+	b.MassExponent = massExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithLengthExponent(lengthExponent int8) QuantityDimensionBuilder {
+	b.LengthExponent = lengthExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithTimeExponent(timeExponent int8) QuantityDimensionBuilder {
+	b.TimeExponent = timeExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithElectricCurrentExponent(electricCurrentExponent int8) QuantityDimensionBuilder {
+	b.ElectricCurrentExponent = electricCurrentExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithAmountOfSubstanceExponent(amountOfSubstanceExponent int8) QuantityDimensionBuilder {
+	b.AmountOfSubstanceExponent = amountOfSubstanceExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithLuminousIntensityExponent(luminousIntensityExponent int8) QuantityDimensionBuilder {
+	b.LuminousIntensityExponent = luminousIntensityExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithAbsoluteTemperatureExponent(absoluteTemperatureExponent int8) QuantityDimensionBuilder {
+	b.AbsoluteTemperatureExponent = absoluteTemperatureExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) WithDimensionlessExponent(dimensionlessExponent int8) QuantityDimensionBuilder {
+	b.DimensionlessExponent = dimensionlessExponent
+	return b
+}
+
+func (b *_QuantityDimensionBuilder) Build() (QuantityDimension, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QuantityDimension.deepCopy(), nil
+}
+
+func (b *_QuantityDimensionBuilder) MustBuild() QuantityDimension {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_QuantityDimensionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_QuantityDimensionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_QuantityDimensionBuilder) DeepCopy() any {
+	_copy := b.CreateQuantityDimensionBuilder().(*_QuantityDimensionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateQuantityDimensionBuilder creates a QuantityDimensionBuilder
+func (b *_QuantityDimension) CreateQuantityDimensionBuilder() QuantityDimensionBuilder {
+	if b == nil {
+		return NewQuantityDimensionBuilder()
+	}
+	return &_QuantityDimensionBuilder{_QuantityDimension: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -134,23 +294,6 @@ func (m *_QuantityDimension) GetDimensionlessExponent() int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQuantityDimension factory function for _QuantityDimension
-func NewQuantityDimension(massExponent int8, lengthExponent int8, timeExponent int8, electricCurrentExponent int8, amountOfSubstanceExponent int8, luminousIntensityExponent int8, absoluteTemperatureExponent int8, dimensionlessExponent int8) *_QuantityDimension {
-	_result := &_QuantityDimension{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		MassExponent:                      massExponent,
-		LengthExponent:                    lengthExponent,
-		TimeExponent:                      timeExponent,
-		ElectricCurrentExponent:           electricCurrentExponent,
-		AmountOfSubstanceExponent:         amountOfSubstanceExponent,
-		LuminousIntensityExponent:         luminousIntensityExponent,
-		AbsoluteTemperatureExponent:       absoluteTemperatureExponent,
-		DimensionlessExponent:             dimensionlessExponent,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastQuantityDimension(structType any) QuantityDimension {
@@ -327,13 +470,40 @@ func (m *_QuantityDimension) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_QuantityDimension) IsQuantityDimension() {}
 
+func (m *_QuantityDimension) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QuantityDimension) deepCopy() *_QuantityDimension {
+	if m == nil {
+		return nil
+	}
+	_QuantityDimensionCopy := &_QuantityDimension{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.MassExponent,
+		m.LengthExponent,
+		m.TimeExponent,
+		m.ElectricCurrentExponent,
+		m.AmountOfSubstanceExponent,
+		m.LuminousIntensityExponent,
+		m.AbsoluteTemperatureExponent,
+		m.DimensionlessExponent,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _QuantityDimensionCopy
+}
+
 func (m *_QuantityDimension) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

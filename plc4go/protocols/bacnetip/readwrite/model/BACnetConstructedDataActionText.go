@@ -38,6 +38,7 @@ type BACnetConstructedDataActionText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataActionText interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataActionText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActionText()
+	// CreateBuilder creates a BACnetConstructedDataActionTextBuilder
+	CreateBACnetConstructedDataActionTextBuilder() BACnetConstructedDataActionTextBuilder
 }
 
 // _BACnetConstructedDataActionText is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataActionText struct {
 
 var _ BACnetConstructedDataActionText = (*_BACnetConstructedDataActionText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActionText)(nil)
+
+// NewBACnetConstructedDataActionText factory function for _BACnetConstructedDataActionText
+func NewBACnetConstructedDataActionText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, actionText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActionText {
+	_result := &_BACnetConstructedDataActionText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ActionText:                    actionText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActionTextBuilder is a builder for BACnetConstructedDataActionText
+type BACnetConstructedDataActionTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(actionText []BACnetApplicationTagCharacterString) BACnetConstructedDataActionTextBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActionTextBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActionTextBuilder
+	// WithActionText adds ActionText (property field)
+	WithActionText(...BACnetApplicationTagCharacterString) BACnetConstructedDataActionTextBuilder
+	// Build builds the BACnetConstructedDataActionText or returns an error if something is wrong
+	Build() (BACnetConstructedDataActionText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActionText
+}
+
+// NewBACnetConstructedDataActionTextBuilder() creates a BACnetConstructedDataActionTextBuilder
+func NewBACnetConstructedDataActionTextBuilder() BACnetConstructedDataActionTextBuilder {
+	return &_BACnetConstructedDataActionTextBuilder{_BACnetConstructedDataActionText: new(_BACnetConstructedDataActionText)}
+}
+
+type _BACnetConstructedDataActionTextBuilder struct {
+	*_BACnetConstructedDataActionText
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActionTextBuilder) = (*_BACnetConstructedDataActionTextBuilder)(nil)
+
+func (b *_BACnetConstructedDataActionTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) WithMandatoryFields(actionText []BACnetApplicationTagCharacterString) BACnetConstructedDataActionTextBuilder {
+	return b.WithActionText(actionText...)
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataActionTextBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataActionTextBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) WithActionText(actionText ...BACnetApplicationTagCharacterString) BACnetConstructedDataActionTextBuilder {
+	b.ActionText = actionText
+	return b
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) Build() (BACnetConstructedDataActionText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataActionText.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) MustBuild() BACnetConstructedDataActionText {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActionTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActionTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActionTextBuilder().(*_BACnetConstructedDataActionTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataActionTextBuilder creates a BACnetConstructedDataActionTextBuilder
+func (b *_BACnetConstructedDataActionText) CreateBACnetConstructedDataActionTextBuilder() BACnetConstructedDataActionTextBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataActionTextBuilder()
+	}
+	return &_BACnetConstructedDataActionTextBuilder{_BACnetConstructedDataActionText: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataActionText) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActionText factory function for _BACnetConstructedDataActionText
-func NewBACnetConstructedDataActionText(numberOfDataElements BACnetApplicationTagUnsignedInteger, actionText []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActionText {
-	_result := &_BACnetConstructedDataActionText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ActionText:                    actionText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActionText(structType any) BACnetConstructedDataActionText {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataActionText) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataActionText) IsBACnetConstructedDataActionText() {}
 
+func (m *_BACnetConstructedDataActionText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActionText) deepCopy() *_BACnetConstructedDataActionText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActionTextCopy := &_BACnetConstructedDataActionText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.ActionText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActionTextCopy
+}
+
 func (m *_BACnetConstructedDataActionText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

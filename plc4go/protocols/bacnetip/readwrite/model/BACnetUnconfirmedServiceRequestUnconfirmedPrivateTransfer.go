@@ -38,6 +38,7 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetUnconfirmedServiceRequest
 	// GetVendorId returns VendorId (property field)
 	GetVendorId() BACnetVendorIdTagged
@@ -47,6 +48,8 @@ type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer interface {
 	GetServiceParameters() BACnetConstructedData
 	// IsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	CreateBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder() BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
 }
 
 // _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer is the data-structure of this message
@@ -59,6 +62,186 @@ type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer struct {
 
 var _ BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
 var _ BACnetUnconfirmedServiceRequestRequirements = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)(nil)
+
+// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	if vendorId == nil {
+		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
+	}
+	if serviceNumber == nil {
+		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
+	}
+	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
+		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
+		VendorId:                                vendorId,
+		ServiceNumber:                           serviceNumber,
+		ServiceParameters:                       serviceParameters,
+	}
+	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder is a builder for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithVendorId adds VendorId (property field)
+	WithVendorId(BACnetVendorIdTagged) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithVendorIdBuilder adds VendorId (property field) which is build by the builder
+	WithVendorIdBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithServiceNumber adds ServiceNumber (property field)
+	WithServiceNumber(BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithServiceNumberBuilder adds ServiceNumber (property field) which is build by the builder
+	WithServiceNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithServiceParameters adds ServiceParameters (property field)
+	WithOptionalServiceParameters(BACnetConstructedData) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// WithOptionalServiceParametersBuilder adds ServiceParameters (property field) which is build by the builder
+	WithOptionalServiceParametersBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	// Build builds the BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+}
+
+// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder() creates a BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder() BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer: new(_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer)}
+}
+
+type _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder struct {
+	*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
+
+	parentBuilder *_BACnetUnconfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) = (*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder)(nil)
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) setParent(contract BACnetUnconfirmedServiceRequestContract) {
+	b.BACnetUnconfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithMandatoryFields(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	return b.WithVendorId(vendorId).WithServiceNumber(serviceNumber)
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithVendorId(vendorId BACnetVendorIdTagged) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	b.VendorId = vendorId
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	builder := builderSupplier(b.VendorId.CreateBACnetVendorIdTaggedBuilder())
+	var err error
+	b.VendorId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithServiceNumber(serviceNumber BACnetContextTagUnsignedInteger) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	b.ServiceNumber = serviceNumber
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithServiceNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	builder := builderSupplier(b.ServiceNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ServiceNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithOptionalServiceParameters(serviceParameters BACnetConstructedData) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	b.ServiceParameters = serviceParameters
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) WithOptionalServiceParametersBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	builder := builderSupplier(b.ServiceParameters.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ServiceParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) Build() (BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer, error) {
+	if b.VendorId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vendorId' not set"))
+	}
+	if b.ServiceNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serviceNumber' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) MustBuild() BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) Done() BACnetUnconfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) buildForBACnetUnconfirmedServiceRequest() (BACnetUnconfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder creates a BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+func (b *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) CreateBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder() BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder {
+	if b == nil {
+		return NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder{_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +282,6 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) GetServiceP
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer factory function for _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-func NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(vendorId BACnetVendorIdTagged, serviceNumber BACnetContextTagUnsignedInteger, serviceParameters BACnetConstructedData, serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
-	if vendorId == nil {
-		panic("vendorId of type BACnetVendorIdTagged for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
-	}
-	if serviceNumber == nil {
-		panic("serviceNumber of type BACnetContextTagUnsignedInteger for BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer must not be nil")
-	}
-	_result := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
-		BACnetUnconfirmedServiceRequestContract: NewBACnetUnconfirmedServiceRequest(serviceRequestLength),
-		VendorId:                                vendorId,
-		ServiceNumber:                           serviceNumber,
-		ServiceParameters:                       serviceParameters,
-	}
-	_result.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer(structType any) BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
@@ -235,13 +400,35 @@ func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) SerializeWi
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) IsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() {
 }
 
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) deepCopy() *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferCopy := &_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{
+		m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest).deepCopy(),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.ServiceNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ServiceParameters.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetUnconfirmedServiceRequestContract.(*_BACnetUnconfirmedServiceRequest)._SubType = m
+	return _BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferCopy
+}
+
 func (m *_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetPropertyStatesMaintenance interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetMaintenance returns Maintenance (property field)
 	GetMaintenance() BACnetMaintenanceTagged
 	// IsBACnetPropertyStatesMaintenance is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesMaintenance()
+	// CreateBuilder creates a BACnetPropertyStatesMaintenanceBuilder
+	CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder
 }
 
 // _BACnetPropertyStatesMaintenance is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesMaintenance struct {
 
 var _ BACnetPropertyStatesMaintenance = (*_BACnetPropertyStatesMaintenance)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesMaintenance)(nil)
+
+// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
+func NewBACnetPropertyStatesMaintenance(peekedTagHeader BACnetTagHeader, maintenance BACnetMaintenanceTagged) *_BACnetPropertyStatesMaintenance {
+	if maintenance == nil {
+		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
+	}
+	_result := &_BACnetPropertyStatesMaintenance{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Maintenance:                  maintenance,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesMaintenanceBuilder is a builder for BACnetPropertyStatesMaintenance
+type BACnetPropertyStatesMaintenanceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder
+	// WithMaintenance adds Maintenance (property field)
+	WithMaintenance(BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder
+	// WithMaintenanceBuilder adds Maintenance (property field) which is build by the builder
+	WithMaintenanceBuilder(func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder
+	// Build builds the BACnetPropertyStatesMaintenance or returns an error if something is wrong
+	Build() (BACnetPropertyStatesMaintenance, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesMaintenance
+}
+
+// NewBACnetPropertyStatesMaintenanceBuilder() creates a BACnetPropertyStatesMaintenanceBuilder
+func NewBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
+	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: new(_BACnetPropertyStatesMaintenance)}
+}
+
+type _BACnetPropertyStatesMaintenanceBuilder struct {
+	*_BACnetPropertyStatesMaintenance
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesMaintenanceBuilder) = (*_BACnetPropertyStatesMaintenanceBuilder)(nil)
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMandatoryFields(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	return b.WithMaintenance(maintenance)
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenance(maintenance BACnetMaintenanceTagged) BACnetPropertyStatesMaintenanceBuilder {
+	b.Maintenance = maintenance
+	return b
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) WithMaintenanceBuilder(builderSupplier func(BACnetMaintenanceTaggedBuilder) BACnetMaintenanceTaggedBuilder) BACnetPropertyStatesMaintenanceBuilder {
+	builder := builderSupplier(b.Maintenance.CreateBACnetMaintenanceTaggedBuilder())
+	var err error
+	b.Maintenance, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetMaintenanceTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) Build() (BACnetPropertyStatesMaintenance, error) {
+	if b.Maintenance == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maintenance' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesMaintenance.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) MustBuild() BACnetPropertyStatesMaintenance {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesMaintenanceBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesMaintenanceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesMaintenanceBuilder().(*_BACnetPropertyStatesMaintenanceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesMaintenanceBuilder creates a BACnetPropertyStatesMaintenanceBuilder
+func (b *_BACnetPropertyStatesMaintenance) CreateBACnetPropertyStatesMaintenanceBuilder() BACnetPropertyStatesMaintenanceBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesMaintenanceBuilder()
+	}
+	return &_BACnetPropertyStatesMaintenanceBuilder{_BACnetPropertyStatesMaintenance: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesMaintenance) GetMaintenance() BACnetMaintenanceTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesMaintenance factory function for _BACnetPropertyStatesMaintenance
-func NewBACnetPropertyStatesMaintenance(maintenance BACnetMaintenanceTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesMaintenance {
-	if maintenance == nil {
-		panic("maintenance of type BACnetMaintenanceTagged for BACnetPropertyStatesMaintenance must not be nil")
-	}
-	_result := &_BACnetPropertyStatesMaintenance{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Maintenance:                  maintenance,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesMaintenance(structType any) BACnetPropertyStatesMaintenance {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesMaintenance) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetPropertyStatesMaintenance) IsBACnetPropertyStatesMaintenance() {}
 
+func (m *_BACnetPropertyStatesMaintenance) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesMaintenance) deepCopy() *_BACnetPropertyStatesMaintenance {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesMaintenanceCopy := &_BACnetPropertyStatesMaintenance{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Maintenance.DeepCopy().(BACnetMaintenanceTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesMaintenanceCopy
+}
+
 func (m *_BACnetPropertyStatesMaintenance) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

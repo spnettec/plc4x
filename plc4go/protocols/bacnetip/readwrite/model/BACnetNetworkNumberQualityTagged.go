@@ -38,12 +38,15 @@ type BACnetNetworkNumberQualityTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetNetworkNumberQuality
 	// IsBACnetNetworkNumberQualityTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNetworkNumberQualityTagged()
+	// CreateBuilder creates a BACnetNetworkNumberQualityTaggedBuilder
+	CreateBACnetNetworkNumberQualityTaggedBuilder() BACnetNetworkNumberQualityTaggedBuilder
 }
 
 // _BACnetNetworkNumberQualityTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetNetworkNumberQualityTagged struct {
 }
 
 var _ BACnetNetworkNumberQualityTagged = (*_BACnetNetworkNumberQualityTagged)(nil)
+
+// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
+func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
+	}
+	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNetworkNumberQualityTaggedBuilder is a builder for BACnetNetworkNumberQualityTagged
+type BACnetNetworkNumberQualityTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetNetworkNumberQualityTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkNumberQualityTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder
+	// Build builds the BACnetNetworkNumberQualityTagged or returns an error if something is wrong
+	Build() (BACnetNetworkNumberQualityTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNetworkNumberQualityTagged
+}
+
+// NewBACnetNetworkNumberQualityTaggedBuilder() creates a BACnetNetworkNumberQualityTaggedBuilder
+func NewBACnetNetworkNumberQualityTaggedBuilder() BACnetNetworkNumberQualityTaggedBuilder {
+	return &_BACnetNetworkNumberQualityTaggedBuilder{_BACnetNetworkNumberQualityTagged: new(_BACnetNetworkNumberQualityTagged)}
+}
+
+type _BACnetNetworkNumberQualityTaggedBuilder struct {
+	*_BACnetNetworkNumberQualityTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNetworkNumberQualityTaggedBuilder) = (*_BACnetNetworkNumberQualityTaggedBuilder)(nil)
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetNetworkNumberQualityTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetNetworkNumberQualityTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) WithValue(value BACnetNetworkNumberQuality) BACnetNetworkNumberQualityTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) Build() (BACnetNetworkNumberQualityTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNetworkNumberQualityTagged.deepCopy(), nil
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) MustBuild() BACnetNetworkNumberQualityTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNetworkNumberQualityTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNetworkNumberQualityTaggedBuilder().(*_BACnetNetworkNumberQualityTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNetworkNumberQualityTaggedBuilder creates a BACnetNetworkNumberQualityTaggedBuilder
+func (b *_BACnetNetworkNumberQualityTagged) CreateBACnetNetworkNumberQualityTaggedBuilder() BACnetNetworkNumberQualityTaggedBuilder {
+	if b == nil {
+		return NewBACnetNetworkNumberQualityTaggedBuilder()
+	}
+	return &_BACnetNetworkNumberQualityTaggedBuilder{_BACnetNetworkNumberQualityTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetNetworkNumberQualityTagged) GetValue() BACnetNetworkNumberQualit
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNetworkNumberQualityTagged factory function for _BACnetNetworkNumberQualityTagged
-func NewBACnetNetworkNumberQualityTagged(header BACnetTagHeader, value BACnetNetworkNumberQuality, tagNumber uint8, tagClass TagClass) *_BACnetNetworkNumberQualityTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetNetworkNumberQualityTagged must not be nil")
-	}
-	return &_BACnetNetworkNumberQualityTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNetworkNumberQualityTagged(structType any) BACnetNetworkNumberQualityTagged {
@@ -130,7 +237,7 @@ func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetNetworkNumberQualityTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetNetworkNumberQualityTagged BACnetNetworkNumberQualityTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetNetworkNumberQualityTagged) GetTagClass() TagClass {
 
 func (m *_BACnetNetworkNumberQualityTagged) IsBACnetNetworkNumberQualityTagged() {}
 
+func (m *_BACnetNetworkNumberQualityTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNetworkNumberQualityTagged) deepCopy() *_BACnetNetworkNumberQualityTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetNetworkNumberQualityTaggedCopy := &_BACnetNetworkNumberQualityTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetNetworkNumberQualityTaggedCopy
+}
+
 func (m *_BACnetNetworkNumberQualityTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

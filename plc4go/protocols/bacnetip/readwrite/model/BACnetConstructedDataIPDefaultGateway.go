@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDefaultGateway interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDefaultGateway returns IpDefaultGateway (property field)
 	GetIpDefaultGateway() BACnetApplicationTagOctetString
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPDefaultGateway interface {
 	GetActualValue() BACnetApplicationTagOctetString
 	// IsBACnetConstructedDataIPDefaultGateway is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPDefaultGateway()
+	// CreateBuilder creates a BACnetConstructedDataIPDefaultGatewayBuilder
+	CreateBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDefaultGatewayBuilder
 }
 
 // _BACnetConstructedDataIPDefaultGateway is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPDefaultGateway struct {
 
 var _ BACnetConstructedDataIPDefaultGateway = (*_BACnetConstructedDataIPDefaultGateway)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDefaultGateway)(nil)
+
+// NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
+func NewBACnetConstructedDataIPDefaultGateway(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDefaultGateway BACnetApplicationTagOctetString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
+	if ipDefaultGateway == nil {
+		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDefaultGateway{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDefaultGateway:              ipDefaultGateway,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPDefaultGatewayBuilder is a builder for BACnetConstructedDataIPDefaultGateway
+type BACnetConstructedDataIPDefaultGatewayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder
+	// WithIpDefaultGateway adds IpDefaultGateway (property field)
+	WithIpDefaultGateway(BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder
+	// WithIpDefaultGatewayBuilder adds IpDefaultGateway (property field) which is build by the builder
+	WithIpDefaultGatewayBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDefaultGatewayBuilder
+	// Build builds the BACnetConstructedDataIPDefaultGateway or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPDefaultGateway, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPDefaultGateway
+}
+
+// NewBACnetConstructedDataIPDefaultGatewayBuilder() creates a BACnetConstructedDataIPDefaultGatewayBuilder
+func NewBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDefaultGatewayBuilder {
+	return &_BACnetConstructedDataIPDefaultGatewayBuilder{_BACnetConstructedDataIPDefaultGateway: new(_BACnetConstructedDataIPDefaultGateway)}
+}
+
+type _BACnetConstructedDataIPDefaultGatewayBuilder struct {
+	*_BACnetConstructedDataIPDefaultGateway
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPDefaultGatewayBuilder) = (*_BACnetConstructedDataIPDefaultGatewayBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithMandatoryFields(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
+	return b.WithIpDefaultGateway(ipDefaultGateway)
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString) BACnetConstructedDataIPDefaultGatewayBuilder {
+	b.IpDefaultGateway = ipDefaultGateway
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) WithIpDefaultGatewayBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetConstructedDataIPDefaultGatewayBuilder {
+	builder := builderSupplier(b.IpDefaultGateway.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.IpDefaultGateway, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) Build() (BACnetConstructedDataIPDefaultGateway, error) {
+	if b.IpDefaultGateway == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipDefaultGateway' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPDefaultGateway.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) MustBuild() BACnetConstructedDataIPDefaultGateway {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPDefaultGatewayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPDefaultGatewayBuilder().(*_BACnetConstructedDataIPDefaultGatewayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPDefaultGatewayBuilder creates a BACnetConstructedDataIPDefaultGatewayBuilder
+func (b *_BACnetConstructedDataIPDefaultGateway) CreateBACnetConstructedDataIPDefaultGatewayBuilder() BACnetConstructedDataIPDefaultGatewayBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPDefaultGatewayBuilder()
+	}
+	return &_BACnetConstructedDataIPDefaultGatewayBuilder{_BACnetConstructedDataIPDefaultGateway: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPDefaultGateway) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDefaultGateway factory function for _BACnetConstructedDataIPDefaultGateway
-func NewBACnetConstructedDataIPDefaultGateway(ipDefaultGateway BACnetApplicationTagOctetString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDefaultGateway {
-	if ipDefaultGateway == nil {
-		panic("ipDefaultGateway of type BACnetApplicationTagOctetString for BACnetConstructedDataIPDefaultGateway must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDefaultGateway{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDefaultGateway:              ipDefaultGateway,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDefaultGateway(structType any) BACnetConstructedDataIPDefaultGateway {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPDefaultGateway) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataIPDefaultGateway) IsBACnetConstructedDataIPDefaultGateway() {}
 
+func (m *_BACnetConstructedDataIPDefaultGateway) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDefaultGateway) deepCopy() *_BACnetConstructedDataIPDefaultGateway {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDefaultGatewayCopy := &_BACnetConstructedDataIPDefaultGateway{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IpDefaultGateway.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDefaultGatewayCopy
+}
+
 func (m *_BACnetConstructedDataIPDefaultGateway) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

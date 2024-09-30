@@ -38,11 +38,14 @@ type BACnetContextTagBitString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBitString
 	// IsBACnetContextTagBitString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagBitString()
+	// CreateBuilder creates a BACnetContextTagBitStringBuilder
+	CreateBACnetContextTagBitStringBuilder() BACnetContextTagBitStringBuilder
 }
 
 // _BACnetContextTagBitString is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetContextTagBitString struct {
 
 var _ BACnetContextTagBitString = (*_BACnetContextTagBitString)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagBitString)(nil)
+
+// NewBACnetContextTagBitString factory function for _BACnetContextTagBitString
+func NewBACnetContextTagBitString(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumberArgument uint8) *_BACnetContextTagBitString {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetContextTagBitString must not be nil")
+	}
+	_result := &_BACnetContextTagBitString{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagBitStringBuilder is a builder for BACnetContextTagBitString
+type BACnetContextTagBitStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetContextTagBitStringBuilder
+	// Build builds the BACnetContextTagBitString or returns an error if something is wrong
+	Build() (BACnetContextTagBitString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagBitString
+}
+
+// NewBACnetContextTagBitStringBuilder() creates a BACnetContextTagBitStringBuilder
+func NewBACnetContextTagBitStringBuilder() BACnetContextTagBitStringBuilder {
+	return &_BACnetContextTagBitStringBuilder{_BACnetContextTagBitString: new(_BACnetContextTagBitString)}
+}
+
+type _BACnetContextTagBitStringBuilder struct {
+	*_BACnetContextTagBitString
+
+	parentBuilder *_BACnetContextTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagBitStringBuilder) = (*_BACnetContextTagBitStringBuilder)(nil)
+
+func (b *_BACnetContextTagBitStringBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
+}
+
+func (b *_BACnetContextTagBitStringBuilder) WithMandatoryFields(payload BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetContextTagBitStringBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetContextTagBitStringBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagBitStringBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetContextTagBitStringBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetContextTagBitStringBuilder) Build() (BACnetContextTagBitString, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetContextTagBitString.deepCopy(), nil
+}
+
+func (b *_BACnetContextTagBitStringBuilder) MustBuild() BACnetContextTagBitString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagBitStringBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagBitStringBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagBitStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagBitStringBuilder().(*_BACnetContextTagBitStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetContextTagBitStringBuilder creates a BACnetContextTagBitStringBuilder
+func (b *_BACnetContextTagBitString) CreateBACnetContextTagBitStringBuilder() BACnetContextTagBitStringBuilder {
+	if b == nil {
+		return NewBACnetContextTagBitStringBuilder()
+	}
+	return &_BACnetContextTagBitStringBuilder{_BACnetContextTagBitString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_BACnetContextTagBitString) GetPayload() BACnetTagPayloadBitString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagBitString factory function for _BACnetContextTagBitString
-func NewBACnetContextTagBitString(payload BACnetTagPayloadBitString, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagBitString {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetContextTagBitString must not be nil")
-	}
-	_result := &_BACnetContextTagBitString{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagBitString(structType any) BACnetContextTagBitString {
@@ -183,13 +298,33 @@ func (m *_BACnetContextTagBitString) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_BACnetContextTagBitString) IsBACnetContextTagBitString() {}
 
+func (m *_BACnetContextTagBitString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagBitString) deepCopy() *_BACnetContextTagBitString {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagBitStringCopy := &_BACnetContextTagBitString{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagBitStringCopy
+}
+
 func (m *_BACnetContextTagBitString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

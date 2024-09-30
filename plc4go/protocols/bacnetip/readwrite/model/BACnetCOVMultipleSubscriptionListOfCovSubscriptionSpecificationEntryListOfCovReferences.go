@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfCovReferences returns ListOfCovReferences (property field)
@@ -46,6 +47,8 @@ type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences()
+	// CreateBuilder creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
 }
 
 // _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
 }
 
 var _ BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)(nil)
+
+// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
+func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences(openingTag BACnetOpeningTag, listOfCovReferences []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences must not be nil")
+	}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences{OpeningTag: openingTag, ListOfCovReferences: listOfCovReferences, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder is a builder for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
+type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfCovReferences []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// WithListOfCovReferences adds ListOfCovReferences (property field)
+	WithListOfCovReferences(...BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+	// Build builds the BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences or returns an error if something is wrong
+	Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
+}
+
+// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder() creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences: new(_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)}
+}
+
+type _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder struct {
+	*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) = (*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder)(nil)
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfCovReferences []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfCovReferences(listOfCovReferences...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithListOfCovReferences(listOfCovReferences ...BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	b.ListOfCovReferences = listOfCovReferences
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) Build() (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences.deepCopy(), nil
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) MustBuild() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder().(*_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder creates a BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder
+func (b *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder {
+	if b == nil {
+		return NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder()
+	}
+	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesBuilder{_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences factory function for _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences
-func NewBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences(openingTag BACnetOpeningTag, listOfCovReferences []BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences must not be nil")
-	}
-	return &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences{OpeningTag: openingTag, ListOfCovReferences: listOfCovReferences, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences(structType any) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences {
@@ -146,7 +281,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryLi
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) IsBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences() {
 }
 
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) deepCopy() *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesCopy := &_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry, BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry](m.ListOfCovReferences),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesCopy
+}
+
 func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

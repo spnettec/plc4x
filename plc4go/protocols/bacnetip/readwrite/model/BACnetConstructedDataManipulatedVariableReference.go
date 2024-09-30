@@ -38,6 +38,7 @@ type BACnetConstructedDataManipulatedVariableReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetManipulatedVariableReference returns ManipulatedVariableReference (property field)
 	GetManipulatedVariableReference() BACnetObjectPropertyReference
@@ -45,6 +46,8 @@ type BACnetConstructedDataManipulatedVariableReference interface {
 	GetActualValue() BACnetObjectPropertyReference
 	// IsBACnetConstructedDataManipulatedVariableReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataManipulatedVariableReference()
+	// CreateBuilder creates a BACnetConstructedDataManipulatedVariableReferenceBuilder
+	CreateBACnetConstructedDataManipulatedVariableReferenceBuilder() BACnetConstructedDataManipulatedVariableReferenceBuilder
 }
 
 // _BACnetConstructedDataManipulatedVariableReference is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataManipulatedVariableReference struct {
 
 var _ BACnetConstructedDataManipulatedVariableReference = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataManipulatedVariableReference)(nil)
+
+// NewBACnetConstructedDataManipulatedVariableReference factory function for _BACnetConstructedDataManipulatedVariableReference
+func NewBACnetConstructedDataManipulatedVariableReference(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, manipulatedVariableReference BACnetObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManipulatedVariableReference {
+	if manipulatedVariableReference == nil {
+		panic("manipulatedVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataManipulatedVariableReference must not be nil")
+	}
+	_result := &_BACnetConstructedDataManipulatedVariableReference{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ManipulatedVariableReference:  manipulatedVariableReference,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataManipulatedVariableReferenceBuilder is a builder for BACnetConstructedDataManipulatedVariableReference
+type BACnetConstructedDataManipulatedVariableReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(manipulatedVariableReference BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder
+	// WithManipulatedVariableReference adds ManipulatedVariableReference (property field)
+	WithManipulatedVariableReference(BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder
+	// WithManipulatedVariableReferenceBuilder adds ManipulatedVariableReference (property field) which is build by the builder
+	WithManipulatedVariableReferenceBuilder(func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataManipulatedVariableReferenceBuilder
+	// Build builds the BACnetConstructedDataManipulatedVariableReference or returns an error if something is wrong
+	Build() (BACnetConstructedDataManipulatedVariableReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataManipulatedVariableReference
+}
+
+// NewBACnetConstructedDataManipulatedVariableReferenceBuilder() creates a BACnetConstructedDataManipulatedVariableReferenceBuilder
+func NewBACnetConstructedDataManipulatedVariableReferenceBuilder() BACnetConstructedDataManipulatedVariableReferenceBuilder {
+	return &_BACnetConstructedDataManipulatedVariableReferenceBuilder{_BACnetConstructedDataManipulatedVariableReference: new(_BACnetConstructedDataManipulatedVariableReference)}
+}
+
+type _BACnetConstructedDataManipulatedVariableReferenceBuilder struct {
+	*_BACnetConstructedDataManipulatedVariableReference
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataManipulatedVariableReferenceBuilder) = (*_BACnetConstructedDataManipulatedVariableReferenceBuilder)(nil)
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) WithMandatoryFields(manipulatedVariableReference BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder {
+	return b.WithManipulatedVariableReference(manipulatedVariableReference)
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) WithManipulatedVariableReference(manipulatedVariableReference BACnetObjectPropertyReference) BACnetConstructedDataManipulatedVariableReferenceBuilder {
+	b.ManipulatedVariableReference = manipulatedVariableReference
+	return b
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) WithManipulatedVariableReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceBuilder) BACnetObjectPropertyReferenceBuilder) BACnetConstructedDataManipulatedVariableReferenceBuilder {
+	builder := builderSupplier(b.ManipulatedVariableReference.CreateBACnetObjectPropertyReferenceBuilder())
+	var err error
+	b.ManipulatedVariableReference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) Build() (BACnetConstructedDataManipulatedVariableReference, error) {
+	if b.ManipulatedVariableReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'manipulatedVariableReference' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataManipulatedVariableReference.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) MustBuild() BACnetConstructedDataManipulatedVariableReference {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataManipulatedVariableReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataManipulatedVariableReferenceBuilder().(*_BACnetConstructedDataManipulatedVariableReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataManipulatedVariableReferenceBuilder creates a BACnetConstructedDataManipulatedVariableReferenceBuilder
+func (b *_BACnetConstructedDataManipulatedVariableReference) CreateBACnetConstructedDataManipulatedVariableReferenceBuilder() BACnetConstructedDataManipulatedVariableReferenceBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataManipulatedVariableReferenceBuilder()
+	}
+	return &_BACnetConstructedDataManipulatedVariableReferenceBuilder{_BACnetConstructedDataManipulatedVariableReference: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataManipulatedVariableReference factory function for _BACnetConstructedDataManipulatedVariableReference
-func NewBACnetConstructedDataManipulatedVariableReference(manipulatedVariableReference BACnetObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataManipulatedVariableReference {
-	if manipulatedVariableReference == nil {
-		panic("manipulatedVariableReference of type BACnetObjectPropertyReference for BACnetConstructedDataManipulatedVariableReference must not be nil")
-	}
-	_result := &_BACnetConstructedDataManipulatedVariableReference{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ManipulatedVariableReference:  manipulatedVariableReference,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataManipulatedVariableReference(structType any) BACnetConstructedDataManipulatedVariableReference {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataManipulatedVariableReference) SerializeWithWriteB
 func (m *_BACnetConstructedDataManipulatedVariableReference) IsBACnetConstructedDataManipulatedVariableReference() {
 }
 
+func (m *_BACnetConstructedDataManipulatedVariableReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataManipulatedVariableReference) deepCopy() *_BACnetConstructedDataManipulatedVariableReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataManipulatedVariableReferenceCopy := &_BACnetConstructedDataManipulatedVariableReference{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ManipulatedVariableReference.DeepCopy().(BACnetObjectPropertyReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataManipulatedVariableReferenceCopy
+}
+
 func (m *_BACnetConstructedDataManipulatedVariableReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

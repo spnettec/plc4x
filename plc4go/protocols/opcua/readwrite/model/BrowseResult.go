@@ -38,6 +38,7 @@ type BrowseResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetStatusCode returns StatusCode (property field)
 	GetStatusCode() StatusCode
@@ -49,6 +50,8 @@ type BrowseResult interface {
 	GetReferences() []ExtensionObjectDefinition
 	// IsBrowseResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBrowseResult()
+	// CreateBuilder creates a BrowseResultBuilder
+	CreateBrowseResultBuilder() BrowseResultBuilder
 }
 
 // _BrowseResult is the data-structure of this message
@@ -62,6 +65,179 @@ type _BrowseResult struct {
 
 var _ BrowseResult = (*_BrowseResult)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_BrowseResult)(nil)
+
+// NewBrowseResult factory function for _BrowseResult
+func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
+	if statusCode == nil {
+		panic("statusCode of type StatusCode for BrowseResult must not be nil")
+	}
+	if continuationPoint == nil {
+		panic("continuationPoint of type PascalByteString for BrowseResult must not be nil")
+	}
+	_result := &_BrowseResult{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		StatusCode:                        statusCode,
+		ContinuationPoint:                 continuationPoint,
+		NoOfReferences:                    noOfReferences,
+		References:                        references,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BrowseResultBuilder is a builder for BrowseResult
+type BrowseResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder
+	// WithStatusCode adds StatusCode (property field)
+	WithStatusCode(StatusCode) BrowseResultBuilder
+	// WithStatusCodeBuilder adds StatusCode (property field) which is build by the builder
+	WithStatusCodeBuilder(func(StatusCodeBuilder) StatusCodeBuilder) BrowseResultBuilder
+	// WithContinuationPoint adds ContinuationPoint (property field)
+	WithContinuationPoint(PascalByteString) BrowseResultBuilder
+	// WithContinuationPointBuilder adds ContinuationPoint (property field) which is build by the builder
+	WithContinuationPointBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder
+	// WithNoOfReferences adds NoOfReferences (property field)
+	WithNoOfReferences(int32) BrowseResultBuilder
+	// WithReferences adds References (property field)
+	WithReferences(...ExtensionObjectDefinition) BrowseResultBuilder
+	// Build builds the BrowseResult or returns an error if something is wrong
+	Build() (BrowseResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BrowseResult
+}
+
+// NewBrowseResultBuilder() creates a BrowseResultBuilder
+func NewBrowseResultBuilder() BrowseResultBuilder {
+	return &_BrowseResultBuilder{_BrowseResult: new(_BrowseResult)}
+}
+
+type _BrowseResultBuilder struct {
+	*_BrowseResult
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BrowseResultBuilder) = (*_BrowseResultBuilder)(nil)
+
+func (b *_BrowseResultBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_BrowseResultBuilder) WithMandatoryFields(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) BrowseResultBuilder {
+	return b.WithStatusCode(statusCode).WithContinuationPoint(continuationPoint).WithNoOfReferences(noOfReferences).WithReferences(references...)
+}
+
+func (b *_BrowseResultBuilder) WithStatusCode(statusCode StatusCode) BrowseResultBuilder {
+	b.StatusCode = statusCode
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithStatusCodeBuilder(builderSupplier func(StatusCodeBuilder) StatusCodeBuilder) BrowseResultBuilder {
+	builder := builderSupplier(b.StatusCode.CreateStatusCodeBuilder())
+	var err error
+	b.StatusCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StatusCodeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithContinuationPoint(continuationPoint PascalByteString) BrowseResultBuilder {
+	b.ContinuationPoint = continuationPoint
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithContinuationPointBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) BrowseResultBuilder {
+	builder := builderSupplier(b.ContinuationPoint.CreatePascalByteStringBuilder())
+	var err error
+	b.ContinuationPoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithNoOfReferences(noOfReferences int32) BrowseResultBuilder {
+	b.NoOfReferences = noOfReferences
+	return b
+}
+
+func (b *_BrowseResultBuilder) WithReferences(references ...ExtensionObjectDefinition) BrowseResultBuilder {
+	b.References = references
+	return b
+}
+
+func (b *_BrowseResultBuilder) Build() (BrowseResult, error) {
+	if b.StatusCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusCode' not set"))
+	}
+	if b.ContinuationPoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'continuationPoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BrowseResult.deepCopy(), nil
+}
+
+func (b *_BrowseResultBuilder) MustBuild() BrowseResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BrowseResultBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BrowseResultBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_BrowseResultBuilder) DeepCopy() any {
+	_copy := b.CreateBrowseResultBuilder().(*_BrowseResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBrowseResultBuilder creates a BrowseResultBuilder
+func (b *_BrowseResult) CreateBrowseResultBuilder() BrowseResultBuilder {
+	if b == nil {
+		return NewBrowseResultBuilder()
+	}
+	return &_BrowseResultBuilder{_BrowseResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +282,6 @@ func (m *_BrowseResult) GetReferences() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBrowseResult factory function for _BrowseResult
-func NewBrowseResult(statusCode StatusCode, continuationPoint PascalByteString, noOfReferences int32, references []ExtensionObjectDefinition) *_BrowseResult {
-	if statusCode == nil {
-		panic("statusCode of type StatusCode for BrowseResult must not be nil")
-	}
-	if continuationPoint == nil {
-		panic("continuationPoint of type PascalByteString for BrowseResult must not be nil")
-	}
-	_result := &_BrowseResult{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		StatusCode:                        statusCode,
-		ContinuationPoint:                 continuationPoint,
-		NoOfReferences:                    noOfReferences,
-		References:                        references,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBrowseResult(structType any) BrowseResult {
@@ -256,13 +413,36 @@ func (m *_BrowseResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_BrowseResult) IsBrowseResult() {}
 
+func (m *_BrowseResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BrowseResult) deepCopy() *_BrowseResult {
+	if m == nil {
+		return nil
+	}
+	_BrowseResultCopy := &_BrowseResult{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.StatusCode.DeepCopy().(StatusCode),
+		m.ContinuationPoint.DeepCopy().(PascalByteString),
+		m.NoOfReferences,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.References),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _BrowseResultCopy
+}
+
 func (m *_BrowseResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

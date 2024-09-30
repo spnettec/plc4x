@@ -38,12 +38,15 @@ type BACnetAddressBinding interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDeviceIdentifier returns DeviceIdentifier (property field)
 	GetDeviceIdentifier() BACnetApplicationTagObjectIdentifier
 	// GetDeviceAddress returns DeviceAddress (property field)
 	GetDeviceAddress() BACnetAddress
 	// IsBACnetAddressBinding is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAddressBinding()
+	// CreateBuilder creates a BACnetAddressBindingBuilder
+	CreateBACnetAddressBindingBuilder() BACnetAddressBindingBuilder
 }
 
 // _BACnetAddressBinding is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetAddressBinding struct {
 }
 
 var _ BACnetAddressBinding = (*_BACnetAddressBinding)(nil)
+
+// NewBACnetAddressBinding factory function for _BACnetAddressBinding
+func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
+	if deviceIdentifier == nil {
+		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
+	}
+	if deviceAddress == nil {
+		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
+	}
+	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAddressBindingBuilder is a builder for BACnetAddressBinding
+type BACnetAddressBindingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) BACnetAddressBindingBuilder
+	// WithDeviceIdentifier adds DeviceIdentifier (property field)
+	WithDeviceIdentifier(BACnetApplicationTagObjectIdentifier) BACnetAddressBindingBuilder
+	// WithDeviceIdentifierBuilder adds DeviceIdentifier (property field) which is build by the builder
+	WithDeviceIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetAddressBindingBuilder
+	// WithDeviceAddress adds DeviceAddress (property field)
+	WithDeviceAddress(BACnetAddress) BACnetAddressBindingBuilder
+	// WithDeviceAddressBuilder adds DeviceAddress (property field) which is build by the builder
+	WithDeviceAddressBuilder(func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressBindingBuilder
+	// Build builds the BACnetAddressBinding or returns an error if something is wrong
+	Build() (BACnetAddressBinding, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAddressBinding
+}
+
+// NewBACnetAddressBindingBuilder() creates a BACnetAddressBindingBuilder
+func NewBACnetAddressBindingBuilder() BACnetAddressBindingBuilder {
+	return &_BACnetAddressBindingBuilder{_BACnetAddressBinding: new(_BACnetAddressBinding)}
+}
+
+type _BACnetAddressBindingBuilder struct {
+	*_BACnetAddressBinding
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAddressBindingBuilder) = (*_BACnetAddressBindingBuilder)(nil)
+
+func (b *_BACnetAddressBindingBuilder) WithMandatoryFields(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
+	return b.WithDeviceIdentifier(deviceIdentifier).WithDeviceAddress(deviceAddress)
+}
+
+func (b *_BACnetAddressBindingBuilder) WithDeviceIdentifier(deviceIdentifier BACnetApplicationTagObjectIdentifier) BACnetAddressBindingBuilder {
+	b.DeviceIdentifier = deviceIdentifier
+	return b
+}
+
+func (b *_BACnetAddressBindingBuilder) WithDeviceIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetAddressBindingBuilder {
+	builder := builderSupplier(b.DeviceIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	b.DeviceIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAddressBindingBuilder) WithDeviceAddress(deviceAddress BACnetAddress) BACnetAddressBindingBuilder {
+	b.DeviceAddress = deviceAddress
+	return b
+}
+
+func (b *_BACnetAddressBindingBuilder) WithDeviceAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetAddressBindingBuilder {
+	builder := builderSupplier(b.DeviceAddress.CreateBACnetAddressBuilder())
+	var err error
+	b.DeviceAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAddressBindingBuilder) Build() (BACnetAddressBinding, error) {
+	if b.DeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceIdentifier' not set"))
+	}
+	if b.DeviceAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAddressBinding.deepCopy(), nil
+}
+
+func (b *_BACnetAddressBindingBuilder) MustBuild() BACnetAddressBinding {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAddressBindingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAddressBindingBuilder().(*_BACnetAddressBindingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAddressBindingBuilder creates a BACnetAddressBindingBuilder
+func (b *_BACnetAddressBinding) CreateBACnetAddressBindingBuilder() BACnetAddressBindingBuilder {
+	if b == nil {
+		return NewBACnetAddressBindingBuilder()
+	}
+	return &_BACnetAddressBindingBuilder{_BACnetAddressBinding: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetAddressBinding) GetDeviceAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAddressBinding factory function for _BACnetAddressBinding
-func NewBACnetAddressBinding(deviceIdentifier BACnetApplicationTagObjectIdentifier, deviceAddress BACnetAddress) *_BACnetAddressBinding {
-	if deviceIdentifier == nil {
-		panic("deviceIdentifier of type BACnetApplicationTagObjectIdentifier for BACnetAddressBinding must not be nil")
-	}
-	if deviceAddress == nil {
-		panic("deviceAddress of type BACnetAddress for BACnetAddressBinding must not be nil")
-	}
-	return &_BACnetAddressBinding{DeviceIdentifier: deviceIdentifier, DeviceAddress: deviceAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAddressBinding(structType any) BACnetAddressBinding {
@@ -129,7 +257,7 @@ func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAddressBinding) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAddressBinding BACnetAddressBinding, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetAddressBinding) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetAddressBinding) IsBACnetAddressBinding() {}
 
+func (m *_BACnetAddressBinding) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAddressBinding) deepCopy() *_BACnetAddressBinding {
+	if m == nil {
+		return nil
+	}
+	_BACnetAddressBindingCopy := &_BACnetAddressBinding{
+		m.DeviceIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.DeviceAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetAddressBindingCopy
+}
+
 func (m *_BACnetAddressBinding) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

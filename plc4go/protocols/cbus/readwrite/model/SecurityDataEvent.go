@@ -38,11 +38,14 @@ type SecurityDataEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsSecurityDataEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataEvent()
+	// CreateBuilder creates a SecurityDataEventBuilder
+	CreateSecurityDataEventBuilder() SecurityDataEventBuilder
 }
 
 // _SecurityDataEvent is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataEvent struct {
 
 var _ SecurityDataEvent = (*_SecurityDataEvent)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataEvent)(nil)
+
+// NewSecurityDataEvent factory function for _SecurityDataEvent
+func NewSecurityDataEvent(commandTypeContainer SecurityCommandTypeContainer, argument byte, data []byte) *_SecurityDataEvent {
+	_result := &_SecurityDataEvent{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		Data:                 data,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataEventBuilder is a builder for SecurityDataEvent
+type SecurityDataEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) SecurityDataEventBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) SecurityDataEventBuilder
+	// Build builds the SecurityDataEvent or returns an error if something is wrong
+	Build() (SecurityDataEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataEvent
+}
+
+// NewSecurityDataEventBuilder() creates a SecurityDataEventBuilder
+func NewSecurityDataEventBuilder() SecurityDataEventBuilder {
+	return &_SecurityDataEventBuilder{_SecurityDataEvent: new(_SecurityDataEvent)}
+}
+
+type _SecurityDataEventBuilder struct {
+	*_SecurityDataEvent
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataEventBuilder) = (*_SecurityDataEventBuilder)(nil)
+
+func (b *_SecurityDataEventBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataEventBuilder) WithMandatoryFields(data []byte) SecurityDataEventBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_SecurityDataEventBuilder) WithData(data ...byte) SecurityDataEventBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_SecurityDataEventBuilder) Build() (SecurityDataEvent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataEvent.deepCopy(), nil
+}
+
+func (b *_SecurityDataEventBuilder) MustBuild() SecurityDataEvent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataEventBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataEventBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataEventBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataEventBuilder().(*_SecurityDataEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataEventBuilder creates a SecurityDataEventBuilder
+func (b *_SecurityDataEvent) CreateSecurityDataEventBuilder() SecurityDataEventBuilder {
+	if b == nil {
+		return NewSecurityDataEventBuilder()
+	}
+	return &_SecurityDataEventBuilder{_SecurityDataEvent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataEvent) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataEvent factory function for _SecurityDataEvent
-func NewSecurityDataEvent(data []byte, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataEvent {
-	_result := &_SecurityDataEvent{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		Data:                 data,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataEvent(structType any) SecurityDataEvent {
@@ -178,13 +272,33 @@ func (m *_SecurityDataEvent) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_SecurityDataEvent) IsSecurityDataEvent() {}
 
+func (m *_SecurityDataEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataEvent) deepCopy() *_SecurityDataEvent {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataEventCopy := &_SecurityDataEvent{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataEventCopy
+}
+
 func (m *_SecurityDataEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

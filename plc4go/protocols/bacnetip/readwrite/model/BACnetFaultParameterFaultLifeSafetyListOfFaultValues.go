@@ -38,6 +38,7 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListIfFaultValues returns ListIfFaultValues (property field)
@@ -46,6 +47,8 @@ type BACnetFaultParameterFaultLifeSafetyListOfFaultValues interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues()
+	// CreateBuilder creates a BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	CreateBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder() BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
 }
 
 // _BACnetFaultParameterFaultLifeSafetyListOfFaultValues is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetFaultParameterFaultLifeSafetyListOfFaultValues struct {
 }
 
 var _ BACnetFaultParameterFaultLifeSafetyListOfFaultValues = (*_BACnetFaultParameterFaultLifeSafetyListOfFaultValues)(nil)
+
+// NewBACnetFaultParameterFaultLifeSafetyListOfFaultValues factory function for _BACnetFaultParameterFaultLifeSafetyListOfFaultValues
+func NewBACnetFaultParameterFaultLifeSafetyListOfFaultValues(openingTag BACnetOpeningTag, listIfFaultValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafetyListOfFaultValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafetyListOfFaultValues must not be nil")
+	}
+	return &_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{OpeningTag: openingTag, ListIfFaultValues: listIfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder is a builder for BACnetFaultParameterFaultLifeSafetyListOfFaultValues
+type BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listIfFaultValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithListIfFaultValues adds ListIfFaultValues (property field)
+	WithListIfFaultValues(...BACnetLifeSafetyStateTagged) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+	// Build builds the BACnetFaultParameterFaultLifeSafetyListOfFaultValues or returns an error if something is wrong
+	Build() (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultParameterFaultLifeSafetyListOfFaultValues
+}
+
+// NewBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder() creates a BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+func NewBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder() BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	return &_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder{_BACnetFaultParameterFaultLifeSafetyListOfFaultValues: new(_BACnetFaultParameterFaultLifeSafetyListOfFaultValues)}
+}
+
+type _BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder struct {
+	*_BACnetFaultParameterFaultLifeSafetyListOfFaultValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) = (*_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder)(nil)
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listIfFaultValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	return b.WithOpeningTag(openingTag).WithListIfFaultValues(listIfFaultValues...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithListIfFaultValues(listIfFaultValues ...BACnetLifeSafetyStateTagged) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	b.ListIfFaultValues = listIfFaultValues
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) Build() (BACnetFaultParameterFaultLifeSafetyListOfFaultValues, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultParameterFaultLifeSafetyListOfFaultValues.deepCopy(), nil
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) MustBuild() BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder().(*_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder creates a BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder
+func (b *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) CreateBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder() BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder {
+	if b == nil {
+		return NewBACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder()
+	}
+	return &_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesBuilder{_BACnetFaultParameterFaultLifeSafetyListOfFaultValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetClosingTag() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultParameterFaultLifeSafetyListOfFaultValues factory function for _BACnetFaultParameterFaultLifeSafetyListOfFaultValues
-func NewBACnetFaultParameterFaultLifeSafetyListOfFaultValues(openingTag BACnetOpeningTag, listIfFaultValues []BACnetLifeSafetyStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetFaultParameterFaultLifeSafetyListOfFaultValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetFaultParameterFaultLifeSafetyListOfFaultValues must not be nil")
-	}
-	return &_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{OpeningTag: openingTag, ListIfFaultValues: listIfFaultValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultParameterFaultLifeSafetyListOfFaultValues(structType any) BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
@@ -146,7 +281,7 @@ func BACnetFaultParameterFaultLifeSafetyListOfFaultValuesParseWithBuffer(ctx con
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetFaultParameterFaultLifeSafetyListOfFaultValues BACnetFaultParameterFaultLifeSafetyListOfFaultValues, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) GetTagNumber() u
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) IsBACnetFaultParameterFaultLifeSafetyListOfFaultValues() {
 }
 
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) deepCopy() *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy := &_BACnetFaultParameterFaultLifeSafetyListOfFaultValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.ListIfFaultValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetFaultParameterFaultLifeSafetyListOfFaultValuesCopy
+}
+
 func (m *_BACnetFaultParameterFaultLifeSafetyListOfFaultValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

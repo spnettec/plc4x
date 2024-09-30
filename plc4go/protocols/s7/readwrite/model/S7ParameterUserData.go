@@ -38,11 +38,14 @@ type S7ParameterUserData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7ParameterUserDataItem
 	// IsS7ParameterUserData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterUserData()
+	// CreateBuilder creates a S7ParameterUserDataBuilder
+	CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder
 }
 
 // _S7ParameterUserData is the data-structure of this message
@@ -53,6 +56,107 @@ type _S7ParameterUserData struct {
 
 var _ S7ParameterUserData = (*_S7ParameterUserData)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterUserData)(nil)
+
+// NewS7ParameterUserData factory function for _S7ParameterUserData
+func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserData {
+	_result := &_S7ParameterUserData{
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterUserDataBuilder is a builder for S7ParameterUserData
+type S7ParameterUserDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7ParameterUserDataItem) S7ParameterUserDataBuilder
+	// Build builds the S7ParameterUserData or returns an error if something is wrong
+	Build() (S7ParameterUserData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterUserData
+}
+
+// NewS7ParameterUserDataBuilder() creates a S7ParameterUserDataBuilder
+func NewS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
+	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: new(_S7ParameterUserData)}
+}
+
+type _S7ParameterUserDataBuilder struct {
+	*_S7ParameterUserData
+
+	parentBuilder *_S7ParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterUserDataBuilder) = (*_S7ParameterUserDataBuilder)(nil)
+
+func (b *_S7ParameterUserDataBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
+}
+
+func (b *_S7ParameterUserDataBuilder) WithMandatoryFields(items []S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	return b.WithItems(items...)
+}
+
+func (b *_S7ParameterUserDataBuilder) WithItems(items ...S7ParameterUserDataItem) S7ParameterUserDataBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7ParameterUserDataBuilder) Build() (S7ParameterUserData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7ParameterUserData.deepCopy(), nil
+}
+
+func (b *_S7ParameterUserDataBuilder) MustBuild() S7ParameterUserData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterUserDataBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterUserDataBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterUserDataBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterUserDataBuilder().(*_S7ParameterUserDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7ParameterUserDataBuilder creates a S7ParameterUserDataBuilder
+func (b *_S7ParameterUserData) CreateS7ParameterUserDataBuilder() S7ParameterUserDataBuilder {
+	if b == nil {
+		return NewS7ParameterUserDataBuilder()
+	}
+	return &_S7ParameterUserDataBuilder{_S7ParameterUserData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_S7ParameterUserData) GetItems() []S7ParameterUserDataItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterUserData factory function for _S7ParameterUserData
-func NewS7ParameterUserData(items []S7ParameterUserDataItem) *_S7ParameterUserData {
-	_result := &_S7ParameterUserData{
-		S7ParameterContract: NewS7Parameter(),
-		Items:               items,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterUserData(structType any) S7ParameterUserData {
@@ -204,13 +298,33 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_S7ParameterUserData) IsS7ParameterUserData() {}
 
+func (m *_S7ParameterUserData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterUserData) deepCopy() *_S7ParameterUserData {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterUserDataCopy := &_S7ParameterUserData{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		utils.DeepCopySlice[S7ParameterUserDataItem, S7ParameterUserDataItem](m.Items),
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterUserDataCopy
+}
+
 func (m *_S7ParameterUserData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

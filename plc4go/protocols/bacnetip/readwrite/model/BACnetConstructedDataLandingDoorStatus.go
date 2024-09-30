@@ -38,6 +38,7 @@ type BACnetConstructedDataLandingDoorStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataLandingDoorStatus interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataLandingDoorStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLandingDoorStatus()
+	// CreateBuilder creates a BACnetConstructedDataLandingDoorStatusBuilder
+	CreateBACnetConstructedDataLandingDoorStatusBuilder() BACnetConstructedDataLandingDoorStatusBuilder
 }
 
 // _BACnetConstructedDataLandingDoorStatus is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataLandingDoorStatus struct {
 
 var _ BACnetConstructedDataLandingDoorStatus = (*_BACnetConstructedDataLandingDoorStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLandingDoorStatus)(nil)
+
+// NewBACnetConstructedDataLandingDoorStatus factory function for _BACnetConstructedDataLandingDoorStatus
+func NewBACnetConstructedDataLandingDoorStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, landingDoorStatus []BACnetLandingDoorStatus, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingDoorStatus {
+	_result := &_BACnetConstructedDataLandingDoorStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		LandingDoorStatus:             landingDoorStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLandingDoorStatusBuilder is a builder for BACnetConstructedDataLandingDoorStatus
+type BACnetConstructedDataLandingDoorStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(landingDoorStatus []BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLandingDoorStatusBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLandingDoorStatusBuilder
+	// WithLandingDoorStatus adds LandingDoorStatus (property field)
+	WithLandingDoorStatus(...BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder
+	// Build builds the BACnetConstructedDataLandingDoorStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataLandingDoorStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLandingDoorStatus
+}
+
+// NewBACnetConstructedDataLandingDoorStatusBuilder() creates a BACnetConstructedDataLandingDoorStatusBuilder
+func NewBACnetConstructedDataLandingDoorStatusBuilder() BACnetConstructedDataLandingDoorStatusBuilder {
+	return &_BACnetConstructedDataLandingDoorStatusBuilder{_BACnetConstructedDataLandingDoorStatus: new(_BACnetConstructedDataLandingDoorStatus)}
+}
+
+type _BACnetConstructedDataLandingDoorStatusBuilder struct {
+	*_BACnetConstructedDataLandingDoorStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLandingDoorStatusBuilder) = (*_BACnetConstructedDataLandingDoorStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) WithMandatoryFields(landingDoorStatus []BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder {
+	return b.WithLandingDoorStatus(landingDoorStatus...)
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataLandingDoorStatusBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataLandingDoorStatusBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) WithLandingDoorStatus(landingDoorStatus ...BACnetLandingDoorStatus) BACnetConstructedDataLandingDoorStatusBuilder {
+	b.LandingDoorStatus = landingDoorStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) Build() (BACnetConstructedDataLandingDoorStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLandingDoorStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) MustBuild() BACnetConstructedDataLandingDoorStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLandingDoorStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLandingDoorStatusBuilder().(*_BACnetConstructedDataLandingDoorStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLandingDoorStatusBuilder creates a BACnetConstructedDataLandingDoorStatusBuilder
+func (b *_BACnetConstructedDataLandingDoorStatus) CreateBACnetConstructedDataLandingDoorStatusBuilder() BACnetConstructedDataLandingDoorStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLandingDoorStatusBuilder()
+	}
+	return &_BACnetConstructedDataLandingDoorStatusBuilder{_BACnetConstructedDataLandingDoorStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataLandingDoorStatus) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLandingDoorStatus factory function for _BACnetConstructedDataLandingDoorStatus
-func NewBACnetConstructedDataLandingDoorStatus(numberOfDataElements BACnetApplicationTagUnsignedInteger, landingDoorStatus []BACnetLandingDoorStatus, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLandingDoorStatus {
-	_result := &_BACnetConstructedDataLandingDoorStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		LandingDoorStatus:             landingDoorStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLandingDoorStatus(structType any) BACnetConstructedDataLandingDoorStatus {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataLandingDoorStatus) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataLandingDoorStatus) IsBACnetConstructedDataLandingDoorStatus() {}
 
+func (m *_BACnetConstructedDataLandingDoorStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLandingDoorStatus) deepCopy() *_BACnetConstructedDataLandingDoorStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLandingDoorStatusCopy := &_BACnetConstructedDataLandingDoorStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetLandingDoorStatus, BACnetLandingDoorStatus](m.LandingDoorStatus),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLandingDoorStatusCopy
+}
+
 func (m *_BACnetConstructedDataLandingDoorStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

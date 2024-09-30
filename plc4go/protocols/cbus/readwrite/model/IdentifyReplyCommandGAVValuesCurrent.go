@@ -38,11 +38,14 @@ type IdentifyReplyCommandGAVValuesCurrent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetValues returns Values (property field)
 	GetValues() []byte
 	// IsIdentifyReplyCommandGAVValuesCurrent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandGAVValuesCurrent()
+	// CreateBuilder creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+	CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder
 }
 
 // _IdentifyReplyCommandGAVValuesCurrent is the data-structure of this message
@@ -53,6 +56,107 @@ type _IdentifyReplyCommandGAVValuesCurrent struct {
 
 var _ IdentifyReplyCommandGAVValuesCurrent = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandGAVValuesCurrent)(nil)
+
+// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
+func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
+	_result := &_IdentifyReplyCommandGAVValuesCurrent{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		Values:                       values,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandGAVValuesCurrentBuilder is a builder for IdentifyReplyCommandGAVValuesCurrent
+type IdentifyReplyCommandGAVValuesCurrentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder
+	// WithValues adds Values (property field)
+	WithValues(...byte) IdentifyReplyCommandGAVValuesCurrentBuilder
+	// Build builds the IdentifyReplyCommandGAVValuesCurrent or returns an error if something is wrong
+	Build() (IdentifyReplyCommandGAVValuesCurrent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandGAVValuesCurrent
+}
+
+// NewIdentifyReplyCommandGAVValuesCurrentBuilder() creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+func NewIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
+	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: new(_IdentifyReplyCommandGAVValuesCurrent)}
+}
+
+type _IdentifyReplyCommandGAVValuesCurrentBuilder struct {
+	*_IdentifyReplyCommandGAVValuesCurrent
+
+	parentBuilder *_IdentifyReplyCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandGAVValuesCurrentBuilder) = (*_IdentifyReplyCommandGAVValuesCurrentBuilder)(nil)
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithMandatoryFields(values []byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	return b.WithValues(values...)
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) WithValues(values ...byte) IdentifyReplyCommandGAVValuesCurrentBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) Build() (IdentifyReplyCommandGAVValuesCurrent, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IdentifyReplyCommandGAVValuesCurrent.deepCopy(), nil
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) MustBuild() IdentifyReplyCommandGAVValuesCurrent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandGAVValuesCurrentBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandGAVValuesCurrentBuilder().(*_IdentifyReplyCommandGAVValuesCurrentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIdentifyReplyCommandGAVValuesCurrentBuilder creates a IdentifyReplyCommandGAVValuesCurrentBuilder
+func (b *_IdentifyReplyCommandGAVValuesCurrent) CreateIdentifyReplyCommandGAVValuesCurrentBuilder() IdentifyReplyCommandGAVValuesCurrentBuilder {
+	if b == nil {
+		return NewIdentifyReplyCommandGAVValuesCurrentBuilder()
+	}
+	return &_IdentifyReplyCommandGAVValuesCurrentBuilder{_IdentifyReplyCommandGAVValuesCurrent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) GetValues() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandGAVValuesCurrent factory function for _IdentifyReplyCommandGAVValuesCurrent
-func NewIdentifyReplyCommandGAVValuesCurrent(values []byte, numBytes uint8) *_IdentifyReplyCommandGAVValuesCurrent {
-	_result := &_IdentifyReplyCommandGAVValuesCurrent{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		Values:                       values,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandGAVValuesCurrent(structType any) IdentifyReplyCommandGAVValuesCurrent {
@@ -182,13 +276,33 @@ func (m *_IdentifyReplyCommandGAVValuesCurrent) SerializeWithWriteBuffer(ctx con
 
 func (m *_IdentifyReplyCommandGAVValuesCurrent) IsIdentifyReplyCommandGAVValuesCurrent() {}
 
+func (m *_IdentifyReplyCommandGAVValuesCurrent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandGAVValuesCurrent) deepCopy() *_IdentifyReplyCommandGAVValuesCurrent {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandGAVValuesCurrentCopy := &_IdentifyReplyCommandGAVValuesCurrent{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Values),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandGAVValuesCurrentCopy
+}
+
 func (m *_IdentifyReplyCommandGAVValuesCurrent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

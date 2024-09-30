@@ -38,6 +38,7 @@ type BACnetNotificationParametersAccessEvent interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -57,6 +58,8 @@ type BACnetNotificationParametersAccessEvent interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetNotificationParametersAccessEvent is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersAccessEvent()
+	// CreateBuilder creates a BACnetNotificationParametersAccessEventBuilder
+	CreateBACnetNotificationParametersAccessEventBuilder() BACnetNotificationParametersAccessEventBuilder
 }
 
 // _BACnetNotificationParametersAccessEvent is the data-structure of this message
@@ -74,6 +77,346 @@ type _BACnetNotificationParametersAccessEvent struct {
 
 var _ BACnetNotificationParametersAccessEvent = (*_BACnetNotificationParametersAccessEvent)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersAccessEvent)(nil)
+
+// NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
+func NewBACnetNotificationParametersAccessEvent(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEvent == nil {
+		panic("accessEvent of type BACnetAccessEventTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTag == nil {
+		panic("accessEventTag of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessEventTime == nil {
+		panic("accessEventTime of type BACnetTimeStampEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if accessCredential == nil {
+		panic("accessCredential of type BACnetDeviceObjectReferenceEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
+	}
+	_result := &_BACnetNotificationParametersAccessEvent{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		AccessEvent:                          accessEvent,
+		StatusFlags:                          statusFlags,
+		AccessEventTag:                       accessEventTag,
+		AccessEventTime:                      accessEventTime,
+		AccessCredential:                     accessCredential,
+		AuthenticationFactor:                 authenticationFactor,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersAccessEventBuilder is a builder for BACnetNotificationParametersAccessEvent
+type BACnetNotificationParametersAccessEventBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, innerClosingTag BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetNotificationParametersAccessEventBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEvent adds AccessEvent (property field)
+	WithAccessEvent(BACnetAccessEventTagged) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEventBuilder adds AccessEvent (property field) which is build by the builder
+	WithAccessEventBuilder(func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersAccessEventBuilder
+	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEventTag adds AccessEventTag (property field)
+	WithAccessEventTag(BACnetContextTagUnsignedInteger) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEventTagBuilder adds AccessEventTag (property field) which is build by the builder
+	WithAccessEventTagBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEventTime adds AccessEventTime (property field)
+	WithAccessEventTime(BACnetTimeStampEnclosed) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessEventTimeBuilder adds AccessEventTime (property field) which is build by the builder
+	WithAccessEventTimeBuilder(func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessCredential adds AccessCredential (property field)
+	WithAccessCredential(BACnetDeviceObjectReferenceEnclosed) BACnetNotificationParametersAccessEventBuilder
+	// WithAccessCredentialBuilder adds AccessCredential (property field) which is build by the builder
+	WithAccessCredentialBuilder(func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithAuthenticationFactor adds AuthenticationFactor (property field)
+	WithOptionalAuthenticationFactor(BACnetAuthenticationFactorTypeTagged) BACnetNotificationParametersAccessEventBuilder
+	// WithOptionalAuthenticationFactorBuilder adds AuthenticationFactor (property field) which is build by the builder
+	WithOptionalAuthenticationFactorBuilder(func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetNotificationParametersAccessEventBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersAccessEventBuilder
+	// Build builds the BACnetNotificationParametersAccessEvent or returns an error if something is wrong
+	Build() (BACnetNotificationParametersAccessEvent, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersAccessEvent
+}
+
+// NewBACnetNotificationParametersAccessEventBuilder() creates a BACnetNotificationParametersAccessEventBuilder
+func NewBACnetNotificationParametersAccessEventBuilder() BACnetNotificationParametersAccessEventBuilder {
+	return &_BACnetNotificationParametersAccessEventBuilder{_BACnetNotificationParametersAccessEvent: new(_BACnetNotificationParametersAccessEvent)}
+}
+
+type _BACnetNotificationParametersAccessEventBuilder struct {
+	*_BACnetNotificationParametersAccessEvent
+
+	parentBuilder *_BACnetNotificationParametersBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersAccessEventBuilder) = (*_BACnetNotificationParametersAccessEventBuilder)(nil)
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, innerClosingTag BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithAccessEvent(accessEvent).WithStatusFlags(statusFlags).WithAccessEventTag(accessEventTag).WithAccessEventTime(accessEventTime).WithAccessCredential(accessCredential).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersAccessEventBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEvent(accessEvent BACnetAccessEventTagged) BACnetNotificationParametersAccessEventBuilder {
+	b.AccessEvent = accessEvent
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventBuilder(builderSupplier func(BACnetAccessEventTaggedBuilder) BACnetAccessEventTaggedBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.AccessEvent.CreateBACnetAccessEventTaggedBuilder())
+	var err error
+	b.AccessEvent, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessEventTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersAccessEventBuilder {
+	b.StatusFlags = statusFlags
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	b.StatusFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTag(accessEventTag BACnetContextTagUnsignedInteger) BACnetNotificationParametersAccessEventBuilder {
+	b.AccessEventTag = accessEventTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTagBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.AccessEventTag.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.AccessEventTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTime(accessEventTime BACnetTimeStampEnclosed) BACnetNotificationParametersAccessEventBuilder {
+	b.AccessEventTime = accessEventTime
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessEventTimeBuilder(builderSupplier func(BACnetTimeStampEnclosedBuilder) BACnetTimeStampEnclosedBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.AccessEventTime.CreateBACnetTimeStampEnclosedBuilder())
+	var err error
+	b.AccessEventTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessCredential(accessCredential BACnetDeviceObjectReferenceEnclosed) BACnetNotificationParametersAccessEventBuilder {
+	b.AccessCredential = accessCredential
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithAccessCredentialBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.AccessCredential.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+	var err error
+	b.AccessCredential, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithOptionalAuthenticationFactor(authenticationFactor BACnetAuthenticationFactorTypeTagged) BACnetNotificationParametersAccessEventBuilder {
+	b.AuthenticationFactor = authenticationFactor
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithOptionalAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.AuthenticationFactor.CreateBACnetAuthenticationFactorTypeTaggedBuilder())
+	var err error
+	b.AuthenticationFactor, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersAccessEventBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersAccessEventBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) Build() (BACnetNotificationParametersAccessEvent, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.AccessEvent == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accessEvent' not set"))
+	}
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if b.AccessEventTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accessEventTag' not set"))
+	}
+	if b.AccessEventTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accessEventTime' not set"))
+	}
+	if b.AccessCredential == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'accessCredential' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersAccessEvent.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) MustBuild() BACnetNotificationParametersAccessEvent {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersAccessEventBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersAccessEventBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersAccessEventBuilder().(*_BACnetNotificationParametersAccessEventBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersAccessEventBuilder creates a BACnetNotificationParametersAccessEventBuilder
+func (b *_BACnetNotificationParametersAccessEvent) CreateBACnetNotificationParametersAccessEventBuilder() BACnetNotificationParametersAccessEventBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersAccessEventBuilder()
+	}
+	return &_BACnetNotificationParametersAccessEventBuilder{_BACnetNotificationParametersAccessEvent: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,44 +473,6 @@ func (m *_BACnetNotificationParametersAccessEvent) GetInnerClosingTag() BACnetCl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersAccessEvent factory function for _BACnetNotificationParametersAccessEvent
-func NewBACnetNotificationParametersAccessEvent(innerOpeningTag BACnetOpeningTag, accessEvent BACnetAccessEventTagged, statusFlags BACnetStatusFlagsTagged, accessEventTag BACnetContextTagUnsignedInteger, accessEventTime BACnetTimeStampEnclosed, accessCredential BACnetDeviceObjectReferenceEnclosed, authenticationFactor BACnetAuthenticationFactorTypeTagged, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersAccessEvent {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEvent == nil {
-		panic("accessEvent of type BACnetAccessEventTagged for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEventTag == nil {
-		panic("accessEventTag of type BACnetContextTagUnsignedInteger for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessEventTime == nil {
-		panic("accessEventTime of type BACnetTimeStampEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if accessCredential == nil {
-		panic("accessCredential of type BACnetDeviceObjectReferenceEnclosed for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersAccessEvent must not be nil")
-	}
-	_result := &_BACnetNotificationParametersAccessEvent{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		AccessEvent:                          accessEvent,
-		StatusFlags:                          statusFlags,
-		AccessEventTag:                       accessEventTag,
-		AccessEventTime:                      accessEventTime,
-		AccessCredential:                     accessCredential,
-		AuthenticationFactor:                 authenticationFactor,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersAccessEvent(structType any) BACnetNotificationParametersAccessEvent {
@@ -350,13 +655,40 @@ func (m *_BACnetNotificationParametersAccessEvent) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetNotificationParametersAccessEvent) IsBACnetNotificationParametersAccessEvent() {}
 
+func (m *_BACnetNotificationParametersAccessEvent) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersAccessEvent) deepCopy() *_BACnetNotificationParametersAccessEvent {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersAccessEventCopy := &_BACnetNotificationParametersAccessEvent{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.AccessEvent.DeepCopy().(BACnetAccessEventTagged),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.AccessEventTag.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.AccessEventTime.DeepCopy().(BACnetTimeStampEnclosed),
+		m.AccessCredential.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersAccessEventCopy
+}
+
 func (m *_BACnetNotificationParametersAccessEvent) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

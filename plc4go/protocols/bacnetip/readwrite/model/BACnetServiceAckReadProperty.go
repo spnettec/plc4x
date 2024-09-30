@@ -38,6 +38,7 @@ type BACnetServiceAckReadProperty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetObjectIdentifier returns ObjectIdentifier (property field)
 	GetObjectIdentifier() BACnetContextTagObjectIdentifier
@@ -49,6 +50,8 @@ type BACnetServiceAckReadProperty interface {
 	GetValues() BACnetConstructedData
 	// IsBACnetServiceAckReadProperty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckReadProperty()
+	// CreateBuilder creates a BACnetServiceAckReadPropertyBuilder
+	CreateBACnetServiceAckReadPropertyBuilder() BACnetServiceAckReadPropertyBuilder
 }
 
 // _BACnetServiceAckReadProperty is the data-structure of this message
@@ -62,6 +65,209 @@ type _BACnetServiceAckReadProperty struct {
 
 var _ BACnetServiceAckReadProperty = (*_BACnetServiceAckReadProperty)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckReadProperty)(nil)
+
+// NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
+func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
+	if objectIdentifier == nil {
+		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
+	}
+	if propertyIdentifier == nil {
+		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
+	}
+	_result := &_BACnetServiceAckReadProperty{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ObjectIdentifier:         objectIdentifier,
+		PropertyIdentifier:       propertyIdentifier,
+		ArrayIndex:               arrayIndex,
+		Values:                   values,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckReadPropertyBuilder is a builder for BACnetServiceAckReadProperty
+type BACnetServiceAckReadPropertyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetServiceAckReadPropertyBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetServiceAckReadPropertyBuilder
+	// WithObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetServiceAckReadPropertyBuilder
+	// WithPropertyIdentifier adds PropertyIdentifier (property field)
+	WithPropertyIdentifier(BACnetPropertyIdentifierTagged) BACnetServiceAckReadPropertyBuilder
+	// WithPropertyIdentifierBuilder adds PropertyIdentifier (property field) which is build by the builder
+	WithPropertyIdentifierBuilder(func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetServiceAckReadPropertyBuilder
+	// WithArrayIndex adds ArrayIndex (property field)
+	WithOptionalArrayIndex(BACnetContextTagUnsignedInteger) BACnetServiceAckReadPropertyBuilder
+	// WithOptionalArrayIndexBuilder adds ArrayIndex (property field) which is build by the builder
+	WithOptionalArrayIndexBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetServiceAckReadPropertyBuilder
+	// WithValues adds Values (property field)
+	WithOptionalValues(BACnetConstructedData) BACnetServiceAckReadPropertyBuilder
+	// WithOptionalValuesBuilder adds Values (property field) which is build by the builder
+	WithOptionalValuesBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetServiceAckReadPropertyBuilder
+	// Build builds the BACnetServiceAckReadProperty or returns an error if something is wrong
+	Build() (BACnetServiceAckReadProperty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckReadProperty
+}
+
+// NewBACnetServiceAckReadPropertyBuilder() creates a BACnetServiceAckReadPropertyBuilder
+func NewBACnetServiceAckReadPropertyBuilder() BACnetServiceAckReadPropertyBuilder {
+	return &_BACnetServiceAckReadPropertyBuilder{_BACnetServiceAckReadProperty: new(_BACnetServiceAckReadProperty)}
+}
+
+type _BACnetServiceAckReadPropertyBuilder struct {
+	*_BACnetServiceAckReadProperty
+
+	parentBuilder *_BACnetServiceAckBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckReadPropertyBuilder) = (*_BACnetServiceAckReadPropertyBuilder)(nil)
+
+func (b *_BACnetServiceAckReadPropertyBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithMandatoryFields(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged) BACnetServiceAckReadPropertyBuilder {
+	return b.WithObjectIdentifier(objectIdentifier).WithPropertyIdentifier(propertyIdentifier)
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithObjectIdentifier(objectIdentifier BACnetContextTagObjectIdentifier) BACnetServiceAckReadPropertyBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetServiceAckReadPropertyBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithPropertyIdentifier(propertyIdentifier BACnetPropertyIdentifierTagged) BACnetServiceAckReadPropertyBuilder {
+	b.PropertyIdentifier = propertyIdentifier
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithPropertyIdentifierBuilder(builderSupplier func(BACnetPropertyIdentifierTaggedBuilder) BACnetPropertyIdentifierTaggedBuilder) BACnetServiceAckReadPropertyBuilder {
+	builder := builderSupplier(b.PropertyIdentifier.CreateBACnetPropertyIdentifierTaggedBuilder())
+	var err error
+	b.PropertyIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyIdentifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithOptionalArrayIndex(arrayIndex BACnetContextTagUnsignedInteger) BACnetServiceAckReadPropertyBuilder {
+	b.ArrayIndex = arrayIndex
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithOptionalArrayIndexBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetServiceAckReadPropertyBuilder {
+	builder := builderSupplier(b.ArrayIndex.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ArrayIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithOptionalValues(values BACnetConstructedData) BACnetServiceAckReadPropertyBuilder {
+	b.Values = values
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) WithOptionalValuesBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetServiceAckReadPropertyBuilder {
+	builder := builderSupplier(b.Values.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.Values, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) Build() (BACnetServiceAckReadProperty, error) {
+	if b.ObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectIdentifier' not set"))
+	}
+	if b.PropertyIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'propertyIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetServiceAckReadProperty.deepCopy(), nil
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) MustBuild() BACnetServiceAckReadProperty {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckReadPropertyBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckReadPropertyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckReadPropertyBuilder().(*_BACnetServiceAckReadPropertyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetServiceAckReadPropertyBuilder creates a BACnetServiceAckReadPropertyBuilder
+func (b *_BACnetServiceAckReadProperty) CreateBACnetServiceAckReadPropertyBuilder() BACnetServiceAckReadPropertyBuilder {
+	if b == nil {
+		return NewBACnetServiceAckReadPropertyBuilder()
+	}
+	return &_BACnetServiceAckReadPropertyBuilder{_BACnetServiceAckReadProperty: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +312,6 @@ func (m *_BACnetServiceAckReadProperty) GetValues() BACnetConstructedData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckReadProperty factory function for _BACnetServiceAckReadProperty
-func NewBACnetServiceAckReadProperty(objectIdentifier BACnetContextTagObjectIdentifier, propertyIdentifier BACnetPropertyIdentifierTagged, arrayIndex BACnetContextTagUnsignedInteger, values BACnetConstructedData, serviceAckLength uint32) *_BACnetServiceAckReadProperty {
-	if objectIdentifier == nil {
-		panic("objectIdentifier of type BACnetContextTagObjectIdentifier for BACnetServiceAckReadProperty must not be nil")
-	}
-	if propertyIdentifier == nil {
-		panic("propertyIdentifier of type BACnetPropertyIdentifierTagged for BACnetServiceAckReadProperty must not be nil")
-	}
-	_result := &_BACnetServiceAckReadProperty{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ObjectIdentifier:         objectIdentifier,
-		PropertyIdentifier:       propertyIdentifier,
-		ArrayIndex:               arrayIndex,
-		Values:                   values,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckReadProperty(structType any) BACnetServiceAckReadProperty {
@@ -261,13 +448,36 @@ func (m *_BACnetServiceAckReadProperty) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetServiceAckReadProperty) IsBACnetServiceAckReadProperty() {}
 
+func (m *_BACnetServiceAckReadProperty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckReadProperty) deepCopy() *_BACnetServiceAckReadProperty {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckReadPropertyCopy := &_BACnetServiceAckReadProperty{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.PropertyIdentifier.DeepCopy().(BACnetPropertyIdentifierTagged),
+		m.ArrayIndex.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Values.DeepCopy().(BACnetConstructedData),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckReadPropertyCopy
+}
+
 func (m *_BACnetServiceAckReadProperty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

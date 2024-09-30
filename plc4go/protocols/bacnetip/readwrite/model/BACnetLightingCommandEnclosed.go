@@ -38,6 +38,7 @@ type BACnetLightingCommandEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLightingCommand returns LightingCommand (property field)
@@ -46,6 +47,8 @@ type BACnetLightingCommandEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetLightingCommandEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLightingCommandEnclosed()
+	// CreateBuilder creates a BACnetLightingCommandEnclosedBuilder
+	CreateBACnetLightingCommandEnclosedBuilder() BACnetLightingCommandEnclosedBuilder
 }
 
 // _BACnetLightingCommandEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _BACnetLightingCommandEnclosed struct {
 }
 
 var _ BACnetLightingCommandEnclosed = (*_BACnetLightingCommandEnclosed)(nil)
+
+// NewBACnetLightingCommandEnclosed factory function for _BACnetLightingCommandEnclosed
+func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLightingCommandEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetLightingCommandEnclosed must not be nil")
+	}
+	if lightingCommand == nil {
+		panic("lightingCommand of type BACnetLightingCommand for BACnetLightingCommandEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetLightingCommandEnclosed must not be nil")
+	}
+	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLightingCommandEnclosedBuilder is a builder for BACnetLightingCommandEnclosed
+type BACnetLightingCommandEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag) BACnetLightingCommandEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetLightingCommandEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLightingCommandEnclosedBuilder
+	// WithLightingCommand adds LightingCommand (property field)
+	WithLightingCommand(BACnetLightingCommand) BACnetLightingCommandEnclosedBuilder
+	// WithLightingCommandBuilder adds LightingCommand (property field) which is build by the builder
+	WithLightingCommandBuilder(func(BACnetLightingCommandBuilder) BACnetLightingCommandBuilder) BACnetLightingCommandEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetLightingCommandEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLightingCommandEnclosedBuilder
+	// Build builds the BACnetLightingCommandEnclosed or returns an error if something is wrong
+	Build() (BACnetLightingCommandEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLightingCommandEnclosed
+}
+
+// NewBACnetLightingCommandEnclosedBuilder() creates a BACnetLightingCommandEnclosedBuilder
+func NewBACnetLightingCommandEnclosedBuilder() BACnetLightingCommandEnclosedBuilder {
+	return &_BACnetLightingCommandEnclosedBuilder{_BACnetLightingCommandEnclosed: new(_BACnetLightingCommandEnclosed)}
+}
+
+type _BACnetLightingCommandEnclosedBuilder struct {
+	*_BACnetLightingCommandEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLightingCommandEnclosedBuilder) = (*_BACnetLightingCommandEnclosedBuilder)(nil)
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag) BACnetLightingCommandEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithLightingCommand(lightingCommand).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetLightingCommandEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLightingCommandEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithLightingCommand(lightingCommand BACnetLightingCommand) BACnetLightingCommandEnclosedBuilder {
+	b.LightingCommand = lightingCommand
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithLightingCommandBuilder(builderSupplier func(BACnetLightingCommandBuilder) BACnetLightingCommandBuilder) BACnetLightingCommandEnclosedBuilder {
+	builder := builderSupplier(b.LightingCommand.CreateBACnetLightingCommandBuilder())
+	var err error
+	b.LightingCommand, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLightingCommandBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetLightingCommandEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLightingCommandEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) Build() (BACnetLightingCommandEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.LightingCommand == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lightingCommand' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLightingCommandEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) MustBuild() BACnetLightingCommandEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLightingCommandEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLightingCommandEnclosedBuilder().(*_BACnetLightingCommandEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLightingCommandEnclosedBuilder creates a BACnetLightingCommandEnclosedBuilder
+func (b *_BACnetLightingCommandEnclosed) CreateBACnetLightingCommandEnclosedBuilder() BACnetLightingCommandEnclosedBuilder {
+	if b == nil {
+		return NewBACnetLightingCommandEnclosedBuilder()
+	}
+	return &_BACnetLightingCommandEnclosedBuilder{_BACnetLightingCommandEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_BACnetLightingCommandEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLightingCommandEnclosed factory function for _BACnetLightingCommandEnclosed
-func NewBACnetLightingCommandEnclosed(openingTag BACnetOpeningTag, lightingCommand BACnetLightingCommand, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLightingCommandEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetLightingCommandEnclosed must not be nil")
-	}
-	if lightingCommand == nil {
-		panic("lightingCommand of type BACnetLightingCommand for BACnetLightingCommandEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetLightingCommandEnclosed must not be nil")
-	}
-	return &_BACnetLightingCommandEnclosed{OpeningTag: openingTag, LightingCommand: lightingCommand, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLightingCommandEnclosed(structType any) BACnetLightingCommandEnclosed {
@@ -145,7 +301,7 @@ func BACnetLightingCommandEnclosedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLightingCommandEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetLightingCommandEnclosed BACnetLightingCommandEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_BACnetLightingCommandEnclosed) GetTagNumber() uint8 {
 
 func (m *_BACnetLightingCommandEnclosed) IsBACnetLightingCommandEnclosed() {}
 
+func (m *_BACnetLightingCommandEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLightingCommandEnclosed) deepCopy() *_BACnetLightingCommandEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetLightingCommandEnclosedCopy := &_BACnetLightingCommandEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.LightingCommand.DeepCopy().(BACnetLightingCommand),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetLightingCommandEnclosedCopy
+}
+
 func (m *_BACnetLightingCommandEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

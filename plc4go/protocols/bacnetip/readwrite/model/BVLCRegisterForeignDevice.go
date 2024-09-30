@@ -40,11 +40,14 @@ type BVLCRegisterForeignDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTtl returns Ttl (property field)
 	GetTtl() uint16
 	// IsBVLCRegisterForeignDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCRegisterForeignDevice()
+	// CreateBuilder creates a BVLCRegisterForeignDeviceBuilder
+	CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder
 }
 
 // _BVLCRegisterForeignDevice is the data-structure of this message
@@ -55,6 +58,107 @@ type _BVLCRegisterForeignDevice struct {
 
 var _ BVLCRegisterForeignDevice = (*_BVLCRegisterForeignDevice)(nil)
 var _ BVLCRequirements = (*_BVLCRegisterForeignDevice)(nil)
+
+// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
+func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
+	_result := &_BVLCRegisterForeignDevice{
+		BVLCContract: NewBVLC(),
+		Ttl:          ttl,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCRegisterForeignDeviceBuilder is a builder for BVLCRegisterForeignDevice
+type BVLCRegisterForeignDeviceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder
+	// WithTtl adds Ttl (property field)
+	WithTtl(uint16) BVLCRegisterForeignDeviceBuilder
+	// Build builds the BVLCRegisterForeignDevice or returns an error if something is wrong
+	Build() (BVLCRegisterForeignDevice, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCRegisterForeignDevice
+}
+
+// NewBVLCRegisterForeignDeviceBuilder() creates a BVLCRegisterForeignDeviceBuilder
+func NewBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
+	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: new(_BVLCRegisterForeignDevice)}
+}
+
+type _BVLCRegisterForeignDeviceBuilder struct {
+	*_BVLCRegisterForeignDevice
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCRegisterForeignDeviceBuilder) = (*_BVLCRegisterForeignDeviceBuilder)(nil)
+
+func (b *_BVLCRegisterForeignDeviceBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) WithMandatoryFields(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	return b.WithTtl(ttl)
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) WithTtl(ttl uint16) BVLCRegisterForeignDeviceBuilder {
+	b.Ttl = ttl
+	return b
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) Build() (BVLCRegisterForeignDevice, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCRegisterForeignDevice.deepCopy(), nil
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) MustBuild() BVLCRegisterForeignDevice {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCRegisterForeignDeviceBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCRegisterForeignDeviceBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCRegisterForeignDeviceBuilder().(*_BVLCRegisterForeignDeviceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCRegisterForeignDeviceBuilder creates a BVLCRegisterForeignDeviceBuilder
+func (b *_BVLCRegisterForeignDevice) CreateBVLCRegisterForeignDeviceBuilder() BVLCRegisterForeignDeviceBuilder {
+	if b == nil {
+		return NewBVLCRegisterForeignDeviceBuilder()
+	}
+	return &_BVLCRegisterForeignDeviceBuilder{_BVLCRegisterForeignDevice: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +191,6 @@ func (m *_BVLCRegisterForeignDevice) GetTtl() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCRegisterForeignDevice factory function for _BVLCRegisterForeignDevice
-func NewBVLCRegisterForeignDevice(ttl uint16) *_BVLCRegisterForeignDevice {
-	_result := &_BVLCRegisterForeignDevice{
-		BVLCContract: NewBVLC(),
-		Ttl:          ttl,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCRegisterForeignDevice(structType any) BVLCRegisterForeignDevice {
@@ -182,13 +276,33 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_BVLCRegisterForeignDevice) IsBVLCRegisterForeignDevice() {}
 
+func (m *_BVLCRegisterForeignDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCRegisterForeignDevice) deepCopy() *_BVLCRegisterForeignDevice {
+	if m == nil {
+		return nil
+	}
+	_BVLCRegisterForeignDeviceCopy := &_BVLCRegisterForeignDevice{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Ttl,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCRegisterForeignDeviceCopy
+}
+
 func (m *_BVLCRegisterForeignDevice) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

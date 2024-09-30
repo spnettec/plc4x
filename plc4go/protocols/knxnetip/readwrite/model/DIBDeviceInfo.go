@@ -38,6 +38,7 @@ type DIBDeviceInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDescriptionType returns DescriptionType (property field)
 	GetDescriptionType() uint8
 	// GetKnxMedium returns KnxMedium (property field)
@@ -58,6 +59,8 @@ type DIBDeviceInfo interface {
 	GetDeviceFriendlyName() []byte
 	// IsDIBDeviceInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDIBDeviceInfo()
+	// CreateBuilder creates a DIBDeviceInfoBuilder
+	CreateDIBDeviceInfoBuilder() DIBDeviceInfoBuilder
 }
 
 // _DIBDeviceInfo is the data-structure of this message
@@ -74,6 +77,263 @@ type _DIBDeviceInfo struct {
 }
 
 var _ DIBDeviceInfo = (*_DIBDeviceInfo)(nil)
+
+// NewDIBDeviceInfo factory function for _DIBDeviceInfo
+func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
+	if deviceStatus == nil {
+		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
+	}
+	if knxAddress == nil {
+		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
+	}
+	if projectInstallationIdentifier == nil {
+		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMulticastAddress == nil {
+		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
+	}
+	if knxNetIpDeviceMacAddress == nil {
+		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
+	}
+	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DIBDeviceInfoBuilder is a builder for DIBDeviceInfo
+type DIBDeviceInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) DIBDeviceInfoBuilder
+	// WithDescriptionType adds DescriptionType (property field)
+	WithDescriptionType(uint8) DIBDeviceInfoBuilder
+	// WithKnxMedium adds KnxMedium (property field)
+	WithKnxMedium(KnxMedium) DIBDeviceInfoBuilder
+	// WithDeviceStatus adds DeviceStatus (property field)
+	WithDeviceStatus(DeviceStatus) DIBDeviceInfoBuilder
+	// WithDeviceStatusBuilder adds DeviceStatus (property field) which is build by the builder
+	WithDeviceStatusBuilder(func(DeviceStatusBuilder) DeviceStatusBuilder) DIBDeviceInfoBuilder
+	// WithKnxAddress adds KnxAddress (property field)
+	WithKnxAddress(KnxAddress) DIBDeviceInfoBuilder
+	// WithKnxAddressBuilder adds KnxAddress (property field) which is build by the builder
+	WithKnxAddressBuilder(func(KnxAddressBuilder) KnxAddressBuilder) DIBDeviceInfoBuilder
+	// WithProjectInstallationIdentifier adds ProjectInstallationIdentifier (property field)
+	WithProjectInstallationIdentifier(ProjectInstallationIdentifier) DIBDeviceInfoBuilder
+	// WithProjectInstallationIdentifierBuilder adds ProjectInstallationIdentifier (property field) which is build by the builder
+	WithProjectInstallationIdentifierBuilder(func(ProjectInstallationIdentifierBuilder) ProjectInstallationIdentifierBuilder) DIBDeviceInfoBuilder
+	// WithKnxNetIpDeviceSerialNumber adds KnxNetIpDeviceSerialNumber (property field)
+	WithKnxNetIpDeviceSerialNumber(...byte) DIBDeviceInfoBuilder
+	// WithKnxNetIpDeviceMulticastAddress adds KnxNetIpDeviceMulticastAddress (property field)
+	WithKnxNetIpDeviceMulticastAddress(IPAddress) DIBDeviceInfoBuilder
+	// WithKnxNetIpDeviceMulticastAddressBuilder adds KnxNetIpDeviceMulticastAddress (property field) which is build by the builder
+	WithKnxNetIpDeviceMulticastAddressBuilder(func(IPAddressBuilder) IPAddressBuilder) DIBDeviceInfoBuilder
+	// WithKnxNetIpDeviceMacAddress adds KnxNetIpDeviceMacAddress (property field)
+	WithKnxNetIpDeviceMacAddress(MACAddress) DIBDeviceInfoBuilder
+	// WithKnxNetIpDeviceMacAddressBuilder adds KnxNetIpDeviceMacAddress (property field) which is build by the builder
+	WithKnxNetIpDeviceMacAddressBuilder(func(MACAddressBuilder) MACAddressBuilder) DIBDeviceInfoBuilder
+	// WithDeviceFriendlyName adds DeviceFriendlyName (property field)
+	WithDeviceFriendlyName(...byte) DIBDeviceInfoBuilder
+	// Build builds the DIBDeviceInfo or returns an error if something is wrong
+	Build() (DIBDeviceInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DIBDeviceInfo
+}
+
+// NewDIBDeviceInfoBuilder() creates a DIBDeviceInfoBuilder
+func NewDIBDeviceInfoBuilder() DIBDeviceInfoBuilder {
+	return &_DIBDeviceInfoBuilder{_DIBDeviceInfo: new(_DIBDeviceInfo)}
+}
+
+type _DIBDeviceInfoBuilder struct {
+	*_DIBDeviceInfo
+
+	err *utils.MultiError
+}
+
+var _ (DIBDeviceInfoBuilder) = (*_DIBDeviceInfoBuilder)(nil)
+
+func (b *_DIBDeviceInfoBuilder) WithMandatoryFields(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) DIBDeviceInfoBuilder {
+	return b.WithDescriptionType(descriptionType).WithKnxMedium(knxMedium).WithDeviceStatus(deviceStatus).WithKnxAddress(knxAddress).WithProjectInstallationIdentifier(projectInstallationIdentifier).WithKnxNetIpDeviceSerialNumber(knxNetIpDeviceSerialNumber...).WithKnxNetIpDeviceMulticastAddress(knxNetIpDeviceMulticastAddress).WithKnxNetIpDeviceMacAddress(knxNetIpDeviceMacAddress).WithDeviceFriendlyName(deviceFriendlyName...)
+}
+
+func (b *_DIBDeviceInfoBuilder) WithDescriptionType(descriptionType uint8) DIBDeviceInfoBuilder {
+	b.DescriptionType = descriptionType
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxMedium(knxMedium KnxMedium) DIBDeviceInfoBuilder {
+	b.KnxMedium = knxMedium
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithDeviceStatus(deviceStatus DeviceStatus) DIBDeviceInfoBuilder {
+	b.DeviceStatus = deviceStatus
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithDeviceStatusBuilder(builderSupplier func(DeviceStatusBuilder) DeviceStatusBuilder) DIBDeviceInfoBuilder {
+	builder := builderSupplier(b.DeviceStatus.CreateDeviceStatusBuilder())
+	var err error
+	b.DeviceStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DeviceStatusBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxAddress(knxAddress KnxAddress) DIBDeviceInfoBuilder {
+	b.KnxAddress = knxAddress
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxAddressBuilder(builderSupplier func(KnxAddressBuilder) KnxAddressBuilder) DIBDeviceInfoBuilder {
+	builder := builderSupplier(b.KnxAddress.CreateKnxAddressBuilder())
+	var err error
+	b.KnxAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "KnxAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithProjectInstallationIdentifier(projectInstallationIdentifier ProjectInstallationIdentifier) DIBDeviceInfoBuilder {
+	b.ProjectInstallationIdentifier = projectInstallationIdentifier
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithProjectInstallationIdentifierBuilder(builderSupplier func(ProjectInstallationIdentifierBuilder) ProjectInstallationIdentifierBuilder) DIBDeviceInfoBuilder {
+	builder := builderSupplier(b.ProjectInstallationIdentifier.CreateProjectInstallationIdentifierBuilder())
+	var err error
+	b.ProjectInstallationIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ProjectInstallationIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceSerialNumber(knxNetIpDeviceSerialNumber ...byte) DIBDeviceInfoBuilder {
+	b.KnxNetIpDeviceSerialNumber = knxNetIpDeviceSerialNumber
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMulticastAddress(knxNetIpDeviceMulticastAddress IPAddress) DIBDeviceInfoBuilder {
+	b.KnxNetIpDeviceMulticastAddress = knxNetIpDeviceMulticastAddress
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMulticastAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) DIBDeviceInfoBuilder {
+	builder := builderSupplier(b.KnxNetIpDeviceMulticastAddress.CreateIPAddressBuilder())
+	var err error
+	b.KnxNetIpDeviceMulticastAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMacAddress(knxNetIpDeviceMacAddress MACAddress) DIBDeviceInfoBuilder {
+	b.KnxNetIpDeviceMacAddress = knxNetIpDeviceMacAddress
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithKnxNetIpDeviceMacAddressBuilder(builderSupplier func(MACAddressBuilder) MACAddressBuilder) DIBDeviceInfoBuilder {
+	builder := builderSupplier(b.KnxNetIpDeviceMacAddress.CreateMACAddressBuilder())
+	var err error
+	b.KnxNetIpDeviceMacAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "MACAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) WithDeviceFriendlyName(deviceFriendlyName ...byte) DIBDeviceInfoBuilder {
+	b.DeviceFriendlyName = deviceFriendlyName
+	return b
+}
+
+func (b *_DIBDeviceInfoBuilder) Build() (DIBDeviceInfo, error) {
+	if b.DeviceStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceStatus' not set"))
+	}
+	if b.KnxAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'knxAddress' not set"))
+	}
+	if b.ProjectInstallationIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'projectInstallationIdentifier' not set"))
+	}
+	if b.KnxNetIpDeviceMulticastAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'knxNetIpDeviceMulticastAddress' not set"))
+	}
+	if b.KnxNetIpDeviceMacAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'knxNetIpDeviceMacAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DIBDeviceInfo.deepCopy(), nil
+}
+
+func (b *_DIBDeviceInfoBuilder) MustBuild() DIBDeviceInfo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DIBDeviceInfoBuilder) DeepCopy() any {
+	_copy := b.CreateDIBDeviceInfoBuilder().(*_DIBDeviceInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDIBDeviceInfoBuilder creates a DIBDeviceInfoBuilder
+func (b *_DIBDeviceInfo) CreateDIBDeviceInfoBuilder() DIBDeviceInfoBuilder {
+	if b == nil {
+		return NewDIBDeviceInfoBuilder()
+	}
+	return &_DIBDeviceInfoBuilder{_DIBDeviceInfo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,26 +380,6 @@ func (m *_DIBDeviceInfo) GetDeviceFriendlyName() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDIBDeviceInfo factory function for _DIBDeviceInfo
-func NewDIBDeviceInfo(descriptionType uint8, knxMedium KnxMedium, deviceStatus DeviceStatus, knxAddress KnxAddress, projectInstallationIdentifier ProjectInstallationIdentifier, knxNetIpDeviceSerialNumber []byte, knxNetIpDeviceMulticastAddress IPAddress, knxNetIpDeviceMacAddress MACAddress, deviceFriendlyName []byte) *_DIBDeviceInfo {
-	if deviceStatus == nil {
-		panic("deviceStatus of type DeviceStatus for DIBDeviceInfo must not be nil")
-	}
-	if knxAddress == nil {
-		panic("knxAddress of type KnxAddress for DIBDeviceInfo must not be nil")
-	}
-	if projectInstallationIdentifier == nil {
-		panic("projectInstallationIdentifier of type ProjectInstallationIdentifier for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMulticastAddress == nil {
-		panic("knxNetIpDeviceMulticastAddress of type IPAddress for DIBDeviceInfo must not be nil")
-	}
-	if knxNetIpDeviceMacAddress == nil {
-		panic("knxNetIpDeviceMacAddress of type MACAddress for DIBDeviceInfo must not be nil")
-	}
-	return &_DIBDeviceInfo{DescriptionType: descriptionType, KnxMedium: knxMedium, DeviceStatus: deviceStatus, KnxAddress: knxAddress, ProjectInstallationIdentifier: projectInstallationIdentifier, KnxNetIpDeviceSerialNumber: knxNetIpDeviceSerialNumber, KnxNetIpDeviceMulticastAddress: knxNetIpDeviceMulticastAddress, KnxNetIpDeviceMacAddress: knxNetIpDeviceMacAddress, DeviceFriendlyName: deviceFriendlyName}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDIBDeviceInfo(structType any) DIBDeviceInfo {
@@ -215,7 +455,7 @@ func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DIBDeviceInfo) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dIBDeviceInfo DIBDeviceInfo, err error) {
@@ -359,13 +599,39 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_DIBDeviceInfo) IsDIBDeviceInfo() {}
 
+func (m *_DIBDeviceInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DIBDeviceInfo) deepCopy() *_DIBDeviceInfo {
+	if m == nil {
+		return nil
+	}
+	_DIBDeviceInfoCopy := &_DIBDeviceInfo{
+		m.DescriptionType,
+		m.KnxMedium,
+		m.DeviceStatus.DeepCopy().(DeviceStatus),
+		m.KnxAddress.DeepCopy().(KnxAddress),
+		m.ProjectInstallationIdentifier.DeepCopy().(ProjectInstallationIdentifier),
+		utils.DeepCopySlice[byte, byte](m.KnxNetIpDeviceSerialNumber),
+		m.KnxNetIpDeviceMulticastAddress.DeepCopy().(IPAddress),
+		m.KnxNetIpDeviceMacAddress.DeepCopy().(MACAddress),
+		utils.DeepCopySlice[byte, byte](m.DeviceFriendlyName),
+	}
+	return _DIBDeviceInfoCopy
+}
+
 func (m *_DIBDeviceInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

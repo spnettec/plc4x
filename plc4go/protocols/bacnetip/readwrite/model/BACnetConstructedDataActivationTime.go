@@ -38,6 +38,7 @@ type BACnetConstructedDataActivationTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActivationTime returns ActivationTime (property field)
 	GetActivationTime() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataActivationTime interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataActivationTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActivationTime()
+	// CreateBuilder creates a BACnetConstructedDataActivationTimeBuilder
+	CreateBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActivationTimeBuilder
 }
 
 // _BACnetConstructedDataActivationTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataActivationTime struct {
 
 var _ BACnetConstructedDataActivationTime = (*_BACnetConstructedDataActivationTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActivationTime)(nil)
+
+// NewBACnetConstructedDataActivationTime factory function for _BACnetConstructedDataActivationTime
+func NewBACnetConstructedDataActivationTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activationTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActivationTime {
+	if activationTime == nil {
+		panic("activationTime of type BACnetDateTime for BACnetConstructedDataActivationTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataActivationTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActivationTime:                activationTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActivationTimeBuilder is a builder for BACnetConstructedDataActivationTime
+type BACnetConstructedDataActivationTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder
+	// WithActivationTime adds ActivationTime (property field)
+	WithActivationTime(BACnetDateTime) BACnetConstructedDataActivationTimeBuilder
+	// WithActivationTimeBuilder adds ActivationTime (property field) which is build by the builder
+	WithActivationTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataActivationTimeBuilder
+	// Build builds the BACnetConstructedDataActivationTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataActivationTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActivationTime
+}
+
+// NewBACnetConstructedDataActivationTimeBuilder() creates a BACnetConstructedDataActivationTimeBuilder
+func NewBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActivationTimeBuilder {
+	return &_BACnetConstructedDataActivationTimeBuilder{_BACnetConstructedDataActivationTime: new(_BACnetConstructedDataActivationTime)}
+}
+
+type _BACnetConstructedDataActivationTimeBuilder struct {
+	*_BACnetConstructedDataActivationTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActivationTimeBuilder) = (*_BACnetConstructedDataActivationTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithMandatoryFields(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
+	return b.WithActivationTime(activationTime)
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithActivationTime(activationTime BACnetDateTime) BACnetConstructedDataActivationTimeBuilder {
+	b.ActivationTime = activationTime
+	return b
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) WithActivationTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataActivationTimeBuilder {
+	builder := builderSupplier(b.ActivationTime.CreateBACnetDateTimeBuilder())
+	var err error
+	b.ActivationTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) Build() (BACnetConstructedDataActivationTime, error) {
+	if b.ActivationTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'activationTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataActivationTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) MustBuild() BACnetConstructedDataActivationTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActivationTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActivationTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActivationTimeBuilder().(*_BACnetConstructedDataActivationTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataActivationTimeBuilder creates a BACnetConstructedDataActivationTimeBuilder
+func (b *_BACnetConstructedDataActivationTime) CreateBACnetConstructedDataActivationTimeBuilder() BACnetConstructedDataActivationTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataActivationTimeBuilder()
+	}
+	return &_BACnetConstructedDataActivationTimeBuilder{_BACnetConstructedDataActivationTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataActivationTime) GetActualValue() BACnetDateTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActivationTime factory function for _BACnetConstructedDataActivationTime
-func NewBACnetConstructedDataActivationTime(activationTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActivationTime {
-	if activationTime == nil {
-		panic("activationTime of type BACnetDateTime for BACnetConstructedDataActivationTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataActivationTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActivationTime:                activationTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActivationTime(structType any) BACnetConstructedDataActivationTime {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataActivationTime) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataActivationTime) IsBACnetConstructedDataActivationTime() {}
 
+func (m *_BACnetConstructedDataActivationTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActivationTime) deepCopy() *_BACnetConstructedDataActivationTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActivationTimeCopy := &_BACnetConstructedDataActivationTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ActivationTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActivationTimeCopy
+}
+
 func (m *_BACnetConstructedDataActivationTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -40,6 +40,7 @@ type FirmataMessageDigitalIO interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataMessage
 	// GetPinBlock returns PinBlock (property field)
 	GetPinBlock() uint8
@@ -47,6 +48,8 @@ type FirmataMessageDigitalIO interface {
 	GetData() []int8
 	// IsFirmataMessageDigitalIO is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataMessageDigitalIO()
+	// CreateBuilder creates a FirmataMessageDigitalIOBuilder
+	CreateFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder
 }
 
 // _FirmataMessageDigitalIO is the data-structure of this message
@@ -58,6 +61,115 @@ type _FirmataMessageDigitalIO struct {
 
 var _ FirmataMessageDigitalIO = (*_FirmataMessageDigitalIO)(nil)
 var _ FirmataMessageRequirements = (*_FirmataMessageDigitalIO)(nil)
+
+// NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
+func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
+	_result := &_FirmataMessageDigitalIO{
+		FirmataMessageContract: NewFirmataMessage(response),
+		PinBlock:               pinBlock,
+		Data:                   data,
+	}
+	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataMessageDigitalIOBuilder is a builder for FirmataMessageDigitalIO
+type FirmataMessageDigitalIOBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pinBlock uint8, data []int8) FirmataMessageDigitalIOBuilder
+	// WithPinBlock adds PinBlock (property field)
+	WithPinBlock(uint8) FirmataMessageDigitalIOBuilder
+	// WithData adds Data (property field)
+	WithData(...int8) FirmataMessageDigitalIOBuilder
+	// Build builds the FirmataMessageDigitalIO or returns an error if something is wrong
+	Build() (FirmataMessageDigitalIO, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataMessageDigitalIO
+}
+
+// NewFirmataMessageDigitalIOBuilder() creates a FirmataMessageDigitalIOBuilder
+func NewFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder {
+	return &_FirmataMessageDigitalIOBuilder{_FirmataMessageDigitalIO: new(_FirmataMessageDigitalIO)}
+}
+
+type _FirmataMessageDigitalIOBuilder struct {
+	*_FirmataMessageDigitalIO
+
+	parentBuilder *_FirmataMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (FirmataMessageDigitalIOBuilder) = (*_FirmataMessageDigitalIOBuilder)(nil)
+
+func (b *_FirmataMessageDigitalIOBuilder) setParent(contract FirmataMessageContract) {
+	b.FirmataMessageContract = contract
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) WithMandatoryFields(pinBlock uint8, data []int8) FirmataMessageDigitalIOBuilder {
+	return b.WithPinBlock(pinBlock).WithData(data...)
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) WithPinBlock(pinBlock uint8) FirmataMessageDigitalIOBuilder {
+	b.PinBlock = pinBlock
+	return b
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) WithData(data ...int8) FirmataMessageDigitalIOBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) Build() (FirmataMessageDigitalIO, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FirmataMessageDigitalIO.deepCopy(), nil
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) MustBuild() FirmataMessageDigitalIO {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataMessageDigitalIOBuilder) Done() FirmataMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) buildForFirmataMessage() (FirmataMessage, error) {
+	return b.Build()
+}
+
+func (b *_FirmataMessageDigitalIOBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataMessageDigitalIOBuilder().(*_FirmataMessageDigitalIOBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateFirmataMessageDigitalIOBuilder creates a FirmataMessageDigitalIOBuilder
+func (b *_FirmataMessageDigitalIO) CreateFirmataMessageDigitalIOBuilder() FirmataMessageDigitalIOBuilder {
+	if b == nil {
+		return NewFirmataMessageDigitalIOBuilder()
+	}
+	return &_FirmataMessageDigitalIOBuilder{_FirmataMessageDigitalIO: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +206,6 @@ func (m *_FirmataMessageDigitalIO) GetData() []int8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataMessageDigitalIO factory function for _FirmataMessageDigitalIO
-func NewFirmataMessageDigitalIO(pinBlock uint8, data []int8, response bool) *_FirmataMessageDigitalIO {
-	_result := &_FirmataMessageDigitalIO{
-		FirmataMessageContract: NewFirmataMessage(response),
-		PinBlock:               pinBlock,
-		Data:                   data,
-	}
-	_result.FirmataMessageContract.(*_FirmataMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataMessageDigitalIO(structType any) FirmataMessageDigitalIO {
@@ -205,13 +306,34 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_FirmataMessageDigitalIO) IsFirmataMessageDigitalIO() {}
 
+func (m *_FirmataMessageDigitalIO) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataMessageDigitalIO) deepCopy() *_FirmataMessageDigitalIO {
+	if m == nil {
+		return nil
+	}
+	_FirmataMessageDigitalIOCopy := &_FirmataMessageDigitalIO{
+		m.FirmataMessageContract.(*_FirmataMessage).deepCopy(),
+		m.PinBlock,
+		utils.DeepCopySlice[int8, int8](m.Data),
+	}
+	m.FirmataMessageContract.(*_FirmataMessage)._SubType = m
+	return _FirmataMessageDigitalIOCopy
+}
+
 func (m *_FirmataMessageDigitalIO) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

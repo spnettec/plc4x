@@ -38,6 +38,7 @@ type NLMSecurityResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetResponseCode returns ResponseCode (property field)
 	GetResponseCode() SecurityResponseCode
@@ -49,6 +50,8 @@ type NLMSecurityResponse interface {
 	GetVariableParameters() []byte
 	// IsNLMSecurityResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMSecurityResponse()
+	// CreateBuilder creates a NLMSecurityResponseBuilder
+	CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder
 }
 
 // _NLMSecurityResponse is the data-structure of this message
@@ -62,6 +65,131 @@ type _NLMSecurityResponse struct {
 
 var _ NLMSecurityResponse = (*_NLMSecurityResponse)(nil)
 var _ NLMRequirements = (*_NLMSecurityResponse)(nil)
+
+// NewNLMSecurityResponse factory function for _NLMSecurityResponse
+func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
+	_result := &_NLMSecurityResponse{
+		NLMContract:        NewNLM(apduLength),
+		ResponseCode:       responseCode,
+		OriginalMessageId:  originalMessageId,
+		OriginalTimestamp:  originalTimestamp,
+		VariableParameters: variableParameters,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMSecurityResponseBuilder is a builder for NLMSecurityResponse
+type NLMSecurityResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder
+	// WithResponseCode adds ResponseCode (property field)
+	WithResponseCode(SecurityResponseCode) NLMSecurityResponseBuilder
+	// WithOriginalMessageId adds OriginalMessageId (property field)
+	WithOriginalMessageId(uint32) NLMSecurityResponseBuilder
+	// WithOriginalTimestamp adds OriginalTimestamp (property field)
+	WithOriginalTimestamp(uint32) NLMSecurityResponseBuilder
+	// WithVariableParameters adds VariableParameters (property field)
+	WithVariableParameters(...byte) NLMSecurityResponseBuilder
+	// Build builds the NLMSecurityResponse or returns an error if something is wrong
+	Build() (NLMSecurityResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMSecurityResponse
+}
+
+// NewNLMSecurityResponseBuilder() creates a NLMSecurityResponseBuilder
+func NewNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
+	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: new(_NLMSecurityResponse)}
+}
+
+type _NLMSecurityResponseBuilder struct {
+	*_NLMSecurityResponse
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMSecurityResponseBuilder) = (*_NLMSecurityResponseBuilder)(nil)
+
+func (b *_NLMSecurityResponseBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMSecurityResponseBuilder) WithMandatoryFields(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte) NLMSecurityResponseBuilder {
+	return b.WithResponseCode(responseCode).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp).WithVariableParameters(variableParameters...)
+}
+
+func (b *_NLMSecurityResponseBuilder) WithResponseCode(responseCode SecurityResponseCode) NLMSecurityResponseBuilder {
+	b.ResponseCode = responseCode
+	return b
+}
+
+func (b *_NLMSecurityResponseBuilder) WithOriginalMessageId(originalMessageId uint32) NLMSecurityResponseBuilder {
+	b.OriginalMessageId = originalMessageId
+	return b
+}
+
+func (b *_NLMSecurityResponseBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMSecurityResponseBuilder {
+	b.OriginalTimestamp = originalTimestamp
+	return b
+}
+
+func (b *_NLMSecurityResponseBuilder) WithVariableParameters(variableParameters ...byte) NLMSecurityResponseBuilder {
+	b.VariableParameters = variableParameters
+	return b
+}
+
+func (b *_NLMSecurityResponseBuilder) Build() (NLMSecurityResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMSecurityResponse.deepCopy(), nil
+}
+
+func (b *_NLMSecurityResponseBuilder) MustBuild() NLMSecurityResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMSecurityResponseBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMSecurityResponseBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMSecurityResponseBuilder) DeepCopy() any {
+	_copy := b.CreateNLMSecurityResponseBuilder().(*_NLMSecurityResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMSecurityResponseBuilder creates a NLMSecurityResponseBuilder
+func (b *_NLMSecurityResponse) CreateNLMSecurityResponseBuilder() NLMSecurityResponseBuilder {
+	if b == nil {
+		return NewNLMSecurityResponseBuilder()
+	}
+	return &_NLMSecurityResponseBuilder{_NLMSecurityResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_NLMSecurityResponse) GetVariableParameters() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMSecurityResponse factory function for _NLMSecurityResponse
-func NewNLMSecurityResponse(responseCode SecurityResponseCode, originalMessageId uint32, originalTimestamp uint32, variableParameters []byte, apduLength uint16) *_NLMSecurityResponse {
-	_result := &_NLMSecurityResponse{
-		NLMContract:        NewNLM(apduLength),
-		ResponseCode:       responseCode,
-		OriginalMessageId:  originalMessageId,
-		OriginalTimestamp:  originalTimestamp,
-		VariableParameters: variableParameters,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMSecurityResponse(structType any) NLMSecurityResponse {
@@ -245,13 +360,36 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_NLMSecurityResponse) IsNLMSecurityResponse() {}
 
+func (m *_NLMSecurityResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMSecurityResponse) deepCopy() *_NLMSecurityResponse {
+	if m == nil {
+		return nil
+	}
+	_NLMSecurityResponseCopy := &_NLMSecurityResponse{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.ResponseCode,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+		utils.DeepCopySlice[byte, byte](m.VariableParameters),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMSecurityResponseCopy
+}
+
 func (m *_NLMSecurityResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

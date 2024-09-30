@@ -38,11 +38,14 @@ type BACnetConstructedDataMultiStateInputAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAlarmValues returns AlarmValues (property field)
 	GetAlarmValues() []BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMultiStateInputAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMultiStateInputAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+	CreateBACnetConstructedDataMultiStateInputAlarmValuesBuilder() BACnetConstructedDataMultiStateInputAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataMultiStateInputAlarmValues is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataMultiStateInputAlarmValues struct {
 
 var _ BACnetConstructedDataMultiStateInputAlarmValues = (*_BACnetConstructedDataMultiStateInputAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMultiStateInputAlarmValues)(nil)
+
+// NewBACnetConstructedDataMultiStateInputAlarmValues factory function for _BACnetConstructedDataMultiStateInputAlarmValues
+func NewBACnetConstructedDataMultiStateInputAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, alarmValues []BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputAlarmValues {
+	_result := &_BACnetConstructedDataMultiStateInputAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMultiStateInputAlarmValuesBuilder is a builder for BACnetConstructedDataMultiStateInputAlarmValues
+type BACnetConstructedDataMultiStateInputAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataMultiStateInputAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataMultiStateInputAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMultiStateInputAlarmValues
+}
+
+// NewBACnetConstructedDataMultiStateInputAlarmValuesBuilder() creates a BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+func NewBACnetConstructedDataMultiStateInputAlarmValuesBuilder() BACnetConstructedDataMultiStateInputAlarmValuesBuilder {
+	return &_BACnetConstructedDataMultiStateInputAlarmValuesBuilder{_BACnetConstructedDataMultiStateInputAlarmValues: new(_BACnetConstructedDataMultiStateInputAlarmValues)}
+}
+
+type _BACnetConstructedDataMultiStateInputAlarmValuesBuilder struct {
+	*_BACnetConstructedDataMultiStateInputAlarmValues
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMultiStateInputAlarmValuesBuilder) = (*_BACnetConstructedDataMultiStateInputAlarmValuesBuilder)(nil)
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputAlarmValuesBuilder {
+	return b.WithAlarmValues(alarmValues...)
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMultiStateInputAlarmValuesBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) Build() (BACnetConstructedDataMultiStateInputAlarmValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMultiStateInputAlarmValues.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) MustBuild() BACnetConstructedDataMultiStateInputAlarmValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMultiStateInputAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMultiStateInputAlarmValuesBuilder().(*_BACnetConstructedDataMultiStateInputAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMultiStateInputAlarmValuesBuilder creates a BACnetConstructedDataMultiStateInputAlarmValuesBuilder
+func (b *_BACnetConstructedDataMultiStateInputAlarmValues) CreateBACnetConstructedDataMultiStateInputAlarmValuesBuilder() BACnetConstructedDataMultiStateInputAlarmValuesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMultiStateInputAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataMultiStateInputAlarmValuesBuilder{_BACnetConstructedDataMultiStateInputAlarmValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataMultiStateInputAlarmValues) GetAlarmValues() []BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMultiStateInputAlarmValues factory function for _BACnetConstructedDataMultiStateInputAlarmValues
-func NewBACnetConstructedDataMultiStateInputAlarmValues(alarmValues []BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMultiStateInputAlarmValues {
-	_result := &_BACnetConstructedDataMultiStateInputAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMultiStateInputAlarmValues(structType any) BACnetConstructedDataMultiStateInputAlarmValues {
@@ -189,13 +283,33 @@ func (m *_BACnetConstructedDataMultiStateInputAlarmValues) SerializeWithWriteBuf
 func (m *_BACnetConstructedDataMultiStateInputAlarmValues) IsBACnetConstructedDataMultiStateInputAlarmValues() {
 }
 
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMultiStateInputAlarmValues) deepCopy() *_BACnetConstructedDataMultiStateInputAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMultiStateInputAlarmValuesCopy := &_BACnetConstructedDataMultiStateInputAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetApplicationTagUnsignedInteger, BACnetApplicationTagUnsignedInteger](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMultiStateInputAlarmValuesCopy
+}
+
 func (m *_BACnetConstructedDataMultiStateInputAlarmValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

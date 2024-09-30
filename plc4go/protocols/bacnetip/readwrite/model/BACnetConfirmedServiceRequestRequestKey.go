@@ -38,11 +38,14 @@ type BACnetConfirmedServiceRequestRequestKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
 	// IsBACnetConfirmedServiceRequestRequestKey is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestRequestKey()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestRequestKeyBuilder
+	CreateBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceRequestRequestKeyBuilder
 }
 
 // _BACnetConfirmedServiceRequestRequestKey is the data-structure of this message
@@ -56,6 +59,107 @@ type _BACnetConfirmedServiceRequestRequestKey struct {
 
 var _ BACnetConfirmedServiceRequestRequestKey = (*_BACnetConfirmedServiceRequestRequestKey)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestRequestKey)(nil)
+
+// NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
+func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
+	_result := &_BACnetConfirmedServiceRequestRequestKey{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		BytesOfRemovedService:                 bytesOfRemovedService,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestRequestKeyBuilder is a builder for BACnetConfirmedServiceRequestRequestKey
+type BACnetConfirmedServiceRequestRequestKeyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestRequestKeyBuilder
+	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
+	WithBytesOfRemovedService(...byte) BACnetConfirmedServiceRequestRequestKeyBuilder
+	// Build builds the BACnetConfirmedServiceRequestRequestKey or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestRequestKey, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestRequestKey
+}
+
+// NewBACnetConfirmedServiceRequestRequestKeyBuilder() creates a BACnetConfirmedServiceRequestRequestKeyBuilder
+func NewBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceRequestRequestKeyBuilder {
+	return &_BACnetConfirmedServiceRequestRequestKeyBuilder{_BACnetConfirmedServiceRequestRequestKey: new(_BACnetConfirmedServiceRequestRequestKey)}
+}
+
+type _BACnetConfirmedServiceRequestRequestKeyBuilder struct {
+	*_BACnetConfirmedServiceRequestRequestKey
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestRequestKeyBuilder) = (*_BACnetConfirmedServiceRequestRequestKeyBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetConfirmedServiceRequestRequestKeyBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) Build() (BACnetConfirmedServiceRequestRequestKey, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestRequestKey.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) MustBuild() BACnetConfirmedServiceRequestRequestKey {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestRequestKeyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestRequestKeyBuilder().(*_BACnetConfirmedServiceRequestRequestKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestRequestKeyBuilder creates a BACnetConfirmedServiceRequestRequestKeyBuilder
+func (b *_BACnetConfirmedServiceRequestRequestKey) CreateBACnetConfirmedServiceRequestRequestKeyBuilder() BACnetConfirmedServiceRequestRequestKeyBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestRequestKeyBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestRequestKeyBuilder{_BACnetConfirmedServiceRequestRequestKey: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +192,6 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetBytesOfRemovedService() []
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestRequestKey factory function for _BACnetConfirmedServiceRequestRequestKey
-func NewBACnetConfirmedServiceRequestRequestKey(bytesOfRemovedService []byte, serviceRequestPayloadLength uint32, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestRequestKey {
-	_result := &_BACnetConfirmedServiceRequestRequestKey{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		BytesOfRemovedService:                 bytesOfRemovedService,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestRequestKey(structType any) BACnetConfirmedServiceRequestRequestKey {
@@ -195,13 +289,34 @@ func (m *_BACnetConfirmedServiceRequestRequestKey) GetServiceRequestPayloadLengt
 
 func (m *_BACnetConfirmedServiceRequestRequestKey) IsBACnetConfirmedServiceRequestRequestKey() {}
 
+func (m *_BACnetConfirmedServiceRequestRequestKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestRequestKey) deepCopy() *_BACnetConfirmedServiceRequestRequestKey {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestRequestKeyCopy := &_BACnetConfirmedServiceRequestRequestKey{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceRequestPayloadLength,
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestRequestKeyCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestRequestKey) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

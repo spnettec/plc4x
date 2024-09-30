@@ -38,6 +38,7 @@ type BACnetConstructedDataStrikeCount interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetStrikeCount returns StrikeCount (property field)
 	GetStrikeCount() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataStrikeCount interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataStrikeCount is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataStrikeCount()
+	// CreateBuilder creates a BACnetConstructedDataStrikeCountBuilder
+	CreateBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder
 }
 
 // _BACnetConstructedDataStrikeCount is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataStrikeCount struct {
 
 var _ BACnetConstructedDataStrikeCount = (*_BACnetConstructedDataStrikeCount)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataStrikeCount)(nil)
+
+// NewBACnetConstructedDataStrikeCount factory function for _BACnetConstructedDataStrikeCount
+func NewBACnetConstructedDataStrikeCount(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, strikeCount BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStrikeCount {
+	if strikeCount == nil {
+		panic("strikeCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataStrikeCount must not be nil")
+	}
+	_result := &_BACnetConstructedDataStrikeCount{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		StrikeCount:                   strikeCount,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataStrikeCountBuilder is a builder for BACnetConstructedDataStrikeCount
+type BACnetConstructedDataStrikeCountBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder
+	// WithStrikeCount adds StrikeCount (property field)
+	WithStrikeCount(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder
+	// WithStrikeCountBuilder adds StrikeCount (property field) which is build by the builder
+	WithStrikeCountBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStrikeCountBuilder
+	// Build builds the BACnetConstructedDataStrikeCount or returns an error if something is wrong
+	Build() (BACnetConstructedDataStrikeCount, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataStrikeCount
+}
+
+// NewBACnetConstructedDataStrikeCountBuilder() creates a BACnetConstructedDataStrikeCountBuilder
+func NewBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder {
+	return &_BACnetConstructedDataStrikeCountBuilder{_BACnetConstructedDataStrikeCount: new(_BACnetConstructedDataStrikeCount)}
+}
+
+type _BACnetConstructedDataStrikeCountBuilder struct {
+	*_BACnetConstructedDataStrikeCount
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataStrikeCountBuilder) = (*_BACnetConstructedDataStrikeCountBuilder)(nil)
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) WithMandatoryFields(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder {
+	return b.WithStrikeCount(strikeCount)
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) WithStrikeCount(strikeCount BACnetApplicationTagUnsignedInteger) BACnetConstructedDataStrikeCountBuilder {
+	b.StrikeCount = strikeCount
+	return b
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) WithStrikeCountBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataStrikeCountBuilder {
+	builder := builderSupplier(b.StrikeCount.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.StrikeCount, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) Build() (BACnetConstructedDataStrikeCount, error) {
+	if b.StrikeCount == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'strikeCount' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataStrikeCount.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) MustBuild() BACnetConstructedDataStrikeCount {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataStrikeCountBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataStrikeCountBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataStrikeCountBuilder().(*_BACnetConstructedDataStrikeCountBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataStrikeCountBuilder creates a BACnetConstructedDataStrikeCountBuilder
+func (b *_BACnetConstructedDataStrikeCount) CreateBACnetConstructedDataStrikeCountBuilder() BACnetConstructedDataStrikeCountBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataStrikeCountBuilder()
+	}
+	return &_BACnetConstructedDataStrikeCountBuilder{_BACnetConstructedDataStrikeCount: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataStrikeCount) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataStrikeCount factory function for _BACnetConstructedDataStrikeCount
-func NewBACnetConstructedDataStrikeCount(strikeCount BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataStrikeCount {
-	if strikeCount == nil {
-		panic("strikeCount of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataStrikeCount must not be nil")
-	}
-	_result := &_BACnetConstructedDataStrikeCount{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		StrikeCount:                   strikeCount,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataStrikeCount(structType any) BACnetConstructedDataStrikeCount {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataStrikeCount) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataStrikeCount) IsBACnetConstructedDataStrikeCount() {}
 
+func (m *_BACnetConstructedDataStrikeCount) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataStrikeCount) deepCopy() *_BACnetConstructedDataStrikeCount {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataStrikeCountCopy := &_BACnetConstructedDataStrikeCount{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.StrikeCount.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataStrikeCountCopy
+}
+
 func (m *_BACnetConstructedDataStrikeCount) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

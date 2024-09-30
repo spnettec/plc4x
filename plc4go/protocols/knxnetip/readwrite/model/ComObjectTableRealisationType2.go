@@ -38,6 +38,7 @@ type ComObjectTableRealisationType2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ComObjectTable
 	// GetNumEntries returns NumEntries (property field)
 	GetNumEntries() uint8
@@ -47,6 +48,8 @@ type ComObjectTableRealisationType2 interface {
 	GetComObjectDescriptors() []GroupObjectDescriptorRealisationType2
 	// IsComObjectTableRealisationType2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTableRealisationType2()
+	// CreateBuilder creates a ComObjectTableRealisationType2Builder
+	CreateComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Builder
 }
 
 // _ComObjectTableRealisationType2 is the data-structure of this message
@@ -59,6 +62,123 @@ type _ComObjectTableRealisationType2 struct {
 
 var _ ComObjectTableRealisationType2 = (*_ComObjectTableRealisationType2)(nil)
 var _ ComObjectTableRequirements = (*_ComObjectTableRealisationType2)(nil)
+
+// NewComObjectTableRealisationType2 factory function for _ComObjectTableRealisationType2
+func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) *_ComObjectTableRealisationType2 {
+	_result := &_ComObjectTableRealisationType2{
+		ComObjectTableContract: NewComObjectTable(),
+		NumEntries:             numEntries,
+		RamFlagsTablePointer:   ramFlagsTablePointer,
+		ComObjectDescriptors:   comObjectDescriptors,
+	}
+	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ComObjectTableRealisationType2Builder is a builder for ComObjectTableRealisationType2
+type ComObjectTableRealisationType2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder
+	// WithNumEntries adds NumEntries (property field)
+	WithNumEntries(uint8) ComObjectTableRealisationType2Builder
+	// WithRamFlagsTablePointer adds RamFlagsTablePointer (property field)
+	WithRamFlagsTablePointer(uint8) ComObjectTableRealisationType2Builder
+	// WithComObjectDescriptors adds ComObjectDescriptors (property field)
+	WithComObjectDescriptors(...GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder
+	// Build builds the ComObjectTableRealisationType2 or returns an error if something is wrong
+	Build() (ComObjectTableRealisationType2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ComObjectTableRealisationType2
+}
+
+// NewComObjectTableRealisationType2Builder() creates a ComObjectTableRealisationType2Builder
+func NewComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Builder {
+	return &_ComObjectTableRealisationType2Builder{_ComObjectTableRealisationType2: new(_ComObjectTableRealisationType2)}
+}
+
+type _ComObjectTableRealisationType2Builder struct {
+	*_ComObjectTableRealisationType2
+
+	parentBuilder *_ComObjectTableBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ComObjectTableRealisationType2Builder) = (*_ComObjectTableRealisationType2Builder)(nil)
+
+func (b *_ComObjectTableRealisationType2Builder) setParent(contract ComObjectTableContract) {
+	b.ComObjectTableContract = contract
+}
+
+func (b *_ComObjectTableRealisationType2Builder) WithMandatoryFields(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
+	return b.WithNumEntries(numEntries).WithRamFlagsTablePointer(ramFlagsTablePointer).WithComObjectDescriptors(comObjectDescriptors...)
+}
+
+func (b *_ComObjectTableRealisationType2Builder) WithNumEntries(numEntries uint8) ComObjectTableRealisationType2Builder {
+	b.NumEntries = numEntries
+	return b
+}
+
+func (b *_ComObjectTableRealisationType2Builder) WithRamFlagsTablePointer(ramFlagsTablePointer uint8) ComObjectTableRealisationType2Builder {
+	b.RamFlagsTablePointer = ramFlagsTablePointer
+	return b
+}
+
+func (b *_ComObjectTableRealisationType2Builder) WithComObjectDescriptors(comObjectDescriptors ...GroupObjectDescriptorRealisationType2) ComObjectTableRealisationType2Builder {
+	b.ComObjectDescriptors = comObjectDescriptors
+	return b
+}
+
+func (b *_ComObjectTableRealisationType2Builder) Build() (ComObjectTableRealisationType2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ComObjectTableRealisationType2.deepCopy(), nil
+}
+
+func (b *_ComObjectTableRealisationType2Builder) MustBuild() ComObjectTableRealisationType2 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ComObjectTableRealisationType2Builder) Done() ComObjectTableBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ComObjectTableRealisationType2Builder) buildForComObjectTable() (ComObjectTable, error) {
+	return b.Build()
+}
+
+func (b *_ComObjectTableRealisationType2Builder) DeepCopy() any {
+	_copy := b.CreateComObjectTableRealisationType2Builder().(*_ComObjectTableRealisationType2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateComObjectTableRealisationType2Builder creates a ComObjectTableRealisationType2Builder
+func (b *_ComObjectTableRealisationType2) CreateComObjectTableRealisationType2Builder() ComObjectTableRealisationType2Builder {
+	if b == nil {
+		return NewComObjectTableRealisationType2Builder()
+	}
+	return &_ComObjectTableRealisationType2Builder{_ComObjectTableRealisationType2: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +219,6 @@ func (m *_ComObjectTableRealisationType2) GetComObjectDescriptors() []GroupObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewComObjectTableRealisationType2 factory function for _ComObjectTableRealisationType2
-func NewComObjectTableRealisationType2(numEntries uint8, ramFlagsTablePointer uint8, comObjectDescriptors []GroupObjectDescriptorRealisationType2) *_ComObjectTableRealisationType2 {
-	_result := &_ComObjectTableRealisationType2{
-		ComObjectTableContract: NewComObjectTable(),
-		NumEntries:             numEntries,
-		RamFlagsTablePointer:   ramFlagsTablePointer,
-		ComObjectDescriptors:   comObjectDescriptors,
-	}
-	_result.ComObjectTableContract.(*_ComObjectTable)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTableRealisationType2(structType any) ComObjectTableRealisationType2 {
@@ -229,13 +337,35 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_ComObjectTableRealisationType2) IsComObjectTableRealisationType2() {}
 
+func (m *_ComObjectTableRealisationType2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTableRealisationType2) deepCopy() *_ComObjectTableRealisationType2 {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableRealisationType2Copy := &_ComObjectTableRealisationType2{
+		m.ComObjectTableContract.(*_ComObjectTable).deepCopy(),
+		m.NumEntries,
+		m.RamFlagsTablePointer,
+		utils.DeepCopySlice[GroupObjectDescriptorRealisationType2, GroupObjectDescriptorRealisationType2](m.ComObjectDescriptors),
+	}
+	m.ComObjectTableContract.(*_ComObjectTable)._SubType = m
+	return _ComObjectTableRealisationType2Copy
+}
+
 func (m *_ComObjectTableRealisationType2) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

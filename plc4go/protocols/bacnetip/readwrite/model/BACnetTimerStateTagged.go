@@ -38,12 +38,15 @@ type BACnetTimerStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetTimerState
 	// IsBACnetTimerStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateTagged()
+	// CreateBuilder creates a BACnetTimerStateTaggedBuilder
+	CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder
 }
 
 // _BACnetTimerStateTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetTimerStateTagged struct {
 }
 
 var _ BACnetTimerStateTagged = (*_BACnetTimerStateTagged)(nil)
+
+// NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
+func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
+	}
+	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateTaggedBuilder is a builder for BACnetTimerStateTagged
+type BACnetTimerStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetTimerStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetTimerState) BACnetTimerStateTaggedBuilder
+	// Build builds the BACnetTimerStateTagged or returns an error if something is wrong
+	Build() (BACnetTimerStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateTagged
+}
+
+// NewBACnetTimerStateTaggedBuilder() creates a BACnetTimerStateTaggedBuilder
+func NewBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
+	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: new(_BACnetTimerStateTagged)}
+}
+
+type _BACnetTimerStateTaggedBuilder struct {
+	*_BACnetTimerStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateTaggedBuilder) = (*_BACnetTimerStateTaggedBuilder)(nil)
+
+func (b *_BACnetTimerStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetTimerStateTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) WithValue(value BACnetTimerState) BACnetTimerStateTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) Build() (BACnetTimerStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimerStateTagged.deepCopy(), nil
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) MustBuild() BACnetTimerStateTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTimerStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateTaggedBuilder().(*_BACnetTimerStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTimerStateTaggedBuilder creates a BACnetTimerStateTaggedBuilder
+func (b *_BACnetTimerStateTagged) CreateBACnetTimerStateTaggedBuilder() BACnetTimerStateTaggedBuilder {
+	if b == nil {
+		return NewBACnetTimerStateTaggedBuilder()
+	}
+	return &_BACnetTimerStateTaggedBuilder{_BACnetTimerStateTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetTimerStateTagged) GetValue() BACnetTimerState {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateTagged factory function for _BACnetTimerStateTagged
-func NewBACnetTimerStateTagged(header BACnetTagHeader, value BACnetTimerState, tagNumber uint8, tagClass TagClass) *_BACnetTimerStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetTimerStateTagged must not be nil")
-	}
-	return &_BACnetTimerStateTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateTagged(structType any) BACnetTimerStateTagged {
@@ -130,7 +237,7 @@ func BACnetTimerStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTimerStateTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetTimerStateTagged BACnetTimerStateTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetTimerStateTagged) GetTagClass() TagClass {
 
 func (m *_BACnetTimerStateTagged) IsBACnetTimerStateTagged() {}
 
+func (m *_BACnetTimerStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateTagged) deepCopy() *_BACnetTimerStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateTaggedCopy := &_BACnetTimerStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetTimerStateTaggedCopy
+}
+
 func (m *_BACnetTimerStateTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

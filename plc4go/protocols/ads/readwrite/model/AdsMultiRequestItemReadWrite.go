@@ -38,6 +38,7 @@ type AdsMultiRequestItemReadWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsMultiRequestItem
 	// GetItemIndexGroup returns ItemIndexGroup (property field)
 	GetItemIndexGroup() uint32
@@ -49,6 +50,8 @@ type AdsMultiRequestItemReadWrite interface {
 	GetItemWriteLength() uint32
 	// IsAdsMultiRequestItemReadWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsMultiRequestItemReadWrite()
+	// CreateBuilder creates a AdsMultiRequestItemReadWriteBuilder
+	CreateAdsMultiRequestItemReadWriteBuilder() AdsMultiRequestItemReadWriteBuilder
 }
 
 // _AdsMultiRequestItemReadWrite is the data-structure of this message
@@ -62,6 +65,131 @@ type _AdsMultiRequestItemReadWrite struct {
 
 var _ AdsMultiRequestItemReadWrite = (*_AdsMultiRequestItemReadWrite)(nil)
 var _ AdsMultiRequestItemRequirements = (*_AdsMultiRequestItemReadWrite)(nil)
+
+// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
+func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
+	_result := &_AdsMultiRequestItemReadWrite{
+		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
+		ItemIndexGroup:              itemIndexGroup,
+		ItemIndexOffset:             itemIndexOffset,
+		ItemReadLength:              itemReadLength,
+		ItemWriteLength:             itemWriteLength,
+	}
+	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsMultiRequestItemReadWriteBuilder is a builder for AdsMultiRequestItemReadWrite
+type AdsMultiRequestItemReadWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) AdsMultiRequestItemReadWriteBuilder
+	// WithItemIndexGroup adds ItemIndexGroup (property field)
+	WithItemIndexGroup(uint32) AdsMultiRequestItemReadWriteBuilder
+	// WithItemIndexOffset adds ItemIndexOffset (property field)
+	WithItemIndexOffset(uint32) AdsMultiRequestItemReadWriteBuilder
+	// WithItemReadLength adds ItemReadLength (property field)
+	WithItemReadLength(uint32) AdsMultiRequestItemReadWriteBuilder
+	// WithItemWriteLength adds ItemWriteLength (property field)
+	WithItemWriteLength(uint32) AdsMultiRequestItemReadWriteBuilder
+	// Build builds the AdsMultiRequestItemReadWrite or returns an error if something is wrong
+	Build() (AdsMultiRequestItemReadWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsMultiRequestItemReadWrite
+}
+
+// NewAdsMultiRequestItemReadWriteBuilder() creates a AdsMultiRequestItemReadWriteBuilder
+func NewAdsMultiRequestItemReadWriteBuilder() AdsMultiRequestItemReadWriteBuilder {
+	return &_AdsMultiRequestItemReadWriteBuilder{_AdsMultiRequestItemReadWrite: new(_AdsMultiRequestItemReadWrite)}
+}
+
+type _AdsMultiRequestItemReadWriteBuilder struct {
+	*_AdsMultiRequestItemReadWrite
+
+	parentBuilder *_AdsMultiRequestItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsMultiRequestItemReadWriteBuilder) = (*_AdsMultiRequestItemReadWriteBuilder)(nil)
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) setParent(contract AdsMultiRequestItemContract) {
+	b.AdsMultiRequestItemContract = contract
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) WithMandatoryFields(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) AdsMultiRequestItemReadWriteBuilder {
+	return b.WithItemIndexGroup(itemIndexGroup).WithItemIndexOffset(itemIndexOffset).WithItemReadLength(itemReadLength).WithItemWriteLength(itemWriteLength)
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemIndexGroup(itemIndexGroup uint32) AdsMultiRequestItemReadWriteBuilder {
+	b.ItemIndexGroup = itemIndexGroup
+	return b
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemIndexOffset(itemIndexOffset uint32) AdsMultiRequestItemReadWriteBuilder {
+	b.ItemIndexOffset = itemIndexOffset
+	return b
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemReadLength(itemReadLength uint32) AdsMultiRequestItemReadWriteBuilder {
+	b.ItemReadLength = itemReadLength
+	return b
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) WithItemWriteLength(itemWriteLength uint32) AdsMultiRequestItemReadWriteBuilder {
+	b.ItemWriteLength = itemWriteLength
+	return b
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) Build() (AdsMultiRequestItemReadWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsMultiRequestItemReadWrite.deepCopy(), nil
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) MustBuild() AdsMultiRequestItemReadWrite {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsMultiRequestItemReadWriteBuilder) Done() AdsMultiRequestItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) buildForAdsMultiRequestItem() (AdsMultiRequestItem, error) {
+	return b.Build()
+}
+
+func (b *_AdsMultiRequestItemReadWriteBuilder) DeepCopy() any {
+	_copy := b.CreateAdsMultiRequestItemReadWriteBuilder().(*_AdsMultiRequestItemReadWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsMultiRequestItemReadWriteBuilder creates a AdsMultiRequestItemReadWriteBuilder
+func (b *_AdsMultiRequestItemReadWrite) CreateAdsMultiRequestItemReadWriteBuilder() AdsMultiRequestItemReadWriteBuilder {
+	if b == nil {
+		return NewAdsMultiRequestItemReadWriteBuilder()
+	}
+	return &_AdsMultiRequestItemReadWriteBuilder{_AdsMultiRequestItemReadWrite: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_AdsMultiRequestItemReadWrite) GetItemWriteLength() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsMultiRequestItemReadWrite factory function for _AdsMultiRequestItemReadWrite
-func NewAdsMultiRequestItemReadWrite(itemIndexGroup uint32, itemIndexOffset uint32, itemReadLength uint32, itemWriteLength uint32) *_AdsMultiRequestItemReadWrite {
-	_result := &_AdsMultiRequestItemReadWrite{
-		AdsMultiRequestItemContract: NewAdsMultiRequestItem(),
-		ItemIndexGroup:              itemIndexGroup,
-		ItemIndexOffset:             itemIndexOffset,
-		ItemReadLength:              itemReadLength,
-		ItemWriteLength:             itemWriteLength,
-	}
-	_result.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsMultiRequestItemReadWrite(structType any) AdsMultiRequestItemReadWrite {
@@ -243,13 +358,36 @@ func (m *_AdsMultiRequestItemReadWrite) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_AdsMultiRequestItemReadWrite) IsAdsMultiRequestItemReadWrite() {}
 
+func (m *_AdsMultiRequestItemReadWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsMultiRequestItemReadWrite) deepCopy() *_AdsMultiRequestItemReadWrite {
+	if m == nil {
+		return nil
+	}
+	_AdsMultiRequestItemReadWriteCopy := &_AdsMultiRequestItemReadWrite{
+		m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem).deepCopy(),
+		m.ItemIndexGroup,
+		m.ItemIndexOffset,
+		m.ItemReadLength,
+		m.ItemWriteLength,
+	}
+	m.AdsMultiRequestItemContract.(*_AdsMultiRequestItem)._SubType = m
+	return _AdsMultiRequestItemReadWriteCopy
+}
+
 func (m *_AdsMultiRequestItemReadWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

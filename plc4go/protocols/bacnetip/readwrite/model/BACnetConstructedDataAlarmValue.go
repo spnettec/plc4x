@@ -38,6 +38,7 @@ type BACnetConstructedDataAlarmValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataAlarmValue interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataAlarmValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAlarmValue()
+	// CreateBuilder creates a BACnetConstructedDataAlarmValueBuilder
+	CreateBACnetConstructedDataAlarmValueBuilder() BACnetConstructedDataAlarmValueBuilder
 }
 
 // _BACnetConstructedDataAlarmValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAlarmValue struct {
 
 var _ BACnetConstructedDataAlarmValue = (*_BACnetConstructedDataAlarmValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAlarmValue)(nil)
+
+// NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
+func NewBACnetConstructedDataAlarmValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAlarmValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BinaryPv:                      binaryPv,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAlarmValueBuilder is a builder for BACnetConstructedDataAlarmValue
+type BACnetConstructedDataAlarmValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataAlarmValueBuilder
+	// WithBinaryPv adds BinaryPv (property field)
+	WithBinaryPv(BACnetBinaryPVTagged) BACnetConstructedDataAlarmValueBuilder
+	// WithBinaryPvBuilder adds BinaryPv (property field) which is build by the builder
+	WithBinaryPvBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataAlarmValueBuilder
+	// Build builds the BACnetConstructedDataAlarmValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAlarmValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAlarmValue
+}
+
+// NewBACnetConstructedDataAlarmValueBuilder() creates a BACnetConstructedDataAlarmValueBuilder
+func NewBACnetConstructedDataAlarmValueBuilder() BACnetConstructedDataAlarmValueBuilder {
+	return &_BACnetConstructedDataAlarmValueBuilder{_BACnetConstructedDataAlarmValue: new(_BACnetConstructedDataAlarmValue)}
+}
+
+type _BACnetConstructedDataAlarmValueBuilder struct {
+	*_BACnetConstructedDataAlarmValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAlarmValueBuilder) = (*_BACnetConstructedDataAlarmValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataAlarmValueBuilder {
+	return b.WithBinaryPv(binaryPv)
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) WithBinaryPv(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataAlarmValueBuilder {
+	b.BinaryPv = binaryPv
+	return b
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) WithBinaryPvBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataAlarmValueBuilder {
+	builder := builderSupplier(b.BinaryPv.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	b.BinaryPv, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) Build() (BACnetConstructedDataAlarmValue, error) {
+	if b.BinaryPv == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'binaryPv' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAlarmValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) MustBuild() BACnetConstructedDataAlarmValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAlarmValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAlarmValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAlarmValueBuilder().(*_BACnetConstructedDataAlarmValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAlarmValueBuilder creates a BACnetConstructedDataAlarmValueBuilder
+func (b *_BACnetConstructedDataAlarmValue) CreateBACnetConstructedDataAlarmValueBuilder() BACnetConstructedDataAlarmValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAlarmValueBuilder()
+	}
+	return &_BACnetConstructedDataAlarmValueBuilder{_BACnetConstructedDataAlarmValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAlarmValue) GetActualValue() BACnetBinaryPVTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAlarmValue factory function for _BACnetConstructedDataAlarmValue
-func NewBACnetConstructedDataAlarmValue(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAlarmValue {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataAlarmValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAlarmValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BinaryPv:                      binaryPv,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAlarmValue(structType any) BACnetConstructedDataAlarmValue {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataAlarmValue) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataAlarmValue) IsBACnetConstructedDataAlarmValue() {}
 
+func (m *_BACnetConstructedDataAlarmValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAlarmValue) deepCopy() *_BACnetConstructedDataAlarmValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAlarmValueCopy := &_BACnetConstructedDataAlarmValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAlarmValueCopy
+}
+
 func (m *_BACnetConstructedDataAlarmValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

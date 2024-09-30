@@ -38,6 +38,7 @@ type EndpointUrlListDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfEndpointUrlList returns NoOfEndpointUrlList (property field)
 	GetNoOfEndpointUrlList() int32
@@ -45,6 +46,8 @@ type EndpointUrlListDataType interface {
 	GetEndpointUrlList() []PascalString
 	// IsEndpointUrlListDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEndpointUrlListDataType()
+	// CreateBuilder creates a EndpointUrlListDataTypeBuilder
+	CreateEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder
 }
 
 // _EndpointUrlListDataType is the data-structure of this message
@@ -56,6 +59,115 @@ type _EndpointUrlListDataType struct {
 
 var _ EndpointUrlListDataType = (*_EndpointUrlListDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointUrlListDataType)(nil)
+
+// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
+func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
+	_result := &_EndpointUrlListDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfEndpointUrlList:               noOfEndpointUrlList,
+		EndpointUrlList:                   endpointUrlList,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EndpointUrlListDataTypeBuilder is a builder for EndpointUrlListDataType
+type EndpointUrlListDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder
+	// WithNoOfEndpointUrlList adds NoOfEndpointUrlList (property field)
+	WithNoOfEndpointUrlList(int32) EndpointUrlListDataTypeBuilder
+	// WithEndpointUrlList adds EndpointUrlList (property field)
+	WithEndpointUrlList(...PascalString) EndpointUrlListDataTypeBuilder
+	// Build builds the EndpointUrlListDataType or returns an error if something is wrong
+	Build() (EndpointUrlListDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EndpointUrlListDataType
+}
+
+// NewEndpointUrlListDataTypeBuilder() creates a EndpointUrlListDataTypeBuilder
+func NewEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder {
+	return &_EndpointUrlListDataTypeBuilder{_EndpointUrlListDataType: new(_EndpointUrlListDataType)}
+}
+
+type _EndpointUrlListDataTypeBuilder struct {
+	*_EndpointUrlListDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EndpointUrlListDataTypeBuilder) = (*_EndpointUrlListDataTypeBuilder)(nil)
+
+func (b *_EndpointUrlListDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) WithMandatoryFields(noOfEndpointUrlList int32, endpointUrlList []PascalString) EndpointUrlListDataTypeBuilder {
+	return b.WithNoOfEndpointUrlList(noOfEndpointUrlList).WithEndpointUrlList(endpointUrlList...)
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) WithNoOfEndpointUrlList(noOfEndpointUrlList int32) EndpointUrlListDataTypeBuilder {
+	b.NoOfEndpointUrlList = noOfEndpointUrlList
+	return b
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) WithEndpointUrlList(endpointUrlList ...PascalString) EndpointUrlListDataTypeBuilder {
+	b.EndpointUrlList = endpointUrlList
+	return b
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) Build() (EndpointUrlListDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EndpointUrlListDataType.deepCopy(), nil
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) MustBuild() EndpointUrlListDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EndpointUrlListDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EndpointUrlListDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEndpointUrlListDataTypeBuilder().(*_EndpointUrlListDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEndpointUrlListDataTypeBuilder creates a EndpointUrlListDataTypeBuilder
+func (b *_EndpointUrlListDataType) CreateEndpointUrlListDataTypeBuilder() EndpointUrlListDataTypeBuilder {
+	if b == nil {
+		return NewEndpointUrlListDataTypeBuilder()
+	}
+	return &_EndpointUrlListDataTypeBuilder{_EndpointUrlListDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_EndpointUrlListDataType) GetEndpointUrlList() []PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointUrlListDataType factory function for _EndpointUrlListDataType
-func NewEndpointUrlListDataType(noOfEndpointUrlList int32, endpointUrlList []PascalString) *_EndpointUrlListDataType {
-	_result := &_EndpointUrlListDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfEndpointUrlList:               noOfEndpointUrlList,
-		EndpointUrlList:                   endpointUrlList,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointUrlListDataType(structType any) EndpointUrlListDataType {
@@ -208,13 +309,34 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_EndpointUrlListDataType) IsEndpointUrlListDataType() {}
 
+func (m *_EndpointUrlListDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointUrlListDataType) deepCopy() *_EndpointUrlListDataType {
+	if m == nil {
+		return nil
+	}
+	_EndpointUrlListDataTypeCopy := &_EndpointUrlListDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfEndpointUrlList,
+		utils.DeepCopySlice[PascalString, PascalString](m.EndpointUrlList),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointUrlListDataTypeCopy
+}
+
 func (m *_EndpointUrlListDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

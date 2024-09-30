@@ -38,6 +38,7 @@ type BACnetGroupChannelValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetChannel returns Channel (property field)
 	GetChannel() BACnetContextTagUnsignedInteger
 	// GetOverridingPriority returns OverridingPriority (property field)
@@ -46,6 +47,8 @@ type BACnetGroupChannelValue interface {
 	GetValue() BACnetChannelValue
 	// IsBACnetGroupChannelValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetGroupChannelValue()
+	// CreateBuilder creates a BACnetGroupChannelValueBuilder
+	CreateBACnetGroupChannelValueBuilder() BACnetGroupChannelValueBuilder
 }
 
 // _BACnetGroupChannelValue is the data-structure of this message
@@ -56,6 +59,164 @@ type _BACnetGroupChannelValue struct {
 }
 
 var _ BACnetGroupChannelValue = (*_BACnetGroupChannelValue)(nil)
+
+// NewBACnetGroupChannelValue factory function for _BACnetGroupChannelValue
+func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overridingPriority BACnetContextTagUnsignedInteger, value BACnetChannelValue) *_BACnetGroupChannelValue {
+	if channel == nil {
+		panic("channel of type BACnetContextTagUnsignedInteger for BACnetGroupChannelValue must not be nil")
+	}
+	if value == nil {
+		panic("value of type BACnetChannelValue for BACnetGroupChannelValue must not be nil")
+	}
+	return &_BACnetGroupChannelValue{Channel: channel, OverridingPriority: overridingPriority, Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetGroupChannelValueBuilder is a builder for BACnetGroupChannelValue
+type BACnetGroupChannelValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(channel BACnetContextTagUnsignedInteger, value BACnetChannelValue) BACnetGroupChannelValueBuilder
+	// WithChannel adds Channel (property field)
+	WithChannel(BACnetContextTagUnsignedInteger) BACnetGroupChannelValueBuilder
+	// WithChannelBuilder adds Channel (property field) which is build by the builder
+	WithChannelBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetGroupChannelValueBuilder
+	// WithOverridingPriority adds OverridingPriority (property field)
+	WithOptionalOverridingPriority(BACnetContextTagUnsignedInteger) BACnetGroupChannelValueBuilder
+	// WithOptionalOverridingPriorityBuilder adds OverridingPriority (property field) which is build by the builder
+	WithOptionalOverridingPriorityBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetGroupChannelValueBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetChannelValue) BACnetGroupChannelValueBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(BACnetChannelValueBuilder) BACnetChannelValueBuilder) BACnetGroupChannelValueBuilder
+	// Build builds the BACnetGroupChannelValue or returns an error if something is wrong
+	Build() (BACnetGroupChannelValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetGroupChannelValue
+}
+
+// NewBACnetGroupChannelValueBuilder() creates a BACnetGroupChannelValueBuilder
+func NewBACnetGroupChannelValueBuilder() BACnetGroupChannelValueBuilder {
+	return &_BACnetGroupChannelValueBuilder{_BACnetGroupChannelValue: new(_BACnetGroupChannelValue)}
+}
+
+type _BACnetGroupChannelValueBuilder struct {
+	*_BACnetGroupChannelValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetGroupChannelValueBuilder) = (*_BACnetGroupChannelValueBuilder)(nil)
+
+func (b *_BACnetGroupChannelValueBuilder) WithMandatoryFields(channel BACnetContextTagUnsignedInteger, value BACnetChannelValue) BACnetGroupChannelValueBuilder {
+	return b.WithChannel(channel).WithValue(value)
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithChannel(channel BACnetContextTagUnsignedInteger) BACnetGroupChannelValueBuilder {
+	b.Channel = channel
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithChannelBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetGroupChannelValueBuilder {
+	builder := builderSupplier(b.Channel.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Channel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithOptionalOverridingPriority(overridingPriority BACnetContextTagUnsignedInteger) BACnetGroupChannelValueBuilder {
+	b.OverridingPriority = overridingPriority
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithOptionalOverridingPriorityBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetGroupChannelValueBuilder {
+	builder := builderSupplier(b.OverridingPriority.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.OverridingPriority, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithValue(value BACnetChannelValue) BACnetGroupChannelValueBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) WithValueBuilder(builderSupplier func(BACnetChannelValueBuilder) BACnetChannelValueBuilder) BACnetGroupChannelValueBuilder {
+	builder := builderSupplier(b.Value.CreateBACnetChannelValueBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetChannelValueBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetGroupChannelValueBuilder) Build() (BACnetGroupChannelValue, error) {
+	if b.Channel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'channel' not set"))
+	}
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetGroupChannelValue.deepCopy(), nil
+}
+
+func (b *_BACnetGroupChannelValueBuilder) MustBuild() BACnetGroupChannelValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetGroupChannelValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetGroupChannelValueBuilder().(*_BACnetGroupChannelValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetGroupChannelValueBuilder creates a BACnetGroupChannelValueBuilder
+func (b *_BACnetGroupChannelValue) CreateBACnetGroupChannelValueBuilder() BACnetGroupChannelValueBuilder {
+	if b == nil {
+		return NewBACnetGroupChannelValueBuilder()
+	}
+	return &_BACnetGroupChannelValueBuilder{_BACnetGroupChannelValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +239,6 @@ func (m *_BACnetGroupChannelValue) GetValue() BACnetChannelValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetGroupChannelValue factory function for _BACnetGroupChannelValue
-func NewBACnetGroupChannelValue(channel BACnetContextTagUnsignedInteger, overridingPriority BACnetContextTagUnsignedInteger, value BACnetChannelValue) *_BACnetGroupChannelValue {
-	if channel == nil {
-		panic("channel of type BACnetContextTagUnsignedInteger for BACnetGroupChannelValue must not be nil")
-	}
-	if value == nil {
-		panic("value of type BACnetChannelValue for BACnetGroupChannelValue must not be nil")
-	}
-	return &_BACnetGroupChannelValue{Channel: channel, OverridingPriority: overridingPriority, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetGroupChannelValue(structType any) BACnetGroupChannelValue {
@@ -141,7 +291,7 @@ func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetGroupChannelValue) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetGroupChannelValue BACnetGroupChannelValue, err error) {
@@ -219,13 +369,33 @@ func (m *_BACnetGroupChannelValue) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetGroupChannelValue) IsBACnetGroupChannelValue() {}
 
+func (m *_BACnetGroupChannelValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetGroupChannelValue) deepCopy() *_BACnetGroupChannelValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetGroupChannelValueCopy := &_BACnetGroupChannelValue{
+		m.Channel.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.OverridingPriority.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Value.DeepCopy().(BACnetChannelValue),
+	}
+	return _BACnetGroupChannelValueCopy
+}
+
 func (m *_BACnetGroupChannelValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

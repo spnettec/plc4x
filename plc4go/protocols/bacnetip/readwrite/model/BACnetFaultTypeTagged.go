@@ -38,12 +38,15 @@ type BACnetFaultTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetFaultType
 	// IsBACnetFaultTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetFaultTypeTagged()
+	// CreateBuilder creates a BACnetFaultTypeTaggedBuilder
+	CreateBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder
 }
 
 // _BACnetFaultTypeTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetFaultTypeTagged struct {
 }
 
 var _ BACnetFaultTypeTagged = (*_BACnetFaultTypeTagged)(nil)
+
+// NewBACnetFaultTypeTagged factory function for _BACnetFaultTypeTagged
+func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tagNumber uint8, tagClass TagClass) *_BACnetFaultTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetFaultTypeTagged must not be nil")
+	}
+	return &_BACnetFaultTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetFaultTypeTaggedBuilder is a builder for BACnetFaultTypeTagged
+type BACnetFaultTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetFaultType) BACnetFaultTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetFaultTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetFaultType) BACnetFaultTypeTaggedBuilder
+	// Build builds the BACnetFaultTypeTagged or returns an error if something is wrong
+	Build() (BACnetFaultTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetFaultTypeTagged
+}
+
+// NewBACnetFaultTypeTaggedBuilder() creates a BACnetFaultTypeTaggedBuilder
+func NewBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder {
+	return &_BACnetFaultTypeTaggedBuilder{_BACnetFaultTypeTagged: new(_BACnetFaultTypeTagged)}
+}
+
+type _BACnetFaultTypeTaggedBuilder struct {
+	*_BACnetFaultTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetFaultTypeTaggedBuilder) = (*_BACnetFaultTypeTaggedBuilder)(nil)
+
+func (b *_BACnetFaultTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetFaultType) BACnetFaultTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetFaultTypeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetFaultTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) WithValue(value BACnetFaultType) BACnetFaultTypeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) Build() (BACnetFaultTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetFaultTypeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) MustBuild() BACnetFaultTypeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetFaultTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetFaultTypeTaggedBuilder().(*_BACnetFaultTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetFaultTypeTaggedBuilder creates a BACnetFaultTypeTaggedBuilder
+func (b *_BACnetFaultTypeTagged) CreateBACnetFaultTypeTaggedBuilder() BACnetFaultTypeTaggedBuilder {
+	if b == nil {
+		return NewBACnetFaultTypeTaggedBuilder()
+	}
+	return &_BACnetFaultTypeTaggedBuilder{_BACnetFaultTypeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetFaultTypeTagged) GetValue() BACnetFaultType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetFaultTypeTagged factory function for _BACnetFaultTypeTagged
-func NewBACnetFaultTypeTagged(header BACnetTagHeader, value BACnetFaultType, tagNumber uint8, tagClass TagClass) *_BACnetFaultTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetFaultTypeTagged must not be nil")
-	}
-	return &_BACnetFaultTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetFaultTypeTagged(structType any) BACnetFaultTypeTagged {
@@ -130,7 +237,7 @@ func BACnetFaultTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetFaultTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetFaultTypeTagged BACnetFaultTypeTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetFaultTypeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetFaultTypeTagged) IsBACnetFaultTypeTagged() {}
 
+func (m *_BACnetFaultTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetFaultTypeTagged) deepCopy() *_BACnetFaultTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetFaultTypeTaggedCopy := &_BACnetFaultTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetFaultTypeTaggedCopy
+}
+
 func (m *_BACnetFaultTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

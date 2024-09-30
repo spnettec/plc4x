@@ -40,14 +40,19 @@ type PortSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
+	// CreateBuilder creates a PortSegmentTypeBuilder
+	CreatePortSegmentTypeBuilder() PortSegmentTypeBuilder
 }
 
 // PortSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type PortSegmentTypeContract interface {
 	// IsPortSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPortSegmentType()
+	// CreateBuilder creates a PortSegmentTypeBuilder
+	CreatePortSegmentTypeBuilder() PortSegmentTypeBuilder
 }
 
 // PortSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,151 @@ var _ PortSegmentTypeContract = (*_PortSegmentType)(nil)
 func NewPortSegmentType() *_PortSegmentType {
 	return &_PortSegmentType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PortSegmentTypeBuilder is a builder for PortSegmentType
+type PortSegmentTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() PortSegmentTypeBuilder
+	// AsPortSegmentNormal converts this build to a subType of PortSegmentType. It is always possible to return to current builder using Done()
+	AsPortSegmentNormal() interface {
+		PortSegmentNormalBuilder
+		Done() PortSegmentTypeBuilder
+	}
+	// AsPortSegmentExtended converts this build to a subType of PortSegmentType. It is always possible to return to current builder using Done()
+	AsPortSegmentExtended() interface {
+		PortSegmentExtendedBuilder
+		Done() PortSegmentTypeBuilder
+	}
+	// Build builds the PortSegmentType or returns an error if something is wrong
+	PartialBuild() (PortSegmentTypeContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() PortSegmentTypeContract
+	// Build builds the PortSegmentType or returns an error if something is wrong
+	Build() (PortSegmentType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PortSegmentType
+}
+
+// NewPortSegmentTypeBuilder() creates a PortSegmentTypeBuilder
+func NewPortSegmentTypeBuilder() PortSegmentTypeBuilder {
+	return &_PortSegmentTypeBuilder{_PortSegmentType: new(_PortSegmentType)}
+}
+
+type _PortSegmentTypeChildBuilder interface {
+	utils.Copyable
+	setParent(PortSegmentTypeContract)
+	buildForPortSegmentType() (PortSegmentType, error)
+}
+
+type _PortSegmentTypeBuilder struct {
+	*_PortSegmentType
+
+	childBuilder _PortSegmentTypeChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PortSegmentTypeBuilder) = (*_PortSegmentTypeBuilder)(nil)
+
+func (b *_PortSegmentTypeBuilder) WithMandatoryFields() PortSegmentTypeBuilder {
+	return b
+}
+
+func (b *_PortSegmentTypeBuilder) PartialBuild() (PortSegmentTypeContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PortSegmentType.deepCopy(), nil
+}
+
+func (b *_PortSegmentTypeBuilder) PartialMustBuild() PortSegmentTypeContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PortSegmentTypeBuilder) AsPortSegmentNormal() interface {
+	PortSegmentNormalBuilder
+	Done() PortSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortSegmentNormalBuilder
+		Done() PortSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortSegmentNormalBuilder().(*_PortSegmentNormalBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PortSegmentTypeBuilder) AsPortSegmentExtended() interface {
+	PortSegmentExtendedBuilder
+	Done() PortSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PortSegmentExtendedBuilder
+		Done() PortSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPortSegmentExtendedBuilder().(*_PortSegmentExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_PortSegmentTypeBuilder) Build() (PortSegmentType, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForPortSegmentType()
+}
+
+func (b *_PortSegmentTypeBuilder) MustBuild() PortSegmentType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PortSegmentTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePortSegmentTypeBuilder().(*_PortSegmentTypeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_PortSegmentTypeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePortSegmentTypeBuilder creates a PortSegmentTypeBuilder
+func (b *_PortSegmentType) CreatePortSegmentTypeBuilder() PortSegmentTypeBuilder {
+	if b == nil {
+		return NewPortSegmentTypeBuilder()
+	}
+	return &_PortSegmentTypeBuilder{_PortSegmentType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastPortSegmentType(structType any) PortSegmentType {
@@ -108,7 +258,7 @@ func PortSegmentTypeParseWithBufferProducer[T PortSegmentType]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +268,12 @@ func PortSegmentTypeParseWithBuffer[T PortSegmentType](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_PortSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__portSegmentType PortSegmentType, err error) {
@@ -139,11 +294,11 @@ func (m *_PortSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child PortSegmentType
 	switch {
 	case extendedLinkAddress == bool(false): // PortSegmentNormal
-		if _child, err = (&_PortSegmentNormal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentNormal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentNormal for type-switch of PortSegmentType")
 		}
 	case extendedLinkAddress == bool(true): // PortSegmentExtended
-		if _child, err = (&_PortSegmentExtended{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_PortSegmentExtended).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PortSegmentExtended for type-switch of PortSegmentType")
 		}
 	default:
@@ -185,3 +340,17 @@ func (pm *_PortSegmentType) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_PortSegmentType) IsPortSegmentType() {}
+
+func (m *_PortSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PortSegmentType) deepCopy() *_PortSegmentType {
+	if m == nil {
+		return nil
+	}
+	_PortSegmentTypeCopy := &_PortSegmentType{
+		nil, // will be set by child
+	}
+	return _PortSegmentTypeCopy
+}

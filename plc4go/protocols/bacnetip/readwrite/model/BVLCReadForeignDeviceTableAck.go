@@ -40,11 +40,14 @@ type BVLCReadForeignDeviceTableAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetTable returns Table (property field)
 	GetTable() []BVLCForeignDeviceTableEntry
 	// IsBVLCReadForeignDeviceTableAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCReadForeignDeviceTableAck()
+	// CreateBuilder creates a BVLCReadForeignDeviceTableAckBuilder
+	CreateBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuilder
 }
 
 // _BVLCReadForeignDeviceTableAck is the data-structure of this message
@@ -58,6 +61,107 @@ type _BVLCReadForeignDeviceTableAck struct {
 
 var _ BVLCReadForeignDeviceTableAck = (*_BVLCReadForeignDeviceTableAck)(nil)
 var _ BVLCRequirements = (*_BVLCReadForeignDeviceTableAck)(nil)
+
+// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
+func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
+	_result := &_BVLCReadForeignDeviceTableAck{
+		BVLCContract: NewBVLC(),
+		Table:        table,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCReadForeignDeviceTableAckBuilder is a builder for BVLCReadForeignDeviceTableAck
+type BVLCReadForeignDeviceTableAckBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
+	// WithTable adds Table (property field)
+	WithTable(...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder
+	// Build builds the BVLCReadForeignDeviceTableAck or returns an error if something is wrong
+	Build() (BVLCReadForeignDeviceTableAck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCReadForeignDeviceTableAck
+}
+
+// NewBVLCReadForeignDeviceTableAckBuilder() creates a BVLCReadForeignDeviceTableAckBuilder
+func NewBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuilder {
+	return &_BVLCReadForeignDeviceTableAckBuilder{_BVLCReadForeignDeviceTableAck: new(_BVLCReadForeignDeviceTableAck)}
+}
+
+type _BVLCReadForeignDeviceTableAckBuilder struct {
+	*_BVLCReadForeignDeviceTableAck
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCReadForeignDeviceTableAckBuilder) = (*_BVLCReadForeignDeviceTableAckBuilder)(nil)
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) WithMandatoryFields(table []BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
+	return b.WithTable(table...)
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) WithTable(table ...BVLCForeignDeviceTableEntry) BVLCReadForeignDeviceTableAckBuilder {
+	b.Table = table
+	return b
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) Build() (BVLCReadForeignDeviceTableAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCReadForeignDeviceTableAck.deepCopy(), nil
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) MustBuild() BVLCReadForeignDeviceTableAck {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCReadForeignDeviceTableAckBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCReadForeignDeviceTableAckBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCReadForeignDeviceTableAckBuilder().(*_BVLCReadForeignDeviceTableAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCReadForeignDeviceTableAckBuilder creates a BVLCReadForeignDeviceTableAckBuilder
+func (b *_BVLCReadForeignDeviceTableAck) CreateBVLCReadForeignDeviceTableAckBuilder() BVLCReadForeignDeviceTableAckBuilder {
+	if b == nil {
+		return NewBVLCReadForeignDeviceTableAckBuilder()
+	}
+	return &_BVLCReadForeignDeviceTableAckBuilder{_BVLCReadForeignDeviceTableAck: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,16 +194,6 @@ func (m *_BVLCReadForeignDeviceTableAck) GetTable() []BVLCForeignDeviceTableEntr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCReadForeignDeviceTableAck factory function for _BVLCReadForeignDeviceTableAck
-func NewBVLCReadForeignDeviceTableAck(table []BVLCForeignDeviceTableEntry, bvlcPayloadLength uint16) *_BVLCReadForeignDeviceTableAck {
-	_result := &_BVLCReadForeignDeviceTableAck{
-		BVLCContract: NewBVLC(),
-		Table:        table,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCReadForeignDeviceTableAck(structType any) BVLCReadForeignDeviceTableAck {
@@ -199,13 +293,34 @@ func (m *_BVLCReadForeignDeviceTableAck) GetBvlcPayloadLength() uint16 {
 
 func (m *_BVLCReadForeignDeviceTableAck) IsBVLCReadForeignDeviceTableAck() {}
 
+func (m *_BVLCReadForeignDeviceTableAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCReadForeignDeviceTableAck) deepCopy() *_BVLCReadForeignDeviceTableAck {
+	if m == nil {
+		return nil
+	}
+	_BVLCReadForeignDeviceTableAckCopy := &_BVLCReadForeignDeviceTableAck{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[BVLCForeignDeviceTableEntry, BVLCForeignDeviceTableEntry](m.Table),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCReadForeignDeviceTableAckCopy
+}
+
 func (m *_BVLCReadForeignDeviceTableAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

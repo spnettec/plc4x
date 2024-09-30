@@ -38,6 +38,7 @@ type BACnetConstructedDataInProcess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetInProcess returns InProcess (property field)
 	GetInProcess() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataInProcess interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataInProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataInProcess()
+	// CreateBuilder creates a BACnetConstructedDataInProcessBuilder
+	CreateBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBuilder
 }
 
 // _BACnetConstructedDataInProcess is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataInProcess struct {
 
 var _ BACnetConstructedDataInProcess = (*_BACnetConstructedDataInProcess)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataInProcess)(nil)
+
+// NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
+func NewBACnetConstructedDataInProcess(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, inProcess BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
+	if inProcess == nil {
+		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
+	}
+	_result := &_BACnetConstructedDataInProcess{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		InProcess:                     inProcess,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataInProcessBuilder is a builder for BACnetConstructedDataInProcess
+type BACnetConstructedDataInProcessBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder
+	// WithInProcess adds InProcess (property field)
+	WithInProcess(BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder
+	// WithInProcessBuilder adds InProcess (property field) which is build by the builder
+	WithInProcessBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataInProcessBuilder
+	// Build builds the BACnetConstructedDataInProcess or returns an error if something is wrong
+	Build() (BACnetConstructedDataInProcess, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataInProcess
+}
+
+// NewBACnetConstructedDataInProcessBuilder() creates a BACnetConstructedDataInProcessBuilder
+func NewBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBuilder {
+	return &_BACnetConstructedDataInProcessBuilder{_BACnetConstructedDataInProcess: new(_BACnetConstructedDataInProcess)}
+}
+
+type _BACnetConstructedDataInProcessBuilder struct {
+	*_BACnetConstructedDataInProcess
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataInProcessBuilder) = (*_BACnetConstructedDataInProcessBuilder)(nil)
+
+func (b *_BACnetConstructedDataInProcessBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) WithMandatoryFields(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
+	return b.WithInProcess(inProcess)
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) WithInProcess(inProcess BACnetApplicationTagBoolean) BACnetConstructedDataInProcessBuilder {
+	b.InProcess = inProcess
+	return b
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) WithInProcessBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataInProcessBuilder {
+	builder := builderSupplier(b.InProcess.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.InProcess, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) Build() (BACnetConstructedDataInProcess, error) {
+	if b.InProcess == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'inProcess' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataInProcess.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) MustBuild() BACnetConstructedDataInProcess {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataInProcessBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataInProcessBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataInProcessBuilder().(*_BACnetConstructedDataInProcessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataInProcessBuilder creates a BACnetConstructedDataInProcessBuilder
+func (b *_BACnetConstructedDataInProcess) CreateBACnetConstructedDataInProcessBuilder() BACnetConstructedDataInProcessBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataInProcessBuilder()
+	}
+	return &_BACnetConstructedDataInProcessBuilder{_BACnetConstructedDataInProcess: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataInProcess) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataInProcess factory function for _BACnetConstructedDataInProcess
-func NewBACnetConstructedDataInProcess(inProcess BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataInProcess {
-	if inProcess == nil {
-		panic("inProcess of type BACnetApplicationTagBoolean for BACnetConstructedDataInProcess must not be nil")
-	}
-	_result := &_BACnetConstructedDataInProcess{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		InProcess:                     inProcess,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataInProcess(structType any) BACnetConstructedDataInProcess {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataInProcess) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetConstructedDataInProcess) IsBACnetConstructedDataInProcess() {}
 
+func (m *_BACnetConstructedDataInProcess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataInProcess) deepCopy() *_BACnetConstructedDataInProcess {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataInProcessCopy := &_BACnetConstructedDataInProcess{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.InProcess.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataInProcessCopy
+}
+
 func (m *_BACnetConstructedDataInProcess) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

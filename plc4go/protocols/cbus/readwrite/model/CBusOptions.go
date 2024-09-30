@@ -38,6 +38,7 @@ type CBusOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetConnect returns Connect (property field)
 	GetConnect() bool
 	// GetSmart returns Smart (property field)
@@ -58,6 +59,8 @@ type CBusOptions interface {
 	GetSrchk() bool
 	// IsCBusOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusOptions()
+	// CreateBuilder creates a CBusOptionsBuilder
+	CreateCBusOptionsBuilder() CBusOptionsBuilder
 }
 
 // _CBusOptions is the data-structure of this message
@@ -74,6 +77,143 @@ type _CBusOptions struct {
 }
 
 var _ CBusOptions = (*_CBusOptions)(nil)
+
+// NewCBusOptions factory function for _CBusOptions
+func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) *_CBusOptions {
+	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn, Srchk: srchk}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusOptionsBuilder is a builder for CBusOptions
+type CBusOptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) CBusOptionsBuilder
+	// WithConnect adds Connect (property field)
+	WithConnect(bool) CBusOptionsBuilder
+	// WithSmart adds Smart (property field)
+	WithSmart(bool) CBusOptionsBuilder
+	// WithIdmon adds Idmon (property field)
+	WithIdmon(bool) CBusOptionsBuilder
+	// WithExstat adds Exstat (property field)
+	WithExstat(bool) CBusOptionsBuilder
+	// WithMonitor adds Monitor (property field)
+	WithMonitor(bool) CBusOptionsBuilder
+	// WithMonall adds Monall (property field)
+	WithMonall(bool) CBusOptionsBuilder
+	// WithPun adds Pun (property field)
+	WithPun(bool) CBusOptionsBuilder
+	// WithPcn adds Pcn (property field)
+	WithPcn(bool) CBusOptionsBuilder
+	// WithSrchk adds Srchk (property field)
+	WithSrchk(bool) CBusOptionsBuilder
+	// Build builds the CBusOptions or returns an error if something is wrong
+	Build() (CBusOptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusOptions
+}
+
+// NewCBusOptionsBuilder() creates a CBusOptionsBuilder
+func NewCBusOptionsBuilder() CBusOptionsBuilder {
+	return &_CBusOptionsBuilder{_CBusOptions: new(_CBusOptions)}
+}
+
+type _CBusOptionsBuilder struct {
+	*_CBusOptions
+
+	err *utils.MultiError
+}
+
+var _ (CBusOptionsBuilder) = (*_CBusOptionsBuilder)(nil)
+
+func (b *_CBusOptionsBuilder) WithMandatoryFields(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) CBusOptionsBuilder {
+	return b.WithConnect(connect).WithSmart(smart).WithIdmon(idmon).WithExstat(exstat).WithMonitor(monitor).WithMonall(monall).WithPun(pun).WithPcn(pcn).WithSrchk(srchk)
+}
+
+func (b *_CBusOptionsBuilder) WithConnect(connect bool) CBusOptionsBuilder {
+	b.Connect = connect
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithSmart(smart bool) CBusOptionsBuilder {
+	b.Smart = smart
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithIdmon(idmon bool) CBusOptionsBuilder {
+	b.Idmon = idmon
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithExstat(exstat bool) CBusOptionsBuilder {
+	b.Exstat = exstat
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithMonitor(monitor bool) CBusOptionsBuilder {
+	b.Monitor = monitor
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithMonall(monall bool) CBusOptionsBuilder {
+	b.Monall = monall
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithPun(pun bool) CBusOptionsBuilder {
+	b.Pun = pun
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithPcn(pcn bool) CBusOptionsBuilder {
+	b.Pcn = pcn
+	return b
+}
+
+func (b *_CBusOptionsBuilder) WithSrchk(srchk bool) CBusOptionsBuilder {
+	b.Srchk = srchk
+	return b
+}
+
+func (b *_CBusOptionsBuilder) Build() (CBusOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusOptions.deepCopy(), nil
+}
+
+func (b *_CBusOptionsBuilder) MustBuild() CBusOptions {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateCBusOptionsBuilder().(*_CBusOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusOptionsBuilder creates a CBusOptionsBuilder
+func (b *_CBusOptions) CreateCBusOptionsBuilder() CBusOptionsBuilder {
+	if b == nil {
+		return NewCBusOptionsBuilder()
+	}
+	return &_CBusOptionsBuilder{_CBusOptions: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,11 +260,6 @@ func (m *_CBusOptions) GetSrchk() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusOptions factory function for _CBusOptions
-func NewCBusOptions(connect bool, smart bool, idmon bool, exstat bool, monitor bool, monall bool, pun bool, pcn bool, srchk bool) *_CBusOptions {
-	return &_CBusOptions{Connect: connect, Smart: smart, Idmon: idmon, Exstat: exstat, Monitor: monitor, Monall: monall, Pun: pun, Pcn: pcn, Srchk: srchk}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusOptions(structType any) CBusOptions {
@@ -193,7 +328,7 @@ func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CBusOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cBusOptions CBusOptions, err error) {
@@ -327,13 +462,39 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_CBusOptions) IsCBusOptions() {}
 
+func (m *_CBusOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusOptions) deepCopy() *_CBusOptions {
+	if m == nil {
+		return nil
+	}
+	_CBusOptionsCopy := &_CBusOptions{
+		m.Connect,
+		m.Smart,
+		m.Idmon,
+		m.Exstat,
+		m.Monitor,
+		m.Monall,
+		m.Pun,
+		m.Pcn,
+		m.Srchk,
+	}
+	return _CBusOptionsCopy
+}
+
 func (m *_CBusOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

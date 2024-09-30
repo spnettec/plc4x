@@ -38,12 +38,15 @@ type XmlElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLength returns Length (property field)
 	GetLength() int32
 	// GetValue returns Value (property field)
 	GetValue() []string
 	// IsXmlElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsXmlElement()
+	// CreateBuilder creates a XmlElementBuilder
+	CreateXmlElementBuilder() XmlElementBuilder
 }
 
 // _XmlElement is the data-structure of this message
@@ -53,6 +56,94 @@ type _XmlElement struct {
 }
 
 var _ XmlElement = (*_XmlElement)(nil)
+
+// NewXmlElement factory function for _XmlElement
+func NewXmlElement(length int32, value []string) *_XmlElement {
+	return &_XmlElement{Length: length, Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// XmlElementBuilder is a builder for XmlElement
+type XmlElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(length int32, value []string) XmlElementBuilder
+	// WithLength adds Length (property field)
+	WithLength(int32) XmlElementBuilder
+	// WithValue adds Value (property field)
+	WithValue(...string) XmlElementBuilder
+	// Build builds the XmlElement or returns an error if something is wrong
+	Build() (XmlElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() XmlElement
+}
+
+// NewXmlElementBuilder() creates a XmlElementBuilder
+func NewXmlElementBuilder() XmlElementBuilder {
+	return &_XmlElementBuilder{_XmlElement: new(_XmlElement)}
+}
+
+type _XmlElementBuilder struct {
+	*_XmlElement
+
+	err *utils.MultiError
+}
+
+var _ (XmlElementBuilder) = (*_XmlElementBuilder)(nil)
+
+func (b *_XmlElementBuilder) WithMandatoryFields(length int32, value []string) XmlElementBuilder {
+	return b.WithLength(length).WithValue(value...)
+}
+
+func (b *_XmlElementBuilder) WithLength(length int32) XmlElementBuilder {
+	b.Length = length
+	return b
+}
+
+func (b *_XmlElementBuilder) WithValue(value ...string) XmlElementBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_XmlElementBuilder) Build() (XmlElement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._XmlElement.deepCopy(), nil
+}
+
+func (b *_XmlElementBuilder) MustBuild() XmlElement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_XmlElementBuilder) DeepCopy() any {
+	_copy := b.CreateXmlElementBuilder().(*_XmlElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateXmlElementBuilder creates a XmlElementBuilder
+func (b *_XmlElement) CreateXmlElementBuilder() XmlElementBuilder {
+	if b == nil {
+		return NewXmlElementBuilder()
+	}
+	return &_XmlElementBuilder{_XmlElement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_XmlElement) GetValue() []string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewXmlElement factory function for _XmlElement
-func NewXmlElement(length int32, value []string) *_XmlElement {
-	return &_XmlElement{Length: length, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastXmlElement(structType any) XmlElement {
@@ -125,7 +211,7 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_XmlElement) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__xmlElement XmlElement, err error) {
@@ -189,13 +275,32 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_XmlElement) IsXmlElement() {}
 
+func (m *_XmlElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_XmlElement) deepCopy() *_XmlElement {
+	if m == nil {
+		return nil
+	}
+	_XmlElementCopy := &_XmlElement{
+		m.Length,
+		utils.DeepCopySlice[string, string](m.Value),
+	}
+	return _XmlElementCopy
+}
+
 func (m *_XmlElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

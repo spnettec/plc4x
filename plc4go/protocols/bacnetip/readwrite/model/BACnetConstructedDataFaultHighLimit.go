@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultHighLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultHighLimit returns FaultHighLimit (property field)
 	GetFaultHighLimit() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataFaultHighLimit interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataFaultHighLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFaultHighLimit()
+	// CreateBuilder creates a BACnetConstructedDataFaultHighLimitBuilder
+	CreateBACnetConstructedDataFaultHighLimitBuilder() BACnetConstructedDataFaultHighLimitBuilder
 }
 
 // _BACnetConstructedDataFaultHighLimit is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataFaultHighLimit struct {
 
 var _ BACnetConstructedDataFaultHighLimit = (*_BACnetConstructedDataFaultHighLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultHighLimit)(nil)
+
+// NewBACnetConstructedDataFaultHighLimit factory function for _BACnetConstructedDataFaultHighLimit
+func NewBACnetConstructedDataFaultHighLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultHighLimit BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultHighLimit {
+	if faultHighLimit == nil {
+		panic("faultHighLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFaultHighLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultHighLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultHighLimit:                faultHighLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFaultHighLimitBuilder is a builder for BACnetConstructedDataFaultHighLimit
+type BACnetConstructedDataFaultHighLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultHighLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder
+	// WithFaultHighLimit adds FaultHighLimit (property field)
+	WithFaultHighLimit(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder
+	// WithFaultHighLimitBuilder adds FaultHighLimit (property field) which is build by the builder
+	WithFaultHighLimitBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultHighLimitBuilder
+	// Build builds the BACnetConstructedDataFaultHighLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataFaultHighLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFaultHighLimit
+}
+
+// NewBACnetConstructedDataFaultHighLimitBuilder() creates a BACnetConstructedDataFaultHighLimitBuilder
+func NewBACnetConstructedDataFaultHighLimitBuilder() BACnetConstructedDataFaultHighLimitBuilder {
+	return &_BACnetConstructedDataFaultHighLimitBuilder{_BACnetConstructedDataFaultHighLimit: new(_BACnetConstructedDataFaultHighLimit)}
+}
+
+type _BACnetConstructedDataFaultHighLimitBuilder struct {
+	*_BACnetConstructedDataFaultHighLimit
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFaultHighLimitBuilder) = (*_BACnetConstructedDataFaultHighLimitBuilder)(nil)
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) WithMandatoryFields(faultHighLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder {
+	return b.WithFaultHighLimit(faultHighLimit)
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) WithFaultHighLimit(faultHighLimit BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultHighLimitBuilder {
+	b.FaultHighLimit = faultHighLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) WithFaultHighLimitBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultHighLimitBuilder {
+	builder := builderSupplier(b.FaultHighLimit.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.FaultHighLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) Build() (BACnetConstructedDataFaultHighLimit, error) {
+	if b.FaultHighLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'faultHighLimit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFaultHighLimit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) MustBuild() BACnetConstructedDataFaultHighLimit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultHighLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultHighLimitBuilder().(*_BACnetConstructedDataFaultHighLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFaultHighLimitBuilder creates a BACnetConstructedDataFaultHighLimitBuilder
+func (b *_BACnetConstructedDataFaultHighLimit) CreateBACnetConstructedDataFaultHighLimitBuilder() BACnetConstructedDataFaultHighLimitBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFaultHighLimitBuilder()
+	}
+	return &_BACnetConstructedDataFaultHighLimitBuilder{_BACnetConstructedDataFaultHighLimit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataFaultHighLimit) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultHighLimit factory function for _BACnetConstructedDataFaultHighLimit
-func NewBACnetConstructedDataFaultHighLimit(faultHighLimit BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultHighLimit {
-	if faultHighLimit == nil {
-		panic("faultHighLimit of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataFaultHighLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultHighLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultHighLimit:                faultHighLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultHighLimit(structType any) BACnetConstructedDataFaultHighLimit {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataFaultHighLimit) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataFaultHighLimit) IsBACnetConstructedDataFaultHighLimit() {}
 
+func (m *_BACnetConstructedDataFaultHighLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultHighLimit) deepCopy() *_BACnetConstructedDataFaultHighLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultHighLimitCopy := &_BACnetConstructedDataFaultHighLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FaultHighLimit.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultHighLimitCopy
+}
+
 func (m *_BACnetConstructedDataFaultHighLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

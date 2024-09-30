@@ -38,11 +38,14 @@ type BACnetRecipientDevice interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetRecipient
 	// GetDeviceValue returns DeviceValue (property field)
 	GetDeviceValue() BACnetContextTagObjectIdentifier
 	// IsBACnetRecipientDevice is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipientDevice()
+	// CreateBuilder creates a BACnetRecipientDeviceBuilder
+	CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder
 }
 
 // _BACnetRecipientDevice is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetRecipientDevice struct {
 
 var _ BACnetRecipientDevice = (*_BACnetRecipientDevice)(nil)
 var _ BACnetRecipientRequirements = (*_BACnetRecipientDevice)(nil)
+
+// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
+func NewBACnetRecipientDevice(peekedTagHeader BACnetTagHeader, deviceValue BACnetContextTagObjectIdentifier) *_BACnetRecipientDevice {
+	if deviceValue == nil {
+		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
+	}
+	_result := &_BACnetRecipientDevice{
+		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
+		DeviceValue:             deviceValue,
+	}
+	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientDeviceBuilder is a builder for BACnetRecipientDevice
+type BACnetRecipientDeviceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder
+	// WithDeviceValue adds DeviceValue (property field)
+	WithDeviceValue(BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder
+	// WithDeviceValueBuilder adds DeviceValue (property field) which is build by the builder
+	WithDeviceValueBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder
+	// Build builds the BACnetRecipientDevice or returns an error if something is wrong
+	Build() (BACnetRecipientDevice, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientDevice
+}
+
+// NewBACnetRecipientDeviceBuilder() creates a BACnetRecipientDeviceBuilder
+func NewBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
+	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: new(_BACnetRecipientDevice)}
+}
+
+type _BACnetRecipientDeviceBuilder struct {
+	*_BACnetRecipientDevice
+
+	parentBuilder *_BACnetRecipientBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientDeviceBuilder) = (*_BACnetRecipientDeviceBuilder)(nil)
+
+func (b *_BACnetRecipientDeviceBuilder) setParent(contract BACnetRecipientContract) {
+	b.BACnetRecipientContract = contract
+}
+
+func (b *_BACnetRecipientDeviceBuilder) WithMandatoryFields(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	return b.WithDeviceValue(deviceValue)
+}
+
+func (b *_BACnetRecipientDeviceBuilder) WithDeviceValue(deviceValue BACnetContextTagObjectIdentifier) BACnetRecipientDeviceBuilder {
+	b.DeviceValue = deviceValue
+	return b
+}
+
+func (b *_BACnetRecipientDeviceBuilder) WithDeviceValueBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetRecipientDeviceBuilder {
+	builder := builderSupplier(b.DeviceValue.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.DeviceValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRecipientDeviceBuilder) Build() (BACnetRecipientDevice, error) {
+	if b.DeviceValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetRecipientDevice.deepCopy(), nil
+}
+
+func (b *_BACnetRecipientDeviceBuilder) MustBuild() BACnetRecipientDevice {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetRecipientDeviceBuilder) Done() BACnetRecipientBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetRecipientDeviceBuilder) buildForBACnetRecipient() (BACnetRecipient, error) {
+	return b.Build()
+}
+
+func (b *_BACnetRecipientDeviceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientDeviceBuilder().(*_BACnetRecipientDeviceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetRecipientDeviceBuilder creates a BACnetRecipientDeviceBuilder
+func (b *_BACnetRecipientDevice) CreateBACnetRecipientDeviceBuilder() BACnetRecipientDeviceBuilder {
+	if b == nil {
+		return NewBACnetRecipientDeviceBuilder()
+	}
+	return &_BACnetRecipientDeviceBuilder{_BACnetRecipientDevice: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetRecipientDevice) GetDeviceValue() BACnetContextTagObjectIdentifi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientDevice factory function for _BACnetRecipientDevice
-func NewBACnetRecipientDevice(deviceValue BACnetContextTagObjectIdentifier, peekedTagHeader BACnetTagHeader) *_BACnetRecipientDevice {
-	if deviceValue == nil {
-		panic("deviceValue of type BACnetContextTagObjectIdentifier for BACnetRecipientDevice must not be nil")
-	}
-	_result := &_BACnetRecipientDevice{
-		BACnetRecipientContract: NewBACnetRecipient(peekedTagHeader),
-		DeviceValue:             deviceValue,
-	}
-	_result.BACnetRecipientContract.(*_BACnetRecipient)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientDevice(structType any) BACnetRecipientDevice {
@@ -179,13 +294,33 @@ func (m *_BACnetRecipientDevice) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_BACnetRecipientDevice) IsBACnetRecipientDevice() {}
 
+func (m *_BACnetRecipientDevice) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientDevice) deepCopy() *_BACnetRecipientDevice {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientDeviceCopy := &_BACnetRecipientDevice{
+		m.BACnetRecipientContract.(*_BACnetRecipient).deepCopy(),
+		m.DeviceValue.DeepCopy().(BACnetContextTagObjectIdentifier),
+	}
+	m.BACnetRecipientContract.(*_BACnetRecipient)._SubType = m
+	return _BACnetRecipientDeviceCopy
+}
+
 func (m *_BACnetRecipientDevice) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

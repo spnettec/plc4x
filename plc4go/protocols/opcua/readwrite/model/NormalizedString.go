@@ -36,8 +36,11 @@ type NormalizedString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNormalizedString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNormalizedString()
+	// CreateBuilder creates a NormalizedStringBuilder
+	CreateNormalizedStringBuilder() NormalizedStringBuilder
 }
 
 // _NormalizedString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ NormalizedString = (*_NormalizedString)(nil)
 func NewNormalizedString() *_NormalizedString {
 	return &_NormalizedString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NormalizedStringBuilder is a builder for NormalizedString
+type NormalizedStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NormalizedStringBuilder
+	// Build builds the NormalizedString or returns an error if something is wrong
+	Build() (NormalizedString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NormalizedString
+}
+
+// NewNormalizedStringBuilder() creates a NormalizedStringBuilder
+func NewNormalizedStringBuilder() NormalizedStringBuilder {
+	return &_NormalizedStringBuilder{_NormalizedString: new(_NormalizedString)}
+}
+
+type _NormalizedStringBuilder struct {
+	*_NormalizedString
+
+	err *utils.MultiError
+}
+
+var _ (NormalizedStringBuilder) = (*_NormalizedStringBuilder)(nil)
+
+func (b *_NormalizedStringBuilder) WithMandatoryFields() NormalizedStringBuilder {
+	return b
+}
+
+func (b *_NormalizedStringBuilder) Build() (NormalizedString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NormalizedString.deepCopy(), nil
+}
+
+func (b *_NormalizedStringBuilder) MustBuild() NormalizedString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NormalizedStringBuilder) DeepCopy() any {
+	_copy := b.CreateNormalizedStringBuilder().(*_NormalizedStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNormalizedStringBuilder creates a NormalizedStringBuilder
+func (b *_NormalizedString) CreateNormalizedStringBuilder() NormalizedStringBuilder {
+	if b == nil {
+		return NewNormalizedStringBuilder()
+	}
+	return &_NormalizedStringBuilder{_NormalizedString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastNormalizedString(structType any) NormalizedString {
@@ -91,7 +163,7 @@ func NormalizedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NormalizedString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__normalizedString NormalizedString, err error) {
@@ -135,13 +207,29 @@ func (m *_NormalizedString) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_NormalizedString) IsNormalizedString() {}
 
+func (m *_NormalizedString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NormalizedString) deepCopy() *_NormalizedString {
+	if m == nil {
+		return nil
+	}
+	_NormalizedStringCopy := &_NormalizedString{}
+	return _NormalizedStringCopy
+}
+
 func (m *_NormalizedString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

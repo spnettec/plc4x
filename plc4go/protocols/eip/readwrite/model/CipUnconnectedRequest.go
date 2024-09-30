@@ -41,6 +41,7 @@ type CipUnconnectedRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetClassSegment returns ClassSegment (property field)
 	GetClassSegment() PathSegment
@@ -54,6 +55,8 @@ type CipUnconnectedRequest interface {
 	GetSlot() int8
 	// IsCipUnconnectedRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipUnconnectedRequest()
+	// CreateBuilder creates a CipUnconnectedRequestBuilder
+	CreateCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder
 }
 
 // _CipUnconnectedRequest is the data-structure of this message
@@ -70,6 +73,211 @@ type _CipUnconnectedRequest struct {
 
 var _ CipUnconnectedRequest = (*_CipUnconnectedRequest)(nil)
 var _ CipServiceRequirements = (*_CipUnconnectedRequest)(nil)
+
+// NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
+func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
+	if classSegment == nil {
+		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
+	}
+	if instanceSegment == nil {
+		panic("instanceSegment of type PathSegment for CipUnconnectedRequest must not be nil")
+	}
+	if unconnectedService == nil {
+		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
+	}
+	_result := &_CipUnconnectedRequest{
+		CipServiceContract: NewCipService(serviceLen),
+		ClassSegment:       classSegment,
+		InstanceSegment:    instanceSegment,
+		UnconnectedService: unconnectedService,
+		BackPlane:          backPlane,
+		Slot:               slot,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipUnconnectedRequestBuilder is a builder for CipUnconnectedRequest
+type CipUnconnectedRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder
+	// WithClassSegment adds ClassSegment (property field)
+	WithClassSegment(PathSegment) CipUnconnectedRequestBuilder
+	// WithClassSegmentBuilder adds ClassSegment (property field) which is build by the builder
+	WithClassSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) CipUnconnectedRequestBuilder
+	// WithInstanceSegment adds InstanceSegment (property field)
+	WithInstanceSegment(PathSegment) CipUnconnectedRequestBuilder
+	// WithInstanceSegmentBuilder adds InstanceSegment (property field) which is build by the builder
+	WithInstanceSegmentBuilder(func(PathSegmentBuilder) PathSegmentBuilder) CipUnconnectedRequestBuilder
+	// WithUnconnectedService adds UnconnectedService (property field)
+	WithUnconnectedService(CipService) CipUnconnectedRequestBuilder
+	// WithUnconnectedServiceBuilder adds UnconnectedService (property field) which is build by the builder
+	WithUnconnectedServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) CipUnconnectedRequestBuilder
+	// WithBackPlane adds BackPlane (property field)
+	WithBackPlane(int8) CipUnconnectedRequestBuilder
+	// WithSlot adds Slot (property field)
+	WithSlot(int8) CipUnconnectedRequestBuilder
+	// Build builds the CipUnconnectedRequest or returns an error if something is wrong
+	Build() (CipUnconnectedRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipUnconnectedRequest
+}
+
+// NewCipUnconnectedRequestBuilder() creates a CipUnconnectedRequestBuilder
+func NewCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder {
+	return &_CipUnconnectedRequestBuilder{_CipUnconnectedRequest: new(_CipUnconnectedRequest)}
+}
+
+type _CipUnconnectedRequestBuilder struct {
+	*_CipUnconnectedRequest
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipUnconnectedRequestBuilder) = (*_CipUnconnectedRequestBuilder)(nil)
+
+func (b *_CipUnconnectedRequestBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithMandatoryFields(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8) CipUnconnectedRequestBuilder {
+	return b.WithClassSegment(classSegment).WithInstanceSegment(instanceSegment).WithUnconnectedService(unconnectedService).WithBackPlane(backPlane).WithSlot(slot)
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithClassSegment(classSegment PathSegment) CipUnconnectedRequestBuilder {
+	b.ClassSegment = classSegment
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithClassSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) CipUnconnectedRequestBuilder {
+	builder := builderSupplier(b.ClassSegment.CreatePathSegmentBuilder())
+	var err error
+	b.ClassSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithInstanceSegment(instanceSegment PathSegment) CipUnconnectedRequestBuilder {
+	b.InstanceSegment = instanceSegment
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithInstanceSegmentBuilder(builderSupplier func(PathSegmentBuilder) PathSegmentBuilder) CipUnconnectedRequestBuilder {
+	builder := builderSupplier(b.InstanceSegment.CreatePathSegmentBuilder())
+	var err error
+	b.InstanceSegment, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PathSegmentBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithUnconnectedService(unconnectedService CipService) CipUnconnectedRequestBuilder {
+	b.UnconnectedService = unconnectedService
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithUnconnectedServiceBuilder(builderSupplier func(CipServiceBuilder) CipServiceBuilder) CipUnconnectedRequestBuilder {
+	builder := builderSupplier(b.UnconnectedService.CreateCipServiceBuilder())
+	var err error
+	b.UnconnectedService, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CipServiceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithBackPlane(backPlane int8) CipUnconnectedRequestBuilder {
+	b.BackPlane = backPlane
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) WithSlot(slot int8) CipUnconnectedRequestBuilder {
+	b.Slot = slot
+	return b
+}
+
+func (b *_CipUnconnectedRequestBuilder) Build() (CipUnconnectedRequest, error) {
+	if b.ClassSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'classSegment' not set"))
+	}
+	if b.InstanceSegment == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'instanceSegment' not set"))
+	}
+	if b.UnconnectedService == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'unconnectedService' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipUnconnectedRequest.deepCopy(), nil
+}
+
+func (b *_CipUnconnectedRequestBuilder) MustBuild() CipUnconnectedRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipUnconnectedRequestBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipUnconnectedRequestBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipUnconnectedRequestBuilder) DeepCopy() any {
+	_copy := b.CreateCipUnconnectedRequestBuilder().(*_CipUnconnectedRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipUnconnectedRequestBuilder creates a CipUnconnectedRequestBuilder
+func (b *_CipUnconnectedRequest) CreateCipUnconnectedRequestBuilder() CipUnconnectedRequestBuilder {
+	if b == nil {
+		return NewCipUnconnectedRequestBuilder()
+	}
+	return &_CipUnconnectedRequestBuilder{_CipUnconnectedRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -139,29 +347,6 @@ func (m *_CipUnconnectedRequest) GetRoute() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipUnconnectedRequest factory function for _CipUnconnectedRequest
-func NewCipUnconnectedRequest(classSegment PathSegment, instanceSegment PathSegment, unconnectedService CipService, backPlane int8, slot int8, serviceLen uint16) *_CipUnconnectedRequest {
-	if classSegment == nil {
-		panic("classSegment of type PathSegment for CipUnconnectedRequest must not be nil")
-	}
-	if instanceSegment == nil {
-		panic("instanceSegment of type PathSegment for CipUnconnectedRequest must not be nil")
-	}
-	if unconnectedService == nil {
-		panic("unconnectedService of type CipService for CipUnconnectedRequest must not be nil")
-	}
-	_result := &_CipUnconnectedRequest{
-		CipServiceContract: NewCipService(serviceLen),
-		ClassSegment:       classSegment,
-		InstanceSegment:    instanceSegment,
-		UnconnectedService: unconnectedService,
-		BackPlane:          backPlane,
-		Slot:               slot,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipUnconnectedRequest(structType any) CipUnconnectedRequest {
@@ -351,13 +536,38 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_CipUnconnectedRequest) IsCipUnconnectedRequest() {}
 
+func (m *_CipUnconnectedRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipUnconnectedRequest) deepCopy() *_CipUnconnectedRequest {
+	if m == nil {
+		return nil
+	}
+	_CipUnconnectedRequestCopy := &_CipUnconnectedRequest{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.ClassSegment.DeepCopy().(PathSegment),
+		m.InstanceSegment.DeepCopy().(PathSegment),
+		m.UnconnectedService.DeepCopy().(CipService),
+		m.BackPlane,
+		m.Slot,
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipUnconnectedRequestCopy
+}
+
 func (m *_CipUnconnectedRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

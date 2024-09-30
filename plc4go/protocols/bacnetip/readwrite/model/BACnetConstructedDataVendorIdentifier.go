@@ -38,6 +38,7 @@ type BACnetConstructedDataVendorIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetVendorIdentifier returns VendorIdentifier (property field)
 	GetVendorIdentifier() BACnetVendorIdTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataVendorIdentifier interface {
 	GetActualValue() BACnetVendorIdTagged
 	// IsBACnetConstructedDataVendorIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataVendorIdentifier()
+	// CreateBuilder creates a BACnetConstructedDataVendorIdentifierBuilder
+	CreateBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVendorIdentifierBuilder
 }
 
 // _BACnetConstructedDataVendorIdentifier is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataVendorIdentifier struct {
 
 var _ BACnetConstructedDataVendorIdentifier = (*_BACnetConstructedDataVendorIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataVendorIdentifier)(nil)
+
+// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
+func NewBACnetConstructedDataVendorIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, vendorIdentifier BACnetVendorIdTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
+	if vendorIdentifier == nil {
+		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataVendorIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		VendorIdentifier:              vendorIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataVendorIdentifierBuilder is a builder for BACnetConstructedDataVendorIdentifier
+type BACnetConstructedDataVendorIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder
+	// WithVendorIdentifier adds VendorIdentifier (property field)
+	WithVendorIdentifier(BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder
+	// WithVendorIdentifierBuilder adds VendorIdentifier (property field) which is build by the builder
+	WithVendorIdentifierBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetConstructedDataVendorIdentifierBuilder
+	// Build builds the BACnetConstructedDataVendorIdentifier or returns an error if something is wrong
+	Build() (BACnetConstructedDataVendorIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataVendorIdentifier
+}
+
+// NewBACnetConstructedDataVendorIdentifierBuilder() creates a BACnetConstructedDataVendorIdentifierBuilder
+func NewBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVendorIdentifierBuilder {
+	return &_BACnetConstructedDataVendorIdentifierBuilder{_BACnetConstructedDataVendorIdentifier: new(_BACnetConstructedDataVendorIdentifier)}
+}
+
+type _BACnetConstructedDataVendorIdentifierBuilder struct {
+	*_BACnetConstructedDataVendorIdentifier
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataVendorIdentifierBuilder) = (*_BACnetConstructedDataVendorIdentifierBuilder)(nil)
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithMandatoryFields(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
+	return b.WithVendorIdentifier(vendorIdentifier)
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifier(vendorIdentifier BACnetVendorIdTagged) BACnetConstructedDataVendorIdentifierBuilder {
+	b.VendorIdentifier = vendorIdentifier
+	return b
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) WithVendorIdentifierBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetConstructedDataVendorIdentifierBuilder {
+	builder := builderSupplier(b.VendorIdentifier.CreateBACnetVendorIdTaggedBuilder())
+	var err error
+	b.VendorIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) Build() (BACnetConstructedDataVendorIdentifier, error) {
+	if b.VendorIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'vendorIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataVendorIdentifier.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) MustBuild() BACnetConstructedDataVendorIdentifier {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataVendorIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataVendorIdentifierBuilder().(*_BACnetConstructedDataVendorIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataVendorIdentifierBuilder creates a BACnetConstructedDataVendorIdentifierBuilder
+func (b *_BACnetConstructedDataVendorIdentifier) CreateBACnetConstructedDataVendorIdentifierBuilder() BACnetConstructedDataVendorIdentifierBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataVendorIdentifierBuilder()
+	}
+	return &_BACnetConstructedDataVendorIdentifierBuilder{_BACnetConstructedDataVendorIdentifier: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataVendorIdentifier) GetActualValue() BACnetVendorId
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataVendorIdentifier factory function for _BACnetConstructedDataVendorIdentifier
-func NewBACnetConstructedDataVendorIdentifier(vendorIdentifier BACnetVendorIdTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataVendorIdentifier {
-	if vendorIdentifier == nil {
-		panic("vendorIdentifier of type BACnetVendorIdTagged for BACnetConstructedDataVendorIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataVendorIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		VendorIdentifier:              vendorIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataVendorIdentifier(structType any) BACnetConstructedDataVendorIdentifier {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataVendorIdentifier) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataVendorIdentifier) IsBACnetConstructedDataVendorIdentifier() {}
 
+func (m *_BACnetConstructedDataVendorIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataVendorIdentifier) deepCopy() *_BACnetConstructedDataVendorIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataVendorIdentifierCopy := &_BACnetConstructedDataVendorIdentifier{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.VendorIdentifier.DeepCopy().(BACnetVendorIdTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataVendorIdentifierCopy
+}
+
 func (m *_BACnetConstructedDataVendorIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

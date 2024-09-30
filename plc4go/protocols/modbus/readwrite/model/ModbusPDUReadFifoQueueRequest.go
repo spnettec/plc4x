@@ -38,11 +38,14 @@ type ModbusPDUReadFifoQueueRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetFifoPointerAddress returns FifoPointerAddress (property field)
 	GetFifoPointerAddress() uint16
 	// IsModbusPDUReadFifoQueueRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUReadFifoQueueRequest()
+	// CreateBuilder creates a ModbusPDUReadFifoQueueRequestBuilder
+	CreateModbusPDUReadFifoQueueRequestBuilder() ModbusPDUReadFifoQueueRequestBuilder
 }
 
 // _ModbusPDUReadFifoQueueRequest is the data-structure of this message
@@ -53,6 +56,107 @@ type _ModbusPDUReadFifoQueueRequest struct {
 
 var _ ModbusPDUReadFifoQueueRequest = (*_ModbusPDUReadFifoQueueRequest)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUReadFifoQueueRequest)(nil)
+
+// NewModbusPDUReadFifoQueueRequest factory function for _ModbusPDUReadFifoQueueRequest
+func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDUReadFifoQueueRequest {
+	_result := &_ModbusPDUReadFifoQueueRequest{
+		ModbusPDUContract:  NewModbusPDU(),
+		FifoPointerAddress: fifoPointerAddress,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUReadFifoQueueRequestBuilder is a builder for ModbusPDUReadFifoQueueRequest
+type ModbusPDUReadFifoQueueRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fifoPointerAddress uint16) ModbusPDUReadFifoQueueRequestBuilder
+	// WithFifoPointerAddress adds FifoPointerAddress (property field)
+	WithFifoPointerAddress(uint16) ModbusPDUReadFifoQueueRequestBuilder
+	// Build builds the ModbusPDUReadFifoQueueRequest or returns an error if something is wrong
+	Build() (ModbusPDUReadFifoQueueRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUReadFifoQueueRequest
+}
+
+// NewModbusPDUReadFifoQueueRequestBuilder() creates a ModbusPDUReadFifoQueueRequestBuilder
+func NewModbusPDUReadFifoQueueRequestBuilder() ModbusPDUReadFifoQueueRequestBuilder {
+	return &_ModbusPDUReadFifoQueueRequestBuilder{_ModbusPDUReadFifoQueueRequest: new(_ModbusPDUReadFifoQueueRequest)}
+}
+
+type _ModbusPDUReadFifoQueueRequestBuilder struct {
+	*_ModbusPDUReadFifoQueueRequest
+
+	parentBuilder *_ModbusPDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUReadFifoQueueRequestBuilder) = (*_ModbusPDUReadFifoQueueRequestBuilder)(nil)
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) WithMandatoryFields(fifoPointerAddress uint16) ModbusPDUReadFifoQueueRequestBuilder {
+	return b.WithFifoPointerAddress(fifoPointerAddress)
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) WithFifoPointerAddress(fifoPointerAddress uint16) ModbusPDUReadFifoQueueRequestBuilder {
+	b.FifoPointerAddress = fifoPointerAddress
+	return b
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) Build() (ModbusPDUReadFifoQueueRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusPDUReadFifoQueueRequest.deepCopy(), nil
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) MustBuild() ModbusPDUReadFifoQueueRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUReadFifoQueueRequestBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUReadFifoQueueRequestBuilder().(*_ModbusPDUReadFifoQueueRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusPDUReadFifoQueueRequestBuilder creates a ModbusPDUReadFifoQueueRequestBuilder
+func (b *_ModbusPDUReadFifoQueueRequest) CreateModbusPDUReadFifoQueueRequestBuilder() ModbusPDUReadFifoQueueRequestBuilder {
+	if b == nil {
+		return NewModbusPDUReadFifoQueueRequestBuilder()
+	}
+	return &_ModbusPDUReadFifoQueueRequestBuilder{_ModbusPDUReadFifoQueueRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,16 +197,6 @@ func (m *_ModbusPDUReadFifoQueueRequest) GetFifoPointerAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUReadFifoQueueRequest factory function for _ModbusPDUReadFifoQueueRequest
-func NewModbusPDUReadFifoQueueRequest(fifoPointerAddress uint16) *_ModbusPDUReadFifoQueueRequest {
-	_result := &_ModbusPDUReadFifoQueueRequest{
-		ModbusPDUContract:  NewModbusPDU(),
-		FifoPointerAddress: fifoPointerAddress,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUReadFifoQueueRequest(structType any) ModbusPDUReadFifoQueueRequest {
@@ -188,13 +282,33 @@ func (m *_ModbusPDUReadFifoQueueRequest) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_ModbusPDUReadFifoQueueRequest) IsModbusPDUReadFifoQueueRequest() {}
 
+func (m *_ModbusPDUReadFifoQueueRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUReadFifoQueueRequest) deepCopy() *_ModbusPDUReadFifoQueueRequest {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUReadFifoQueueRequestCopy := &_ModbusPDUReadFifoQueueRequest{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.FifoPointerAddress,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUReadFifoQueueRequestCopy
+}
+
 func (m *_ModbusPDUReadFifoQueueRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

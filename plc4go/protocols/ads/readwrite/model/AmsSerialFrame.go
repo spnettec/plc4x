@@ -38,6 +38,7 @@ type AmsSerialFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -54,6 +55,8 @@ type AmsSerialFrame interface {
 	GetCrc() uint16
 	// IsAmsSerialFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsSerialFrame()
+	// CreateBuilder creates a AmsSerialFrameBuilder
+	CreateAmsSerialFrameBuilder() AmsSerialFrameBuilder
 }
 
 // _AmsSerialFrame is the data-structure of this message
@@ -68,6 +71,153 @@ type _AmsSerialFrame struct {
 }
 
 var _ AmsSerialFrame = (*_AmsSerialFrame)(nil)
+
+// NewAmsSerialFrame factory function for _AmsSerialFrame
+func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) *_AmsSerialFrame {
+	if userdata == nil {
+		panic("userdata of type AmsPacket for AmsSerialFrame must not be nil")
+	}
+	return &_AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsSerialFrameBuilder is a builder for AmsSerialFrame
+type AmsSerialFrameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) AmsSerialFrameBuilder
+	// WithMagicCookie adds MagicCookie (property field)
+	WithMagicCookie(uint16) AmsSerialFrameBuilder
+	// WithTransmitterAddress adds TransmitterAddress (property field)
+	WithTransmitterAddress(int8) AmsSerialFrameBuilder
+	// WithReceiverAddress adds ReceiverAddress (property field)
+	WithReceiverAddress(int8) AmsSerialFrameBuilder
+	// WithFragmentNumber adds FragmentNumber (property field)
+	WithFragmentNumber(int8) AmsSerialFrameBuilder
+	// WithLength adds Length (property field)
+	WithLength(int8) AmsSerialFrameBuilder
+	// WithUserdata adds Userdata (property field)
+	WithUserdata(AmsPacket) AmsSerialFrameBuilder
+	// WithUserdataBuilder adds Userdata (property field) which is build by the builder
+	WithUserdataBuilder(func(AmsPacketBuilder) AmsPacketBuilder) AmsSerialFrameBuilder
+	// WithCrc adds Crc (property field)
+	WithCrc(uint16) AmsSerialFrameBuilder
+	// Build builds the AmsSerialFrame or returns an error if something is wrong
+	Build() (AmsSerialFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsSerialFrame
+}
+
+// NewAmsSerialFrameBuilder() creates a AmsSerialFrameBuilder
+func NewAmsSerialFrameBuilder() AmsSerialFrameBuilder {
+	return &_AmsSerialFrameBuilder{_AmsSerialFrame: new(_AmsSerialFrame)}
+}
+
+type _AmsSerialFrameBuilder struct {
+	*_AmsSerialFrame
+
+	err *utils.MultiError
+}
+
+var _ (AmsSerialFrameBuilder) = (*_AmsSerialFrameBuilder)(nil)
+
+func (b *_AmsSerialFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) AmsSerialFrameBuilder {
+	return b.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithUserdata(userdata).WithCrc(crc)
+}
+
+func (b *_AmsSerialFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialFrameBuilder {
+	b.MagicCookie = magicCookie
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialFrameBuilder {
+	b.TransmitterAddress = transmitterAddress
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialFrameBuilder {
+	b.ReceiverAddress = receiverAddress
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialFrameBuilder {
+	b.FragmentNumber = fragmentNumber
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithLength(length int8) AmsSerialFrameBuilder {
+	b.Length = length
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithUserdata(userdata AmsPacket) AmsSerialFrameBuilder {
+	b.Userdata = userdata
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithUserdataBuilder(builderSupplier func(AmsPacketBuilder) AmsPacketBuilder) AmsSerialFrameBuilder {
+	builder := builderSupplier(b.Userdata.CreateAmsPacketBuilder())
+	var err error
+	b.Userdata, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AmsPacketBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) WithCrc(crc uint16) AmsSerialFrameBuilder {
+	b.Crc = crc
+	return b
+}
+
+func (b *_AmsSerialFrameBuilder) Build() (AmsSerialFrame, error) {
+	if b.Userdata == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'userdata' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsSerialFrame.deepCopy(), nil
+}
+
+func (b *_AmsSerialFrameBuilder) MustBuild() AmsSerialFrame {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsSerialFrameBuilder) DeepCopy() any {
+	_copy := b.CreateAmsSerialFrameBuilder().(*_AmsSerialFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAmsSerialFrameBuilder creates a AmsSerialFrameBuilder
+func (b *_AmsSerialFrame) CreateAmsSerialFrameBuilder() AmsSerialFrameBuilder {
+	if b == nil {
+		return NewAmsSerialFrameBuilder()
+	}
+	return &_AmsSerialFrameBuilder{_AmsSerialFrame: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,14 +256,6 @@ func (m *_AmsSerialFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialFrame factory function for _AmsSerialFrame
-func NewAmsSerialFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, userdata AmsPacket, crc uint16) *_AmsSerialFrame {
-	if userdata == nil {
-		panic("userdata of type AmsPacket for AmsSerialFrame must not be nil")
-	}
-	return &_AmsSerialFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Userdata: userdata, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialFrame(structType any) AmsSerialFrame {
@@ -176,7 +318,7 @@ func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AmsSerialFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsSerialFrame AmsSerialFrame, err error) {
@@ -290,13 +432,37 @@ func (m *_AmsSerialFrame) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_AmsSerialFrame) IsAmsSerialFrame() {}
 
+func (m *_AmsSerialFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialFrame) deepCopy() *_AmsSerialFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialFrameCopy := &_AmsSerialFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Userdata.DeepCopy().(AmsPacket),
+		m.Crc,
+	}
+	return _AmsSerialFrameCopy
+}
+
 func (m *_AmsSerialFrame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

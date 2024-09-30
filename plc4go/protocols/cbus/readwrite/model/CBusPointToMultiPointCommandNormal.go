@@ -38,6 +38,7 @@ type CBusPointToMultiPointCommandNormal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusPointToMultiPointCommand
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -45,6 +46,8 @@ type CBusPointToMultiPointCommandNormal interface {
 	GetSalData() SALData
 	// IsCBusPointToMultiPointCommandNormal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToMultiPointCommandNormal()
+	// CreateBuilder creates a CBusPointToMultiPointCommandNormalBuilder
+	CreateCBusPointToMultiPointCommandNormalBuilder() CBusPointToMultiPointCommandNormalBuilder
 }
 
 // _CBusPointToMultiPointCommandNormal is the data-structure of this message
@@ -58,6 +61,139 @@ type _CBusPointToMultiPointCommandNormal struct {
 
 var _ CBusPointToMultiPointCommandNormal = (*_CBusPointToMultiPointCommandNormal)(nil)
 var _ CBusPointToMultiPointCommandRequirements = (*_CBusPointToMultiPointCommandNormal)(nil)
+
+// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
+func NewCBusPointToMultiPointCommandNormal(peekedApplication byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
+	if salData == nil {
+		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
+	}
+	_result := &_CBusPointToMultiPointCommandNormal{
+		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
+		Application:                          application,
+		SalData:                              salData,
+	}
+	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToMultiPointCommandNormalBuilder is a builder for CBusPointToMultiPointCommandNormal
+type CBusPointToMultiPointCommandNormalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(application ApplicationIdContainer, salData SALData) CBusPointToMultiPointCommandNormalBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) CBusPointToMultiPointCommandNormalBuilder
+	// WithSalData adds SalData (property field)
+	WithSalData(SALData) CBusPointToMultiPointCommandNormalBuilder
+	// WithSalDataBuilder adds SalData (property field) which is build by the builder
+	WithSalDataBuilder(func(SALDataBuilder) SALDataBuilder) CBusPointToMultiPointCommandNormalBuilder
+	// Build builds the CBusPointToMultiPointCommandNormal or returns an error if something is wrong
+	Build() (CBusPointToMultiPointCommandNormal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToMultiPointCommandNormal
+}
+
+// NewCBusPointToMultiPointCommandNormalBuilder() creates a CBusPointToMultiPointCommandNormalBuilder
+func NewCBusPointToMultiPointCommandNormalBuilder() CBusPointToMultiPointCommandNormalBuilder {
+	return &_CBusPointToMultiPointCommandNormalBuilder{_CBusPointToMultiPointCommandNormal: new(_CBusPointToMultiPointCommandNormal)}
+}
+
+type _CBusPointToMultiPointCommandNormalBuilder struct {
+	*_CBusPointToMultiPointCommandNormal
+
+	parentBuilder *_CBusPointToMultiPointCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToMultiPointCommandNormalBuilder) = (*_CBusPointToMultiPointCommandNormalBuilder)(nil)
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) setParent(contract CBusPointToMultiPointCommandContract) {
+	b.CBusPointToMultiPointCommandContract = contract
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) WithMandatoryFields(application ApplicationIdContainer, salData SALData) CBusPointToMultiPointCommandNormalBuilder {
+	return b.WithApplication(application).WithSalData(salData)
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) WithApplication(application ApplicationIdContainer) CBusPointToMultiPointCommandNormalBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) WithSalData(salData SALData) CBusPointToMultiPointCommandNormalBuilder {
+	b.SalData = salData
+	return b
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) WithSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) CBusPointToMultiPointCommandNormalBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) Build() (CBusPointToMultiPointCommandNormal, error) {
+	if b.SalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'salData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusPointToMultiPointCommandNormal.deepCopy(), nil
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) MustBuild() CBusPointToMultiPointCommandNormal {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusPointToMultiPointCommandNormalBuilder) Done() CBusPointToMultiPointCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) buildForCBusPointToMultiPointCommand() (CBusPointToMultiPointCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusPointToMultiPointCommandNormalBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToMultiPointCommandNormalBuilder().(*_CBusPointToMultiPointCommandNormalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusPointToMultiPointCommandNormalBuilder creates a CBusPointToMultiPointCommandNormalBuilder
+func (b *_CBusPointToMultiPointCommandNormal) CreateCBusPointToMultiPointCommandNormalBuilder() CBusPointToMultiPointCommandNormalBuilder {
+	if b == nil {
+		return NewCBusPointToMultiPointCommandNormalBuilder()
+	}
+	return &_CBusPointToMultiPointCommandNormalBuilder{_CBusPointToMultiPointCommandNormal: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,20 +226,6 @@ func (m *_CBusPointToMultiPointCommandNormal) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToMultiPointCommandNormal factory function for _CBusPointToMultiPointCommandNormal
-func NewCBusPointToMultiPointCommandNormal(application ApplicationIdContainer, salData SALData, peekedApplication byte, cBusOptions CBusOptions) *_CBusPointToMultiPointCommandNormal {
-	if salData == nil {
-		panic("salData of type SALData for CBusPointToMultiPointCommandNormal must not be nil")
-	}
-	_result := &_CBusPointToMultiPointCommandNormal{
-		CBusPointToMultiPointCommandContract: NewCBusPointToMultiPointCommand(peekedApplication, cBusOptions),
-		Application:                          application,
-		SalData:                              salData,
-	}
-	_result.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToMultiPointCommandNormal(structType any) CBusPointToMultiPointCommandNormal {
@@ -215,13 +337,35 @@ func (m *_CBusPointToMultiPointCommandNormal) SerializeWithWriteBuffer(ctx conte
 
 func (m *_CBusPointToMultiPointCommandNormal) IsCBusPointToMultiPointCommandNormal() {}
 
+func (m *_CBusPointToMultiPointCommandNormal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToMultiPointCommandNormal) deepCopy() *_CBusPointToMultiPointCommandNormal {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToMultiPointCommandNormalCopy := &_CBusPointToMultiPointCommandNormal{
+		m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand).deepCopy(),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+		m.reservedField0,
+	}
+	m.CBusPointToMultiPointCommandContract.(*_CBusPointToMultiPointCommand)._SubType = m
+	return _CBusPointToMultiPointCommandNormalCopy
+}
+
 func (m *_CBusPointToMultiPointCommandNormal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

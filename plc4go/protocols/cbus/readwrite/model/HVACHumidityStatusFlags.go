@@ -38,6 +38,7 @@ type HVACHumidityStatusFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetExpansion returns Expansion (property field)
 	GetExpansion() bool
 	// GetError returns Error (property field)
@@ -58,6 +59,8 @@ type HVACHumidityStatusFlags interface {
 	GetIsDamperStateOpen() bool
 	// IsHVACHumidityStatusFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACHumidityStatusFlags()
+	// CreateBuilder creates a HVACHumidityStatusFlagsBuilder
+	CreateHVACHumidityStatusFlagsBuilder() HVACHumidityStatusFlagsBuilder
 }
 
 // _HVACHumidityStatusFlags is the data-structure of this message
@@ -74,6 +77,129 @@ type _HVACHumidityStatusFlags struct {
 }
 
 var _ HVACHumidityStatusFlags = (*_HVACHumidityStatusFlags)(nil)
+
+// NewHVACHumidityStatusFlags factory function for _HVACHumidityStatusFlags
+func NewHVACHumidityStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) *_HVACHumidityStatusFlags {
+	return &_HVACHumidityStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, DehumidifyingPlant: dehumidifyingPlant, HumidifyingPlant: humidifyingPlant}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACHumidityStatusFlagsBuilder is a builder for HVACHumidityStatusFlags
+type HVACHumidityStatusFlagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) HVACHumidityStatusFlagsBuilder
+	// WithExpansion adds Expansion (property field)
+	WithExpansion(bool) HVACHumidityStatusFlagsBuilder
+	// WithError adds Error (property field)
+	WithError(bool) HVACHumidityStatusFlagsBuilder
+	// WithBusy adds Busy (property field)
+	WithBusy(bool) HVACHumidityStatusFlagsBuilder
+	// WithDamperState adds DamperState (property field)
+	WithDamperState(bool) HVACHumidityStatusFlagsBuilder
+	// WithFanActive adds FanActive (property field)
+	WithFanActive(bool) HVACHumidityStatusFlagsBuilder
+	// WithDehumidifyingPlant adds DehumidifyingPlant (property field)
+	WithDehumidifyingPlant(bool) HVACHumidityStatusFlagsBuilder
+	// WithHumidifyingPlant adds HumidifyingPlant (property field)
+	WithHumidifyingPlant(bool) HVACHumidityStatusFlagsBuilder
+	// Build builds the HVACHumidityStatusFlags or returns an error if something is wrong
+	Build() (HVACHumidityStatusFlags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACHumidityStatusFlags
+}
+
+// NewHVACHumidityStatusFlagsBuilder() creates a HVACHumidityStatusFlagsBuilder
+func NewHVACHumidityStatusFlagsBuilder() HVACHumidityStatusFlagsBuilder {
+	return &_HVACHumidityStatusFlagsBuilder{_HVACHumidityStatusFlags: new(_HVACHumidityStatusFlags)}
+}
+
+type _HVACHumidityStatusFlagsBuilder struct {
+	*_HVACHumidityStatusFlags
+
+	err *utils.MultiError
+}
+
+var _ (HVACHumidityStatusFlagsBuilder) = (*_HVACHumidityStatusFlagsBuilder)(nil)
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithMandatoryFields(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) HVACHumidityStatusFlagsBuilder {
+	return b.WithExpansion(expansion).WithError(error).WithBusy(busy).WithDamperState(damperState).WithFanActive(fanActive).WithDehumidifyingPlant(dehumidifyingPlant).WithHumidifyingPlant(humidifyingPlant)
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithExpansion(expansion bool) HVACHumidityStatusFlagsBuilder {
+	b.Expansion = expansion
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithError(error bool) HVACHumidityStatusFlagsBuilder {
+	b.Error = error
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithBusy(busy bool) HVACHumidityStatusFlagsBuilder {
+	b.Busy = busy
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithDamperState(damperState bool) HVACHumidityStatusFlagsBuilder {
+	b.DamperState = damperState
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithFanActive(fanActive bool) HVACHumidityStatusFlagsBuilder {
+	b.FanActive = fanActive
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithDehumidifyingPlant(dehumidifyingPlant bool) HVACHumidityStatusFlagsBuilder {
+	b.DehumidifyingPlant = dehumidifyingPlant
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) WithHumidifyingPlant(humidifyingPlant bool) HVACHumidityStatusFlagsBuilder {
+	b.HumidifyingPlant = humidifyingPlant
+	return b
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) Build() (HVACHumidityStatusFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACHumidityStatusFlags.deepCopy(), nil
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) MustBuild() HVACHumidityStatusFlags {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACHumidityStatusFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACHumidityStatusFlagsBuilder().(*_HVACHumidityStatusFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACHumidityStatusFlagsBuilder creates a HVACHumidityStatusFlagsBuilder
+func (b *_HVACHumidityStatusFlags) CreateHVACHumidityStatusFlagsBuilder() HVACHumidityStatusFlagsBuilder {
+	if b == nil {
+		return NewHVACHumidityStatusFlagsBuilder()
+	}
+	return &_HVACHumidityStatusFlagsBuilder{_HVACHumidityStatusFlags: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -133,11 +259,6 @@ func (m *_HVACHumidityStatusFlags) GetIsDamperStateOpen() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACHumidityStatusFlags factory function for _HVACHumidityStatusFlags
-func NewHVACHumidityStatusFlags(expansion bool, error bool, busy bool, damperState bool, fanActive bool, dehumidifyingPlant bool, humidifyingPlant bool) *_HVACHumidityStatusFlags {
-	return &_HVACHumidityStatusFlags{Expansion: expansion, Error: error, Busy: busy, DamperState: damperState, FanActive: fanActive, DehumidifyingPlant: dehumidifyingPlant, HumidifyingPlant: humidifyingPlant}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACHumidityStatusFlags(structType any) HVACHumidityStatusFlags {
@@ -207,7 +328,7 @@ func HVACHumidityStatusFlagsParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACHumidityStatusFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACHumidityStatusFlags HVACHumidityStatusFlags, err error) {
@@ -355,13 +476,38 @@ func (m *_HVACHumidityStatusFlags) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_HVACHumidityStatusFlags) IsHVACHumidityStatusFlags() {}
 
+func (m *_HVACHumidityStatusFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidityStatusFlags) deepCopy() *_HVACHumidityStatusFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityStatusFlagsCopy := &_HVACHumidityStatusFlags{
+		m.Expansion,
+		m.Error,
+		m.Busy,
+		m.DamperState,
+		m.FanActive,
+		m.DehumidifyingPlant,
+		m.HumidifyingPlant,
+		m.reservedField0,
+	}
+	return _HVACHumidityStatusFlagsCopy
+}
+
 func (m *_HVACHumidityStatusFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

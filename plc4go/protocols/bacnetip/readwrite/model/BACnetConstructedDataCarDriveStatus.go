@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDriveStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarDriveStatus returns CarDriveStatus (property field)
 	GetCarDriveStatus() BACnetLiftCarDriveStatusTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataCarDriveStatus interface {
 	GetActualValue() BACnetLiftCarDriveStatusTagged
 	// IsBACnetConstructedDataCarDriveStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarDriveStatus()
+	// CreateBuilder creates a BACnetConstructedDataCarDriveStatusBuilder
+	CreateBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder
 }
 
 // _BACnetConstructedDataCarDriveStatus is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCarDriveStatus struct {
 
 var _ BACnetConstructedDataCarDriveStatus = (*_BACnetConstructedDataCarDriveStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDriveStatus)(nil)
+
+// NewBACnetConstructedDataCarDriveStatus factory function for _BACnetConstructedDataCarDriveStatus
+func NewBACnetConstructedDataCarDriveStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carDriveStatus BACnetLiftCarDriveStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDriveStatus {
+	if carDriveStatus == nil {
+		panic("carDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetConstructedDataCarDriveStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarDriveStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarDriveStatus:                carDriveStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarDriveStatusBuilder is a builder for BACnetConstructedDataCarDriveStatus
+type BACnetConstructedDataCarDriveStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder
+	// WithCarDriveStatus adds CarDriveStatus (property field)
+	WithCarDriveStatus(BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder
+	// WithCarDriveStatusBuilder adds CarDriveStatus (property field) which is build by the builder
+	WithCarDriveStatusBuilder(func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetConstructedDataCarDriveStatusBuilder
+	// Build builds the BACnetConstructedDataCarDriveStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarDriveStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarDriveStatus
+}
+
+// NewBACnetConstructedDataCarDriveStatusBuilder() creates a BACnetConstructedDataCarDriveStatusBuilder
+func NewBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder {
+	return &_BACnetConstructedDataCarDriveStatusBuilder{_BACnetConstructedDataCarDriveStatus: new(_BACnetConstructedDataCarDriveStatus)}
+}
+
+type _BACnetConstructedDataCarDriveStatusBuilder struct {
+	*_BACnetConstructedDataCarDriveStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarDriveStatusBuilder) = (*_BACnetConstructedDataCarDriveStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) WithMandatoryFields(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder {
+	return b.WithCarDriveStatus(carDriveStatus)
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) WithCarDriveStatus(carDriveStatus BACnetLiftCarDriveStatusTagged) BACnetConstructedDataCarDriveStatusBuilder {
+	b.CarDriveStatus = carDriveStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) WithCarDriveStatusBuilder(builderSupplier func(BACnetLiftCarDriveStatusTaggedBuilder) BACnetLiftCarDriveStatusTaggedBuilder) BACnetConstructedDataCarDriveStatusBuilder {
+	builder := builderSupplier(b.CarDriveStatus.CreateBACnetLiftCarDriveStatusTaggedBuilder())
+	var err error
+	b.CarDriveStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarDriveStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) Build() (BACnetConstructedDataCarDriveStatus, error) {
+	if b.CarDriveStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'carDriveStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCarDriveStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) MustBuild() BACnetConstructedDataCarDriveStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarDriveStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarDriveStatusBuilder().(*_BACnetConstructedDataCarDriveStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCarDriveStatusBuilder creates a BACnetConstructedDataCarDriveStatusBuilder
+func (b *_BACnetConstructedDataCarDriveStatus) CreateBACnetConstructedDataCarDriveStatusBuilder() BACnetConstructedDataCarDriveStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCarDriveStatusBuilder()
+	}
+	return &_BACnetConstructedDataCarDriveStatusBuilder{_BACnetConstructedDataCarDriveStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCarDriveStatus) GetActualValue() BACnetLiftCarDri
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDriveStatus factory function for _BACnetConstructedDataCarDriveStatus
-func NewBACnetConstructedDataCarDriveStatus(carDriveStatus BACnetLiftCarDriveStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDriveStatus {
-	if carDriveStatus == nil {
-		panic("carDriveStatus of type BACnetLiftCarDriveStatusTagged for BACnetConstructedDataCarDriveStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarDriveStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarDriveStatus:                carDriveStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDriveStatus(structType any) BACnetConstructedDataCarDriveStatus {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCarDriveStatus) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataCarDriveStatus) IsBACnetConstructedDataCarDriveStatus() {}
 
+func (m *_BACnetConstructedDataCarDriveStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDriveStatus) deepCopy() *_BACnetConstructedDataCarDriveStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDriveStatusCopy := &_BACnetConstructedDataCarDriveStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarDriveStatus.DeepCopy().(BACnetLiftCarDriveStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDriveStatusCopy
+}
+
 func (m *_BACnetConstructedDataCarDriveStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

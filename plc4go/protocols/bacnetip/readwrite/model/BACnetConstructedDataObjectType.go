@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectTypeTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataObjectType interface {
 	GetActualValue() BACnetObjectTypeTagged
 	// IsBACnetConstructedDataObjectType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectType()
+	// CreateBuilder creates a BACnetConstructedDataObjectTypeBuilder
+	CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder
 }
 
 // _BACnetConstructedDataObjectType is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataObjectType struct {
 
 var _ BACnetConstructedDataObjectType = (*_BACnetConstructedDataObjectType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectType)(nil)
+
+// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
+func NewBACnetConstructedDataObjectType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, objectType BACnetObjectTypeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
+	if objectType == nil {
+		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
+	}
+	_result := &_BACnetConstructedDataObjectType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ObjectType:                    objectType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectTypeBuilder is a builder for BACnetConstructedDataObjectType
+type BACnetConstructedDataObjectTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder
+	// WithObjectType adds ObjectType (property field)
+	WithObjectType(BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder
+	// WithObjectTypeBuilder adds ObjectType (property field) which is build by the builder
+	WithObjectTypeBuilder(func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder
+	// Build builds the BACnetConstructedDataObjectType or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectType
+}
+
+// NewBACnetConstructedDataObjectTypeBuilder() creates a BACnetConstructedDataObjectTypeBuilder
+func NewBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
+	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: new(_BACnetConstructedDataObjectType)}
+}
+
+type _BACnetConstructedDataObjectTypeBuilder struct {
+	*_BACnetConstructedDataObjectType
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectTypeBuilder) = (*_BACnetConstructedDataObjectTypeBuilder)(nil)
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithMandatoryFields(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	return b.WithObjectType(objectType)
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithObjectType(objectType BACnetObjectTypeTagged) BACnetConstructedDataObjectTypeBuilder {
+	b.ObjectType = objectType
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) WithObjectTypeBuilder(builderSupplier func(BACnetObjectTypeTaggedBuilder) BACnetObjectTypeTaggedBuilder) BACnetConstructedDataObjectTypeBuilder {
+	builder := builderSupplier(b.ObjectType.CreateBACnetObjectTypeTaggedBuilder())
+	var err error
+	b.ObjectType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) Build() (BACnetConstructedDataObjectType, error) {
+	if b.ObjectType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'objectType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataObjectType.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) MustBuild() BACnetConstructedDataObjectType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataObjectTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataObjectTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataObjectTypeBuilder().(*_BACnetConstructedDataObjectTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataObjectTypeBuilder creates a BACnetConstructedDataObjectTypeBuilder
+func (b *_BACnetConstructedDataObjectType) CreateBACnetConstructedDataObjectTypeBuilder() BACnetConstructedDataObjectTypeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataObjectTypeBuilder()
+	}
+	return &_BACnetConstructedDataObjectTypeBuilder{_BACnetConstructedDataObjectType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataObjectType) GetActualValue() BACnetObjectTypeTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectType factory function for _BACnetConstructedDataObjectType
-func NewBACnetConstructedDataObjectType(objectType BACnetObjectTypeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectType {
-	if objectType == nil {
-		panic("objectType of type BACnetObjectTypeTagged for BACnetConstructedDataObjectType must not be nil")
-	}
-	_result := &_BACnetConstructedDataObjectType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ObjectType:                    objectType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectType(structType any) BACnetConstructedDataObjectType {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataObjectType) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataObjectType) IsBACnetConstructedDataObjectType() {}
 
+func (m *_BACnetConstructedDataObjectType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectType) deepCopy() *_BACnetConstructedDataObjectType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectTypeCopy := &_BACnetConstructedDataObjectType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ObjectType.DeepCopy().(BACnetObjectTypeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectTypeCopy
+}
+
 func (m *_BACnetConstructedDataObjectType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

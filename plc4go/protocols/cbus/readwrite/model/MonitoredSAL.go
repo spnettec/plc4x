@@ -40,8 +40,11 @@ type MonitoredSAL interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
+	// CreateBuilder creates a MonitoredSALBuilder
+	CreateMonitoredSALBuilder() MonitoredSALBuilder
 }
 
 // MonitoredSALContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type MonitoredSALContract interface {
 	GetCBusOptions() CBusOptions
 	// IsMonitoredSAL is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSAL()
+	// CreateBuilder creates a MonitoredSALBuilder
+	CreateMonitoredSALBuilder() MonitoredSALBuilder
 }
 
 // MonitoredSALRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +78,163 @@ type _MonitoredSAL struct {
 
 var _ MonitoredSALContract = (*_MonitoredSAL)(nil)
 
+// NewMonitoredSAL factory function for _MonitoredSAL
+func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
+	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredSALBuilder is a builder for MonitoredSAL
+type MonitoredSALBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(salType byte) MonitoredSALBuilder
+	// WithSalType adds SalType (property field)
+	WithSalType(byte) MonitoredSALBuilder
+	// AsMonitoredSALLongFormSmartMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
+	AsMonitoredSALLongFormSmartMode() interface {
+		MonitoredSALLongFormSmartModeBuilder
+		Done() MonitoredSALBuilder
+	}
+	// AsMonitoredSALShortFormBasicMode converts this build to a subType of MonitoredSAL. It is always possible to return to current builder using Done()
+	AsMonitoredSALShortFormBasicMode() interface {
+		MonitoredSALShortFormBasicModeBuilder
+		Done() MonitoredSALBuilder
+	}
+	// Build builds the MonitoredSAL or returns an error if something is wrong
+	PartialBuild() (MonitoredSALContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() MonitoredSALContract
+	// Build builds the MonitoredSAL or returns an error if something is wrong
+	Build() (MonitoredSAL, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredSAL
+}
+
+// NewMonitoredSALBuilder() creates a MonitoredSALBuilder
+func NewMonitoredSALBuilder() MonitoredSALBuilder {
+	return &_MonitoredSALBuilder{_MonitoredSAL: new(_MonitoredSAL)}
+}
+
+type _MonitoredSALChildBuilder interface {
+	utils.Copyable
+	setParent(MonitoredSALContract)
+	buildForMonitoredSAL() (MonitoredSAL, error)
+}
+
+type _MonitoredSALBuilder struct {
+	*_MonitoredSAL
+
+	childBuilder _MonitoredSALChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredSALBuilder) = (*_MonitoredSALBuilder)(nil)
+
+func (b *_MonitoredSALBuilder) WithMandatoryFields(salType byte) MonitoredSALBuilder {
+	return b.WithSalType(salType)
+}
+
+func (b *_MonitoredSALBuilder) WithSalType(salType byte) MonitoredSALBuilder {
+	b.SalType = salType
+	return b
+}
+
+func (b *_MonitoredSALBuilder) PartialBuild() (MonitoredSALContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSAL.deepCopy(), nil
+}
+
+func (b *_MonitoredSALBuilder) PartialMustBuild() MonitoredSALContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MonitoredSALBuilder) AsMonitoredSALLongFormSmartMode() interface {
+	MonitoredSALLongFormSmartModeBuilder
+	Done() MonitoredSALBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MonitoredSALLongFormSmartModeBuilder
+		Done() MonitoredSALBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMonitoredSALLongFormSmartModeBuilder().(*_MonitoredSALLongFormSmartModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MonitoredSALBuilder) AsMonitoredSALShortFormBasicMode() interface {
+	MonitoredSALShortFormBasicModeBuilder
+	Done() MonitoredSALBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MonitoredSALShortFormBasicModeBuilder
+		Done() MonitoredSALBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMonitoredSALShortFormBasicModeBuilder().(*_MonitoredSALShortFormBasicModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_MonitoredSALBuilder) Build() (MonitoredSAL, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForMonitoredSAL()
+}
+
+func (b *_MonitoredSALBuilder) MustBuild() MonitoredSAL {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MonitoredSALBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALBuilder().(*_MonitoredSALBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_MonitoredSALChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredSALBuilder creates a MonitoredSALBuilder
+func (b *_MonitoredSAL) CreateMonitoredSALBuilder() MonitoredSALBuilder {
+	if b == nil {
+		return NewMonitoredSALBuilder()
+	}
+	return &_MonitoredSALBuilder{_MonitoredSAL: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -86,11 +248,6 @@ func (m *_MonitoredSAL) GetSalType() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSAL factory function for _MonitoredSAL
-func NewMonitoredSAL(salType byte, cBusOptions CBusOptions) *_MonitoredSAL {
-	return &_MonitoredSAL{SalType: salType, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSAL(structType any) MonitoredSAL {
@@ -128,7 +285,7 @@ func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -138,7 +295,12 @@ func MonitoredSALParseWithBuffer[T MonitoredSAL](ctx context.Context, readBuffer
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (__monitoredSAL MonitoredSAL, err error) {
@@ -160,11 +322,11 @@ func (m *_MonitoredSAL) parse(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var _child MonitoredSAL
 	switch {
 	case salType == 0x05: // MonitoredSALLongFormSmartMode
-		if _child, err = (&_MonitoredSALLongFormSmartMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALLongFormSmartMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALLongFormSmartMode for type-switch of MonitoredSAL")
 		}
 	case 0 == 0: // MonitoredSALShortFormBasicMode
-		if _child, err = (&_MonitoredSALShortFormBasicMode{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_MonitoredSALShortFormBasicMode).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MonitoredSALShortFormBasicMode for type-switch of MonitoredSAL")
 		}
 	default:
@@ -212,3 +374,19 @@ func (m *_MonitoredSAL) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_MonitoredSAL) IsMonitoredSAL() {}
+
+func (m *_MonitoredSAL) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSAL) deepCopy() *_MonitoredSAL {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALCopy := &_MonitoredSAL{
+		nil, // will be set by child
+		m.SalType,
+		m.CBusOptions,
+	}
+	return _MonitoredSALCopy
+}

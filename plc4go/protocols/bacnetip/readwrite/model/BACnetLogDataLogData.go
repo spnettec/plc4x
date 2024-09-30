@@ -38,6 +38,7 @@ type BACnetLogDataLogData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogData
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -47,6 +48,8 @@ type BACnetLogDataLogData interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetLogDataLogData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogData()
+	// CreateBuilder creates a BACnetLogDataLogDataBuilder
+	CreateBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder
 }
 
 // _BACnetLogDataLogData is the data-structure of this message
@@ -59,6 +62,171 @@ type _BACnetLogDataLogData struct {
 
 var _ BACnetLogDataLogData = (*_BACnetLogDataLogData)(nil)
 var _ BACnetLogDataRequirements = (*_BACnetLogDataLogData)(nil)
+
+// NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
+func NewBACnetLogDataLogData(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetLogDataLogData must not be nil")
+	}
+	_result := &_BACnetLogDataLogData{
+		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
+		InnerOpeningTag:       innerOpeningTag,
+		LogData:               logData,
+		InnerClosingTag:       innerClosingTag,
+	}
+	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataBuilder is a builder for BACnetLogDataLogData
+type BACnetLogDataLogDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetLogDataLogDataBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataLogDataBuilder
+	// WithLogData adds LogData (property field)
+	WithLogData(...BACnetLogDataLogDataEntry) BACnetLogDataLogDataBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetLogDataLogDataBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataLogDataBuilder
+	// Build builds the BACnetLogDataLogData or returns an error if something is wrong
+	Build() (BACnetLogDataLogData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogData
+}
+
+// NewBACnetLogDataLogDataBuilder() creates a BACnetLogDataLogDataBuilder
+func NewBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder {
+	return &_BACnetLogDataLogDataBuilder{_BACnetLogDataLogData: new(_BACnetLogDataLogData)}
+}
+
+type _BACnetLogDataLogDataBuilder struct {
+	*_BACnetLogDataLogData
+
+	parentBuilder *_BACnetLogDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataBuilder) = (*_BACnetLogDataLogDataBuilder)(nil)
+
+func (b *_BACnetLogDataLogDataBuilder) setParent(contract BACnetLogDataContract) {
+	b.BACnetLogDataContract = contract
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithLogData(logData...).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetLogDataLogDataBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetLogDataLogDataBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithLogData(logData ...BACnetLogDataLogDataEntry) BACnetLogDataLogDataBuilder {
+	b.LogData = logData
+	return b
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetLogDataLogDataBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetLogDataLogDataBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetLogDataLogDataBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogDataBuilder) Build() (BACnetLogDataLogData, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogData.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogDataBuilder) MustBuild() BACnetLogDataLogData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataBuilder) Done() BACnetLogDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataBuilder) buildForBACnetLogData() (BACnetLogData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataBuilder().(*_BACnetLogDataLogDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataLogDataBuilder creates a BACnetLogDataLogDataBuilder
+func (b *_BACnetLogDataLogData) CreateBACnetLogDataLogDataBuilder() BACnetLogDataLogDataBuilder {
+	if b == nil {
+		return NewBACnetLogDataLogDataBuilder()
+	}
+	return &_BACnetLogDataLogDataBuilder{_BACnetLogDataLogData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,24 +263,6 @@ func (m *_BACnetLogDataLogData) GetInnerClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogData factory function for _BACnetLogDataLogData
-func NewBACnetLogDataLogData(innerOpeningTag BACnetOpeningTag, logData []BACnetLogDataLogDataEntry, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogDataLogData {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetLogDataLogData must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetLogDataLogData must not be nil")
-	}
-	_result := &_BACnetLogDataLogData{
-		BACnetLogDataContract: NewBACnetLogData(openingTag, peekedTagHeader, closingTag, tagNumber),
-		InnerOpeningTag:       innerOpeningTag,
-		LogData:               logData,
-		InnerClosingTag:       innerClosingTag,
-	}
-	_result.BACnetLogDataContract.(*_BACnetLogData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogData(structType any) BACnetLogDataLogData {
@@ -228,13 +378,35 @@ func (m *_BACnetLogDataLogData) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetLogDataLogData) IsBACnetLogDataLogData() {}
 
+func (m *_BACnetLogDataLogData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogData) deepCopy() *_BACnetLogDataLogData {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataCopy := &_BACnetLogDataLogData{
+		m.BACnetLogDataContract.(*_BACnetLogData).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetLogDataLogDataEntry, BACnetLogDataLogDataEntry](m.LogData),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetLogDataContract.(*_BACnetLogData)._SubType = m
+	return _BACnetLogDataLogDataCopy
+}
+
 func (m *_BACnetLogDataLogData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

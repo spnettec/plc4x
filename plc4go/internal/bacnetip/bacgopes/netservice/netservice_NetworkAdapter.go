@@ -20,11 +20,14 @@
 package netservice
 
 import (
+	"fmt"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/npdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 )
@@ -32,18 +35,17 @@ import (
 //go:generate plc4xGenerator -type=NetworkAdapter -prefix=netservice_
 type NetworkAdapter struct {
 	ClientContract
+	*DebugContents `ignore:"true"`
+
 	adapterSAP           *NetworkServiceAccessPoint `asPtr:"true"`
 	adapterNet           *uint16
 	adapterAddr          *Address
 	adapterNetConfigured *int
 
-	// pass through args
-	argCid *int
-
 	log zerolog.Logger
 }
 
-func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, opts ...func(*NetworkAdapter)) (*NetworkAdapter, error) {
+func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, net *uint16, addr *Address, options ...Option) (*NetworkAdapter, error) {
 	n := &NetworkAdapter{
 		adapterSAP:  sap,
 		adapterNet:  net,
@@ -51,12 +53,11 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 
 		log: localLog,
 	}
-	for _, opt := range opts {
-		opt(n)
-	}
-	n.log.Trace().Stringer("sap", sap).Interface("net", net).Stringer("addr", addr).Interface("cid", n.argCid).Msg("NewNetworkAdapter")
+	ApplyAppliers(options, n)
+	optionsForParent := AddLeafTypeIfAbundant(options, n)
+	n.DebugContents = NewDebugContents(n, "adapterSAP-", "adapterNet", "adapterAddr", "adapterNetConfigured")
 	var err error
-	n.ClientContract, err = NewClient(n.log, OptionalOption2(n.argCid, ToPtr[ClientRequirements](n), WithClientCID))
+	n.ClientContract, err = NewClient(n.log, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
@@ -68,10 +69,28 @@ func NewNetworkAdapter(localLog zerolog.Logger, sap *NetworkServiceAccessPoint, 
 	return n, nil
 }
 
-func WithNetworkAdapterCid(cid int) func(*NetworkAdapter) {
-	return func(na *NetworkAdapter) {
-		na.argCid = &cid
+func (n *NetworkAdapter) GetDebugAttr(attr string) any {
+	switch attr {
+	case "adapterSAP":
+		if n.adapterSAP != nil {
+			return fmt.Sprintf("%s", n.adapterSAP) // TODO: we call format here directly to avoid endless loop
+		}
+	case "adapterNet":
+		if n.adapterNet != nil {
+			return *n.adapterNet
+		}
+	case "adapterAddr":
+		if n.adapterAddr != nil {
+			return n.adapterAddr
+		}
+	case "adapterNetConfigured":
+		if n.adapterNetConfigured != nil {
+			return *n.adapterNetConfigured
+		}
+	default:
+		return nil
 	}
+	return nil
 }
 
 // Confirmation Decode upstream PDUs and pass them up to the service access point.
@@ -83,11 +102,10 @@ func (n *NetworkAdapter) Confirmation(args Args, kwArgs KWArgs) error {
 
 	pdu := GA[PDU](args, 0)
 
-	npdu, err := NewNPDU(nil, nil)
+	npdu, err := NewNPDU(NoArgs, NKW(KWCPCIUserData, pdu.GetPDUUserData()))
 	if err != nil {
 		return errors.Wrap(err, "error creating NPDU")
 	}
-	npdu.SetPDUUserData(pdu.GetPDUUserData())
 	if err := npdu.Decode(pdu); err != nil {
 		return errors.Wrap(err, "error decoding NPDU")
 	}
@@ -114,4 +132,11 @@ func (n *NetworkAdapter) EstablishConnectionToNetwork(net any) error {
 
 func (n *NetworkAdapter) DisconnectConnectionToNetwork(net any) error {
 	panic("not implemented yet")
+}
+
+func (n *NetworkAdapter) AlternateString() (string, bool) {
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", n), true // Delegate to debugging format
+	}
+	return "", false
 }

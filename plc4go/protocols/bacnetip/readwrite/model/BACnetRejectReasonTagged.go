@@ -37,6 +37,7 @@ type BACnetRejectReasonTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() BACnetRejectReason
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -45,6 +46,8 @@ type BACnetRejectReasonTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetRejectReasonTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRejectReasonTagged()
+	// CreateBuilder creates a BACnetRejectReasonTaggedBuilder
+	CreateBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder
 }
 
 // _BACnetRejectReasonTagged is the data-structure of this message
@@ -57,6 +60,94 @@ type _BACnetRejectReasonTagged struct {
 }
 
 var _ BACnetRejectReasonTagged = (*_BACnetRejectReasonTagged)(nil)
+
+// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
+func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
+	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRejectReasonTaggedBuilder is a builder for BACnetRejectReasonTagged
+type BACnetRejectReasonTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetRejectReason) BACnetRejectReasonTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetRejectReasonTaggedBuilder
+	// Build builds the BACnetRejectReasonTagged or returns an error if something is wrong
+	Build() (BACnetRejectReasonTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRejectReasonTagged
+}
+
+// NewBACnetRejectReasonTaggedBuilder() creates a BACnetRejectReasonTaggedBuilder
+func NewBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder {
+	return &_BACnetRejectReasonTaggedBuilder{_BACnetRejectReasonTagged: new(_BACnetRejectReasonTagged)}
+}
+
+type _BACnetRejectReasonTaggedBuilder struct {
+	*_BACnetRejectReasonTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRejectReasonTaggedBuilder) = (*_BACnetRejectReasonTaggedBuilder)(nil)
+
+func (b *_BACnetRejectReasonTaggedBuilder) WithMandatoryFields(value BACnetRejectReason, proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
+	return b.WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) WithValue(value BACnetRejectReason) BACnetRejectReasonTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetRejectReasonTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) Build() (BACnetRejectReasonTagged, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetRejectReasonTagged.deepCopy(), nil
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) MustBuild() BACnetRejectReasonTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRejectReasonTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRejectReasonTaggedBuilder().(*_BACnetRejectReasonTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetRejectReasonTaggedBuilder creates a BACnetRejectReasonTaggedBuilder
+func (b *_BACnetRejectReasonTagged) CreateBACnetRejectReasonTaggedBuilder() BACnetRejectReasonTaggedBuilder {
+	if b == nil {
+		return NewBACnetRejectReasonTaggedBuilder()
+	}
+	return &_BACnetRejectReasonTaggedBuilder{_BACnetRejectReasonTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,11 +181,6 @@ func (m *_BACnetRejectReasonTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRejectReasonTagged factory function for _BACnetRejectReasonTagged
-func NewBACnetRejectReasonTagged(value BACnetRejectReason, proprietaryValue uint32, actualLength uint32) *_BACnetRejectReasonTagged {
-	return &_BACnetRejectReasonTagged{Value: value, ProprietaryValue: proprietaryValue, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRejectReasonTagged(structType any) BACnetRejectReasonTagged {
@@ -144,7 +230,7 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetRejectReasonTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetRejectReasonTagged BACnetRejectReasonTagged, err error) {
@@ -232,13 +318,33 @@ func (m *_BACnetRejectReasonTagged) GetActualLength() uint32 {
 
 func (m *_BACnetRejectReasonTagged) IsBACnetRejectReasonTagged() {}
 
+func (m *_BACnetRejectReasonTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRejectReasonTagged) deepCopy() *_BACnetRejectReasonTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetRejectReasonTaggedCopy := &_BACnetRejectReasonTagged{
+		m.Value,
+		m.ProprietaryValue,
+		m.ActualLength,
+	}
+	return _BACnetRejectReasonTaggedCopy
+}
+
 func (m *_BACnetRejectReasonTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

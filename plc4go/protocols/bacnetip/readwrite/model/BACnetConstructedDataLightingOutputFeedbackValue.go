@@ -38,6 +38,7 @@ type BACnetConstructedDataLightingOutputFeedbackValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFeedbackValue returns FeedbackValue (property field)
 	GetFeedbackValue() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataLightingOutputFeedbackValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataLightingOutputFeedbackValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLightingOutputFeedbackValue()
+	// CreateBuilder creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder
 }
 
 // _BACnetConstructedDataLightingOutputFeedbackValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLightingOutputFeedbackValue struct {
 
 var _ BACnetConstructedDataLightingOutputFeedbackValue = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLightingOutputFeedbackValue)(nil)
+
+// NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
+func NewBACnetConstructedDataLightingOutputFeedbackValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, feedbackValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
+	if feedbackValue == nil {
+		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FeedbackValue:                 feedbackValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLightingOutputFeedbackValueBuilder is a builder for BACnetConstructedDataLightingOutputFeedbackValue
+type BACnetConstructedDataLightingOutputFeedbackValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// WithFeedbackValue adds FeedbackValue (property field)
+	WithFeedbackValue(BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// WithFeedbackValueBuilder adds FeedbackValue (property field) which is build by the builder
+	WithFeedbackValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputFeedbackValueBuilder
+	// Build builds the BACnetConstructedDataLightingOutputFeedbackValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataLightingOutputFeedbackValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLightingOutputFeedbackValue
+}
+
+// NewBACnetConstructedDataLightingOutputFeedbackValueBuilder() creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+func NewBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	return &_BACnetConstructedDataLightingOutputFeedbackValueBuilder{_BACnetConstructedDataLightingOutputFeedbackValue: new(_BACnetConstructedDataLightingOutputFeedbackValue)}
+}
+
+type _BACnetConstructedDataLightingOutputFeedbackValueBuilder struct {
+	*_BACnetConstructedDataLightingOutputFeedbackValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLightingOutputFeedbackValueBuilder) = (*_BACnetConstructedDataLightingOutputFeedbackValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithMandatoryFields(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	return b.WithFeedbackValue(feedbackValue)
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithFeedbackValue(feedbackValue BACnetApplicationTagReal) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	b.FeedbackValue = feedbackValue
+	return b
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) WithFeedbackValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	builder := builderSupplier(b.FeedbackValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.FeedbackValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) Build() (BACnetConstructedDataLightingOutputFeedbackValue, error) {
+	if b.FeedbackValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'feedbackValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLightingOutputFeedbackValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) MustBuild() BACnetConstructedDataLightingOutputFeedbackValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLightingOutputFeedbackValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder().(*_BACnetConstructedDataLightingOutputFeedbackValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder creates a BACnetConstructedDataLightingOutputFeedbackValueBuilder
+func (b *_BACnetConstructedDataLightingOutputFeedbackValue) CreateBACnetConstructedDataLightingOutputFeedbackValueBuilder() BACnetConstructedDataLightingOutputFeedbackValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLightingOutputFeedbackValueBuilder()
+	}
+	return &_BACnetConstructedDataLightingOutputFeedbackValueBuilder{_BACnetConstructedDataLightingOutputFeedbackValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) GetActualValue() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLightingOutputFeedbackValue factory function for _BACnetConstructedDataLightingOutputFeedbackValue
-func NewBACnetConstructedDataLightingOutputFeedbackValue(feedbackValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLightingOutputFeedbackValue {
-	if feedbackValue == nil {
-		panic("feedbackValue of type BACnetApplicationTagReal for BACnetConstructedDataLightingOutputFeedbackValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataLightingOutputFeedbackValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FeedbackValue:                 feedbackValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLightingOutputFeedbackValue(structType any) BACnetConstructedDataLightingOutputFeedbackValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLightingOutputFeedbackValue) SerializeWithWriteBu
 func (m *_BACnetConstructedDataLightingOutputFeedbackValue) IsBACnetConstructedDataLightingOutputFeedbackValue() {
 }
 
+func (m *_BACnetConstructedDataLightingOutputFeedbackValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLightingOutputFeedbackValue) deepCopy() *_BACnetConstructedDataLightingOutputFeedbackValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLightingOutputFeedbackValueCopy := &_BACnetConstructedDataLightingOutputFeedbackValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FeedbackValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLightingOutputFeedbackValueCopy
+}
+
 func (m *_BACnetConstructedDataLightingOutputFeedbackValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

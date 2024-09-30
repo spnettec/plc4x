@@ -38,11 +38,14 @@ type BACnetLogRecordLogDatumUnsignedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetUnsignedValue returns UnsignedValue (property field)
 	GetUnsignedValue() BACnetContextTagUnsignedInteger
 	// IsBACnetLogRecordLogDatumUnsignedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumUnsignedValue()
+	// CreateBuilder creates a BACnetLogRecordLogDatumUnsignedValueBuilder
+	CreateBACnetLogRecordLogDatumUnsignedValueBuilder() BACnetLogRecordLogDatumUnsignedValueBuilder
 }
 
 // _BACnetLogRecordLogDatumUnsignedValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogRecordLogDatumUnsignedValue struct {
 
 var _ BACnetLogRecordLogDatumUnsignedValue = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumUnsignedValue)(nil)
+
+// NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
+func NewBACnetLogRecordLogDatumUnsignedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, unsignedValue BACnetContextTagUnsignedInteger, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
+	if unsignedValue == nil {
+		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumUnsignedValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		UnsignedValue:                   unsignedValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumUnsignedValueBuilder is a builder for BACnetLogRecordLogDatumUnsignedValue
+type BACnetLogRecordLogDatumUnsignedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder
+	// WithUnsignedValue adds UnsignedValue (property field)
+	WithUnsignedValue(BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder
+	// WithUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
+	WithUnsignedValueBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogRecordLogDatumUnsignedValueBuilder
+	// Build builds the BACnetLogRecordLogDatumUnsignedValue or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumUnsignedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumUnsignedValue
+}
+
+// NewBACnetLogRecordLogDatumUnsignedValueBuilder() creates a BACnetLogRecordLogDatumUnsignedValueBuilder
+func NewBACnetLogRecordLogDatumUnsignedValueBuilder() BACnetLogRecordLogDatumUnsignedValueBuilder {
+	return &_BACnetLogRecordLogDatumUnsignedValueBuilder{_BACnetLogRecordLogDatumUnsignedValue: new(_BACnetLogRecordLogDatumUnsignedValue)}
+}
+
+type _BACnetLogRecordLogDatumUnsignedValueBuilder struct {
+	*_BACnetLogRecordLogDatumUnsignedValue
+
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumUnsignedValueBuilder) = (*_BACnetLogRecordLogDatumUnsignedValueBuilder)(nil)
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) WithMandatoryFields(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder {
+	return b.WithUnsignedValue(unsignedValue)
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) WithUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger) BACnetLogRecordLogDatumUnsignedValueBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) WithUnsignedValueBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetLogRecordLogDatumUnsignedValueBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.UnsignedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) Build() (BACnetLogRecordLogDatumUnsignedValue, error) {
+	if b.UnsignedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'unsignedValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumUnsignedValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) MustBuild() BACnetLogRecordLogDatumUnsignedValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumUnsignedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumUnsignedValueBuilder().(*_BACnetLogRecordLogDatumUnsignedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogRecordLogDatumUnsignedValueBuilder creates a BACnetLogRecordLogDatumUnsignedValueBuilder
+func (b *_BACnetLogRecordLogDatumUnsignedValue) CreateBACnetLogRecordLogDatumUnsignedValueBuilder() BACnetLogRecordLogDatumUnsignedValueBuilder {
+	if b == nil {
+		return NewBACnetLogRecordLogDatumUnsignedValueBuilder()
+	}
+	return &_BACnetLogRecordLogDatumUnsignedValueBuilder{_BACnetLogRecordLogDatumUnsignedValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) GetUnsignedValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumUnsignedValue factory function for _BACnetLogRecordLogDatumUnsignedValue
-func NewBACnetLogRecordLogDatumUnsignedValue(unsignedValue BACnetContextTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumUnsignedValue {
-	if unsignedValue == nil {
-		panic("unsignedValue of type BACnetContextTagUnsignedInteger for BACnetLogRecordLogDatumUnsignedValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumUnsignedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		UnsignedValue:                   unsignedValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumUnsignedValue(structType any) BACnetLogRecordLogDatumUnsignedValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogRecordLogDatumUnsignedValue) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetLogRecordLogDatumUnsignedValue) IsBACnetLogRecordLogDatumUnsignedValue() {}
 
+func (m *_BACnetLogRecordLogDatumUnsignedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumUnsignedValue) deepCopy() *_BACnetLogRecordLogDatumUnsignedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumUnsignedValueCopy := &_BACnetLogRecordLogDatumUnsignedValue{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.UnsignedValue.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumUnsignedValueCopy
+}
+
 func (m *_BACnetLogRecordLogDatumUnsignedValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

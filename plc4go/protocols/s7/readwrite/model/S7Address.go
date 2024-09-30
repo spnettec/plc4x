@@ -40,14 +40,19 @@ type S7Address interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
+	// CreateBuilder creates a S7AddressBuilder
+	CreateS7AddressBuilder() S7AddressBuilder
 }
 
 // S7AddressContract provides a set of functions which can be overwritten by a sub struct
 type S7AddressContract interface {
 	// IsS7Address is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Address()
+	// CreateBuilder creates a S7AddressBuilder
+	CreateS7AddressBuilder() S7AddressBuilder
 }
 
 // S7AddressRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,130 @@ var _ S7AddressContract = (*_S7Address)(nil)
 func NewS7Address() *_S7Address {
 	return &_S7Address{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7AddressBuilder is a builder for S7Address
+type S7AddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7AddressBuilder
+	// AsS7AddressAny converts this build to a subType of S7Address. It is always possible to return to current builder using Done()
+	AsS7AddressAny() interface {
+		S7AddressAnyBuilder
+		Done() S7AddressBuilder
+	}
+	// Build builds the S7Address or returns an error if something is wrong
+	PartialBuild() (S7AddressContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() S7AddressContract
+	// Build builds the S7Address or returns an error if something is wrong
+	Build() (S7Address, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7Address
+}
+
+// NewS7AddressBuilder() creates a S7AddressBuilder
+func NewS7AddressBuilder() S7AddressBuilder {
+	return &_S7AddressBuilder{_S7Address: new(_S7Address)}
+}
+
+type _S7AddressChildBuilder interface {
+	utils.Copyable
+	setParent(S7AddressContract)
+	buildForS7Address() (S7Address, error)
+}
+
+type _S7AddressBuilder struct {
+	*_S7Address
+
+	childBuilder _S7AddressChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7AddressBuilder) = (*_S7AddressBuilder)(nil)
+
+func (b *_S7AddressBuilder) WithMandatoryFields() S7AddressBuilder {
+	return b
+}
+
+func (b *_S7AddressBuilder) PartialBuild() (S7AddressContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7Address.deepCopy(), nil
+}
+
+func (b *_S7AddressBuilder) PartialMustBuild() S7AddressContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7AddressBuilder) AsS7AddressAny() interface {
+	S7AddressAnyBuilder
+	Done() S7AddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7AddressAnyBuilder
+		Done() S7AddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7AddressAnyBuilder().(*_S7AddressAnyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7AddressBuilder) Build() (S7Address, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7Address()
+}
+
+func (b *_S7AddressBuilder) MustBuild() S7Address {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7AddressBuilder) DeepCopy() any {
+	_copy := b.CreateS7AddressBuilder().(*_S7AddressBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7AddressChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7AddressBuilder creates a S7AddressBuilder
+func (b *_S7Address) CreateS7AddressBuilder() S7AddressBuilder {
+	if b == nil {
+		return NewS7AddressBuilder()
+	}
+	return &_S7AddressBuilder{_S7Address: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastS7Address(structType any) S7Address {
@@ -108,7 +237,7 @@ func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +247,12 @@ func S7AddressParseWithBuffer[T S7Address](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7Address) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7Address S7Address, err error) {
@@ -139,7 +273,7 @@ func (m *_S7Address) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Address
 	switch {
 	case addressType == 0x10: // S7AddressAny
-		if _child, err = (&_S7AddressAny{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7AddressAny).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7AddressAny for type-switch of S7Address")
 		}
 	default:
@@ -181,3 +315,17 @@ func (pm *_S7Address) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Address) IsS7Address() {}
+
+func (m *_S7Address) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Address) deepCopy() *_S7Address {
+	if m == nil {
+		return nil
+	}
+	_S7AddressCopy := &_S7Address{
+		nil, // will be set by child
+	}
+	return _S7AddressCopy
+}

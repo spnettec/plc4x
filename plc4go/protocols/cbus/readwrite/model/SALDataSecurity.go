@@ -38,11 +38,14 @@ type SALDataSecurity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetSecurityData returns SecurityData (property field)
 	GetSecurityData() SecurityData
 	// IsSALDataSecurity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataSecurity()
+	// CreateBuilder creates a SALDataSecurityBuilder
+	CreateSALDataSecurityBuilder() SALDataSecurityBuilder
 }
 
 // _SALDataSecurity is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataSecurity struct {
 
 var _ SALDataSecurity = (*_SALDataSecurity)(nil)
 var _ SALDataRequirements = (*_SALDataSecurity)(nil)
+
+// NewSALDataSecurity factory function for _SALDataSecurity
+func NewSALDataSecurity(salData SALData, securityData SecurityData) *_SALDataSecurity {
+	if securityData == nil {
+		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
+	}
+	_result := &_SALDataSecurity{
+		SALDataContract: NewSALData(salData),
+		SecurityData:    securityData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataSecurityBuilder is a builder for SALDataSecurity
+type SALDataSecurityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder
+	// WithSecurityData adds SecurityData (property field)
+	WithSecurityData(SecurityData) SALDataSecurityBuilder
+	// WithSecurityDataBuilder adds SecurityData (property field) which is build by the builder
+	WithSecurityDataBuilder(func(SecurityDataBuilder) SecurityDataBuilder) SALDataSecurityBuilder
+	// Build builds the SALDataSecurity or returns an error if something is wrong
+	Build() (SALDataSecurity, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataSecurity
+}
+
+// NewSALDataSecurityBuilder() creates a SALDataSecurityBuilder
+func NewSALDataSecurityBuilder() SALDataSecurityBuilder {
+	return &_SALDataSecurityBuilder{_SALDataSecurity: new(_SALDataSecurity)}
+}
+
+type _SALDataSecurityBuilder struct {
+	*_SALDataSecurity
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataSecurityBuilder) = (*_SALDataSecurityBuilder)(nil)
+
+func (b *_SALDataSecurityBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataSecurityBuilder) WithMandatoryFields(securityData SecurityData) SALDataSecurityBuilder {
+	return b.WithSecurityData(securityData)
+}
+
+func (b *_SALDataSecurityBuilder) WithSecurityData(securityData SecurityData) SALDataSecurityBuilder {
+	b.SecurityData = securityData
+	return b
+}
+
+func (b *_SALDataSecurityBuilder) WithSecurityDataBuilder(builderSupplier func(SecurityDataBuilder) SecurityDataBuilder) SALDataSecurityBuilder {
+	builder := builderSupplier(b.SecurityData.CreateSecurityDataBuilder())
+	var err error
+	b.SecurityData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SecurityDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataSecurityBuilder) Build() (SALDataSecurity, error) {
+	if b.SecurityData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataSecurity.deepCopy(), nil
+}
+
+func (b *_SALDataSecurityBuilder) MustBuild() SALDataSecurity {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataSecurityBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataSecurityBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataSecurityBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataSecurityBuilder().(*_SALDataSecurityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataSecurityBuilder creates a SALDataSecurityBuilder
+func (b *_SALDataSecurity) CreateSALDataSecurityBuilder() SALDataSecurityBuilder {
+	if b == nil {
+		return NewSALDataSecurityBuilder()
+	}
+	return &_SALDataSecurityBuilder{_SALDataSecurity: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataSecurity) GetSecurityData() SecurityData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataSecurity factory function for _SALDataSecurity
-func NewSALDataSecurity(securityData SecurityData, salData SALData) *_SALDataSecurity {
-	if securityData == nil {
-		panic("securityData of type SecurityData for SALDataSecurity must not be nil")
-	}
-	_result := &_SALDataSecurity{
-		SALDataContract: NewSALData(salData),
-		SecurityData:    securityData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataSecurity(structType any) SALDataSecurity {
@@ -183,13 +298,33 @@ func (m *_SALDataSecurity) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_SALDataSecurity) IsSALDataSecurity() {}
 
+func (m *_SALDataSecurity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataSecurity) deepCopy() *_SALDataSecurity {
+	if m == nil {
+		return nil
+	}
+	_SALDataSecurityCopy := &_SALDataSecurity{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.SecurityData.DeepCopy().(SecurityData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataSecurityCopy
+}
+
 func (m *_SALDataSecurity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

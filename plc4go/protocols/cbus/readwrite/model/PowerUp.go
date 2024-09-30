@@ -42,8 +42,11 @@ type PowerUp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsPowerUp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPowerUp()
+	// CreateBuilder creates a PowerUpBuilder
+	CreatePowerUpBuilder() PowerUpBuilder
 }
 
 // _PowerUp is the data-structure of this message
@@ -51,6 +54,80 @@ type _PowerUp struct {
 }
 
 var _ PowerUp = (*_PowerUp)(nil)
+
+// NewPowerUp factory function for _PowerUp
+func NewPowerUp() *_PowerUp {
+	return &_PowerUp{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PowerUpBuilder is a builder for PowerUp
+type PowerUpBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() PowerUpBuilder
+	// Build builds the PowerUp or returns an error if something is wrong
+	Build() (PowerUp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PowerUp
+}
+
+// NewPowerUpBuilder() creates a PowerUpBuilder
+func NewPowerUpBuilder() PowerUpBuilder {
+	return &_PowerUpBuilder{_PowerUp: new(_PowerUp)}
+}
+
+type _PowerUpBuilder struct {
+	*_PowerUp
+
+	err *utils.MultiError
+}
+
+var _ (PowerUpBuilder) = (*_PowerUpBuilder)(nil)
+
+func (b *_PowerUpBuilder) WithMandatoryFields() PowerUpBuilder {
+	return b
+}
+
+func (b *_PowerUpBuilder) Build() (PowerUp, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PowerUp.deepCopy(), nil
+}
+
+func (b *_PowerUpBuilder) MustBuild() PowerUp {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PowerUpBuilder) DeepCopy() any {
+	_copy := b.CreatePowerUpBuilder().(*_PowerUpBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePowerUpBuilder creates a PowerUpBuilder
+func (b *_PowerUp) CreatePowerUpBuilder() PowerUpBuilder {
+	if b == nil {
+		return NewPowerUpBuilder()
+	}
+	return &_PowerUpBuilder{_PowerUp: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,11 +146,6 @@ func (m *_PowerUp) GetPowerUpIndicator2() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPowerUp factory function for _PowerUp
-func NewPowerUp() *_PowerUp {
-	return &_PowerUp{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPowerUp(structType any) PowerUp {
@@ -121,7 +193,7 @@ func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (P
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PowerUp) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__powerUp PowerUp, err error) {
@@ -185,13 +257,29 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 func (m *_PowerUp) IsPowerUp() {}
 
+func (m *_PowerUp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PowerUp) deepCopy() *_PowerUp {
+	if m == nil {
+		return nil
+	}
+	_PowerUpCopy := &_PowerUp{}
+	return _PowerUpCopy
+}
+
 func (m *_PowerUp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

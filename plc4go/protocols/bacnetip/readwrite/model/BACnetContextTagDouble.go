@@ -38,6 +38,7 @@ type BACnetContextTagDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDouble
@@ -45,6 +46,8 @@ type BACnetContextTagDouble interface {
 	GetActualValue() float64
 	// IsBACnetContextTagDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagDouble()
+	// CreateBuilder creates a BACnetContextTagDoubleBuilder
+	CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder
 }
 
 // _BACnetContextTagDouble is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetContextTagDouble struct {
 
 var _ BACnetContextTagDouble = (*_BACnetContextTagDouble)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDouble)(nil)
+
+// NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
+func NewBACnetContextTagDouble(header BACnetTagHeader, payload BACnetTagPayloadDouble, tagNumberArgument uint8) *_BACnetContextTagDouble {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
+	}
+	_result := &_BACnetContextTagDouble{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagDoubleBuilder is a builder for BACnetContextTagDouble
+type BACnetContextTagDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder
+	// Build builds the BACnetContextTagDouble or returns an error if something is wrong
+	Build() (BACnetContextTagDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagDouble
+}
+
+// NewBACnetContextTagDoubleBuilder() creates a BACnetContextTagDoubleBuilder
+func NewBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
+	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: new(_BACnetContextTagDouble)}
+}
+
+type _BACnetContextTagDoubleBuilder struct {
+	*_BACnetContextTagDouble
+
+	parentBuilder *_BACnetContextTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagDoubleBuilder) = (*_BACnetContextTagDoubleBuilder)(nil)
+
+func (b *_BACnetContextTagDoubleBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
+}
+
+func (b *_BACnetContextTagDoubleBuilder) WithMandatoryFields(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetContextTagDoubleBuilder) WithPayload(payload BACnetTagPayloadDouble) BACnetContextTagDoubleBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagDoubleBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDoubleBuilder) BACnetTagPayloadDoubleBuilder) BACnetContextTagDoubleBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadDoubleBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetContextTagDoubleBuilder) Build() (BACnetContextTagDouble, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetContextTagDouble.deepCopy(), nil
+}
+
+func (b *_BACnetContextTagDoubleBuilder) MustBuild() BACnetContextTagDouble {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagDoubleBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagDoubleBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagDoubleBuilder().(*_BACnetContextTagDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetContextTagDoubleBuilder creates a BACnetContextTagDoubleBuilder
+func (b *_BACnetContextTagDouble) CreateBACnetContextTagDoubleBuilder() BACnetContextTagDoubleBuilder {
+	if b == nil {
+		return NewBACnetContextTagDoubleBuilder()
+	}
+	return &_BACnetContextTagDoubleBuilder{_BACnetContextTagDouble: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +230,6 @@ func (m *_BACnetContextTagDouble) GetActualValue() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagDouble factory function for _BACnetContextTagDouble
-func NewBACnetContextTagDouble(payload BACnetTagPayloadDouble, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDouble {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDouble for BACnetContextTagDouble must not be nil")
-	}
-	_result := &_BACnetContextTagDouble{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagDouble(structType any) BACnetContextTagDouble {
@@ -214,13 +329,33 @@ func (m *_BACnetContextTagDouble) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetContextTagDouble) IsBACnetContextTagDouble() {}
 
+func (m *_BACnetContextTagDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagDouble) deepCopy() *_BACnetContextTagDouble {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagDoubleCopy := &_BACnetContextTagDouble{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDouble),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagDoubleCopy
+}
+
 func (m *_BACnetContextTagDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataProtocolObjectTypesSupported interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProtocolObjectTypesSupported returns ProtocolObjectTypesSupported (property field)
 	GetProtocolObjectTypesSupported() BACnetObjectTypesSupportedTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataProtocolObjectTypesSupported interface {
 	GetActualValue() BACnetObjectTypesSupportedTagged
 	// IsBACnetConstructedDataProtocolObjectTypesSupported is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProtocolObjectTypesSupported()
+	// CreateBuilder creates a BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+	CreateBACnetConstructedDataProtocolObjectTypesSupportedBuilder() BACnetConstructedDataProtocolObjectTypesSupportedBuilder
 }
 
 // _BACnetConstructedDataProtocolObjectTypesSupported is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataProtocolObjectTypesSupported struct {
 
 var _ BACnetConstructedDataProtocolObjectTypesSupported = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProtocolObjectTypesSupported)(nil)
+
+// NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
+func NewBACnetConstructedDataProtocolObjectTypesSupported(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
+	if protocolObjectTypesSupported == nil {
+		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
+	}
+	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProtocolObjectTypesSupportedBuilder is a builder for BACnetConstructedDataProtocolObjectTypesSupported
+type BACnetConstructedDataProtocolObjectTypesSupportedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged) BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+	// WithProtocolObjectTypesSupported adds ProtocolObjectTypesSupported (property field)
+	WithProtocolObjectTypesSupported(BACnetObjectTypesSupportedTagged) BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+	// WithProtocolObjectTypesSupportedBuilder adds ProtocolObjectTypesSupported (property field) which is build by the builder
+	WithProtocolObjectTypesSupportedBuilder(func(BACnetObjectTypesSupportedTaggedBuilder) BACnetObjectTypesSupportedTaggedBuilder) BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+	// Build builds the BACnetConstructedDataProtocolObjectTypesSupported or returns an error if something is wrong
+	Build() (BACnetConstructedDataProtocolObjectTypesSupported, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProtocolObjectTypesSupported
+}
+
+// NewBACnetConstructedDataProtocolObjectTypesSupportedBuilder() creates a BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+func NewBACnetConstructedDataProtocolObjectTypesSupportedBuilder() BACnetConstructedDataProtocolObjectTypesSupportedBuilder {
+	return &_BACnetConstructedDataProtocolObjectTypesSupportedBuilder{_BACnetConstructedDataProtocolObjectTypesSupported: new(_BACnetConstructedDataProtocolObjectTypesSupported)}
+}
+
+type _BACnetConstructedDataProtocolObjectTypesSupportedBuilder struct {
+	*_BACnetConstructedDataProtocolObjectTypesSupported
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProtocolObjectTypesSupportedBuilder) = (*_BACnetConstructedDataProtocolObjectTypesSupportedBuilder)(nil)
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) WithMandatoryFields(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged) BACnetConstructedDataProtocolObjectTypesSupportedBuilder {
+	return b.WithProtocolObjectTypesSupported(protocolObjectTypesSupported)
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) WithProtocolObjectTypesSupported(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged) BACnetConstructedDataProtocolObjectTypesSupportedBuilder {
+	b.ProtocolObjectTypesSupported = protocolObjectTypesSupported
+	return b
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) WithProtocolObjectTypesSupportedBuilder(builderSupplier func(BACnetObjectTypesSupportedTaggedBuilder) BACnetObjectTypesSupportedTaggedBuilder) BACnetConstructedDataProtocolObjectTypesSupportedBuilder {
+	builder := builderSupplier(b.ProtocolObjectTypesSupported.CreateBACnetObjectTypesSupportedTaggedBuilder())
+	var err error
+	b.ProtocolObjectTypesSupported, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectTypesSupportedTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) Build() (BACnetConstructedDataProtocolObjectTypesSupported, error) {
+	if b.ProtocolObjectTypesSupported == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'protocolObjectTypesSupported' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataProtocolObjectTypesSupported.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) MustBuild() BACnetConstructedDataProtocolObjectTypesSupported {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProtocolObjectTypesSupportedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProtocolObjectTypesSupportedBuilder().(*_BACnetConstructedDataProtocolObjectTypesSupportedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataProtocolObjectTypesSupportedBuilder creates a BACnetConstructedDataProtocolObjectTypesSupportedBuilder
+func (b *_BACnetConstructedDataProtocolObjectTypesSupported) CreateBACnetConstructedDataProtocolObjectTypesSupportedBuilder() BACnetConstructedDataProtocolObjectTypesSupportedBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataProtocolObjectTypesSupportedBuilder()
+	}
+	return &_BACnetConstructedDataProtocolObjectTypesSupportedBuilder{_BACnetConstructedDataProtocolObjectTypesSupported: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) GetActualValue() BA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProtocolObjectTypesSupported factory function for _BACnetConstructedDataProtocolObjectTypesSupported
-func NewBACnetConstructedDataProtocolObjectTypesSupported(protocolObjectTypesSupported BACnetObjectTypesSupportedTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProtocolObjectTypesSupported {
-	if protocolObjectTypesSupported == nil {
-		panic("protocolObjectTypesSupported of type BACnetObjectTypesSupportedTagged for BACnetConstructedDataProtocolObjectTypesSupported must not be nil")
-	}
-	_result := &_BACnetConstructedDataProtocolObjectTypesSupported{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProtocolObjectTypesSupported:  protocolObjectTypesSupported,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProtocolObjectTypesSupported(structType any) BACnetConstructedDataProtocolObjectTypesSupported {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataProtocolObjectTypesSupported) SerializeWithWriteB
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) IsBACnetConstructedDataProtocolObjectTypesSupported() {
 }
 
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProtocolObjectTypesSupported) deepCopy() *_BACnetConstructedDataProtocolObjectTypesSupported {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProtocolObjectTypesSupportedCopy := &_BACnetConstructedDataProtocolObjectTypesSupported{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProtocolObjectTypesSupported.DeepCopy().(BACnetObjectTypesSupportedTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProtocolObjectTypesSupportedCopy
+}
+
 func (m *_BACnetConstructedDataProtocolObjectTypesSupported) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

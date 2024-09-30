@@ -38,6 +38,7 @@ type ErrorReportingDataGeneric interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingData
 	// GetSystemCategory returns SystemCategory (property field)
 	GetSystemCategory() ErrorReportingSystemCategory
@@ -63,6 +64,8 @@ type ErrorReportingDataGeneric interface {
 	GetIsMostRecentAndMostSevere() bool
 	// IsErrorReportingDataGeneric is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingDataGeneric()
+	// CreateBuilder creates a ErrorReportingDataGenericBuilder
+	CreateErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder
 }
 
 // _ErrorReportingDataGeneric is the data-structure of this message
@@ -80,6 +83,187 @@ type _ErrorReportingDataGeneric struct {
 
 var _ ErrorReportingDataGeneric = (*_ErrorReportingDataGeneric)(nil)
 var _ ErrorReportingDataRequirements = (*_ErrorReportingDataGeneric)(nil)
+
+// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
+func NewErrorReportingDataGeneric(commandTypeContainer ErrorReportingCommandTypeContainer, systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) *_ErrorReportingDataGeneric {
+	if systemCategory == nil {
+		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
+	}
+	_result := &_ErrorReportingDataGeneric{
+		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
+		SystemCategory:             systemCategory,
+		MostRecent:                 mostRecent,
+		Acknowledge:                acknowledge,
+		MostSevere:                 mostSevere,
+		Severity:                   severity,
+		DeviceId:                   deviceId,
+		ErrorData1:                 errorData1,
+		ErrorData2:                 errorData2,
+	}
+	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingDataGenericBuilder is a builder for ErrorReportingDataGeneric
+type ErrorReportingDataGenericBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) ErrorReportingDataGenericBuilder
+	// WithSystemCategory adds SystemCategory (property field)
+	WithSystemCategory(ErrorReportingSystemCategory) ErrorReportingDataGenericBuilder
+	// WithSystemCategoryBuilder adds SystemCategory (property field) which is build by the builder
+	WithSystemCategoryBuilder(func(ErrorReportingSystemCategoryBuilder) ErrorReportingSystemCategoryBuilder) ErrorReportingDataGenericBuilder
+	// WithMostRecent adds MostRecent (property field)
+	WithMostRecent(bool) ErrorReportingDataGenericBuilder
+	// WithAcknowledge adds Acknowledge (property field)
+	WithAcknowledge(bool) ErrorReportingDataGenericBuilder
+	// WithMostSevere adds MostSevere (property field)
+	WithMostSevere(bool) ErrorReportingDataGenericBuilder
+	// WithSeverity adds Severity (property field)
+	WithSeverity(ErrorReportingSeverity) ErrorReportingDataGenericBuilder
+	// WithDeviceId adds DeviceId (property field)
+	WithDeviceId(uint8) ErrorReportingDataGenericBuilder
+	// WithErrorData1 adds ErrorData1 (property field)
+	WithErrorData1(uint8) ErrorReportingDataGenericBuilder
+	// WithErrorData2 adds ErrorData2 (property field)
+	WithErrorData2(uint8) ErrorReportingDataGenericBuilder
+	// Build builds the ErrorReportingDataGeneric or returns an error if something is wrong
+	Build() (ErrorReportingDataGeneric, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingDataGeneric
+}
+
+// NewErrorReportingDataGenericBuilder() creates a ErrorReportingDataGenericBuilder
+func NewErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder {
+	return &_ErrorReportingDataGenericBuilder{_ErrorReportingDataGeneric: new(_ErrorReportingDataGeneric)}
+}
+
+type _ErrorReportingDataGenericBuilder struct {
+	*_ErrorReportingDataGeneric
+
+	parentBuilder *_ErrorReportingDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingDataGenericBuilder) = (*_ErrorReportingDataGenericBuilder)(nil)
+
+func (b *_ErrorReportingDataGenericBuilder) setParent(contract ErrorReportingDataContract) {
+	b.ErrorReportingDataContract = contract
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithMandatoryFields(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8) ErrorReportingDataGenericBuilder {
+	return b.WithSystemCategory(systemCategory).WithMostRecent(mostRecent).WithAcknowledge(acknowledge).WithMostSevere(mostSevere).WithSeverity(severity).WithDeviceId(deviceId).WithErrorData1(errorData1).WithErrorData2(errorData2)
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithSystemCategory(systemCategory ErrorReportingSystemCategory) ErrorReportingDataGenericBuilder {
+	b.SystemCategory = systemCategory
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithSystemCategoryBuilder(builderSupplier func(ErrorReportingSystemCategoryBuilder) ErrorReportingSystemCategoryBuilder) ErrorReportingDataGenericBuilder {
+	builder := builderSupplier(b.SystemCategory.CreateErrorReportingSystemCategoryBuilder())
+	var err error
+	b.SystemCategory, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorReportingSystemCategoryBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithMostRecent(mostRecent bool) ErrorReportingDataGenericBuilder {
+	b.MostRecent = mostRecent
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithAcknowledge(acknowledge bool) ErrorReportingDataGenericBuilder {
+	b.Acknowledge = acknowledge
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithMostSevere(mostSevere bool) ErrorReportingDataGenericBuilder {
+	b.MostSevere = mostSevere
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithSeverity(severity ErrorReportingSeverity) ErrorReportingDataGenericBuilder {
+	b.Severity = severity
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithDeviceId(deviceId uint8) ErrorReportingDataGenericBuilder {
+	b.DeviceId = deviceId
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithErrorData1(errorData1 uint8) ErrorReportingDataGenericBuilder {
+	b.ErrorData1 = errorData1
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) WithErrorData2(errorData2 uint8) ErrorReportingDataGenericBuilder {
+	b.ErrorData2 = errorData2
+	return b
+}
+
+func (b *_ErrorReportingDataGenericBuilder) Build() (ErrorReportingDataGeneric, error) {
+	if b.SystemCategory == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'systemCategory' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingDataGeneric.deepCopy(), nil
+}
+
+func (b *_ErrorReportingDataGenericBuilder) MustBuild() ErrorReportingDataGeneric {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingDataGenericBuilder) Done() ErrorReportingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingDataGenericBuilder) buildForErrorReportingData() (ErrorReportingData, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingDataGenericBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingDataGenericBuilder().(*_ErrorReportingDataGenericBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorReportingDataGenericBuilder creates a ErrorReportingDataGenericBuilder
+func (b *_ErrorReportingDataGeneric) CreateErrorReportingDataGenericBuilder() ErrorReportingDataGenericBuilder {
+	if b == nil {
+		return NewErrorReportingDataGenericBuilder()
+	}
+	return &_ErrorReportingDataGenericBuilder{_ErrorReportingDataGeneric: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -163,26 +347,6 @@ func (m *_ErrorReportingDataGeneric) GetIsMostRecentAndMostSevere() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingDataGeneric factory function for _ErrorReportingDataGeneric
-func NewErrorReportingDataGeneric(systemCategory ErrorReportingSystemCategory, mostRecent bool, acknowledge bool, mostSevere bool, severity ErrorReportingSeverity, deviceId uint8, errorData1 uint8, errorData2 uint8, commandTypeContainer ErrorReportingCommandTypeContainer) *_ErrorReportingDataGeneric {
-	if systemCategory == nil {
-		panic("systemCategory of type ErrorReportingSystemCategory for ErrorReportingDataGeneric must not be nil")
-	}
-	_result := &_ErrorReportingDataGeneric{
-		ErrorReportingDataContract: NewErrorReportingData(commandTypeContainer),
-		SystemCategory:             systemCategory,
-		MostRecent:                 mostRecent,
-		Acknowledge:                acknowledge,
-		MostSevere:                 mostSevere,
-		Severity:                   severity,
-		DeviceId:                   deviceId,
-		ErrorData1:                 errorData1,
-		ErrorData2:                 errorData2,
-	}
-	_result.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingDataGeneric(structType any) ErrorReportingDataGeneric {
@@ -406,13 +570,40 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_ErrorReportingDataGeneric) IsErrorReportingDataGeneric() {}
 
+func (m *_ErrorReportingDataGeneric) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingDataGeneric) deepCopy() *_ErrorReportingDataGeneric {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingDataGenericCopy := &_ErrorReportingDataGeneric{
+		m.ErrorReportingDataContract.(*_ErrorReportingData).deepCopy(),
+		m.SystemCategory.DeepCopy().(ErrorReportingSystemCategory),
+		m.MostRecent,
+		m.Acknowledge,
+		m.MostSevere,
+		m.Severity,
+		m.DeviceId,
+		m.ErrorData1,
+		m.ErrorData2,
+	}
+	m.ErrorReportingDataContract.(*_ErrorReportingData)._SubType = m
+	return _ErrorReportingDataGenericCopy
+}
+
 func (m *_ErrorReportingDataGeneric) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

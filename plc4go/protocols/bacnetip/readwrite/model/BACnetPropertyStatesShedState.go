@@ -38,11 +38,14 @@ type BACnetPropertyStatesShedState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetShedState returns ShedState (property field)
 	GetShedState() BACnetShedStateTagged
 	// IsBACnetPropertyStatesShedState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesShedState()
+	// CreateBuilder creates a BACnetPropertyStatesShedStateBuilder
+	CreateBACnetPropertyStatesShedStateBuilder() BACnetPropertyStatesShedStateBuilder
 }
 
 // _BACnetPropertyStatesShedState is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesShedState struct {
 
 var _ BACnetPropertyStatesShedState = (*_BACnetPropertyStatesShedState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesShedState)(nil)
+
+// NewBACnetPropertyStatesShedState factory function for _BACnetPropertyStatesShedState
+func NewBACnetPropertyStatesShedState(peekedTagHeader BACnetTagHeader, shedState BACnetShedStateTagged) *_BACnetPropertyStatesShedState {
+	if shedState == nil {
+		panic("shedState of type BACnetShedStateTagged for BACnetPropertyStatesShedState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesShedState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ShedState:                    shedState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesShedStateBuilder is a builder for BACnetPropertyStatesShedState
+type BACnetPropertyStatesShedStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(shedState BACnetShedStateTagged) BACnetPropertyStatesShedStateBuilder
+	// WithShedState adds ShedState (property field)
+	WithShedState(BACnetShedStateTagged) BACnetPropertyStatesShedStateBuilder
+	// WithShedStateBuilder adds ShedState (property field) which is build by the builder
+	WithShedStateBuilder(func(BACnetShedStateTaggedBuilder) BACnetShedStateTaggedBuilder) BACnetPropertyStatesShedStateBuilder
+	// Build builds the BACnetPropertyStatesShedState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesShedState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesShedState
+}
+
+// NewBACnetPropertyStatesShedStateBuilder() creates a BACnetPropertyStatesShedStateBuilder
+func NewBACnetPropertyStatesShedStateBuilder() BACnetPropertyStatesShedStateBuilder {
+	return &_BACnetPropertyStatesShedStateBuilder{_BACnetPropertyStatesShedState: new(_BACnetPropertyStatesShedState)}
+}
+
+type _BACnetPropertyStatesShedStateBuilder struct {
+	*_BACnetPropertyStatesShedState
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesShedStateBuilder) = (*_BACnetPropertyStatesShedStateBuilder)(nil)
+
+func (b *_BACnetPropertyStatesShedStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) WithMandatoryFields(shedState BACnetShedStateTagged) BACnetPropertyStatesShedStateBuilder {
+	return b.WithShedState(shedState)
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) WithShedState(shedState BACnetShedStateTagged) BACnetPropertyStatesShedStateBuilder {
+	b.ShedState = shedState
+	return b
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) WithShedStateBuilder(builderSupplier func(BACnetShedStateTaggedBuilder) BACnetShedStateTaggedBuilder) BACnetPropertyStatesShedStateBuilder {
+	builder := builderSupplier(b.ShedState.CreateBACnetShedStateTaggedBuilder())
+	var err error
+	b.ShedState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetShedStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) Build() (BACnetPropertyStatesShedState, error) {
+	if b.ShedState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'shedState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesShedState.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) MustBuild() BACnetPropertyStatesShedState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesShedStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesShedStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesShedStateBuilder().(*_BACnetPropertyStatesShedStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesShedStateBuilder creates a BACnetPropertyStatesShedStateBuilder
+func (b *_BACnetPropertyStatesShedState) CreateBACnetPropertyStatesShedStateBuilder() BACnetPropertyStatesShedStateBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesShedStateBuilder()
+	}
+	return &_BACnetPropertyStatesShedStateBuilder{_BACnetPropertyStatesShedState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesShedState) GetShedState() BACnetShedStateTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesShedState factory function for _BACnetPropertyStatesShedState
-func NewBACnetPropertyStatesShedState(shedState BACnetShedStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesShedState {
-	if shedState == nil {
-		panic("shedState of type BACnetShedStateTagged for BACnetPropertyStatesShedState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesShedState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ShedState:                    shedState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesShedState(structType any) BACnetPropertyStatesShedState {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesShedState) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetPropertyStatesShedState) IsBACnetPropertyStatesShedState() {}
 
+func (m *_BACnetPropertyStatesShedState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesShedState) deepCopy() *_BACnetPropertyStatesShedState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesShedStateCopy := &_BACnetPropertyStatesShedState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ShedState.DeepCopy().(BACnetShedStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesShedStateCopy
+}
+
 func (m *_BACnetPropertyStatesShedState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

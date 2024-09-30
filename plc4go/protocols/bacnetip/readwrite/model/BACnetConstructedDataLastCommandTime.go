@@ -38,6 +38,7 @@ type BACnetConstructedDataLastCommandTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastCommandTime returns LastCommandTime (property field)
 	GetLastCommandTime() BACnetTimeStamp
@@ -45,6 +46,8 @@ type BACnetConstructedDataLastCommandTime interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataLastCommandTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastCommandTime()
+	// CreateBuilder creates a BACnetConstructedDataLastCommandTimeBuilder
+	CreateBACnetConstructedDataLastCommandTimeBuilder() BACnetConstructedDataLastCommandTimeBuilder
 }
 
 // _BACnetConstructedDataLastCommandTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLastCommandTime struct {
 
 var _ BACnetConstructedDataLastCommandTime = (*_BACnetConstructedDataLastCommandTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastCommandTime)(nil)
+
+// NewBACnetConstructedDataLastCommandTime factory function for _BACnetConstructedDataLastCommandTime
+func NewBACnetConstructedDataLastCommandTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastCommandTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCommandTime {
+	if lastCommandTime == nil {
+		panic("lastCommandTime of type BACnetTimeStamp for BACnetConstructedDataLastCommandTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastCommandTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastCommandTime:               lastCommandTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastCommandTimeBuilder is a builder for BACnetConstructedDataLastCommandTime
+type BACnetConstructedDataLastCommandTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastCommandTime BACnetTimeStamp) BACnetConstructedDataLastCommandTimeBuilder
+	// WithLastCommandTime adds LastCommandTime (property field)
+	WithLastCommandTime(BACnetTimeStamp) BACnetConstructedDataLastCommandTimeBuilder
+	// WithLastCommandTimeBuilder adds LastCommandTime (property field) which is build by the builder
+	WithLastCommandTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataLastCommandTimeBuilder
+	// Build builds the BACnetConstructedDataLastCommandTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastCommandTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastCommandTime
+}
+
+// NewBACnetConstructedDataLastCommandTimeBuilder() creates a BACnetConstructedDataLastCommandTimeBuilder
+func NewBACnetConstructedDataLastCommandTimeBuilder() BACnetConstructedDataLastCommandTimeBuilder {
+	return &_BACnetConstructedDataLastCommandTimeBuilder{_BACnetConstructedDataLastCommandTime: new(_BACnetConstructedDataLastCommandTime)}
+}
+
+type _BACnetConstructedDataLastCommandTimeBuilder struct {
+	*_BACnetConstructedDataLastCommandTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastCommandTimeBuilder) = (*_BACnetConstructedDataLastCommandTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) WithMandatoryFields(lastCommandTime BACnetTimeStamp) BACnetConstructedDataLastCommandTimeBuilder {
+	return b.WithLastCommandTime(lastCommandTime)
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) WithLastCommandTime(lastCommandTime BACnetTimeStamp) BACnetConstructedDataLastCommandTimeBuilder {
+	b.LastCommandTime = lastCommandTime
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) WithLastCommandTimeBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataLastCommandTimeBuilder {
+	builder := builderSupplier(b.LastCommandTime.CreateBACnetTimeStampBuilder())
+	var err error
+	b.LastCommandTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) Build() (BACnetConstructedDataLastCommandTime, error) {
+	if b.LastCommandTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lastCommandTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLastCommandTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) MustBuild() BACnetConstructedDataLastCommandTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastCommandTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastCommandTimeBuilder().(*_BACnetConstructedDataLastCommandTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLastCommandTimeBuilder creates a BACnetConstructedDataLastCommandTimeBuilder
+func (b *_BACnetConstructedDataLastCommandTime) CreateBACnetConstructedDataLastCommandTimeBuilder() BACnetConstructedDataLastCommandTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLastCommandTimeBuilder()
+	}
+	return &_BACnetConstructedDataLastCommandTimeBuilder{_BACnetConstructedDataLastCommandTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLastCommandTime) GetActualValue() BACnetTimeStamp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastCommandTime factory function for _BACnetConstructedDataLastCommandTime
-func NewBACnetConstructedDataLastCommandTime(lastCommandTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastCommandTime {
-	if lastCommandTime == nil {
-		panic("lastCommandTime of type BACnetTimeStamp for BACnetConstructedDataLastCommandTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastCommandTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastCommandTime:               lastCommandTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastCommandTime(structType any) BACnetConstructedDataLastCommandTime {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLastCommandTime) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataLastCommandTime) IsBACnetConstructedDataLastCommandTime() {}
 
+func (m *_BACnetConstructedDataLastCommandTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastCommandTime) deepCopy() *_BACnetConstructedDataLastCommandTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastCommandTimeCopy := &_BACnetConstructedDataLastCommandTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastCommandTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastCommandTimeCopy
+}
+
 func (m *_BACnetConstructedDataLastCommandTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

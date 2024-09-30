@@ -38,12 +38,15 @@ type StringNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() PascalString
 	// IsStringNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStringNodeId()
+	// CreateBuilder creates a StringNodeIdBuilder
+	CreateStringNodeIdBuilder() StringNodeIdBuilder
 }
 
 // _StringNodeId is the data-structure of this message
@@ -53,6 +56,118 @@ type _StringNodeId struct {
 }
 
 var _ StringNodeId = (*_StringNodeId)(nil)
+
+// NewStringNodeId factory function for _StringNodeId
+func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalString for StringNodeId must not be nil")
+	}
+	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StringNodeIdBuilder is a builder for StringNodeId
+type StringNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, identifier PascalString) StringNodeIdBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) StringNodeIdBuilder
+	// WithIdentifier adds Identifier (property field)
+	WithIdentifier(PascalString) StringNodeIdBuilder
+	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
+	WithIdentifierBuilder(func(PascalStringBuilder) PascalStringBuilder) StringNodeIdBuilder
+	// Build builds the StringNodeId or returns an error if something is wrong
+	Build() (StringNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() StringNodeId
+}
+
+// NewStringNodeIdBuilder() creates a StringNodeIdBuilder
+func NewStringNodeIdBuilder() StringNodeIdBuilder {
+	return &_StringNodeIdBuilder{_StringNodeId: new(_StringNodeId)}
+}
+
+type _StringNodeIdBuilder struct {
+	*_StringNodeId
+
+	err *utils.MultiError
+}
+
+var _ (StringNodeIdBuilder) = (*_StringNodeIdBuilder)(nil)
+
+func (b *_StringNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier PascalString) StringNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+}
+
+func (b *_StringNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) StringNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_StringNodeIdBuilder) WithIdentifier(identifier PascalString) StringNodeIdBuilder {
+	b.Identifier = identifier
+	return b
+}
+
+func (b *_StringNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) StringNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreatePascalStringBuilder())
+	var err error
+	b.Identifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_StringNodeIdBuilder) Build() (StringNodeId, error) {
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._StringNodeId.deepCopy(), nil
+}
+
+func (b *_StringNodeIdBuilder) MustBuild() StringNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_StringNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateStringNodeIdBuilder().(*_StringNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStringNodeIdBuilder creates a StringNodeIdBuilder
+func (b *_StringNodeId) CreateStringNodeIdBuilder() StringNodeIdBuilder {
+	if b == nil {
+		return NewStringNodeIdBuilder()
+	}
+	return &_StringNodeIdBuilder{_StringNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +186,6 @@ func (m *_StringNodeId) GetIdentifier() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewStringNodeId factory function for _StringNodeId
-func NewStringNodeId(namespaceIndex uint16, identifier PascalString) *_StringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalString for StringNodeId must not be nil")
-	}
-	return &_StringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastStringNodeId(structType any) StringNodeId {
@@ -126,7 +233,7 @@ func StringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_StringNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__stringNodeId StringNodeId, err error) {
@@ -190,13 +297,32 @@ func (m *_StringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_StringNodeId) IsStringNodeId() {}
 
+func (m *_StringNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_StringNodeId) deepCopy() *_StringNodeId {
+	if m == nil {
+		return nil
+	}
+	_StringNodeIdCopy := &_StringNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(PascalString),
+	}
+	return _StringNodeIdCopy
+}
+
 func (m *_StringNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

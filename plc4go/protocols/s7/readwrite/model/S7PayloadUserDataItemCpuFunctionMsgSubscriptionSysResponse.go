@@ -38,6 +38,7 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetResult returns Result (property field)
 	GetResult() uint8
@@ -45,6 +46,8 @@ type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse interface {
 	GetReserved01() uint8
 	// IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse is the data-structure of this message
@@ -56,6 +59,115 @@ type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse struct {
 
 var _ S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, result uint8, reserved01 uint8) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		Result:                        result,
+		Reserved01:                    reserved01,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder is a builder for S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+type S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// WithReserved01 adds Reserved01 (property field)
+	WithReserved01(uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+}
+
+// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: new(_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) = (*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithMandatoryFields(result uint8, reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	return b.WithResult(result).WithReserved01(reserved01)
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithResult(result uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) WithReserved01(reserved01 uint8) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	b.Reserved01 = reserved01
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Build() (S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder().(*_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder creates a S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder
+func (b *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) CreateS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder() S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseBuilder{_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +212,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) GetReserve
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse factory function for _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse
-func NewS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(result uint8, reserved01 uint8, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
-	_result := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		Result:                        result,
-		Reserved01:                    reserved01,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse(structType any) S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
@@ -210,13 +311,34 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) IsS7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse() {
 }
 
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) deepCopy() *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy := &_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.Result,
+		m.Reserved01,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseCopy
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

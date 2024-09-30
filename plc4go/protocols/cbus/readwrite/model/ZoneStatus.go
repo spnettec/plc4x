@@ -38,10 +38,13 @@ type ZoneStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetValue returns Value (property field)
 	GetValue() ZoneStatusTemp
 	// IsZoneStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsZoneStatus()
+	// CreateBuilder creates a ZoneStatusBuilder
+	CreateZoneStatusBuilder() ZoneStatusBuilder
 }
 
 // _ZoneStatus is the data-structure of this message
@@ -50,6 +53,87 @@ type _ZoneStatus struct {
 }
 
 var _ ZoneStatus = (*_ZoneStatus)(nil)
+
+// NewZoneStatus factory function for _ZoneStatus
+func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
+	return &_ZoneStatus{Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ZoneStatusBuilder is a builder for ZoneStatus
+type ZoneStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder
+	// WithValue adds Value (property field)
+	WithValue(ZoneStatusTemp) ZoneStatusBuilder
+	// Build builds the ZoneStatus or returns an error if something is wrong
+	Build() (ZoneStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ZoneStatus
+}
+
+// NewZoneStatusBuilder() creates a ZoneStatusBuilder
+func NewZoneStatusBuilder() ZoneStatusBuilder {
+	return &_ZoneStatusBuilder{_ZoneStatus: new(_ZoneStatus)}
+}
+
+type _ZoneStatusBuilder struct {
+	*_ZoneStatus
+
+	err *utils.MultiError
+}
+
+var _ (ZoneStatusBuilder) = (*_ZoneStatusBuilder)(nil)
+
+func (b *_ZoneStatusBuilder) WithMandatoryFields(value ZoneStatusTemp) ZoneStatusBuilder {
+	return b.WithValue(value)
+}
+
+func (b *_ZoneStatusBuilder) WithValue(value ZoneStatusTemp) ZoneStatusBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ZoneStatusBuilder) Build() (ZoneStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ZoneStatus.deepCopy(), nil
+}
+
+func (b *_ZoneStatusBuilder) MustBuild() ZoneStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ZoneStatusBuilder) DeepCopy() any {
+	_copy := b.CreateZoneStatusBuilder().(*_ZoneStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateZoneStatusBuilder creates a ZoneStatusBuilder
+func (b *_ZoneStatus) CreateZoneStatusBuilder() ZoneStatusBuilder {
+	if b == nil {
+		return NewZoneStatusBuilder()
+	}
+	return &_ZoneStatusBuilder{_ZoneStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_ZoneStatus) GetValue() ZoneStatusTemp {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewZoneStatus factory function for _ZoneStatus
-func NewZoneStatus(value ZoneStatusTemp) *_ZoneStatus {
-	return &_ZoneStatus{Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastZoneStatus(structType any) ZoneStatus {
@@ -113,7 +192,7 @@ func ZoneStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ZoneStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__zoneStatus ZoneStatus, err error) {
@@ -167,13 +246,31 @@ func (m *_ZoneStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_ZoneStatus) IsZoneStatus() {}
 
+func (m *_ZoneStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ZoneStatus) deepCopy() *_ZoneStatus {
+	if m == nil {
+		return nil
+	}
+	_ZoneStatusCopy := &_ZoneStatus{
+		m.Value,
+	}
+	return _ZoneStatusCopy
+}
+
 func (m *_ZoneStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

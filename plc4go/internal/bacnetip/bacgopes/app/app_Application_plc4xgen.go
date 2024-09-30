@@ -59,23 +59,10 @@ func (d *Application) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 	for _name, elem := range d.objectName {
 		name := _name
+		_value := fmt.Sprintf("%v", elem)
 
-		var elem any = elem
-		if serializable, ok := elem.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(name); err != nil {
-				return err
-			}
-			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(name); err != nil {
-				return err
-			}
-		} else {
-			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("objectName", utils.WithRenderAsList(true)); err != nil {
@@ -86,42 +73,46 @@ func (d *Application) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 	for _name, elem := range d.objectIdentifier {
 		name := _name
+		_value := fmt.Sprintf("%v", elem)
 
-		var elem any = elem
-		if serializable, ok := elem.(utils.Serializable); ok {
-			if err := writeBuffer.PushContext(name); err != nil {
-				return err
-			}
-			if err := serializable.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
-				return err
-			}
-			if err := writeBuffer.PopContext(name); err != nil {
-				return err
-			}
-		} else {
-			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
-				return err
-			}
+		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), _value); err != nil {
+			return err
 		}
 	}
 	if err := writeBuffer.PopContext("objectIdentifier", utils.WithRenderAsList(true)); err != nil {
 		return err
 	}
-	if d.localDevice != nil {
-		{
-			_value := fmt.Sprintf("%v", d.localDevice)
+	{
+		_value := fmt.Sprintf("%v", d.localDevice)
 
-			if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
+		if err := writeBuffer.WriteString("localDevice", uint32(len(_value)*8), _value); err != nil {
+			return err
+		}
+	}
+	if d.localAddress != nil {
+		{
+			_value := fmt.Sprintf("%v", d.localAddress)
+
+			if err := writeBuffer.WriteString("localAddress", uint32(len(_value)*8), _value); err != nil {
 				return err
 			}
 		}
 	}
-	if d.deviceInfoCache != nil {
-		{
-			_value := fmt.Sprintf("%v", d.deviceInfoCache)
 
-			if err := writeBuffer.WriteString("deviceInfoCache", uint32(len(_value)*8), _value); err != nil {
+	if d.deviceInfoCache != nil {
+		if serializableField, ok := any(d.deviceInfoCache).(utils.Serializable); ok {
+			if err := writeBuffer.PushContext("deviceInfoCache"); err != nil {
+				return err
+			}
+			if err := serializableField.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
+				return err
+			}
+			if err := writeBuffer.PopContext("deviceInfoCache"); err != nil {
+				return err
+			}
+		} else {
+			stringValue := fmt.Sprintf("%v", d.deviceInfoCache)
+			if err := writeBuffer.WriteString("deviceInfoCache", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -156,9 +147,9 @@ func (d *Application) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

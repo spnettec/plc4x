@@ -36,8 +36,11 @@ type ImagePNG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImagePNG is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImagePNG()
+	// CreateBuilder creates a ImagePNGBuilder
+	CreateImagePNGBuilder() ImagePNGBuilder
 }
 
 // _ImagePNG is the data-structure of this message
@@ -50,6 +53,75 @@ var _ ImagePNG = (*_ImagePNG)(nil)
 func NewImagePNG() *_ImagePNG {
 	return &_ImagePNG{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ImagePNGBuilder is a builder for ImagePNG
+type ImagePNGBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ImagePNGBuilder
+	// Build builds the ImagePNG or returns an error if something is wrong
+	Build() (ImagePNG, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ImagePNG
+}
+
+// NewImagePNGBuilder() creates a ImagePNGBuilder
+func NewImagePNGBuilder() ImagePNGBuilder {
+	return &_ImagePNGBuilder{_ImagePNG: new(_ImagePNG)}
+}
+
+type _ImagePNGBuilder struct {
+	*_ImagePNG
+
+	err *utils.MultiError
+}
+
+var _ (ImagePNGBuilder) = (*_ImagePNGBuilder)(nil)
+
+func (b *_ImagePNGBuilder) WithMandatoryFields() ImagePNGBuilder {
+	return b
+}
+
+func (b *_ImagePNGBuilder) Build() (ImagePNG, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ImagePNG.deepCopy(), nil
+}
+
+func (b *_ImagePNGBuilder) MustBuild() ImagePNG {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ImagePNGBuilder) DeepCopy() any {
+	_copy := b.CreateImagePNGBuilder().(*_ImagePNGBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateImagePNGBuilder creates a ImagePNGBuilder
+func (b *_ImagePNG) CreateImagePNGBuilder() ImagePNGBuilder {
+	if b == nil {
+		return NewImagePNGBuilder()
+	}
+	return &_ImagePNGBuilder{_ImagePNG: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastImagePNG(structType any) ImagePNG {
@@ -91,7 +163,7 @@ func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ImagePNG) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imagePNG ImagePNG, err error) {
@@ -135,13 +207,29 @@ func (m *_ImagePNG) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_ImagePNG) IsImagePNG() {}
 
+func (m *_ImagePNG) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImagePNG) deepCopy() *_ImagePNG {
+	if m == nil {
+		return nil
+	}
+	_ImagePNGCopy := &_ImagePNG{}
+	return _ImagePNGCopy
+}
+
 func (m *_ImagePNG) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

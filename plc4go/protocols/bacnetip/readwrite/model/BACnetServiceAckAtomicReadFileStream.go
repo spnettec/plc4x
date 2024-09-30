@@ -38,6 +38,7 @@ type BACnetServiceAckAtomicReadFileStream interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAckAtomicReadFileStreamOrRecord
 	// GetFileStartPosition returns FileStartPosition (property field)
 	GetFileStartPosition() BACnetApplicationTagSignedInteger
@@ -45,6 +46,8 @@ type BACnetServiceAckAtomicReadFileStream interface {
 	GetFileData() BACnetApplicationTagOctetString
 	// IsBACnetServiceAckAtomicReadFileStream is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckAtomicReadFileStream()
+	// CreateBuilder creates a BACnetServiceAckAtomicReadFileStreamBuilder
+	CreateBACnetServiceAckAtomicReadFileStreamBuilder() BACnetServiceAckAtomicReadFileStreamBuilder
 }
 
 // _BACnetServiceAckAtomicReadFileStream is the data-structure of this message
@@ -56,6 +59,163 @@ type _BACnetServiceAckAtomicReadFileStream struct {
 
 var _ BACnetServiceAckAtomicReadFileStream = (*_BACnetServiceAckAtomicReadFileStream)(nil)
 var _ BACnetServiceAckAtomicReadFileStreamOrRecordRequirements = (*_BACnetServiceAckAtomicReadFileStream)(nil)
+
+// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
+func NewBACnetServiceAckAtomicReadFileStream(peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag, fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) *_BACnetServiceAckAtomicReadFileStream {
+	if fileStartPosition == nil {
+		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	if fileData == nil {
+		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
+	}
+	_result := &_BACnetServiceAckAtomicReadFileStream{
+		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
+		FileStartPosition: fileStartPosition,
+		FileData:          fileData,
+	}
+	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckAtomicReadFileStreamBuilder is a builder for BACnetServiceAckAtomicReadFileStream
+type BACnetServiceAckAtomicReadFileStreamBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileStreamBuilder
+	// WithFileStartPosition adds FileStartPosition (property field)
+	WithFileStartPosition(BACnetApplicationTagSignedInteger) BACnetServiceAckAtomicReadFileStreamBuilder
+	// WithFileStartPositionBuilder adds FileStartPosition (property field) which is build by the builder
+	WithFileStartPositionBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetServiceAckAtomicReadFileStreamBuilder
+	// WithFileData adds FileData (property field)
+	WithFileData(BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileStreamBuilder
+	// WithFileDataBuilder adds FileData (property field) which is build by the builder
+	WithFileDataBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckAtomicReadFileStreamBuilder
+	// Build builds the BACnetServiceAckAtomicReadFileStream or returns an error if something is wrong
+	Build() (BACnetServiceAckAtomicReadFileStream, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckAtomicReadFileStream
+}
+
+// NewBACnetServiceAckAtomicReadFileStreamBuilder() creates a BACnetServiceAckAtomicReadFileStreamBuilder
+func NewBACnetServiceAckAtomicReadFileStreamBuilder() BACnetServiceAckAtomicReadFileStreamBuilder {
+	return &_BACnetServiceAckAtomicReadFileStreamBuilder{_BACnetServiceAckAtomicReadFileStream: new(_BACnetServiceAckAtomicReadFileStream)}
+}
+
+type _BACnetServiceAckAtomicReadFileStreamBuilder struct {
+	*_BACnetServiceAckAtomicReadFileStream
+
+	parentBuilder *_BACnetServiceAckAtomicReadFileStreamOrRecordBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckAtomicReadFileStreamBuilder) = (*_BACnetServiceAckAtomicReadFileStreamBuilder)(nil)
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) setParent(contract BACnetServiceAckAtomicReadFileStreamOrRecordContract) {
+	b.BACnetServiceAckAtomicReadFileStreamOrRecordContract = contract
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithMandatoryFields(fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileStreamBuilder {
+	return b.WithFileStartPosition(fileStartPosition).WithFileData(fileData)
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileStartPosition(fileStartPosition BACnetApplicationTagSignedInteger) BACnetServiceAckAtomicReadFileStreamBuilder {
+	b.FileStartPosition = fileStartPosition
+	return b
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileStartPositionBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetServiceAckAtomicReadFileStreamBuilder {
+	builder := builderSupplier(b.FileStartPosition.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.FileStartPosition, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileData(fileData BACnetApplicationTagOctetString) BACnetServiceAckAtomicReadFileStreamBuilder {
+	b.FileData = fileData
+	return b
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) WithFileDataBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetServiceAckAtomicReadFileStreamBuilder {
+	builder := builderSupplier(b.FileData.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.FileData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) Build() (BACnetServiceAckAtomicReadFileStream, error) {
+	if b.FileStartPosition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'fileStartPosition' not set"))
+	}
+	if b.FileData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'fileData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetServiceAckAtomicReadFileStream.deepCopy(), nil
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) MustBuild() BACnetServiceAckAtomicReadFileStream {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) Done() BACnetServiceAckAtomicReadFileStreamOrRecordBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) buildForBACnetServiceAckAtomicReadFileStreamOrRecord() (BACnetServiceAckAtomicReadFileStreamOrRecord, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckAtomicReadFileStreamBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckAtomicReadFileStreamBuilder().(*_BACnetServiceAckAtomicReadFileStreamBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetServiceAckAtomicReadFileStreamBuilder creates a BACnetServiceAckAtomicReadFileStreamBuilder
+func (b *_BACnetServiceAckAtomicReadFileStream) CreateBACnetServiceAckAtomicReadFileStreamBuilder() BACnetServiceAckAtomicReadFileStreamBuilder {
+	if b == nil {
+		return NewBACnetServiceAckAtomicReadFileStreamBuilder()
+	}
+	return &_BACnetServiceAckAtomicReadFileStreamBuilder{_BACnetServiceAckAtomicReadFileStream: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,23 +248,6 @@ func (m *_BACnetServiceAckAtomicReadFileStream) GetFileData() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckAtomicReadFileStream factory function for _BACnetServiceAckAtomicReadFileStream
-func NewBACnetServiceAckAtomicReadFileStream(fileStartPosition BACnetApplicationTagSignedInteger, fileData BACnetApplicationTagOctetString, peekedTagHeader BACnetTagHeader, openingTag BACnetOpeningTag, closingTag BACnetClosingTag) *_BACnetServiceAckAtomicReadFileStream {
-	if fileStartPosition == nil {
-		panic("fileStartPosition of type BACnetApplicationTagSignedInteger for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	if fileData == nil {
-		panic("fileData of type BACnetApplicationTagOctetString for BACnetServiceAckAtomicReadFileStream must not be nil")
-	}
-	_result := &_BACnetServiceAckAtomicReadFileStream{
-		BACnetServiceAckAtomicReadFileStreamOrRecordContract: NewBACnetServiceAckAtomicReadFileStreamOrRecord(peekedTagHeader, openingTag, closingTag),
-		FileStartPosition: fileStartPosition,
-		FileData:          fileData,
-	}
-	_result.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckAtomicReadFileStream(structType any) BACnetServiceAckAtomicReadFileStream {
@@ -203,13 +346,34 @@ func (m *_BACnetServiceAckAtomicReadFileStream) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetServiceAckAtomicReadFileStream) IsBACnetServiceAckAtomicReadFileStream() {}
 
+func (m *_BACnetServiceAckAtomicReadFileStream) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckAtomicReadFileStream) deepCopy() *_BACnetServiceAckAtomicReadFileStream {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckAtomicReadFileStreamCopy := &_BACnetServiceAckAtomicReadFileStream{
+		m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord).deepCopy(),
+		m.FileStartPosition.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.FileData.DeepCopy().(BACnetApplicationTagOctetString),
+	}
+	m.BACnetServiceAckAtomicReadFileStreamOrRecordContract.(*_BACnetServiceAckAtomicReadFileStreamOrRecord)._SubType = m
+	return _BACnetServiceAckAtomicReadFileStreamCopy
+}
+
 func (m *_BACnetServiceAckAtomicReadFileStream) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -29,7 +29,6 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvllservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/local/device"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/netservice"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/tests/state_machine"
@@ -65,12 +64,16 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	}
 
 	// build a local device object
-	localDevice := &TestDeviceObject{
-		LocalDeviceObject: &LocalDeviceObject{
-			ObjectName:       b.name,
-			ObjectIdentifier: "device:998",
-			VendorIdentifier: 999,
-		},
+	localDevice, err := NewTestDeviceObject(
+		NoArgs,
+		NKW(
+			KWObjectName, b.name,
+			KWObjectIdentifier, "device:998",
+			KWVendorIdentifier, 999,
+		),
+	)
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating test device")
 	}
 
 	// continue with initialization
@@ -78,7 +81,7 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}
-	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(b.name), WithClientStateMachineExtension(b))
+	b.ClientStateMachine, err = NewClientStateMachine(localLog, WithClientStateMachineName(b.name), WithClientStateMachineExtension(b), WithLeafType(b))
 
 	// include a application decoder
 	b.asap, err = NewApplicationServiceAccessPoint(localLog)
@@ -88,12 +91,14 @@ func NewBIPSimpleApplicationLayerStateMachine(localLog zerolog.Logger, address s
 
 	// pass the device object to the state machine access point so it
 	// can know if it should support segmentation
-	// the segmentation state machines need access to the same device
-	// information cache as the application
-	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice.LocalDeviceObject, WithStateMachineAccessPointDeviceInfoCache(NewDeviceInfoCache(localLog))) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	b.smap, err = NewStateMachineAccessPoint(localLog, localDevice)
 	if err != nil {
 		return nil, errors.Wrap(err, "error building state machine access point")
 	}
+
+	// the segmentation state machines need access to the same device
+	// information cache as the application
+	b.smap.SetDeviceInfoCache(NewDeviceInfoCache(localLog))
 
 	// a network service access point will be needed
 	b.nsap, err = NewNetworkServiceAccessPoint(localLog)

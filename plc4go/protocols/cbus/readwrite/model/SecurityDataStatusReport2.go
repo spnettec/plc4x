@@ -38,11 +38,14 @@ type SecurityDataStatusReport2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetZoneStatus returns ZoneStatus (property field)
 	GetZoneStatus() []ZoneStatus
 	// IsSecurityDataStatusReport2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataStatusReport2()
+	// CreateBuilder creates a SecurityDataStatusReport2Builder
+	CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder
 }
 
 // _SecurityDataStatusReport2 is the data-structure of this message
@@ -53,6 +56,107 @@ type _SecurityDataStatusReport2 struct {
 
 var _ SecurityDataStatusReport2 = (*_SecurityDataStatusReport2)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataStatusReport2)(nil)
+
+// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
+func NewSecurityDataStatusReport2(commandTypeContainer SecurityCommandTypeContainer, argument byte, zoneStatus []ZoneStatus) *_SecurityDataStatusReport2 {
+	_result := &_SecurityDataStatusReport2{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ZoneStatus:           zoneStatus,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataStatusReport2Builder is a builder for SecurityDataStatusReport2
+type SecurityDataStatusReport2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder
+	// WithZoneStatus adds ZoneStatus (property field)
+	WithZoneStatus(...ZoneStatus) SecurityDataStatusReport2Builder
+	// Build builds the SecurityDataStatusReport2 or returns an error if something is wrong
+	Build() (SecurityDataStatusReport2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataStatusReport2
+}
+
+// NewSecurityDataStatusReport2Builder() creates a SecurityDataStatusReport2Builder
+func NewSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
+	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: new(_SecurityDataStatusReport2)}
+}
+
+type _SecurityDataStatusReport2Builder struct {
+	*_SecurityDataStatusReport2
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataStatusReport2Builder) = (*_SecurityDataStatusReport2Builder)(nil)
+
+func (b *_SecurityDataStatusReport2Builder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataStatusReport2Builder) WithMandatoryFields(zoneStatus []ZoneStatus) SecurityDataStatusReport2Builder {
+	return b.WithZoneStatus(zoneStatus...)
+}
+
+func (b *_SecurityDataStatusReport2Builder) WithZoneStatus(zoneStatus ...ZoneStatus) SecurityDataStatusReport2Builder {
+	b.ZoneStatus = zoneStatus
+	return b
+}
+
+func (b *_SecurityDataStatusReport2Builder) Build() (SecurityDataStatusReport2, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataStatusReport2.deepCopy(), nil
+}
+
+func (b *_SecurityDataStatusReport2Builder) MustBuild() SecurityDataStatusReport2 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataStatusReport2Builder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataStatusReport2Builder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataStatusReport2Builder) DeepCopy() any {
+	_copy := b.CreateSecurityDataStatusReport2Builder().(*_SecurityDataStatusReport2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataStatusReport2Builder creates a SecurityDataStatusReport2Builder
+func (b *_SecurityDataStatusReport2) CreateSecurityDataStatusReport2Builder() SecurityDataStatusReport2Builder {
+	if b == nil {
+		return NewSecurityDataStatusReport2Builder()
+	}
+	return &_SecurityDataStatusReport2Builder{_SecurityDataStatusReport2: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_SecurityDataStatusReport2) GetZoneStatus() []ZoneStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataStatusReport2 factory function for _SecurityDataStatusReport2
-func NewSecurityDataStatusReport2(zoneStatus []ZoneStatus, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataStatusReport2 {
-	_result := &_SecurityDataStatusReport2{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ZoneStatus:           zoneStatus,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataStatusReport2(structType any) SecurityDataStatusReport2 {
@@ -183,13 +277,33 @@ func (m *_SecurityDataStatusReport2) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_SecurityDataStatusReport2) IsSecurityDataStatusReport2() {}
 
+func (m *_SecurityDataStatusReport2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataStatusReport2) deepCopy() *_SecurityDataStatusReport2 {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataStatusReport2Copy := &_SecurityDataStatusReport2{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		utils.DeepCopySlice[ZoneStatus, ZoneStatus](m.ZoneStatus),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataStatusReport2Copy
+}
+
 func (m *_SecurityDataStatusReport2) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type CBusMessageToServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusMessage
 	// GetRequest returns Request (property field)
 	GetRequest() Request
 	// IsCBusMessageToServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessageToServer()
+	// CreateBuilder creates a CBusMessageToServerBuilder
+	CreateCBusMessageToServerBuilder() CBusMessageToServerBuilder
 }
 
 // _CBusMessageToServer is the data-structure of this message
@@ -53,6 +56,131 @@ type _CBusMessageToServer struct {
 
 var _ CBusMessageToServer = (*_CBusMessageToServer)(nil)
 var _ CBusMessageRequirements = (*_CBusMessageToServer)(nil)
+
+// NewCBusMessageToServer factory function for _CBusMessageToServer
+func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
+	if request == nil {
+		panic("request of type Request for CBusMessageToServer must not be nil")
+	}
+	_result := &_CBusMessageToServer{
+		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
+		Request:             request,
+	}
+	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusMessageToServerBuilder is a builder for CBusMessageToServer
+type CBusMessageToServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(request Request) CBusMessageToServerBuilder
+	// WithRequest adds Request (property field)
+	WithRequest(Request) CBusMessageToServerBuilder
+	// WithRequestBuilder adds Request (property field) which is build by the builder
+	WithRequestBuilder(func(RequestBuilder) RequestBuilder) CBusMessageToServerBuilder
+	// Build builds the CBusMessageToServer or returns an error if something is wrong
+	Build() (CBusMessageToServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusMessageToServer
+}
+
+// NewCBusMessageToServerBuilder() creates a CBusMessageToServerBuilder
+func NewCBusMessageToServerBuilder() CBusMessageToServerBuilder {
+	return &_CBusMessageToServerBuilder{_CBusMessageToServer: new(_CBusMessageToServer)}
+}
+
+type _CBusMessageToServerBuilder struct {
+	*_CBusMessageToServer
+
+	parentBuilder *_CBusMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusMessageToServerBuilder) = (*_CBusMessageToServerBuilder)(nil)
+
+func (b *_CBusMessageToServerBuilder) setParent(contract CBusMessageContract) {
+	b.CBusMessageContract = contract
+}
+
+func (b *_CBusMessageToServerBuilder) WithMandatoryFields(request Request) CBusMessageToServerBuilder {
+	return b.WithRequest(request)
+}
+
+func (b *_CBusMessageToServerBuilder) WithRequest(request Request) CBusMessageToServerBuilder {
+	b.Request = request
+	return b
+}
+
+func (b *_CBusMessageToServerBuilder) WithRequestBuilder(builderSupplier func(RequestBuilder) RequestBuilder) CBusMessageToServerBuilder {
+	builder := builderSupplier(b.Request.CreateRequestBuilder())
+	var err error
+	b.Request, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "RequestBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusMessageToServerBuilder) Build() (CBusMessageToServer, error) {
+	if b.Request == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'request' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusMessageToServer.deepCopy(), nil
+}
+
+func (b *_CBusMessageToServerBuilder) MustBuild() CBusMessageToServer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusMessageToServerBuilder) Done() CBusMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusMessageToServerBuilder) buildForCBusMessage() (CBusMessage, error) {
+	return b.Build()
+}
+
+func (b *_CBusMessageToServerBuilder) DeepCopy() any {
+	_copy := b.CreateCBusMessageToServerBuilder().(*_CBusMessageToServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusMessageToServerBuilder creates a CBusMessageToServerBuilder
+func (b *_CBusMessageToServer) CreateCBusMessageToServerBuilder() CBusMessageToServerBuilder {
+	if b == nil {
+		return NewCBusMessageToServerBuilder()
+	}
+	return &_CBusMessageToServerBuilder{_CBusMessageToServer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_CBusMessageToServer) GetRequest() Request {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusMessageToServer factory function for _CBusMessageToServer
-func NewCBusMessageToServer(request Request, requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessageToServer {
-	if request == nil {
-		panic("request of type Request for CBusMessageToServer must not be nil")
-	}
-	_result := &_CBusMessageToServer{
-		CBusMessageContract: NewCBusMessage(requestContext, cBusOptions),
-		Request:             request,
-	}
-	_result.CBusMessageContract.(*_CBusMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessageToServer(structType any) CBusMessageToServer {
@@ -183,13 +298,33 @@ func (m *_CBusMessageToServer) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_CBusMessageToServer) IsCBusMessageToServer() {}
 
+func (m *_CBusMessageToServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessageToServer) deepCopy() *_CBusMessageToServer {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageToServerCopy := &_CBusMessageToServer{
+		m.CBusMessageContract.(*_CBusMessage).deepCopy(),
+		m.Request.DeepCopy().(Request),
+	}
+	m.CBusMessageContract.(*_CBusMessage)._SubType = m
+	return _CBusMessageToServerCopy
+}
+
 func (m *_CBusMessageToServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

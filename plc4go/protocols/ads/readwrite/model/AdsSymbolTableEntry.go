@@ -45,6 +45,7 @@ type AdsSymbolTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEntryLength returns EntryLength (property field)
 	GetEntryLength() uint32
 	// GetGroup returns Group (property field)
@@ -91,6 +92,8 @@ type AdsSymbolTableEntry interface {
 	GetRest() []byte
 	// IsAdsSymbolTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsSymbolTableEntry()
+	// CreateBuilder creates a AdsSymbolTableEntryBuilder
+	CreateAdsSymbolTableEntryBuilder() AdsSymbolTableEntryBuilder
 }
 
 // _AdsSymbolTableEntry is the data-structure of this message
@@ -123,6 +126,234 @@ type _AdsSymbolTableEntry struct {
 }
 
 var _ AdsSymbolTableEntry = (*_AdsSymbolTableEntry)(nil)
+
+// NewAdsSymbolTableEntry factory function for _AdsSymbolTableEntry
+func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) *_AdsSymbolTableEntry {
+	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagTypeGuid: flagTypeGuid, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, FlagAttributes: flagAttributes, FlagContextMask: flagContextMask, Name: name, DataTypeName: dataTypeName, Comment: comment, Rest: rest}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsSymbolTableEntryBuilder is a builder for AdsSymbolTableEntry
+type AdsSymbolTableEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) AdsSymbolTableEntryBuilder
+	// WithEntryLength adds EntryLength (property field)
+	WithEntryLength(uint32) AdsSymbolTableEntryBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(uint32) AdsSymbolTableEntryBuilder
+	// WithOffset adds Offset (property field)
+	WithOffset(uint32) AdsSymbolTableEntryBuilder
+	// WithSize adds Size (property field)
+	WithSize(uint32) AdsSymbolTableEntryBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(uint32) AdsSymbolTableEntryBuilder
+	// WithFlagMethodDeref adds FlagMethodDeref (property field)
+	WithFlagMethodDeref(bool) AdsSymbolTableEntryBuilder
+	// WithFlagItfMethodAccess adds FlagItfMethodAccess (property field)
+	WithFlagItfMethodAccess(bool) AdsSymbolTableEntryBuilder
+	// WithFlagReadOnly adds FlagReadOnly (property field)
+	WithFlagReadOnly(bool) AdsSymbolTableEntryBuilder
+	// WithFlagTComInterfacePointer adds FlagTComInterfacePointer (property field)
+	WithFlagTComInterfacePointer(bool) AdsSymbolTableEntryBuilder
+	// WithFlagTypeGuid adds FlagTypeGuid (property field)
+	WithFlagTypeGuid(bool) AdsSymbolTableEntryBuilder
+	// WithFlagReferenceTo adds FlagReferenceTo (property field)
+	WithFlagReferenceTo(bool) AdsSymbolTableEntryBuilder
+	// WithFlagBitValue adds FlagBitValue (property field)
+	WithFlagBitValue(bool) AdsSymbolTableEntryBuilder
+	// WithFlagPersistent adds FlagPersistent (property field)
+	WithFlagPersistent(bool) AdsSymbolTableEntryBuilder
+	// WithFlagExtendedFlags adds FlagExtendedFlags (property field)
+	WithFlagExtendedFlags(bool) AdsSymbolTableEntryBuilder
+	// WithFlagInitOnReset adds FlagInitOnReset (property field)
+	WithFlagInitOnReset(bool) AdsSymbolTableEntryBuilder
+	// WithFlagStatic adds FlagStatic (property field)
+	WithFlagStatic(bool) AdsSymbolTableEntryBuilder
+	// WithFlagAttributes adds FlagAttributes (property field)
+	WithFlagAttributes(bool) AdsSymbolTableEntryBuilder
+	// WithFlagContextMask adds FlagContextMask (property field)
+	WithFlagContextMask(bool) AdsSymbolTableEntryBuilder
+	// WithName adds Name (property field)
+	WithName(string) AdsSymbolTableEntryBuilder
+	// WithDataTypeName adds DataTypeName (property field)
+	WithDataTypeName(string) AdsSymbolTableEntryBuilder
+	// WithComment adds Comment (property field)
+	WithComment(string) AdsSymbolTableEntryBuilder
+	// WithRest adds Rest (property field)
+	WithRest(...byte) AdsSymbolTableEntryBuilder
+	// Build builds the AdsSymbolTableEntry or returns an error if something is wrong
+	Build() (AdsSymbolTableEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsSymbolTableEntry
+}
+
+// NewAdsSymbolTableEntryBuilder() creates a AdsSymbolTableEntryBuilder
+func NewAdsSymbolTableEntryBuilder() AdsSymbolTableEntryBuilder {
+	return &_AdsSymbolTableEntryBuilder{_AdsSymbolTableEntry: new(_AdsSymbolTableEntry)}
+}
+
+type _AdsSymbolTableEntryBuilder struct {
+	*_AdsSymbolTableEntry
+
+	err *utils.MultiError
+}
+
+var _ (AdsSymbolTableEntryBuilder) = (*_AdsSymbolTableEntryBuilder)(nil)
+
+func (b *_AdsSymbolTableEntryBuilder) WithMandatoryFields(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) AdsSymbolTableEntryBuilder {
+	return b.WithEntryLength(entryLength).WithGroup(group).WithOffset(offset).WithSize(size).WithDataType(dataType).WithFlagMethodDeref(flagMethodDeref).WithFlagItfMethodAccess(flagItfMethodAccess).WithFlagReadOnly(flagReadOnly).WithFlagTComInterfacePointer(flagTComInterfacePointer).WithFlagTypeGuid(flagTypeGuid).WithFlagReferenceTo(flagReferenceTo).WithFlagBitValue(flagBitValue).WithFlagPersistent(flagPersistent).WithFlagExtendedFlags(flagExtendedFlags).WithFlagInitOnReset(flagInitOnReset).WithFlagStatic(flagStatic).WithFlagAttributes(flagAttributes).WithFlagContextMask(flagContextMask).WithName(name).WithDataTypeName(dataTypeName).WithComment(comment).WithRest(rest...)
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithEntryLength(entryLength uint32) AdsSymbolTableEntryBuilder {
+	b.EntryLength = entryLength
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithGroup(group uint32) AdsSymbolTableEntryBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithOffset(offset uint32) AdsSymbolTableEntryBuilder {
+	b.Offset = offset
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithSize(size uint32) AdsSymbolTableEntryBuilder {
+	b.Size = size
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithDataType(dataType uint32) AdsSymbolTableEntryBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagMethodDeref(flagMethodDeref bool) AdsSymbolTableEntryBuilder {
+	b.FlagMethodDeref = flagMethodDeref
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagItfMethodAccess(flagItfMethodAccess bool) AdsSymbolTableEntryBuilder {
+	b.FlagItfMethodAccess = flagItfMethodAccess
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagReadOnly(flagReadOnly bool) AdsSymbolTableEntryBuilder {
+	b.FlagReadOnly = flagReadOnly
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagTComInterfacePointer(flagTComInterfacePointer bool) AdsSymbolTableEntryBuilder {
+	b.FlagTComInterfacePointer = flagTComInterfacePointer
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagTypeGuid(flagTypeGuid bool) AdsSymbolTableEntryBuilder {
+	b.FlagTypeGuid = flagTypeGuid
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagReferenceTo(flagReferenceTo bool) AdsSymbolTableEntryBuilder {
+	b.FlagReferenceTo = flagReferenceTo
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagBitValue(flagBitValue bool) AdsSymbolTableEntryBuilder {
+	b.FlagBitValue = flagBitValue
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagPersistent(flagPersistent bool) AdsSymbolTableEntryBuilder {
+	b.FlagPersistent = flagPersistent
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagExtendedFlags(flagExtendedFlags bool) AdsSymbolTableEntryBuilder {
+	b.FlagExtendedFlags = flagExtendedFlags
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagInitOnReset(flagInitOnReset bool) AdsSymbolTableEntryBuilder {
+	b.FlagInitOnReset = flagInitOnReset
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagStatic(flagStatic bool) AdsSymbolTableEntryBuilder {
+	b.FlagStatic = flagStatic
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagAttributes(flagAttributes bool) AdsSymbolTableEntryBuilder {
+	b.FlagAttributes = flagAttributes
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithFlagContextMask(flagContextMask bool) AdsSymbolTableEntryBuilder {
+	b.FlagContextMask = flagContextMask
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithName(name string) AdsSymbolTableEntryBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithDataTypeName(dataTypeName string) AdsSymbolTableEntryBuilder {
+	b.DataTypeName = dataTypeName
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithComment(comment string) AdsSymbolTableEntryBuilder {
+	b.Comment = comment
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) WithRest(rest ...byte) AdsSymbolTableEntryBuilder {
+	b.Rest = rest
+	return b
+}
+
+func (b *_AdsSymbolTableEntryBuilder) Build() (AdsSymbolTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsSymbolTableEntry.deepCopy(), nil
+}
+
+func (b *_AdsSymbolTableEntryBuilder) MustBuild() AdsSymbolTableEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsSymbolTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateAdsSymbolTableEntryBuilder().(*_AdsSymbolTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsSymbolTableEntryBuilder creates a AdsSymbolTableEntryBuilder
+func (b *_AdsSymbolTableEntry) CreateAdsSymbolTableEntryBuilder() AdsSymbolTableEntryBuilder {
+	if b == nil {
+		return NewAdsSymbolTableEntryBuilder()
+	}
+	return &_AdsSymbolTableEntryBuilder{_AdsSymbolTableEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -242,11 +473,6 @@ func (m *_AdsSymbolTableEntry) GetCommentTerminator() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsSymbolTableEntry factory function for _AdsSymbolTableEntry
-func NewAdsSymbolTableEntry(entryLength uint32, group uint32, offset uint32, size uint32, dataType uint32, flagMethodDeref bool, flagItfMethodAccess bool, flagReadOnly bool, flagTComInterfacePointer bool, flagTypeGuid bool, flagReferenceTo bool, flagBitValue bool, flagPersistent bool, flagExtendedFlags bool, flagInitOnReset bool, flagStatic bool, flagAttributes bool, flagContextMask bool, name string, dataTypeName string, comment string, rest []byte) *_AdsSymbolTableEntry {
-	return &_AdsSymbolTableEntry{EntryLength: entryLength, Group: group, Offset: offset, Size: size, DataType: dataType, FlagMethodDeref: flagMethodDeref, FlagItfMethodAccess: flagItfMethodAccess, FlagReadOnly: flagReadOnly, FlagTComInterfacePointer: flagTComInterfacePointer, FlagTypeGuid: flagTypeGuid, FlagReferenceTo: flagReferenceTo, FlagBitValue: flagBitValue, FlagPersistent: flagPersistent, FlagExtendedFlags: flagExtendedFlags, FlagInitOnReset: flagInitOnReset, FlagStatic: flagStatic, FlagAttributes: flagAttributes, FlagContextMask: flagContextMask, Name: name, DataTypeName: dataTypeName, Comment: comment, Rest: rest}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsSymbolTableEntry(structType any) AdsSymbolTableEntry {
@@ -380,7 +606,7 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsSymbolTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsSymbolTableEntry AdsSymbolTableEntry, err error) {
@@ -726,13 +952,54 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_AdsSymbolTableEntry) IsAdsSymbolTableEntry() {}
 
+func (m *_AdsSymbolTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsSymbolTableEntry) deepCopy() *_AdsSymbolTableEntry {
+	if m == nil {
+		return nil
+	}
+	_AdsSymbolTableEntryCopy := &_AdsSymbolTableEntry{
+		m.EntryLength,
+		m.Group,
+		m.Offset,
+		m.Size,
+		m.DataType,
+		m.FlagMethodDeref,
+		m.FlagItfMethodAccess,
+		m.FlagReadOnly,
+		m.FlagTComInterfacePointer,
+		m.FlagTypeGuid,
+		m.FlagReferenceTo,
+		m.FlagBitValue,
+		m.FlagPersistent,
+		m.FlagExtendedFlags,
+		m.FlagInitOnReset,
+		m.FlagStatic,
+		m.FlagAttributes,
+		m.FlagContextMask,
+		m.Name,
+		m.DataTypeName,
+		m.Comment,
+		utils.DeepCopySlice[byte, byte](m.Rest),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _AdsSymbolTableEntryCopy
+}
+
 func (m *_AdsSymbolTableEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

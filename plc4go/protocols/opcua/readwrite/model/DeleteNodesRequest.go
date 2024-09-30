@@ -38,6 +38,7 @@ type DeleteNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type DeleteNodesRequest interface {
 	GetNodesToDelete() []ExtensionObjectDefinition
 	// IsDeleteNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteNodesRequest()
+	// CreateBuilder creates a DeleteNodesRequestBuilder
+	CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder
 }
 
 // _DeleteNodesRequest is the data-structure of this message
@@ -59,6 +62,147 @@ type _DeleteNodesRequest struct {
 
 var _ DeleteNodesRequest = (*_DeleteNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteNodesRequest)(nil)
+
+// NewDeleteNodesRequest factory function for _DeleteNodesRequest
+func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
+	}
+	_result := &_DeleteNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToDelete:                 noOfNodesToDelete,
+		NodesToDelete:                     nodesToDelete,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteNodesRequestBuilder is a builder for DeleteNodesRequest
+type DeleteNodesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder
+	// WithNoOfNodesToDelete adds NoOfNodesToDelete (property field)
+	WithNoOfNodesToDelete(int32) DeleteNodesRequestBuilder
+	// WithNodesToDelete adds NodesToDelete (property field)
+	WithNodesToDelete(...ExtensionObjectDefinition) DeleteNodesRequestBuilder
+	// Build builds the DeleteNodesRequest or returns an error if something is wrong
+	Build() (DeleteNodesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteNodesRequest
+}
+
+// NewDeleteNodesRequestBuilder() creates a DeleteNodesRequestBuilder
+func NewDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
+	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: new(_DeleteNodesRequest)}
+}
+
+type _DeleteNodesRequestBuilder struct {
+	*_DeleteNodesRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteNodesRequestBuilder) = (*_DeleteNodesRequestBuilder)(nil)
+
+func (b *_DeleteNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToDelete(noOfNodesToDelete).WithNodesToDelete(nodesToDelete...)
+}
+
+func (b *_DeleteNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) WithNoOfNodesToDelete(noOfNodesToDelete int32) DeleteNodesRequestBuilder {
+	b.NoOfNodesToDelete = noOfNodesToDelete
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) WithNodesToDelete(nodesToDelete ...ExtensionObjectDefinition) DeleteNodesRequestBuilder {
+	b.NodesToDelete = nodesToDelete
+	return b
+}
+
+func (b *_DeleteNodesRequestBuilder) Build() (DeleteNodesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteNodesRequest.deepCopy(), nil
+}
+
+func (b *_DeleteNodesRequestBuilder) MustBuild() DeleteNodesRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteNodesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteNodesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteNodesRequestBuilder().(*_DeleteNodesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteNodesRequestBuilder creates a DeleteNodesRequestBuilder
+func (b *_DeleteNodesRequest) CreateDeleteNodesRequestBuilder() DeleteNodesRequestBuilder {
+	if b == nil {
+		return NewDeleteNodesRequestBuilder()
+	}
+	return &_DeleteNodesRequestBuilder{_DeleteNodesRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_DeleteNodesRequest) GetNodesToDelete() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteNodesRequest factory function for _DeleteNodesRequest
-func NewDeleteNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToDelete int32, nodesToDelete []ExtensionObjectDefinition) *_DeleteNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for DeleteNodesRequest must not be nil")
-	}
-	_result := &_DeleteNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToDelete:                 noOfNodesToDelete,
-		NodesToDelete:                     nodesToDelete,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteNodesRequest(structType any) DeleteNodesRequest {
@@ -232,13 +361,35 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_DeleteNodesRequest) IsDeleteNodesRequest() {}
 
+func (m *_DeleteNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteNodesRequest) deepCopy() *_DeleteNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_DeleteNodesRequestCopy := &_DeleteNodesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToDelete,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NodesToDelete),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteNodesRequestCopy
+}
+
 func (m *_DeleteNodesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

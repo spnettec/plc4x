@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -35,14 +33,14 @@ type WhatIsNetworkNumber struct {
 	messageType uint8
 }
 
-func NewWhatIsNetworkNumber(opts ...func(*WhatIsNetworkNumber)) (*WhatIsNetworkNumber, error) {
+func NewWhatIsNetworkNumber(args Args, kwArgs KWArgs, options ...Option) (*WhatIsNetworkNumber, error) {
 	i := &WhatIsNetworkNumber{
 		messageType: 0x12,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMWhatIsNetworkNumber(0), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMWhatIsNetworkNumber(0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
@@ -81,8 +79,4 @@ func (w *WhatIsNetworkNumber) Decode(npdu Arg) error {
 		w.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (w *WhatIsNetworkNumber) String() string {
-	return fmt.Sprintf("WhatIsNetworkNumber{%s}", w._NPDU)
 }

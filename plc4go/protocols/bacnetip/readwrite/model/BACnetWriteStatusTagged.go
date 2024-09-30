@@ -38,12 +38,15 @@ type BACnetWriteStatusTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetWriteStatus
 	// IsBACnetWriteStatusTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetWriteStatusTagged()
+	// CreateBuilder creates a BACnetWriteStatusTaggedBuilder
+	CreateBACnetWriteStatusTaggedBuilder() BACnetWriteStatusTaggedBuilder
 }
 
 // _BACnetWriteStatusTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetWriteStatusTagged struct {
 }
 
 var _ BACnetWriteStatusTagged = (*_BACnetWriteStatusTagged)(nil)
+
+// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
+func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
+	}
+	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetWriteStatusTaggedBuilder is a builder for BACnetWriteStatusTagged
+type BACnetWriteStatusTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetWriteStatus) BACnetWriteStatusTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetWriteStatusTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetWriteStatusTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetWriteStatus) BACnetWriteStatusTaggedBuilder
+	// Build builds the BACnetWriteStatusTagged or returns an error if something is wrong
+	Build() (BACnetWriteStatusTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetWriteStatusTagged
+}
+
+// NewBACnetWriteStatusTaggedBuilder() creates a BACnetWriteStatusTaggedBuilder
+func NewBACnetWriteStatusTaggedBuilder() BACnetWriteStatusTaggedBuilder {
+	return &_BACnetWriteStatusTaggedBuilder{_BACnetWriteStatusTagged: new(_BACnetWriteStatusTagged)}
+}
+
+type _BACnetWriteStatusTaggedBuilder struct {
+	*_BACnetWriteStatusTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetWriteStatusTaggedBuilder) = (*_BACnetWriteStatusTaggedBuilder)(nil)
+
+func (b *_BACnetWriteStatusTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetWriteStatus) BACnetWriteStatusTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetWriteStatusTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetWriteStatusTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) WithValue(value BACnetWriteStatus) BACnetWriteStatusTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) Build() (BACnetWriteStatusTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetWriteStatusTagged.deepCopy(), nil
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) MustBuild() BACnetWriteStatusTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetWriteStatusTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetWriteStatusTaggedBuilder().(*_BACnetWriteStatusTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetWriteStatusTaggedBuilder creates a BACnetWriteStatusTaggedBuilder
+func (b *_BACnetWriteStatusTagged) CreateBACnetWriteStatusTaggedBuilder() BACnetWriteStatusTaggedBuilder {
+	if b == nil {
+		return NewBACnetWriteStatusTaggedBuilder()
+	}
+	return &_BACnetWriteStatusTaggedBuilder{_BACnetWriteStatusTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetWriteStatusTagged) GetValue() BACnetWriteStatus {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetWriteStatusTagged factory function for _BACnetWriteStatusTagged
-func NewBACnetWriteStatusTagged(header BACnetTagHeader, value BACnetWriteStatus, tagNumber uint8, tagClass TagClass) *_BACnetWriteStatusTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetWriteStatusTagged must not be nil")
-	}
-	return &_BACnetWriteStatusTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWriteStatusTagged(structType any) BACnetWriteStatusTagged {
@@ -130,7 +237,7 @@ func BACnetWriteStatusTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetWriteStatusTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetWriteStatusTagged BACnetWriteStatusTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetWriteStatusTagged) GetTagClass() TagClass {
 
 func (m *_BACnetWriteStatusTagged) IsBACnetWriteStatusTagged() {}
 
+func (m *_BACnetWriteStatusTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWriteStatusTagged) deepCopy() *_BACnetWriteStatusTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetWriteStatusTaggedCopy := &_BACnetWriteStatusTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetWriteStatusTaggedCopy
+}
+
 func (m *_BACnetWriteStatusTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

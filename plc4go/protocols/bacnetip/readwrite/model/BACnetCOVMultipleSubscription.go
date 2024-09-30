@@ -38,6 +38,7 @@ type BACnetCOVMultipleSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetIssueConfirmedNotifications returns IssueConfirmedNotifications (property field)
@@ -50,6 +51,8 @@ type BACnetCOVMultipleSubscription interface {
 	GetListOfCovSubscriptionSpecification() BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification
 	// IsBACnetCOVMultipleSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCOVMultipleSubscription()
+	// CreateBuilder creates a BACnetCOVMultipleSubscriptionBuilder
+	CreateBACnetCOVMultipleSubscriptionBuilder() BACnetCOVMultipleSubscriptionBuilder
 }
 
 // _BACnetCOVMultipleSubscription is the data-structure of this message
@@ -62,6 +65,235 @@ type _BACnetCOVMultipleSubscription struct {
 }
 
 var _ BACnetCOVMultipleSubscription = (*_BACnetCOVMultipleSubscription)(nil)
+
+// NewBACnetCOVMultipleSubscription factory function for _BACnetCOVMultipleSubscription
+func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) *_BACnetCOVMultipleSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if maxNotificationDelay == nil {
+		panic("maxNotificationDelay of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
+	}
+	if listOfCovSubscriptionSpecification == nil {
+		panic("listOfCovSubscriptionSpecification of type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification for BACnetCOVMultipleSubscription must not be nil")
+	}
+	return &_BACnetCOVMultipleSubscription{Recipient: recipient, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, MaxNotificationDelay: maxNotificationDelay, ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCOVMultipleSubscriptionBuilder is a builder for BACnetCOVMultipleSubscription
+type BACnetCOVMultipleSubscriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) BACnetCOVMultipleSubscriptionBuilder
+	// WithRecipient adds Recipient (property field)
+	WithRecipient(BACnetRecipientProcessEnclosed) BACnetCOVMultipleSubscriptionBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVMultipleSubscriptionBuilder
+	// WithIssueConfirmedNotifications adds IssueConfirmedNotifications (property field)
+	WithIssueConfirmedNotifications(BACnetContextTagBoolean) BACnetCOVMultipleSubscriptionBuilder
+	// WithIssueConfirmedNotificationsBuilder adds IssueConfirmedNotifications (property field) which is build by the builder
+	WithIssueConfirmedNotificationsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVMultipleSubscriptionBuilder
+	// WithTimeRemaining adds TimeRemaining (property field)
+	WithTimeRemaining(BACnetContextTagUnsignedInteger) BACnetCOVMultipleSubscriptionBuilder
+	// WithTimeRemainingBuilder adds TimeRemaining (property field) which is build by the builder
+	WithTimeRemainingBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVMultipleSubscriptionBuilder
+	// WithMaxNotificationDelay adds MaxNotificationDelay (property field)
+	WithMaxNotificationDelay(BACnetContextTagUnsignedInteger) BACnetCOVMultipleSubscriptionBuilder
+	// WithMaxNotificationDelayBuilder adds MaxNotificationDelay (property field) which is build by the builder
+	WithMaxNotificationDelayBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVMultipleSubscriptionBuilder
+	// WithListOfCovSubscriptionSpecification adds ListOfCovSubscriptionSpecification (property field)
+	WithListOfCovSubscriptionSpecification(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) BACnetCOVMultipleSubscriptionBuilder
+	// WithListOfCovSubscriptionSpecificationBuilder adds ListOfCovSubscriptionSpecification (property field) which is build by the builder
+	WithListOfCovSubscriptionSpecificationBuilder(func(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) BACnetCOVMultipleSubscriptionBuilder
+	// Build builds the BACnetCOVMultipleSubscription or returns an error if something is wrong
+	Build() (BACnetCOVMultipleSubscription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCOVMultipleSubscription
+}
+
+// NewBACnetCOVMultipleSubscriptionBuilder() creates a BACnetCOVMultipleSubscriptionBuilder
+func NewBACnetCOVMultipleSubscriptionBuilder() BACnetCOVMultipleSubscriptionBuilder {
+	return &_BACnetCOVMultipleSubscriptionBuilder{_BACnetCOVMultipleSubscription: new(_BACnetCOVMultipleSubscription)}
+}
+
+type _BACnetCOVMultipleSubscriptionBuilder struct {
+	*_BACnetCOVMultipleSubscription
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCOVMultipleSubscriptionBuilder) = (*_BACnetCOVMultipleSubscriptionBuilder)(nil)
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) BACnetCOVMultipleSubscriptionBuilder {
+	return b.WithRecipient(recipient).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTimeRemaining(timeRemaining).WithMaxNotificationDelay(maxNotificationDelay).WithListOfCovSubscriptionSpecification(listOfCovSubscriptionSpecification)
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithRecipient(recipient BACnetRecipientProcessEnclosed) BACnetCOVMultipleSubscriptionBuilder {
+	b.Recipient = recipient
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVMultipleSubscriptionBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientProcessEnclosedBuilder())
+	var err error
+	b.Recipient, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetCOVMultipleSubscriptionBuilder {
+	b.IssueConfirmedNotifications = issueConfirmedNotifications
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVMultipleSubscriptionBuilder {
+	builder := builderSupplier(b.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.IssueConfirmedNotifications, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVMultipleSubscriptionBuilder {
+	b.TimeRemaining = timeRemaining
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVMultipleSubscriptionBuilder {
+	builder := builderSupplier(b.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.TimeRemaining, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithMaxNotificationDelay(maxNotificationDelay BACnetContextTagUnsignedInteger) BACnetCOVMultipleSubscriptionBuilder {
+	b.MaxNotificationDelay = maxNotificationDelay
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithMaxNotificationDelayBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVMultipleSubscriptionBuilder {
+	builder := builderSupplier(b.MaxNotificationDelay.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.MaxNotificationDelay, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithListOfCovSubscriptionSpecification(listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) BACnetCOVMultipleSubscriptionBuilder {
+	b.ListOfCovSubscriptionSpecification = listOfCovSubscriptionSpecification
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) WithListOfCovSubscriptionSpecificationBuilder(builderSupplier func(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder) BACnetCOVMultipleSubscriptionBuilder {
+	builder := builderSupplier(b.ListOfCovSubscriptionSpecification.CreateBACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder())
+	var err error
+	b.ListOfCovSubscriptionSpecification, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) Build() (BACnetCOVMultipleSubscription, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if b.IssueConfirmedNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+	}
+	if b.TimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+	}
+	if b.MaxNotificationDelay == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxNotificationDelay' not set"))
+	}
+	if b.ListOfCovSubscriptionSpecification == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'listOfCovSubscriptionSpecification' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCOVMultipleSubscription.deepCopy(), nil
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) MustBuild() BACnetCOVMultipleSubscription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetCOVMultipleSubscriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCOVMultipleSubscriptionBuilder().(*_BACnetCOVMultipleSubscriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetCOVMultipleSubscriptionBuilder creates a BACnetCOVMultipleSubscriptionBuilder
+func (b *_BACnetCOVMultipleSubscription) CreateBACnetCOVMultipleSubscriptionBuilder() BACnetCOVMultipleSubscriptionBuilder {
+	if b == nil {
+		return NewBACnetCOVMultipleSubscriptionBuilder()
+	}
+	return &_BACnetCOVMultipleSubscriptionBuilder{_BACnetCOVMultipleSubscription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,26 +324,6 @@ func (m *_BACnetCOVMultipleSubscription) GetListOfCovSubscriptionSpecification()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVMultipleSubscription factory function for _BACnetCOVMultipleSubscription
-func NewBACnetCOVMultipleSubscription(recipient BACnetRecipientProcessEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, maxNotificationDelay BACnetContextTagUnsignedInteger, listOfCovSubscriptionSpecification BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) *_BACnetCOVMultipleSubscription {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if issueConfirmedNotifications == nil {
-		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if timeRemaining == nil {
-		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if maxNotificationDelay == nil {
-		panic("maxNotificationDelay of type BACnetContextTagUnsignedInteger for BACnetCOVMultipleSubscription must not be nil")
-	}
-	if listOfCovSubscriptionSpecification == nil {
-		panic("listOfCovSubscriptionSpecification of type BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification for BACnetCOVMultipleSubscription must not be nil")
-	}
-	return &_BACnetCOVMultipleSubscription{Recipient: recipient, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, MaxNotificationDelay: maxNotificationDelay, ListOfCovSubscriptionSpecification: listOfCovSubscriptionSpecification}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVMultipleSubscription(structType any) BACnetCOVMultipleSubscription {
@@ -168,7 +380,7 @@ func BACnetCOVMultipleSubscriptionParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetCOVMultipleSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVMultipleSubscription BACnetCOVMultipleSubscription, err error) {
@@ -262,13 +474,35 @@ func (m *_BACnetCOVMultipleSubscription) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetCOVMultipleSubscription) IsBACnetCOVMultipleSubscription() {}
 
+func (m *_BACnetCOVMultipleSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVMultipleSubscription) deepCopy() *_BACnetCOVMultipleSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVMultipleSubscriptionCopy := &_BACnetCOVMultipleSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MaxNotificationDelay.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfCovSubscriptionSpecification.DeepCopy().(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification),
+	}
+	return _BACnetCOVMultipleSubscriptionCopy
+}
+
 func (m *_BACnetCOVMultipleSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

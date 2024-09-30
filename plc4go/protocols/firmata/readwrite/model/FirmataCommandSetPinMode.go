@@ -38,6 +38,7 @@ type FirmataCommandSetPinMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	FirmataCommand
 	// GetPin returns Pin (property field)
 	GetPin() uint8
@@ -45,6 +46,8 @@ type FirmataCommandSetPinMode interface {
 	GetMode() PinMode
 	// IsFirmataCommandSetPinMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommandSetPinMode()
+	// CreateBuilder creates a FirmataCommandSetPinModeBuilder
+	CreateFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder
 }
 
 // _FirmataCommandSetPinMode is the data-structure of this message
@@ -56,6 +59,115 @@ type _FirmataCommandSetPinMode struct {
 
 var _ FirmataCommandSetPinMode = (*_FirmataCommandSetPinMode)(nil)
 var _ FirmataCommandRequirements = (*_FirmataCommandSetPinMode)(nil)
+
+// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
+func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
+	_result := &_FirmataCommandSetPinMode{
+		FirmataCommandContract: NewFirmataCommand(response),
+		Pin:                    pin,
+		Mode:                   mode,
+	}
+	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataCommandSetPinModeBuilder is a builder for FirmataCommandSetPinMode
+type FirmataCommandSetPinModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(pin uint8, mode PinMode) FirmataCommandSetPinModeBuilder
+	// WithPin adds Pin (property field)
+	WithPin(uint8) FirmataCommandSetPinModeBuilder
+	// WithMode adds Mode (property field)
+	WithMode(PinMode) FirmataCommandSetPinModeBuilder
+	// Build builds the FirmataCommandSetPinMode or returns an error if something is wrong
+	Build() (FirmataCommandSetPinMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommandSetPinMode
+}
+
+// NewFirmataCommandSetPinModeBuilder() creates a FirmataCommandSetPinModeBuilder
+func NewFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder {
+	return &_FirmataCommandSetPinModeBuilder{_FirmataCommandSetPinMode: new(_FirmataCommandSetPinMode)}
+}
+
+type _FirmataCommandSetPinModeBuilder struct {
+	*_FirmataCommandSetPinMode
+
+	parentBuilder *_FirmataCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (FirmataCommandSetPinModeBuilder) = (*_FirmataCommandSetPinModeBuilder)(nil)
+
+func (b *_FirmataCommandSetPinModeBuilder) setParent(contract FirmataCommandContract) {
+	b.FirmataCommandContract = contract
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) WithMandatoryFields(pin uint8, mode PinMode) FirmataCommandSetPinModeBuilder {
+	return b.WithPin(pin).WithMode(mode)
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) WithPin(pin uint8) FirmataCommandSetPinModeBuilder {
+	b.Pin = pin
+	return b
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) WithMode(mode PinMode) FirmataCommandSetPinModeBuilder {
+	b.Mode = mode
+	return b
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) Build() (FirmataCommandSetPinMode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FirmataCommandSetPinMode.deepCopy(), nil
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) MustBuild() FirmataCommandSetPinMode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_FirmataCommandSetPinModeBuilder) Done() FirmataCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) buildForFirmataCommand() (FirmataCommand, error) {
+	return b.Build()
+}
+
+func (b *_FirmataCommandSetPinModeBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandSetPinModeBuilder().(*_FirmataCommandSetPinModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateFirmataCommandSetPinModeBuilder creates a FirmataCommandSetPinModeBuilder
+func (b *_FirmataCommandSetPinMode) CreateFirmataCommandSetPinModeBuilder() FirmataCommandSetPinModeBuilder {
+	if b == nil {
+		return NewFirmataCommandSetPinModeBuilder()
+	}
+	return &_FirmataCommandSetPinModeBuilder{_FirmataCommandSetPinMode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_FirmataCommandSetPinMode) GetMode() PinMode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewFirmataCommandSetPinMode factory function for _FirmataCommandSetPinMode
-func NewFirmataCommandSetPinMode(pin uint8, mode PinMode, response bool) *_FirmataCommandSetPinMode {
-	_result := &_FirmataCommandSetPinMode{
-		FirmataCommandContract: NewFirmataCommand(response),
-		Pin:                    pin,
-		Mode:                   mode,
-	}
-	_result.FirmataCommandContract.(*_FirmataCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommandSetPinMode(structType any) FirmataCommandSetPinMode {
@@ -201,13 +302,34 @@ func (m *_FirmataCommandSetPinMode) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_FirmataCommandSetPinMode) IsFirmataCommandSetPinMode() {}
 
+func (m *_FirmataCommandSetPinMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommandSetPinMode) deepCopy() *_FirmataCommandSetPinMode {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandSetPinModeCopy := &_FirmataCommandSetPinMode{
+		m.FirmataCommandContract.(*_FirmataCommand).deepCopy(),
+		m.Pin,
+		m.Mode,
+	}
+	m.FirmataCommandContract.(*_FirmataCommand)._SubType = m
+	return _FirmataCommandSetPinModeCopy
+}
+
 func (m *_FirmataCommandSetPinMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

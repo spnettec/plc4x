@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/task"
 )
@@ -91,14 +90,35 @@ type state struct {
 	timeoutTransition     *TimeoutTransition
 	callTransition        *CallTransition
 
+	_leafName string
+
 	log zerolog.Logger
 }
 
-func (s *state) Equals(other State) bool {
-	if s == other {
-		return true
+func NewState(localLog zerolog.Logger, stateMachine StateMachine, docString string, options ...Option) State {
+	s := &state{
+		stateMachine: stateMachine,
+		docString:    docString,
+
+		_leafName: ExtractLeafName(options, StructName()),
+
+		log: localLog,
 	}
-	return false
+	ApplyAppliers(options, s)
+	if _debug != nil {
+		_debug("__init__ %r docString=%r", stateMachine, docString)
+	}
+	if s.interceptor == nil {
+		s.interceptor = s
+	}
+	if docString != "" {
+		s.log = s.log.With().Str("docString", docString).Logger()
+	}
+	return s
+}
+
+func WithStateStateInterceptor(interceptor StateInterceptor) GenericApplier[*state] {
+	return WrapGenericApplier(func(state *state) { state.interceptor = interceptor })
 }
 
 func (s *state) getStateMachine() StateMachine {
@@ -143,34 +163,6 @@ func (s *state) getCallTransition() *CallTransition {
 
 func (s *state) getInterceptor() StateInterceptor {
 	return s.interceptor
-}
-
-func NewState(localLog zerolog.Logger, stateMachine StateMachine, docString string, opts ...func(state *state)) State {
-	s := &state{
-		stateMachine: stateMachine,
-		docString:    docString,
-
-		log: localLog,
-	}
-	for _, opt := range opts {
-		opt(s)
-	}
-	if _debug != nil {
-		_debug("__init__ %r docString=%r", stateMachine, docString)
-	}
-	if s.interceptor == nil {
-		s.interceptor = s
-	}
-	if docString != "" {
-		s.log = s.log.With().Str("docString", docString).Logger()
-	}
-	return s
-}
-
-func WithStateStateInterceptor(interceptor StateInterceptor) func(state *state) {
-	return func(state *state) {
-		state.interceptor = interceptor
-	}
 }
 
 // Reset Override this method in a derived class if the state maintains counters or other information.  Called when the
@@ -563,10 +555,17 @@ func (s *state) Call(fn GenericFunction, args Args, kwArgs KWArgs) State {
 	return nextState
 }
 
+func (s *state) Equals(other State) bool {
+	if s == other {
+		return true
+	}
+	return false
+}
+
 func (s *state) Format(state fmt.State, v rune) {
 	switch v {
 	case 's', 'v', 'r':
-		_, _ = fmt.Fprintf(state, "<%s(%s) at %p>", StructName(), s.docString, s)
+		_, _ = fmt.Fprintf(state, "<%s(%s) at %p>", s._leafName, s.docString, s)
 	}
 }
 
@@ -574,9 +573,8 @@ func (s *state) String() string {
 	if s == nil {
 		return "<nil>(*state)"
 	}
-	if ExtendedGeneralOutput {
-		return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
-	} else {
-		return fmt.Sprintf("<%T(%s) at %p>", s, s.docString, s)
+	if IsDebuggingActive() {
+		return fmt.Sprintf("%s", s) // Delegate to format
 	}
+	return fmt.Sprintf("state(doc: %s, successState: %t, isFailState: %t)", s.docString, s.isSuccessState, s.isFailState)
 }

@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,34 @@ type WhoIsRouterToNetwork struct {
 	wirtnNetwork *uint16
 }
 
-func NewWhoIsRouterToNetwork(opts ...func(network *WhoIsRouterToNetwork)) (*WhoIsRouterToNetwork, error) {
+func NewWhoIsRouterToNetwork(args Args, kwArgs KWArgs, options ...Option) (*WhoIsRouterToNetwork, error) {
 	w := &WhoIsRouterToNetwork{
 		messageType: 0x00,
 	}
-	for _, opt := range opts {
-		opt(w)
-	}
-	npdu, err := NewNPDU(model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0), nil)
+	ApplyAppliers(options, w)
+	options = AddLeafTypeIfAbundant(options, w)
+	options = AddNLMIfAbundant(options, model.NewNLMWhoIsRouterToNetwork(w.wirtnNetwork, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	w._NPDU = npdu.(*_NPDU)
+	w.AddDebugContents(w, "wirtnNetwork")
 
 	w.npduNetMessage = &w.messageType
 	return w, nil
 }
 
-func WithWhoIsRouterToNetworkNet(net uint16) func(*WhoIsRouterToNetwork) {
-	return func(n *WhoIsRouterToNetwork) {
-		n.wirtnNetwork = &net
+func WithWhoIsRouterToNetworkNet(net uint16) GenericApplier[*WhoIsRouterToNetwork] {
+	return WrapGenericApplier(func(n *WhoIsRouterToNetwork) { n.wirtnNetwork = &net })
+}
+
+func (w *WhoIsRouterToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "wirtnNetwork":
+		return w.wirtnNetwork
 	}
+	return nil
 }
 
 func (w *WhoIsRouterToNetwork) GetWirtnNetwork() *uint16 {
@@ -102,8 +107,4 @@ func (w *WhoIsRouterToNetwork) Decode(npdu Arg) error {
 		w.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (w *WhoIsRouterToNetwork) String() string {
-	return fmt.Sprintf("WhoIsRouterToNetwork{%s, wirtnNetwork: %d}", w._NPDU, w.wirtnNetwork)
 }

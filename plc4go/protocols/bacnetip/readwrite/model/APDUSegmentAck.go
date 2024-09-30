@@ -38,6 +38,7 @@ type APDUSegmentAck interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetNegativeAck returns NegativeAck (property field)
 	GetNegativeAck() bool
@@ -51,6 +52,8 @@ type APDUSegmentAck interface {
 	GetActualWindowSize() uint8
 	// IsAPDUSegmentAck is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUSegmentAck()
+	// CreateBuilder creates a APDUSegmentAckBuilder
+	CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder
 }
 
 // _APDUSegmentAck is the data-structure of this message
@@ -67,6 +70,139 @@ type _APDUSegmentAck struct {
 
 var _ APDUSegmentAck = (*_APDUSegmentAck)(nil)
 var _ APDURequirements = (*_APDUSegmentAck)(nil)
+
+// NewAPDUSegmentAck factory function for _APDUSegmentAck
+func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
+	_result := &_APDUSegmentAck{
+		APDUContract:     NewAPDU(apduLength),
+		NegativeAck:      negativeAck,
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		SequenceNumber:   sequenceNumber,
+		ActualWindowSize: actualWindowSize,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDUSegmentAckBuilder is a builder for APDUSegmentAck
+type APDUSegmentAckBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder
+	// WithNegativeAck adds NegativeAck (property field)
+	WithNegativeAck(bool) APDUSegmentAckBuilder
+	// WithServer adds Server (property field)
+	WithServer(bool) APDUSegmentAckBuilder
+	// WithOriginalInvokeId adds OriginalInvokeId (property field)
+	WithOriginalInvokeId(uint8) APDUSegmentAckBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint8) APDUSegmentAckBuilder
+	// WithActualWindowSize adds ActualWindowSize (property field)
+	WithActualWindowSize(uint8) APDUSegmentAckBuilder
+	// Build builds the APDUSegmentAck or returns an error if something is wrong
+	Build() (APDUSegmentAck, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUSegmentAck
+}
+
+// NewAPDUSegmentAckBuilder() creates a APDUSegmentAckBuilder
+func NewAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
+	return &_APDUSegmentAckBuilder{_APDUSegmentAck: new(_APDUSegmentAck)}
+}
+
+type _APDUSegmentAckBuilder struct {
+	*_APDUSegmentAck
+
+	parentBuilder *_APDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (APDUSegmentAckBuilder) = (*_APDUSegmentAckBuilder)(nil)
+
+func (b *_APDUSegmentAckBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
+}
+
+func (b *_APDUSegmentAckBuilder) WithMandatoryFields(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8) APDUSegmentAckBuilder {
+	return b.WithNegativeAck(negativeAck).WithServer(server).WithOriginalInvokeId(originalInvokeId).WithSequenceNumber(sequenceNumber).WithActualWindowSize(actualWindowSize)
+}
+
+func (b *_APDUSegmentAckBuilder) WithNegativeAck(negativeAck bool) APDUSegmentAckBuilder {
+	b.NegativeAck = negativeAck
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) WithServer(server bool) APDUSegmentAckBuilder {
+	b.Server = server
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUSegmentAckBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) WithSequenceNumber(sequenceNumber uint8) APDUSegmentAckBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) WithActualWindowSize(actualWindowSize uint8) APDUSegmentAckBuilder {
+	b.ActualWindowSize = actualWindowSize
+	return b
+}
+
+func (b *_APDUSegmentAckBuilder) Build() (APDUSegmentAck, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUSegmentAck.deepCopy(), nil
+}
+
+func (b *_APDUSegmentAckBuilder) MustBuild() APDUSegmentAck {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUSegmentAckBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUSegmentAckBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUSegmentAckBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUSegmentAckBuilder().(*_APDUSegmentAckBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAPDUSegmentAckBuilder creates a APDUSegmentAckBuilder
+func (b *_APDUSegmentAck) CreateAPDUSegmentAckBuilder() APDUSegmentAckBuilder {
+	if b == nil {
+		return NewAPDUSegmentAckBuilder()
+	}
+	return &_APDUSegmentAckBuilder{_APDUSegmentAck: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,20 +251,6 @@ func (m *_APDUSegmentAck) GetActualWindowSize() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUSegmentAck factory function for _APDUSegmentAck
-func NewAPDUSegmentAck(negativeAck bool, server bool, originalInvokeId uint8, sequenceNumber uint8, actualWindowSize uint8, apduLength uint16) *_APDUSegmentAck {
-	_result := &_APDUSegmentAck{
-		APDUContract:     NewAPDU(apduLength),
-		NegativeAck:      negativeAck,
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		SequenceNumber:   sequenceNumber,
-		ActualWindowSize: actualWindowSize,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUSegmentAck(structType any) APDUSegmentAck {
@@ -279,13 +401,38 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_APDUSegmentAck) IsAPDUSegmentAck() {}
 
+func (m *_APDUSegmentAck) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUSegmentAck) deepCopy() *_APDUSegmentAck {
+	if m == nil {
+		return nil
+	}
+	_APDUSegmentAckCopy := &_APDUSegmentAck{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.NegativeAck,
+		m.Server,
+		m.OriginalInvokeId,
+		m.SequenceNumber,
+		m.ActualWindowSize,
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUSegmentAckCopy
+}
+
 func (m *_APDUSegmentAck) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

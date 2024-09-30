@@ -38,11 +38,14 @@ type BACnetPropertyStatesZoneOccupanyState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetZoneOccupanyState returns ZoneOccupanyState (property field)
 	GetZoneOccupanyState() BACnetAccessZoneOccupancyStateTagged
 	// IsBACnetPropertyStatesZoneOccupanyState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesZoneOccupanyState()
+	// CreateBuilder creates a BACnetPropertyStatesZoneOccupanyStateBuilder
+	CreateBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneOccupanyStateBuilder
 }
 
 // _BACnetPropertyStatesZoneOccupanyState is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesZoneOccupanyState struct {
 
 var _ BACnetPropertyStatesZoneOccupanyState = (*_BACnetPropertyStatesZoneOccupanyState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesZoneOccupanyState)(nil)
+
+// NewBACnetPropertyStatesZoneOccupanyState factory function for _BACnetPropertyStatesZoneOccupanyState
+func NewBACnetPropertyStatesZoneOccupanyState(peekedTagHeader BACnetTagHeader, zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) *_BACnetPropertyStatesZoneOccupanyState {
+	if zoneOccupanyState == nil {
+		panic("zoneOccupanyState of type BACnetAccessZoneOccupancyStateTagged for BACnetPropertyStatesZoneOccupanyState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesZoneOccupanyState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ZoneOccupanyState:            zoneOccupanyState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesZoneOccupanyStateBuilder is a builder for BACnetPropertyStatesZoneOccupanyState
+type BACnetPropertyStatesZoneOccupanyStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder
+	// WithZoneOccupanyState adds ZoneOccupanyState (property field)
+	WithZoneOccupanyState(BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder
+	// WithZoneOccupanyStateBuilder adds ZoneOccupanyState (property field) which is build by the builder
+	WithZoneOccupanyStateBuilder(func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetPropertyStatesZoneOccupanyStateBuilder
+	// Build builds the BACnetPropertyStatesZoneOccupanyState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesZoneOccupanyState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesZoneOccupanyState
+}
+
+// NewBACnetPropertyStatesZoneOccupanyStateBuilder() creates a BACnetPropertyStatesZoneOccupanyStateBuilder
+func NewBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneOccupanyStateBuilder {
+	return &_BACnetPropertyStatesZoneOccupanyStateBuilder{_BACnetPropertyStatesZoneOccupanyState: new(_BACnetPropertyStatesZoneOccupanyState)}
+}
+
+type _BACnetPropertyStatesZoneOccupanyStateBuilder struct {
+	*_BACnetPropertyStatesZoneOccupanyState
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesZoneOccupanyStateBuilder) = (*_BACnetPropertyStatesZoneOccupanyStateBuilder)(nil)
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithMandatoryFields(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	return b.WithZoneOccupanyState(zoneOccupanyState)
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	b.ZoneOccupanyState = zoneOccupanyState
+	return b
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) WithZoneOccupanyStateBuilder(builderSupplier func(BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetAccessZoneOccupancyStateTaggedBuilder) BACnetPropertyStatesZoneOccupanyStateBuilder {
+	builder := builderSupplier(b.ZoneOccupanyState.CreateBACnetAccessZoneOccupancyStateTaggedBuilder())
+	var err error
+	b.ZoneOccupanyState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessZoneOccupancyStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) Build() (BACnetPropertyStatesZoneOccupanyState, error) {
+	if b.ZoneOccupanyState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneOccupanyState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesZoneOccupanyState.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) MustBuild() BACnetPropertyStatesZoneOccupanyState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesZoneOccupanyStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesZoneOccupanyStateBuilder().(*_BACnetPropertyStatesZoneOccupanyStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesZoneOccupanyStateBuilder creates a BACnetPropertyStatesZoneOccupanyStateBuilder
+func (b *_BACnetPropertyStatesZoneOccupanyState) CreateBACnetPropertyStatesZoneOccupanyStateBuilder() BACnetPropertyStatesZoneOccupanyStateBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesZoneOccupanyStateBuilder()
+	}
+	return &_BACnetPropertyStatesZoneOccupanyStateBuilder{_BACnetPropertyStatesZoneOccupanyState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) GetZoneOccupanyState() BACnetAc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesZoneOccupanyState factory function for _BACnetPropertyStatesZoneOccupanyState
-func NewBACnetPropertyStatesZoneOccupanyState(zoneOccupanyState BACnetAccessZoneOccupancyStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesZoneOccupanyState {
-	if zoneOccupanyState == nil {
-		panic("zoneOccupanyState of type BACnetAccessZoneOccupancyStateTagged for BACnetPropertyStatesZoneOccupanyState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesZoneOccupanyState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ZoneOccupanyState:            zoneOccupanyState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesZoneOccupanyState(structType any) BACnetPropertyStatesZoneOccupanyState {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesZoneOccupanyState) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetPropertyStatesZoneOccupanyState) IsBACnetPropertyStatesZoneOccupanyState() {}
 
+func (m *_BACnetPropertyStatesZoneOccupanyState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesZoneOccupanyState) deepCopy() *_BACnetPropertyStatesZoneOccupanyState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesZoneOccupanyStateCopy := &_BACnetPropertyStatesZoneOccupanyState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ZoneOccupanyState.DeepCopy().(BACnetAccessZoneOccupancyStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesZoneOccupanyStateCopy
+}
+
 func (m *_BACnetPropertyStatesZoneOccupanyState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

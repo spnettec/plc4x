@@ -38,14 +38,19 @@ type KnxGroupAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
+	// CreateBuilder creates a KnxGroupAddressBuilder
+	CreateKnxGroupAddressBuilder() KnxGroupAddressBuilder
 }
 
 // KnxGroupAddressContract provides a set of functions which can be overwritten by a sub struct
 type KnxGroupAddressContract interface {
 	// IsKnxGroupAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddress()
+	// CreateBuilder creates a KnxGroupAddressBuilder
+	CreateKnxGroupAddressBuilder() KnxGroupAddressBuilder
 }
 
 // KnxGroupAddressRequirements provides a set of functions which need to be implemented by a sub struct
@@ -67,6 +72,172 @@ var _ KnxGroupAddressContract = (*_KnxGroupAddress)(nil)
 func NewKnxGroupAddress() *_KnxGroupAddress {
 	return &_KnxGroupAddress{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxGroupAddressBuilder is a builder for KnxGroupAddress
+type KnxGroupAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() KnxGroupAddressBuilder
+	// AsKnxGroupAddressFreeLevel converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
+	AsKnxGroupAddressFreeLevel() interface {
+		KnxGroupAddressFreeLevelBuilder
+		Done() KnxGroupAddressBuilder
+	}
+	// AsKnxGroupAddress2Level converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
+	AsKnxGroupAddress2Level() interface {
+		KnxGroupAddress2LevelBuilder
+		Done() KnxGroupAddressBuilder
+	}
+	// AsKnxGroupAddress3Level converts this build to a subType of KnxGroupAddress. It is always possible to return to current builder using Done()
+	AsKnxGroupAddress3Level() interface {
+		KnxGroupAddress3LevelBuilder
+		Done() KnxGroupAddressBuilder
+	}
+	// Build builds the KnxGroupAddress or returns an error if something is wrong
+	PartialBuild() (KnxGroupAddressContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() KnxGroupAddressContract
+	// Build builds the KnxGroupAddress or returns an error if something is wrong
+	Build() (KnxGroupAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxGroupAddress
+}
+
+// NewKnxGroupAddressBuilder() creates a KnxGroupAddressBuilder
+func NewKnxGroupAddressBuilder() KnxGroupAddressBuilder {
+	return &_KnxGroupAddressBuilder{_KnxGroupAddress: new(_KnxGroupAddress)}
+}
+
+type _KnxGroupAddressChildBuilder interface {
+	utils.Copyable
+	setParent(KnxGroupAddressContract)
+	buildForKnxGroupAddress() (KnxGroupAddress, error)
+}
+
+type _KnxGroupAddressBuilder struct {
+	*_KnxGroupAddress
+
+	childBuilder _KnxGroupAddressChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (KnxGroupAddressBuilder) = (*_KnxGroupAddressBuilder)(nil)
+
+func (b *_KnxGroupAddressBuilder) WithMandatoryFields() KnxGroupAddressBuilder {
+	return b
+}
+
+func (b *_KnxGroupAddressBuilder) PartialBuild() (KnxGroupAddressContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KnxGroupAddress.deepCopy(), nil
+}
+
+func (b *_KnxGroupAddressBuilder) PartialMustBuild() KnxGroupAddressContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddressFreeLevel() interface {
+	KnxGroupAddressFreeLevelBuilder
+	Done() KnxGroupAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxGroupAddressFreeLevelBuilder
+		Done() KnxGroupAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxGroupAddressFreeLevelBuilder().(*_KnxGroupAddressFreeLevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress2Level() interface {
+	KnxGroupAddress2LevelBuilder
+	Done() KnxGroupAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxGroupAddress2LevelBuilder
+		Done() KnxGroupAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxGroupAddress2LevelBuilder().(*_KnxGroupAddress2LevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxGroupAddressBuilder) AsKnxGroupAddress3Level() interface {
+	KnxGroupAddress3LevelBuilder
+	Done() KnxGroupAddressBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		KnxGroupAddress3LevelBuilder
+		Done() KnxGroupAddressBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewKnxGroupAddress3LevelBuilder().(*_KnxGroupAddress3LevelBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_KnxGroupAddressBuilder) Build() (KnxGroupAddress, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForKnxGroupAddress()
+}
+
+func (b *_KnxGroupAddressBuilder) MustBuild() KnxGroupAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_KnxGroupAddressBuilder) DeepCopy() any {
+	_copy := b.CreateKnxGroupAddressBuilder().(*_KnxGroupAddressBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_KnxGroupAddressChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateKnxGroupAddressBuilder creates a KnxGroupAddressBuilder
+func (b *_KnxGroupAddress) CreateKnxGroupAddressBuilder() KnxGroupAddressBuilder {
+	if b == nil {
+		return NewKnxGroupAddressBuilder()
+	}
+	return &_KnxGroupAddressBuilder{_KnxGroupAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastKnxGroupAddress(structType any) KnxGroupAddress {
@@ -104,7 +275,7 @@ func KnxGroupAddressParseWithBufferProducer[T KnxGroupAddress](numLevels uint8) 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -114,7 +285,12 @@ func KnxGroupAddressParseWithBuffer[T KnxGroupAddress](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_KnxGroupAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (__knxGroupAddress KnxGroupAddress, err error) {
@@ -130,15 +306,15 @@ func (m *_KnxGroupAddress) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child KnxGroupAddress
 	switch {
 	case numLevels == uint8(1): // KnxGroupAddressFreeLevel
-		if _child, err = (&_KnxGroupAddressFreeLevel{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddressFreeLevel).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddressFreeLevel for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(2): // KnxGroupAddress2Level
-		if _child, err = (&_KnxGroupAddress2Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress2Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress2Level for type-switch of KnxGroupAddress")
 		}
 	case numLevels == uint8(3): // KnxGroupAddress3Level
-		if _child, err = (&_KnxGroupAddress3Level{}).parse(ctx, readBuffer, m, numLevels); err != nil {
+		if _child, err = new(_KnxGroupAddress3Level).parse(ctx, readBuffer, m, numLevels); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type KnxGroupAddress3Level for type-switch of KnxGroupAddress")
 		}
 	default:
@@ -176,3 +352,17 @@ func (pm *_KnxGroupAddress) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_KnxGroupAddress) IsKnxGroupAddress() {}
+
+func (m *_KnxGroupAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddress) deepCopy() *_KnxGroupAddress {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressCopy := &_KnxGroupAddress{
+		nil, // will be set by child
+	}
+	return _KnxGroupAddressCopy
+}

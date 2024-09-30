@@ -45,6 +45,7 @@ type AdsDataTypeTableEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEntryLength returns EntryLength (property field)
 	GetEntryLength() uint32
 	// GetVersion returns Version (property field)
@@ -79,6 +80,8 @@ type AdsDataTypeTableEntry interface {
 	GetRest() []byte
 	// IsAdsDataTypeTableEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDataTypeTableEntry()
+	// CreateBuilder creates a AdsDataTypeTableEntryBuilder
+	CreateAdsDataTypeTableEntryBuilder() AdsDataTypeTableEntryBuilder
 }
 
 // _AdsDataTypeTableEntry is the data-structure of this message
@@ -102,6 +105,192 @@ type _AdsDataTypeTableEntry struct {
 }
 
 var _ AdsDataTypeTableEntry = (*_AdsDataTypeTableEntry)(nil)
+
+// NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
+func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) *_AdsDataTypeTableEntry {
+	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, DataTypeName: dataTypeName, SimpleTypeName: simpleTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDataTypeTableEntryBuilder is a builder for AdsDataTypeTableEntry
+type AdsDataTypeTableEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) AdsDataTypeTableEntryBuilder
+	// WithEntryLength adds EntryLength (property field)
+	WithEntryLength(uint32) AdsDataTypeTableEntryBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint32) AdsDataTypeTableEntryBuilder
+	// WithHashValue adds HashValue (property field)
+	WithHashValue(uint32) AdsDataTypeTableEntryBuilder
+	// WithTypeHashValue adds TypeHashValue (property field)
+	WithTypeHashValue(uint32) AdsDataTypeTableEntryBuilder
+	// WithSize adds Size (property field)
+	WithSize(uint32) AdsDataTypeTableEntryBuilder
+	// WithOffset adds Offset (property field)
+	WithOffset(uint32) AdsDataTypeTableEntryBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(uint32) AdsDataTypeTableEntryBuilder
+	// WithFlags adds Flags (property field)
+	WithFlags(uint32) AdsDataTypeTableEntryBuilder
+	// WithArrayDimensions adds ArrayDimensions (property field)
+	WithArrayDimensions(uint16) AdsDataTypeTableEntryBuilder
+	// WithNumChildren adds NumChildren (property field)
+	WithNumChildren(uint16) AdsDataTypeTableEntryBuilder
+	// WithDataTypeName adds DataTypeName (property field)
+	WithDataTypeName(string) AdsDataTypeTableEntryBuilder
+	// WithSimpleTypeName adds SimpleTypeName (property field)
+	WithSimpleTypeName(string) AdsDataTypeTableEntryBuilder
+	// WithComment adds Comment (property field)
+	WithComment(string) AdsDataTypeTableEntryBuilder
+	// WithArrayInfo adds ArrayInfo (property field)
+	WithArrayInfo(...AdsDataTypeArrayInfo) AdsDataTypeTableEntryBuilder
+	// WithChildren adds Children (property field)
+	WithChildren(...AdsDataTypeTableChildEntry) AdsDataTypeTableEntryBuilder
+	// WithRest adds Rest (property field)
+	WithRest(...byte) AdsDataTypeTableEntryBuilder
+	// Build builds the AdsDataTypeTableEntry or returns an error if something is wrong
+	Build() (AdsDataTypeTableEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDataTypeTableEntry
+}
+
+// NewAdsDataTypeTableEntryBuilder() creates a AdsDataTypeTableEntryBuilder
+func NewAdsDataTypeTableEntryBuilder() AdsDataTypeTableEntryBuilder {
+	return &_AdsDataTypeTableEntryBuilder{_AdsDataTypeTableEntry: new(_AdsDataTypeTableEntry)}
+}
+
+type _AdsDataTypeTableEntryBuilder struct {
+	*_AdsDataTypeTableEntry
+
+	err *utils.MultiError
+}
+
+var _ (AdsDataTypeTableEntryBuilder) = (*_AdsDataTypeTableEntryBuilder)(nil)
+
+func (b *_AdsDataTypeTableEntryBuilder) WithMandatoryFields(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) AdsDataTypeTableEntryBuilder {
+	return b.WithEntryLength(entryLength).WithVersion(version).WithHashValue(hashValue).WithTypeHashValue(typeHashValue).WithSize(size).WithOffset(offset).WithDataType(dataType).WithFlags(flags).WithArrayDimensions(arrayDimensions).WithNumChildren(numChildren).WithDataTypeName(dataTypeName).WithSimpleTypeName(simpleTypeName).WithComment(comment).WithArrayInfo(arrayInfo...).WithChildren(children...).WithRest(rest...)
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithEntryLength(entryLength uint32) AdsDataTypeTableEntryBuilder {
+	b.EntryLength = entryLength
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithVersion(version uint32) AdsDataTypeTableEntryBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithHashValue(hashValue uint32) AdsDataTypeTableEntryBuilder {
+	b.HashValue = hashValue
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithTypeHashValue(typeHashValue uint32) AdsDataTypeTableEntryBuilder {
+	b.TypeHashValue = typeHashValue
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithSize(size uint32) AdsDataTypeTableEntryBuilder {
+	b.Size = size
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithOffset(offset uint32) AdsDataTypeTableEntryBuilder {
+	b.Offset = offset
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithDataType(dataType uint32) AdsDataTypeTableEntryBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithFlags(flags uint32) AdsDataTypeTableEntryBuilder {
+	b.Flags = flags
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithArrayDimensions(arrayDimensions uint16) AdsDataTypeTableEntryBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithNumChildren(numChildren uint16) AdsDataTypeTableEntryBuilder {
+	b.NumChildren = numChildren
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithDataTypeName(dataTypeName string) AdsDataTypeTableEntryBuilder {
+	b.DataTypeName = dataTypeName
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithSimpleTypeName(simpleTypeName string) AdsDataTypeTableEntryBuilder {
+	b.SimpleTypeName = simpleTypeName
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithComment(comment string) AdsDataTypeTableEntryBuilder {
+	b.Comment = comment
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithArrayInfo(arrayInfo ...AdsDataTypeArrayInfo) AdsDataTypeTableEntryBuilder {
+	b.ArrayInfo = arrayInfo
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithChildren(children ...AdsDataTypeTableChildEntry) AdsDataTypeTableEntryBuilder {
+	b.Children = children
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) WithRest(rest ...byte) AdsDataTypeTableEntryBuilder {
+	b.Rest = rest
+	return b
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) Build() (AdsDataTypeTableEntry, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDataTypeTableEntry.deepCopy(), nil
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) MustBuild() AdsDataTypeTableEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsDataTypeTableEntryBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDataTypeTableEntryBuilder().(*_AdsDataTypeTableEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDataTypeTableEntryBuilder creates a AdsDataTypeTableEntryBuilder
+func (b *_AdsDataTypeTableEntry) CreateAdsDataTypeTableEntryBuilder() AdsDataTypeTableEntryBuilder {
+	if b == nil {
+		return NewAdsDataTypeTableEntryBuilder()
+	}
+	return &_AdsDataTypeTableEntryBuilder{_AdsDataTypeTableEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -197,11 +386,6 @@ func (m *_AdsDataTypeTableEntry) GetCommentTerminator() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDataTypeTableEntry factory function for _AdsDataTypeTableEntry
-func NewAdsDataTypeTableEntry(entryLength uint32, version uint32, hashValue uint32, typeHashValue uint32, size uint32, offset uint32, dataType uint32, flags uint32, arrayDimensions uint16, numChildren uint16, dataTypeName string, simpleTypeName string, comment string, arrayInfo []AdsDataTypeArrayInfo, children []AdsDataTypeTableChildEntry, rest []byte) *_AdsDataTypeTableEntry {
-	return &_AdsDataTypeTableEntry{EntryLength: entryLength, Version: version, HashValue: hashValue, TypeHashValue: typeHashValue, Size: size, Offset: offset, DataType: dataType, Flags: flags, ArrayDimensions: arrayDimensions, NumChildren: numChildren, DataTypeName: dataTypeName, SimpleTypeName: simpleTypeName, Comment: comment, ArrayInfo: arrayInfo, Children: children, Rest: rest}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDataTypeTableEntry(structType any) AdsDataTypeTableEntry {
@@ -325,7 +509,7 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsDataTypeTableEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsDataTypeTableEntry AdsDataTypeTableEntry, err error) {
@@ -591,13 +775,46 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_AdsDataTypeTableEntry) IsAdsDataTypeTableEntry() {}
 
+func (m *_AdsDataTypeTableEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDataTypeTableEntry) deepCopy() *_AdsDataTypeTableEntry {
+	if m == nil {
+		return nil
+	}
+	_AdsDataTypeTableEntryCopy := &_AdsDataTypeTableEntry{
+		m.EntryLength,
+		m.Version,
+		m.HashValue,
+		m.TypeHashValue,
+		m.Size,
+		m.Offset,
+		m.DataType,
+		m.Flags,
+		m.ArrayDimensions,
+		m.NumChildren,
+		m.DataTypeName,
+		m.SimpleTypeName,
+		m.Comment,
+		utils.DeepCopySlice[AdsDataTypeArrayInfo, AdsDataTypeArrayInfo](m.ArrayInfo),
+		utils.DeepCopySlice[AdsDataTypeTableChildEntry, AdsDataTypeTableChildEntry](m.Children),
+		utils.DeepCopySlice[byte, byte](m.Rest),
+	}
+	return _AdsDataTypeTableEntryCopy
+}
+
 func (m *_AdsDataTypeTableEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

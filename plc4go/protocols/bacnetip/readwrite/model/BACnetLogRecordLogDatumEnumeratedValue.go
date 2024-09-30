@@ -38,11 +38,14 @@ type BACnetLogRecordLogDatumEnumeratedValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetEnumeratedValue returns EnumeratedValue (property field)
 	GetEnumeratedValue() BACnetContextTagEnumerated
 	// IsBACnetLogRecordLogDatumEnumeratedValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumEnumeratedValue()
+	// CreateBuilder creates a BACnetLogRecordLogDatumEnumeratedValueBuilder
+	CreateBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumEnumeratedValueBuilder
 }
 
 // _BACnetLogRecordLogDatumEnumeratedValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogRecordLogDatumEnumeratedValue struct {
 
 var _ BACnetLogRecordLogDatumEnumeratedValue = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumEnumeratedValue)(nil)
+
+// NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
+func NewBACnetLogRecordLogDatumEnumeratedValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, enumeratedValue BACnetContextTagEnumerated, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
+	if enumeratedValue == nil {
+		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		EnumeratedValue:                 enumeratedValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumEnumeratedValueBuilder is a builder for BACnetLogRecordLogDatumEnumeratedValue
+type BACnetLogRecordLogDatumEnumeratedValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithEnumeratedValue(BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder
+	// WithEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithEnumeratedValueBuilder(func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogRecordLogDatumEnumeratedValueBuilder
+	// Build builds the BACnetLogRecordLogDatumEnumeratedValue or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumEnumeratedValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumEnumeratedValue
+}
+
+// NewBACnetLogRecordLogDatumEnumeratedValueBuilder() creates a BACnetLogRecordLogDatumEnumeratedValueBuilder
+func NewBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	return &_BACnetLogRecordLogDatumEnumeratedValueBuilder{_BACnetLogRecordLogDatumEnumeratedValue: new(_BACnetLogRecordLogDatumEnumeratedValue)}
+}
+
+type _BACnetLogRecordLogDatumEnumeratedValueBuilder struct {
+	*_BACnetLogRecordLogDatumEnumeratedValue
+
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumEnumeratedValueBuilder) = (*_BACnetLogRecordLogDatumEnumeratedValueBuilder)(nil)
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithMandatoryFields(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	return b.WithEnumeratedValue(enumeratedValue)
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValue(enumeratedValue BACnetContextTagEnumerated) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) WithEnumeratedValueBuilder(builderSupplier func(BACnetContextTagEnumeratedBuilder) BACnetContextTagEnumeratedBuilder) BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetContextTagEnumeratedBuilder())
+	var err error
+	b.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagEnumeratedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) Build() (BACnetLogRecordLogDatumEnumeratedValue, error) {
+	if b.EnumeratedValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'enumeratedValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumEnumeratedValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) MustBuild() BACnetLogRecordLogDatumEnumeratedValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumEnumeratedValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumEnumeratedValueBuilder().(*_BACnetLogRecordLogDatumEnumeratedValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogRecordLogDatumEnumeratedValueBuilder creates a BACnetLogRecordLogDatumEnumeratedValueBuilder
+func (b *_BACnetLogRecordLogDatumEnumeratedValue) CreateBACnetLogRecordLogDatumEnumeratedValueBuilder() BACnetLogRecordLogDatumEnumeratedValueBuilder {
+	if b == nil {
+		return NewBACnetLogRecordLogDatumEnumeratedValueBuilder()
+	}
+	return &_BACnetLogRecordLogDatumEnumeratedValueBuilder{_BACnetLogRecordLogDatumEnumeratedValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) GetEnumeratedValue() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumEnumeratedValue factory function for _BACnetLogRecordLogDatumEnumeratedValue
-func NewBACnetLogRecordLogDatumEnumeratedValue(enumeratedValue BACnetContextTagEnumerated, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumEnumeratedValue {
-	if enumeratedValue == nil {
-		panic("enumeratedValue of type BACnetContextTagEnumerated for BACnetLogRecordLogDatumEnumeratedValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumEnumeratedValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		EnumeratedValue:                 enumeratedValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumEnumeratedValue(structType any) BACnetLogRecordLogDatumEnumeratedValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogRecordLogDatumEnumeratedValue) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetLogRecordLogDatumEnumeratedValue) IsBACnetLogRecordLogDatumEnumeratedValue() {}
 
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumEnumeratedValue) deepCopy() *_BACnetLogRecordLogDatumEnumeratedValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumEnumeratedValueCopy := &_BACnetLogRecordLogDatumEnumeratedValue{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.EnumeratedValue.DeepCopy().(BACnetContextTagEnumerated),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumEnumeratedValueCopy
+}
+
 func (m *_BACnetLogRecordLogDatumEnumeratedValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

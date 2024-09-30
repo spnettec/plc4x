@@ -45,12 +45,13 @@ type UDPMultiplexer struct {
 	log zerolog.Logger
 }
 
-func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool) (*UDPMultiplexer, error) {
+func NewUDPMultiplexer(localLog zerolog.Logger, address any, noBroadcast bool, options ...Option) (*UDPMultiplexer, error) {
 	localLog.Debug().
 		Interface("address", address).
 		Bool("noBroadcast", noBroadcast).
 		Msg("NewUDPMultiplexer")
 	u := &UDPMultiplexer{}
+	ApplyAppliers(options, u)
 	if _debug != nil {
 		_debug("__init__ %r noBroadcast=%r", address, noBroadcast)
 	}
@@ -197,7 +198,7 @@ func (m *UDPMultiplexer) Indication(args Args, kwArgs KWArgs) error {
 		return errors.New("invalid destination address type")
 	}
 
-	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu, KWCPCIDestination, dest))), NoKWArgs())
+	return m.directPort.Indication(NA(NewPDU(NoArgs, NKW(KWCPCIDestination, dest)), WithRootMessage(pdu)), NoKWArgs())
 }
 
 func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
@@ -265,7 +266,7 @@ func (m *UDPMultiplexer) Confirmation(args Args, kwArgs KWArgs) error {
 
 	// TODO: we only support 0x81 at the moment
 	if m.AnnexJ != nil {
-		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCompRootMessage, pdu.GetRootMessage(), KWCPCISource, src, KWCPCIDestination, dest))), NoKWArgs())
+		return m.AnnexJ.Response(NA(NewPDU(NoArgs, NKW(KWCPCISource, src, KWCPCIDestination, dest)), WithRootMessage(pdu.GetRootMessage())), NoKWArgs())
 	}
 
 	return nil

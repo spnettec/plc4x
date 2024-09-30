@@ -44,6 +44,7 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetSyntaxId returns SyntaxId (property field)
 	GetSyntaxId() SyntaxIdType
@@ -53,6 +54,8 @@ type S7PayloadUserDataItemCpuFunctionAlarmQueryRequest interface {
 	GetAlarmType() AlarmType
 	// IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+	CreateS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder() S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest is the data-structure of this message
@@ -68,6 +71,123 @@ type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest struct {
 
 var _ S7PayloadUserDataItemCpuFunctionAlarmQueryRequest = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		SyntaxId:                      syntaxId,
+		QueryType:                     queryType,
+		AlarmType:                     alarmType,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder is a builder for S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+type S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+	// WithSyntaxId adds SyntaxId (property field)
+	WithSyntaxId(SyntaxIdType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+	// WithQueryType adds QueryType (property field)
+	WithQueryType(QueryType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+	// WithAlarmType adds AlarmType (property field)
+	WithAlarmType(AlarmType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionAlarmQueryRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+}
+
+// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder() creates a S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder() S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder{_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest: new(_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) WithMandatoryFields(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	return b.WithSyntaxId(syntaxId).WithQueryType(queryType).WithAlarmType(alarmType)
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) WithSyntaxId(syntaxId SyntaxIdType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	b.SyntaxId = syntaxId
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) WithQueryType(queryType QueryType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	b.QueryType = queryType
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) WithAlarmType(alarmType AlarmType) S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	b.AlarmType = alarmType
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCpuFunctionAlarmQueryRequest.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder creates a S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder
+func (b *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) CreateS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder() S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestBuilder{_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -141,18 +261,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) GetLength() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest factory function for _S7PayloadUserDataItemCpuFunctionAlarmQueryRequest
-func NewS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(syntaxId SyntaxIdType, queryType QueryType, alarmType AlarmType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		SyntaxId:                      syntaxId,
-		QueryType:                     queryType,
-		AlarmType:                     alarmType,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemCpuFunctionAlarmQueryRequest(structType any) S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
@@ -343,13 +451,37 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) IsS7PayloadUserDataItemCpuFunctionAlarmQueryRequest() {
 }
 
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy := &_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.SyntaxId,
+		m.QueryType,
+		m.AlarmType,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionAlarmQueryRequestCopy
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

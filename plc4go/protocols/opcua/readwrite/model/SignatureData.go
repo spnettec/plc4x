@@ -38,6 +38,7 @@ type SignatureData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAlgorithm returns Algorithm (property field)
 	GetAlgorithm() PascalString
@@ -45,6 +46,8 @@ type SignatureData interface {
 	GetSignature() PascalByteString
 	// IsSignatureData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSignatureData()
+	// CreateBuilder creates a SignatureDataBuilder
+	CreateSignatureDataBuilder() SignatureDataBuilder
 }
 
 // _SignatureData is the data-structure of this message
@@ -56,6 +59,163 @@ type _SignatureData struct {
 
 var _ SignatureData = (*_SignatureData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SignatureData)(nil)
+
+// NewSignatureData factory function for _SignatureData
+func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
+	if algorithm == nil {
+		panic("algorithm of type PascalString for SignatureData must not be nil")
+	}
+	if signature == nil {
+		panic("signature of type PascalByteString for SignatureData must not be nil")
+	}
+	_result := &_SignatureData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Algorithm:                         algorithm,
+		Signature:                         signature,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SignatureDataBuilder is a builder for SignatureData
+type SignatureDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(algorithm PascalString, signature PascalByteString) SignatureDataBuilder
+	// WithAlgorithm adds Algorithm (property field)
+	WithAlgorithm(PascalString) SignatureDataBuilder
+	// WithAlgorithmBuilder adds Algorithm (property field) which is build by the builder
+	WithAlgorithmBuilder(func(PascalStringBuilder) PascalStringBuilder) SignatureDataBuilder
+	// WithSignature adds Signature (property field)
+	WithSignature(PascalByteString) SignatureDataBuilder
+	// WithSignatureBuilder adds Signature (property field) which is build by the builder
+	WithSignatureBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) SignatureDataBuilder
+	// Build builds the SignatureData or returns an error if something is wrong
+	Build() (SignatureData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SignatureData
+}
+
+// NewSignatureDataBuilder() creates a SignatureDataBuilder
+func NewSignatureDataBuilder() SignatureDataBuilder {
+	return &_SignatureDataBuilder{_SignatureData: new(_SignatureData)}
+}
+
+type _SignatureDataBuilder struct {
+	*_SignatureData
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SignatureDataBuilder) = (*_SignatureDataBuilder)(nil)
+
+func (b *_SignatureDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SignatureDataBuilder) WithMandatoryFields(algorithm PascalString, signature PascalByteString) SignatureDataBuilder {
+	return b.WithAlgorithm(algorithm).WithSignature(signature)
+}
+
+func (b *_SignatureDataBuilder) WithAlgorithm(algorithm PascalString) SignatureDataBuilder {
+	b.Algorithm = algorithm
+	return b
+}
+
+func (b *_SignatureDataBuilder) WithAlgorithmBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SignatureDataBuilder {
+	builder := builderSupplier(b.Algorithm.CreatePascalStringBuilder())
+	var err error
+	b.Algorithm, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SignatureDataBuilder) WithSignature(signature PascalByteString) SignatureDataBuilder {
+	b.Signature = signature
+	return b
+}
+
+func (b *_SignatureDataBuilder) WithSignatureBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) SignatureDataBuilder {
+	builder := builderSupplier(b.Signature.CreatePascalByteStringBuilder())
+	var err error
+	b.Signature, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SignatureDataBuilder) Build() (SignatureData, error) {
+	if b.Algorithm == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'algorithm' not set"))
+	}
+	if b.Signature == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'signature' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SignatureData.deepCopy(), nil
+}
+
+func (b *_SignatureDataBuilder) MustBuild() SignatureData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SignatureDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SignatureDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SignatureDataBuilder) DeepCopy() any {
+	_copy := b.CreateSignatureDataBuilder().(*_SignatureDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSignatureDataBuilder creates a SignatureDataBuilder
+func (b *_SignatureData) CreateSignatureDataBuilder() SignatureDataBuilder {
+	if b == nil {
+		return NewSignatureDataBuilder()
+	}
+	return &_SignatureDataBuilder{_SignatureData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +252,6 @@ func (m *_SignatureData) GetSignature() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSignatureData factory function for _SignatureData
-func NewSignatureData(algorithm PascalString, signature PascalByteString) *_SignatureData {
-	if algorithm == nil {
-		panic("algorithm of type PascalString for SignatureData must not be nil")
-	}
-	if signature == nil {
-		panic("signature of type PascalByteString for SignatureData must not be nil")
-	}
-	_result := &_SignatureData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Algorithm:                         algorithm,
-		Signature:                         signature,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSignatureData(structType any) SignatureData {
@@ -207,13 +350,34 @@ func (m *_SignatureData) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_SignatureData) IsSignatureData() {}
 
+func (m *_SignatureData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SignatureData) deepCopy() *_SignatureData {
+	if m == nil {
+		return nil
+	}
+	_SignatureDataCopy := &_SignatureData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Algorithm.DeepCopy().(PascalString),
+		m.Signature.DeepCopy().(PascalByteString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SignatureDataCopy
+}
+
 func (m *_SignatureData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

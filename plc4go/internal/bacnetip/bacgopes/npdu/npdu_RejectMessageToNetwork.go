@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -38,33 +36,42 @@ type RejectMessageToNetwork struct {
 	rmtnDNET            uint16
 }
 
-func NewRejectMessageToNetwork(opts ...func(*RejectMessageToNetwork)) (*RejectMessageToNetwork, error) {
-	i := &RejectMessageToNetwork{
+func NewRejectMessageToNetwork(args Args, kwArgs KWArgs, options ...Option) (*RejectMessageToNetwork, error) {
+	r := &RejectMessageToNetwork{
 		messageType: 0x03,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMRejectMessageToNetwork(i.rmtnRejectionReason, i.rmtnDNET, 0), nil)
+	ApplyAppliers(options, r)
+	options = AddLeafTypeIfAbundant(options, r)
+	options = AddNLMIfAbundant(options, model.NewNLMRejectMessageToNetwork(r.rmtnRejectionReason, r.rmtnDNET, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	r._NPDU = npdu.(*_NPDU)
+	r.AddDebugContents(r, "rmtnRejectReason", "rmtnDNET")
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	r.npduNetMessage = &r.messageType
+	return r, nil
 }
 
-func WithRejectMessageToNetworkRejectionReason(reason model.NLMRejectMessageToNetworkRejectReason) func(*RejectMessageToNetwork) {
-	return func(n *RejectMessageToNetwork) {
-		n.rmtnRejectionReason = reason
-	}
+// TODO: check if this is rather a KWArgs
+func WithRejectMessageToNetworkRejectionReason(reason model.NLMRejectMessageToNetworkRejectReason) GenericApplier[*RejectMessageToNetwork] {
+	return WrapGenericApplier(func(n *RejectMessageToNetwork) { n.rmtnRejectionReason = reason })
 }
 
-func WithRejectMessageToNetworkDnet(dnet uint16) func(*RejectMessageToNetwork) {
-	return func(n *RejectMessageToNetwork) {
-		n.rmtnDNET = dnet
+// TODO: check if this is rather a KWArgs
+func WithRejectMessageToNetworkDnet(dnet uint16) GenericApplier[*RejectMessageToNetwork] {
+	return WrapGenericApplier(func(n *RejectMessageToNetwork) { n.rmtnDNET = dnet })
+}
+
+func (r *RejectMessageToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "rmtnRejectReason":
+		return r.rmtnRejectionReason
+	case "rmtnDNET":
+		return r.rmtnDNET
 	}
+	return nil
 }
 
 func (r *RejectMessageToNetwork) GetRmtnRejectionReason() model.NLMRejectMessageToNetworkRejectReason {
@@ -116,8 +123,4 @@ func (r *RejectMessageToNetwork) Decode(npdu Arg) error {
 		r.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (r *RejectMessageToNetwork) String() string {
-	return fmt.Sprintf("RejectMessageToNetwork{%s, rmtnRejectionReason: %s, rmtnDNET: %v}", r._NPDU, r.rmtnRejectionReason, r.rmtnDNET)
 }

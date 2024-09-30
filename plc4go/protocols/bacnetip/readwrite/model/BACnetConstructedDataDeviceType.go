@@ -38,6 +38,7 @@ type BACnetConstructedDataDeviceType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeviceType returns DeviceType (property field)
 	GetDeviceType() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataDeviceType interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataDeviceType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeviceType()
+	// CreateBuilder creates a BACnetConstructedDataDeviceTypeBuilder
+	CreateBACnetConstructedDataDeviceTypeBuilder() BACnetConstructedDataDeviceTypeBuilder
 }
 
 // _BACnetConstructedDataDeviceType is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDeviceType struct {
 
 var _ BACnetConstructedDataDeviceType = (*_BACnetConstructedDataDeviceType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeviceType)(nil)
+
+// NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
+func NewBACnetConstructedDataDeviceType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deviceType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
+	if deviceType == nil {
+		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeviceType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DeviceType:                    deviceType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDeviceTypeBuilder is a builder for BACnetConstructedDataDeviceType
+type BACnetConstructedDataDeviceTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deviceType BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder
+	// WithDeviceType adds DeviceType (property field)
+	WithDeviceType(BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder
+	// WithDeviceTypeBuilder adds DeviceType (property field) which is build by the builder
+	WithDeviceTypeBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeviceTypeBuilder
+	// Build builds the BACnetConstructedDataDeviceType or returns an error if something is wrong
+	Build() (BACnetConstructedDataDeviceType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDeviceType
+}
+
+// NewBACnetConstructedDataDeviceTypeBuilder() creates a BACnetConstructedDataDeviceTypeBuilder
+func NewBACnetConstructedDataDeviceTypeBuilder() BACnetConstructedDataDeviceTypeBuilder {
+	return &_BACnetConstructedDataDeviceTypeBuilder{_BACnetConstructedDataDeviceType: new(_BACnetConstructedDataDeviceType)}
+}
+
+type _BACnetConstructedDataDeviceTypeBuilder struct {
+	*_BACnetConstructedDataDeviceType
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDeviceTypeBuilder) = (*_BACnetConstructedDataDeviceTypeBuilder)(nil)
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) WithMandatoryFields(deviceType BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder {
+	return b.WithDeviceType(deviceType)
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) WithDeviceType(deviceType BACnetApplicationTagCharacterString) BACnetConstructedDataDeviceTypeBuilder {
+	b.DeviceType = deviceType
+	return b
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) WithDeviceTypeBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataDeviceTypeBuilder {
+	builder := builderSupplier(b.DeviceType.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.DeviceType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) Build() (BACnetConstructedDataDeviceType, error) {
+	if b.DeviceType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deviceType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDeviceType.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) MustBuild() BACnetConstructedDataDeviceType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeviceTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeviceTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeviceTypeBuilder().(*_BACnetConstructedDataDeviceTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDeviceTypeBuilder creates a BACnetConstructedDataDeviceTypeBuilder
+func (b *_BACnetConstructedDataDeviceType) CreateBACnetConstructedDataDeviceTypeBuilder() BACnetConstructedDataDeviceTypeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDeviceTypeBuilder()
+	}
+	return &_BACnetConstructedDataDeviceTypeBuilder{_BACnetConstructedDataDeviceType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDeviceType) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeviceType factory function for _BACnetConstructedDataDeviceType
-func NewBACnetConstructedDataDeviceType(deviceType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeviceType {
-	if deviceType == nil {
-		panic("deviceType of type BACnetApplicationTagCharacterString for BACnetConstructedDataDeviceType must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeviceType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DeviceType:                    deviceType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeviceType(structType any) BACnetConstructedDataDeviceType {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataDeviceType) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataDeviceType) IsBACnetConstructedDataDeviceType() {}
 
+func (m *_BACnetConstructedDataDeviceType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeviceType) deepCopy() *_BACnetConstructedDataDeviceType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeviceTypeCopy := &_BACnetConstructedDataDeviceType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DeviceType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeviceTypeCopy
+}
+
 func (m *_BACnetConstructedDataDeviceType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

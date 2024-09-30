@@ -38,11 +38,14 @@ type MeteringDataElectricityConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKWhr returns KWhr (property field)
 	GetKWhr() uint32
 	// IsMeteringDataElectricityConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataElectricityConsumption()
+	// CreateBuilder creates a MeteringDataElectricityConsumptionBuilder
+	CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder
 }
 
 // _MeteringDataElectricityConsumption is the data-structure of this message
@@ -53,6 +56,107 @@ type _MeteringDataElectricityConsumption struct {
 
 var _ MeteringDataElectricityConsumption = (*_MeteringDataElectricityConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataElectricityConsumption)(nil)
+
+// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
+func NewMeteringDataElectricityConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kWhr uint32) *_MeteringDataElectricityConsumption {
+	_result := &_MeteringDataElectricityConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KWhr:                 kWhr,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataElectricityConsumptionBuilder is a builder for MeteringDataElectricityConsumption
+type MeteringDataElectricityConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder
+	// WithKWhr adds KWhr (property field)
+	WithKWhr(uint32) MeteringDataElectricityConsumptionBuilder
+	// Build builds the MeteringDataElectricityConsumption or returns an error if something is wrong
+	Build() (MeteringDataElectricityConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataElectricityConsumption
+}
+
+// NewMeteringDataElectricityConsumptionBuilder() creates a MeteringDataElectricityConsumptionBuilder
+func NewMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
+	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: new(_MeteringDataElectricityConsumption)}
+}
+
+type _MeteringDataElectricityConsumptionBuilder struct {
+	*_MeteringDataElectricityConsumption
+
+	parentBuilder *_MeteringDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataElectricityConsumptionBuilder) = (*_MeteringDataElectricityConsumptionBuilder)(nil)
+
+func (b *_MeteringDataElectricityConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) WithMandatoryFields(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	return b.WithKWhr(kWhr)
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) WithKWhr(kWhr uint32) MeteringDataElectricityConsumptionBuilder {
+	b.KWhr = kWhr
+	return b
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) Build() (MeteringDataElectricityConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MeteringDataElectricityConsumption.deepCopy(), nil
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) MustBuild() MeteringDataElectricityConsumption {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataElectricityConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataElectricityConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataElectricityConsumptionBuilder().(*_MeteringDataElectricityConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMeteringDataElectricityConsumptionBuilder creates a MeteringDataElectricityConsumptionBuilder
+func (b *_MeteringDataElectricityConsumption) CreateMeteringDataElectricityConsumptionBuilder() MeteringDataElectricityConsumptionBuilder {
+	if b == nil {
+		return NewMeteringDataElectricityConsumptionBuilder()
+	}
+	return &_MeteringDataElectricityConsumptionBuilder{_MeteringDataElectricityConsumption: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_MeteringDataElectricityConsumption) GetKWhr() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataElectricityConsumption factory function for _MeteringDataElectricityConsumption
-func NewMeteringDataElectricityConsumption(kWhr uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataElectricityConsumption {
-	_result := &_MeteringDataElectricityConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KWhr:                 kWhr,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataElectricityConsumption(structType any) MeteringDataElectricityConsumption {
@@ -176,13 +270,33 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 
 func (m *_MeteringDataElectricityConsumption) IsMeteringDataElectricityConsumption() {}
 
+func (m *_MeteringDataElectricityConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataElectricityConsumption) deepCopy() *_MeteringDataElectricityConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataElectricityConsumptionCopy := &_MeteringDataElectricityConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.KWhr,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataElectricityConsumptionCopy
+}
+
 func (m *_MeteringDataElectricityConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

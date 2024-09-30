@@ -38,6 +38,7 @@ type HistoryData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNoOfDataValues returns NoOfDataValues (property field)
 	GetNoOfDataValues() int32
@@ -45,6 +46,8 @@ type HistoryData interface {
 	GetDataValues() []DataValue
 	// IsHistoryData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryData()
+	// CreateBuilder creates a HistoryDataBuilder
+	CreateHistoryDataBuilder() HistoryDataBuilder
 }
 
 // _HistoryData is the data-structure of this message
@@ -56,6 +59,115 @@ type _HistoryData struct {
 
 var _ HistoryData = (*_HistoryData)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryData)(nil)
+
+// NewHistoryData factory function for _HistoryData
+func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
+	_result := &_HistoryData{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NoOfDataValues:                    noOfDataValues,
+		DataValues:                        dataValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryDataBuilder is a builder for HistoryData
+type HistoryDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder
+	// WithNoOfDataValues adds NoOfDataValues (property field)
+	WithNoOfDataValues(int32) HistoryDataBuilder
+	// WithDataValues adds DataValues (property field)
+	WithDataValues(...DataValue) HistoryDataBuilder
+	// Build builds the HistoryData or returns an error if something is wrong
+	Build() (HistoryData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryData
+}
+
+// NewHistoryDataBuilder() creates a HistoryDataBuilder
+func NewHistoryDataBuilder() HistoryDataBuilder {
+	return &_HistoryDataBuilder{_HistoryData: new(_HistoryData)}
+}
+
+type _HistoryDataBuilder struct {
+	*_HistoryData
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryDataBuilder) = (*_HistoryDataBuilder)(nil)
+
+func (b *_HistoryDataBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryDataBuilder) WithMandatoryFields(noOfDataValues int32, dataValues []DataValue) HistoryDataBuilder {
+	return b.WithNoOfDataValues(noOfDataValues).WithDataValues(dataValues...)
+}
+
+func (b *_HistoryDataBuilder) WithNoOfDataValues(noOfDataValues int32) HistoryDataBuilder {
+	b.NoOfDataValues = noOfDataValues
+	return b
+}
+
+func (b *_HistoryDataBuilder) WithDataValues(dataValues ...DataValue) HistoryDataBuilder {
+	b.DataValues = dataValues
+	return b
+}
+
+func (b *_HistoryDataBuilder) Build() (HistoryData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryData.deepCopy(), nil
+}
+
+func (b *_HistoryDataBuilder) MustBuild() HistoryData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryDataBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryDataBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryDataBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryDataBuilder().(*_HistoryDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryDataBuilder creates a HistoryDataBuilder
+func (b *_HistoryData) CreateHistoryDataBuilder() HistoryDataBuilder {
+	if b == nil {
+		return NewHistoryDataBuilder()
+	}
+	return &_HistoryDataBuilder{_HistoryData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_HistoryData) GetDataValues() []DataValue {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryData factory function for _HistoryData
-func NewHistoryData(noOfDataValues int32, dataValues []DataValue) *_HistoryData {
-	_result := &_HistoryData{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NoOfDataValues:                    noOfDataValues,
-		DataValues:                        dataValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryData(structType any) HistoryData {
@@ -208,13 +309,34 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_HistoryData) IsHistoryData() {}
 
+func (m *_HistoryData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryData) deepCopy() *_HistoryData {
+	if m == nil {
+		return nil
+	}
+	_HistoryDataCopy := &_HistoryData{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NoOfDataValues,
+		utils.DeepCopySlice[DataValue, DataValue](m.DataValues),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryDataCopy
+}
+
 func (m *_HistoryData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

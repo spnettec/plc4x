@@ -38,6 +38,7 @@ type WritePropertyMultipleError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -45,6 +46,8 @@ type WritePropertyMultipleError interface {
 	GetFirstFailedWriteAttempt() BACnetObjectPropertyReferenceEnclosed
 	// IsWritePropertyMultipleError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsWritePropertyMultipleError()
+	// CreateBuilder creates a WritePropertyMultipleErrorBuilder
+	CreateWritePropertyMultipleErrorBuilder() WritePropertyMultipleErrorBuilder
 }
 
 // _WritePropertyMultipleError is the data-structure of this message
@@ -56,6 +59,163 @@ type _WritePropertyMultipleError struct {
 
 var _ WritePropertyMultipleError = (*_WritePropertyMultipleError)(nil)
 var _ BACnetErrorRequirements = (*_WritePropertyMultipleError)(nil)
+
+// NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
+func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	if firstFailedWriteAttempt == nil {
+		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
+	}
+	_result := &_WritePropertyMultipleError{
+		BACnetErrorContract:     NewBACnetError(),
+		ErrorType:               errorType,
+		FirstFailedWriteAttempt: firstFailedWriteAttempt,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// WritePropertyMultipleErrorBuilder is a builder for WritePropertyMultipleError
+type WritePropertyMultipleErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder
+	// WithErrorType adds ErrorType (property field)
+	WithErrorType(ErrorEnclosed) WritePropertyMultipleErrorBuilder
+	// WithErrorTypeBuilder adds ErrorType (property field) which is build by the builder
+	WithErrorTypeBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) WritePropertyMultipleErrorBuilder
+	// WithFirstFailedWriteAttempt adds FirstFailedWriteAttempt (property field)
+	WithFirstFailedWriteAttempt(BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder
+	// WithFirstFailedWriteAttemptBuilder adds FirstFailedWriteAttempt (property field) which is build by the builder
+	WithFirstFailedWriteAttemptBuilder(func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) WritePropertyMultipleErrorBuilder
+	// Build builds the WritePropertyMultipleError or returns an error if something is wrong
+	Build() (WritePropertyMultipleError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() WritePropertyMultipleError
+}
+
+// NewWritePropertyMultipleErrorBuilder() creates a WritePropertyMultipleErrorBuilder
+func NewWritePropertyMultipleErrorBuilder() WritePropertyMultipleErrorBuilder {
+	return &_WritePropertyMultipleErrorBuilder{_WritePropertyMultipleError: new(_WritePropertyMultipleError)}
+}
+
+type _WritePropertyMultipleErrorBuilder struct {
+	*_WritePropertyMultipleError
+
+	parentBuilder *_BACnetErrorBuilder
+
+	err *utils.MultiError
+}
+
+var _ (WritePropertyMultipleErrorBuilder) = (*_WritePropertyMultipleErrorBuilder)(nil)
+
+func (b *_WritePropertyMultipleErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder {
+	return b.WithErrorType(errorType).WithFirstFailedWriteAttempt(firstFailedWriteAttempt)
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) WithErrorType(errorType ErrorEnclosed) WritePropertyMultipleErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) WritePropertyMultipleErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
+	var err error
+	b.ErrorType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) WithFirstFailedWriteAttempt(firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) WritePropertyMultipleErrorBuilder {
+	b.FirstFailedWriteAttempt = firstFailedWriteAttempt
+	return b
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) WithFirstFailedWriteAttemptBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) WritePropertyMultipleErrorBuilder {
+	builder := builderSupplier(b.FirstFailedWriteAttempt.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	b.FirstFailedWriteAttempt, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) Build() (WritePropertyMultipleError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+	}
+	if b.FirstFailedWriteAttempt == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'firstFailedWriteAttempt' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._WritePropertyMultipleError.deepCopy(), nil
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) MustBuild() WritePropertyMultipleError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_WritePropertyMultipleErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_WritePropertyMultipleErrorBuilder) DeepCopy() any {
+	_copy := b.CreateWritePropertyMultipleErrorBuilder().(*_WritePropertyMultipleErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateWritePropertyMultipleErrorBuilder creates a WritePropertyMultipleErrorBuilder
+func (b *_WritePropertyMultipleError) CreateWritePropertyMultipleErrorBuilder() WritePropertyMultipleErrorBuilder {
+	if b == nil {
+		return NewWritePropertyMultipleErrorBuilder()
+	}
+	return &_WritePropertyMultipleErrorBuilder{_WritePropertyMultipleError: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +252,6 @@ func (m *_WritePropertyMultipleError) GetFirstFailedWriteAttempt() BACnetObjectP
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewWritePropertyMultipleError factory function for _WritePropertyMultipleError
-func NewWritePropertyMultipleError(errorType ErrorEnclosed, firstFailedWriteAttempt BACnetObjectPropertyReferenceEnclosed) *_WritePropertyMultipleError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for WritePropertyMultipleError must not be nil")
-	}
-	if firstFailedWriteAttempt == nil {
-		panic("firstFailedWriteAttempt of type BACnetObjectPropertyReferenceEnclosed for WritePropertyMultipleError must not be nil")
-	}
-	_result := &_WritePropertyMultipleError{
-		BACnetErrorContract:     NewBACnetError(),
-		ErrorType:               errorType,
-		FirstFailedWriteAttempt: firstFailedWriteAttempt,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastWritePropertyMultipleError(structType any) WritePropertyMultipleError {
@@ -207,13 +350,34 @@ func (m *_WritePropertyMultipleError) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_WritePropertyMultipleError) IsWritePropertyMultipleError() {}
 
+func (m *_WritePropertyMultipleError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_WritePropertyMultipleError) deepCopy() *_WritePropertyMultipleError {
+	if m == nil {
+		return nil
+	}
+	_WritePropertyMultipleErrorCopy := &_WritePropertyMultipleError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedWriteAttempt.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _WritePropertyMultipleErrorCopy
+}
+
 func (m *_WritePropertyMultipleError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

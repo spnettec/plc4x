@@ -38,6 +38,7 @@ type BACnetConstructedDataReadOnly interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReadOnly returns ReadOnly (property field)
 	GetReadOnly() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataReadOnly interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataReadOnly is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReadOnly()
+	// CreateBuilder creates a BACnetConstructedDataReadOnlyBuilder
+	CreateBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder
 }
 
 // _BACnetConstructedDataReadOnly is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataReadOnly struct {
 
 var _ BACnetConstructedDataReadOnly = (*_BACnetConstructedDataReadOnly)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReadOnly)(nil)
+
+// NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
+func NewBACnetConstructedDataReadOnly(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, readOnly BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
+	if readOnly == nil {
+		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
+	}
+	_result := &_BACnetConstructedDataReadOnly{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReadOnly:                      readOnly,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReadOnlyBuilder is a builder for BACnetConstructedDataReadOnly
+type BACnetConstructedDataReadOnlyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder
+	// WithReadOnly adds ReadOnly (property field)
+	WithReadOnly(BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder
+	// WithReadOnlyBuilder adds ReadOnly (property field) which is build by the builder
+	WithReadOnlyBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReadOnlyBuilder
+	// Build builds the BACnetConstructedDataReadOnly or returns an error if something is wrong
+	Build() (BACnetConstructedDataReadOnly, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReadOnly
+}
+
+// NewBACnetConstructedDataReadOnlyBuilder() creates a BACnetConstructedDataReadOnlyBuilder
+func NewBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder {
+	return &_BACnetConstructedDataReadOnlyBuilder{_BACnetConstructedDataReadOnly: new(_BACnetConstructedDataReadOnly)}
+}
+
+type _BACnetConstructedDataReadOnlyBuilder struct {
+	*_BACnetConstructedDataReadOnly
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReadOnlyBuilder) = (*_BACnetConstructedDataReadOnlyBuilder)(nil)
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) WithMandatoryFields(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder {
+	return b.WithReadOnly(readOnly)
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) WithReadOnly(readOnly BACnetApplicationTagBoolean) BACnetConstructedDataReadOnlyBuilder {
+	b.ReadOnly = readOnly
+	return b
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) WithReadOnlyBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataReadOnlyBuilder {
+	builder := builderSupplier(b.ReadOnly.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.ReadOnly, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) Build() (BACnetConstructedDataReadOnly, error) {
+	if b.ReadOnly == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'readOnly' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataReadOnly.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) MustBuild() BACnetConstructedDataReadOnly {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReadOnlyBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReadOnlyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReadOnlyBuilder().(*_BACnetConstructedDataReadOnlyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataReadOnlyBuilder creates a BACnetConstructedDataReadOnlyBuilder
+func (b *_BACnetConstructedDataReadOnly) CreateBACnetConstructedDataReadOnlyBuilder() BACnetConstructedDataReadOnlyBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataReadOnlyBuilder()
+	}
+	return &_BACnetConstructedDataReadOnlyBuilder{_BACnetConstructedDataReadOnly: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataReadOnly) GetActualValue() BACnetApplicationTagBo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReadOnly factory function for _BACnetConstructedDataReadOnly
-func NewBACnetConstructedDataReadOnly(readOnly BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReadOnly {
-	if readOnly == nil {
-		panic("readOnly of type BACnetApplicationTagBoolean for BACnetConstructedDataReadOnly must not be nil")
-	}
-	_result := &_BACnetConstructedDataReadOnly{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReadOnly:                      readOnly,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReadOnly(structType any) BACnetConstructedDataReadOnly {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataReadOnly) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataReadOnly) IsBACnetConstructedDataReadOnly() {}
 
+func (m *_BACnetConstructedDataReadOnly) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReadOnly) deepCopy() *_BACnetConstructedDataReadOnly {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReadOnlyCopy := &_BACnetConstructedDataReadOnly{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ReadOnly.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReadOnlyCopy
+}
+
 func (m *_BACnetConstructedDataReadOnly) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

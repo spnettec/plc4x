@@ -37,9 +37,12 @@ type DF1SymbolMessageFrameNAK interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	DF1Symbol
 	// IsDF1SymbolMessageFrameNAK is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1SymbolMessageFrameNAK()
+	// CreateBuilder creates a DF1SymbolMessageFrameNAKBuilder
+	CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder
 }
 
 // _DF1SymbolMessageFrameNAK is the data-structure of this message
@@ -49,6 +52,99 @@ type _DF1SymbolMessageFrameNAK struct {
 
 var _ DF1SymbolMessageFrameNAK = (*_DF1SymbolMessageFrameNAK)(nil)
 var _ DF1SymbolRequirements = (*_DF1SymbolMessageFrameNAK)(nil)
+
+// NewDF1SymbolMessageFrameNAK factory function for _DF1SymbolMessageFrameNAK
+func NewDF1SymbolMessageFrameNAK() *_DF1SymbolMessageFrameNAK {
+	_result := &_DF1SymbolMessageFrameNAK{
+		DF1SymbolContract: NewDF1Symbol(),
+	}
+	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1SymbolMessageFrameNAKBuilder is a builder for DF1SymbolMessageFrameNAK
+type DF1SymbolMessageFrameNAKBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder
+	// Build builds the DF1SymbolMessageFrameNAK or returns an error if something is wrong
+	Build() (DF1SymbolMessageFrameNAK, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1SymbolMessageFrameNAK
+}
+
+// NewDF1SymbolMessageFrameNAKBuilder() creates a DF1SymbolMessageFrameNAKBuilder
+func NewDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
+	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: new(_DF1SymbolMessageFrameNAK)}
+}
+
+type _DF1SymbolMessageFrameNAKBuilder struct {
+	*_DF1SymbolMessageFrameNAK
+
+	parentBuilder *_DF1SymbolBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1SymbolMessageFrameNAKBuilder) = (*_DF1SymbolMessageFrameNAKBuilder)(nil)
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) setParent(contract DF1SymbolContract) {
+	b.DF1SymbolContract = contract
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) WithMandatoryFields() DF1SymbolMessageFrameNAKBuilder {
+	return b
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) Build() (DF1SymbolMessageFrameNAK, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1SymbolMessageFrameNAK.deepCopy(), nil
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) MustBuild() DF1SymbolMessageFrameNAK {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DF1SymbolMessageFrameNAKBuilder) Done() DF1SymbolBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) buildForDF1Symbol() (DF1Symbol, error) {
+	return b.Build()
+}
+
+func (b *_DF1SymbolMessageFrameNAKBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1SymbolMessageFrameNAKBuilder creates a DF1SymbolMessageFrameNAKBuilder
+func (b *_DF1SymbolMessageFrameNAK) CreateDF1SymbolMessageFrameNAKBuilder() DF1SymbolMessageFrameNAKBuilder {
+	if b == nil {
+		return NewDF1SymbolMessageFrameNAKBuilder()
+	}
+	return &_DF1SymbolMessageFrameNAKBuilder{_DF1SymbolMessageFrameNAK: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -66,15 +162,6 @@ func (m *_DF1SymbolMessageFrameNAK) GetSymbolType() uint8 {
 
 func (m *_DF1SymbolMessageFrameNAK) GetParent() DF1SymbolContract {
 	return m.DF1SymbolContract
-}
-
-// NewDF1SymbolMessageFrameNAK factory function for _DF1SymbolMessageFrameNAK
-func NewDF1SymbolMessageFrameNAK() *_DF1SymbolMessageFrameNAK {
-	_result := &_DF1SymbolMessageFrameNAK{
-		DF1SymbolContract: NewDF1Symbol(),
-	}
-	_result.DF1SymbolContract.(*_DF1Symbol)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -148,13 +235,32 @@ func (m *_DF1SymbolMessageFrameNAK) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_DF1SymbolMessageFrameNAK) IsDF1SymbolMessageFrameNAK() {}
 
+func (m *_DF1SymbolMessageFrameNAK) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1SymbolMessageFrameNAK) deepCopy() *_DF1SymbolMessageFrameNAK {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolMessageFrameNAKCopy := &_DF1SymbolMessageFrameNAK{
+		m.DF1SymbolContract.(*_DF1Symbol).deepCopy(),
+	}
+	m.DF1SymbolContract.(*_DF1Symbol)._SubType = m
+	return _DF1SymbolMessageFrameNAKCopy
+}
+
 func (m *_DF1SymbolMessageFrameNAK) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

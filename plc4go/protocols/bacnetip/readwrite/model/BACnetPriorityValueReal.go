@@ -38,11 +38,14 @@ type BACnetPriorityValueReal interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPriorityValue
 	// GetRealValue returns RealValue (property field)
 	GetRealValue() BACnetApplicationTagReal
 	// IsBACnetPriorityValueReal is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValueReal()
+	// CreateBuilder creates a BACnetPriorityValueRealBuilder
+	CreateBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder
 }
 
 // _BACnetPriorityValueReal is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPriorityValueReal struct {
 
 var _ BACnetPriorityValueReal = (*_BACnetPriorityValueReal)(nil)
 var _ BACnetPriorityValueRequirements = (*_BACnetPriorityValueReal)(nil)
+
+// NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
+func NewBACnetPriorityValueReal(peekedTagHeader BACnetTagHeader, realValue BACnetApplicationTagReal, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
+	if realValue == nil {
+		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
+	}
+	_result := &_BACnetPriorityValueReal{
+		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
+		RealValue:                   realValue,
+	}
+	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueRealBuilder is a builder for BACnetPriorityValueReal
+type BACnetPriorityValueRealBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder
+	// WithRealValue adds RealValue (property field)
+	WithRealValue(BACnetApplicationTagReal) BACnetPriorityValueRealBuilder
+	// WithRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetPriorityValueRealBuilder
+	// Build builds the BACnetPriorityValueReal or returns an error if something is wrong
+	Build() (BACnetPriorityValueReal, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValueReal
+}
+
+// NewBACnetPriorityValueRealBuilder() creates a BACnetPriorityValueRealBuilder
+func NewBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder {
+	return &_BACnetPriorityValueRealBuilder{_BACnetPriorityValueReal: new(_BACnetPriorityValueReal)}
+}
+
+type _BACnetPriorityValueRealBuilder struct {
+	*_BACnetPriorityValueReal
+
+	parentBuilder *_BACnetPriorityValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueRealBuilder) = (*_BACnetPriorityValueRealBuilder)(nil)
+
+func (b *_BACnetPriorityValueRealBuilder) setParent(contract BACnetPriorityValueContract) {
+	b.BACnetPriorityValueContract = contract
+}
+
+func (b *_BACnetPriorityValueRealBuilder) WithMandatoryFields(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder {
+	return b.WithRealValue(realValue)
+}
+
+func (b *_BACnetPriorityValueRealBuilder) WithRealValue(realValue BACnetApplicationTagReal) BACnetPriorityValueRealBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetPriorityValueRealBuilder) WithRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetPriorityValueRealBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.RealValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityValueRealBuilder) Build() (BACnetPriorityValueReal, error) {
+	if b.RealValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'realValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValueReal.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueRealBuilder) MustBuild() BACnetPriorityValueReal {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPriorityValueRealBuilder) Done() BACnetPriorityValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPriorityValueRealBuilder) buildForBACnetPriorityValue() (BACnetPriorityValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPriorityValueRealBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueRealBuilder().(*_BACnetPriorityValueRealBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityValueRealBuilder creates a BACnetPriorityValueRealBuilder
+func (b *_BACnetPriorityValueReal) CreateBACnetPriorityValueRealBuilder() BACnetPriorityValueRealBuilder {
+	if b == nil {
+		return NewBACnetPriorityValueRealBuilder()
+	}
+	return &_BACnetPriorityValueRealBuilder{_BACnetPriorityValueReal: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPriorityValueReal) GetRealValue() BACnetApplicationTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValueReal factory function for _BACnetPriorityValueReal
-func NewBACnetPriorityValueReal(realValue BACnetApplicationTagReal, peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValueReal {
-	if realValue == nil {
-		panic("realValue of type BACnetApplicationTagReal for BACnetPriorityValueReal must not be nil")
-	}
-	_result := &_BACnetPriorityValueReal{
-		BACnetPriorityValueContract: NewBACnetPriorityValue(peekedTagHeader, objectTypeArgument),
-		RealValue:                   realValue,
-	}
-	_result.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValueReal(structType any) BACnetPriorityValueReal {
@@ -179,13 +294,33 @@ func (m *_BACnetPriorityValueReal) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetPriorityValueReal) IsBACnetPriorityValueReal() {}
 
+func (m *_BACnetPriorityValueReal) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValueReal) deepCopy() *_BACnetPriorityValueReal {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueRealCopy := &_BACnetPriorityValueReal{
+		m.BACnetPriorityValueContract.(*_BACnetPriorityValue).deepCopy(),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetPriorityValueContract.(*_BACnetPriorityValue)._SubType = m
+	return _BACnetPriorityValueRealCopy
+}
+
 func (m *_BACnetPriorityValueReal) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

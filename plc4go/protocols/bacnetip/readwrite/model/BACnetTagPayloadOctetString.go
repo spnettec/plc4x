@@ -38,10 +38,13 @@ type BACnetTagPayloadOctetString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctets returns Octets (property field)
 	GetOctets() []byte
 	// IsBACnetTagPayloadOctetString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadOctetString()
+	// CreateBuilder creates a BACnetTagPayloadOctetStringBuilder
+	CreateBACnetTagPayloadOctetStringBuilder() BACnetTagPayloadOctetStringBuilder
 }
 
 // _BACnetTagPayloadOctetString is the data-structure of this message
@@ -53,6 +56,87 @@ type _BACnetTagPayloadOctetString struct {
 }
 
 var _ BACnetTagPayloadOctetString = (*_BACnetTagPayloadOctetString)(nil)
+
+// NewBACnetTagPayloadOctetString factory function for _BACnetTagPayloadOctetString
+func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnetTagPayloadOctetString {
+	return &_BACnetTagPayloadOctetString{Octets: octets, ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadOctetStringBuilder is a builder for BACnetTagPayloadOctetString
+type BACnetTagPayloadOctetStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder
+	// WithOctets adds Octets (property field)
+	WithOctets(...byte) BACnetTagPayloadOctetStringBuilder
+	// Build builds the BACnetTagPayloadOctetString or returns an error if something is wrong
+	Build() (BACnetTagPayloadOctetString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadOctetString
+}
+
+// NewBACnetTagPayloadOctetStringBuilder() creates a BACnetTagPayloadOctetStringBuilder
+func NewBACnetTagPayloadOctetStringBuilder() BACnetTagPayloadOctetStringBuilder {
+	return &_BACnetTagPayloadOctetStringBuilder{_BACnetTagPayloadOctetString: new(_BACnetTagPayloadOctetString)}
+}
+
+type _BACnetTagPayloadOctetStringBuilder struct {
+	*_BACnetTagPayloadOctetString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadOctetStringBuilder) = (*_BACnetTagPayloadOctetStringBuilder)(nil)
+
+func (b *_BACnetTagPayloadOctetStringBuilder) WithMandatoryFields(octets []byte) BACnetTagPayloadOctetStringBuilder {
+	return b.WithOctets(octets...)
+}
+
+func (b *_BACnetTagPayloadOctetStringBuilder) WithOctets(octets ...byte) BACnetTagPayloadOctetStringBuilder {
+	b.Octets = octets
+	return b
+}
+
+func (b *_BACnetTagPayloadOctetStringBuilder) Build() (BACnetTagPayloadOctetString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadOctetString.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadOctetStringBuilder) MustBuild() BACnetTagPayloadOctetString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadOctetStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadOctetStringBuilder().(*_BACnetTagPayloadOctetStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadOctetStringBuilder creates a BACnetTagPayloadOctetStringBuilder
+func (b *_BACnetTagPayloadOctetString) CreateBACnetTagPayloadOctetStringBuilder() BACnetTagPayloadOctetStringBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadOctetStringBuilder()
+	}
+	return &_BACnetTagPayloadOctetStringBuilder{_BACnetTagPayloadOctetString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,11 +151,6 @@ func (m *_BACnetTagPayloadOctetString) GetOctets() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadOctetString factory function for _BACnetTagPayloadOctetString
-func NewBACnetTagPayloadOctetString(octets []byte, actualLength uint32) *_BACnetTagPayloadOctetString {
-	return &_BACnetTagPayloadOctetString{Octets: octets, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadOctetString(structType any) BACnetTagPayloadOctetString {
@@ -118,7 +197,7 @@ func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadOctetString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadOctetString BACnetTagPayloadOctetString, err error) {
@@ -182,13 +261,32 @@ func (m *_BACnetTagPayloadOctetString) GetActualLength() uint32 {
 
 func (m *_BACnetTagPayloadOctetString) IsBACnetTagPayloadOctetString() {}
 
+func (m *_BACnetTagPayloadOctetString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadOctetString) deepCopy() *_BACnetTagPayloadOctetString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadOctetStringCopy := &_BACnetTagPayloadOctetString{
+		utils.DeepCopySlice[byte, byte](m.Octets),
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadOctetStringCopy
+}
+
 func (m *_BACnetTagPayloadOctetString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

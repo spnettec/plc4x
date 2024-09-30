@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -38,62 +36,71 @@ type EstablishConnectionToNetwork struct {
 	ectnTerminationTime uint8
 }
 
-func NewEstablishConnectionToNetwork(opts ...func(*EstablishConnectionToNetwork)) (*EstablishConnectionToNetwork, error) {
-	i := &EstablishConnectionToNetwork{
+func NewEstablishConnectionToNetwork(args Args, kwArgs KWArgs, options ...Option) (*EstablishConnectionToNetwork, error) {
+	e := &EstablishConnectionToNetwork{
 		messageType: 0x08,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMEstablishConnectionToNetwork(i.ectnDNET, i.ectnTerminationTime, 0), nil)
+	ApplyAppliers(options, e)
+	options = AddLeafTypeIfAbundant(options, e)
+	options = AddNLMIfAbundant(options, model.NewNLMEstablishConnectionToNetwork(e.ectnDNET, e.ectnTerminationTime, 0))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
-	i._NPDU = npdu.(*_NPDU)
+	e._NPDU = npdu.(*_NPDU)
+	e.AddDebugContents(e, "ectnDNET", "ectnTerminationTime")
 
-	i.npduNetMessage = &i.messageType
-	return i, nil
+	e.npduNetMessage = &e.messageType
+	return e, nil
 }
 
-func WithEstablishConnectionToNetworkDNET(dnet uint16) func(*EstablishConnectionToNetwork) {
-	return func(n *EstablishConnectionToNetwork) {
-		n.ectnDNET = dnet
+// TODO: check if this is rather a KWArgs
+func WithEstablishConnectionToNetworkDNET(dnet uint16) GenericApplier[*EstablishConnectionToNetwork] {
+	return WrapGenericApplier(func(n *EstablishConnectionToNetwork) { n.ectnDNET = dnet })
+}
+
+// TODO: check if this is rather a KWArgs
+func WithEstablishConnectionToNetworkTerminationTime(terminationTime uint8) GenericApplier[*EstablishConnectionToNetwork] {
+	return WrapGenericApplier(func(n *EstablishConnectionToNetwork) { n.ectnTerminationTime = terminationTime })
+}
+
+func (e *EstablishConnectionToNetwork) GetDebugAttr(attr string) any {
+	switch attr {
+	case "ectnDNET":
+		return e.ectnDNET
+	case "ectnTerminationTime":
+		return e.ectnTerminationTime
 	}
+	return nil
 }
 
-func WithEstablishConnectionToNetworkTerminationTime(terminationTime uint8) func(*EstablishConnectionToNetwork) {
-	return func(n *EstablishConnectionToNetwork) {
-		n.ectnTerminationTime = terminationTime
-	}
+func (e *EstablishConnectionToNetwork) GetEctnDNET() uint16 {
+	return e.ectnDNET
 }
 
-func (n *EstablishConnectionToNetwork) GetEctnDNET() uint16 {
-	return n.ectnDNET
+func (e *EstablishConnectionToNetwork) GetEctnTerminationTime() uint8 {
+	return e.ectnTerminationTime
 }
 
-func (n *EstablishConnectionToNetwork) GetEctnTerminationTime() uint8 {
-	return n.ectnTerminationTime
-}
-
-func (n *EstablishConnectionToNetwork) Encode(npdu Arg) error {
+func (e *EstablishConnectionToNetwork) Encode(npdu Arg) error {
 	switch npdu := npdu.(type) {
 	case NPCI:
-		if err := npdu.GetNPCI().Update(n); err != nil {
+		if err := npdu.GetNPCI().Update(e); err != nil {
 			return errors.Wrap(err, "error updating NPDU")
 		}
 	}
 	switch npdu := npdu.(type) {
 	case PDUData:
-		npdu.PutShort(n.ectnDNET)
-		npdu.Put(n.ectnTerminationTime)
+		npdu.PutShort(e.ectnDNET)
+		npdu.Put(e.ectnTerminationTime)
 	default:
 		return errors.Errorf("invalid NPDU type %T", npdu)
 	}
 	return nil
 }
 
-func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
-	if err := n._NPCI.Update(npdu); err != nil {
+func (e *EstablishConnectionToNetwork) Decode(npdu Arg) error {
+	if err := e._NPCI.Update(npdu); err != nil {
 		return errors.Wrap(err, "error updating NPCI")
 	}
 	switch npdu := npdu.(type) {
@@ -102,19 +109,15 @@ func (n *EstablishConnectionToNetwork) Decode(npdu Arg) error {
 		case model.NPDU:
 			switch nlm := rm.GetNlm().(type) {
 			case model.NLMEstablishConnectionToNetwork:
-				n.ectnDNET = nlm.GetDestinationNetworkAddress()
-				n.ectnTerminationTime = nlm.GetTerminationTime()
-				n.SetRootMessage(rm)
+				e.ectnDNET = nlm.GetDestinationNetworkAddress()
+				e.ectnTerminationTime = nlm.GetTerminationTime()
+				e.SetRootMessage(rm)
 			}
 		}
 	}
 	switch npdu := npdu.(type) {
 	case PDUData:
-		n.SetPduData(npdu.GetPduData())
+		e.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (n *EstablishConnectionToNetwork) String() string {
-	return fmt.Sprintf("EstablishConnectionToNetwork{%s, ectnDNET: %v, ectnTerminationTime: %v}", n._NPDU, n.ectnDNET, n.ectnTerminationTime)
 }

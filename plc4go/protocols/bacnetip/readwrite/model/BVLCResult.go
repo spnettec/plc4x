@@ -40,11 +40,14 @@ type BVLCResult interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetCode returns Code (property field)
 	GetCode() BVLCResultCode
 	// IsBVLCResult is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCResult()
+	// CreateBuilder creates a BVLCResultBuilder
+	CreateBVLCResultBuilder() BVLCResultBuilder
 }
 
 // _BVLCResult is the data-structure of this message
@@ -55,6 +58,107 @@ type _BVLCResult struct {
 
 var _ BVLCResult = (*_BVLCResult)(nil)
 var _ BVLCRequirements = (*_BVLCResult)(nil)
+
+// NewBVLCResult factory function for _BVLCResult
+func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
+	_result := &_BVLCResult{
+		BVLCContract: NewBVLC(),
+		Code:         code,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCResultBuilder is a builder for BVLCResult
+type BVLCResultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder
+	// WithCode adds Code (property field)
+	WithCode(BVLCResultCode) BVLCResultBuilder
+	// Build builds the BVLCResult or returns an error if something is wrong
+	Build() (BVLCResult, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCResult
+}
+
+// NewBVLCResultBuilder() creates a BVLCResultBuilder
+func NewBVLCResultBuilder() BVLCResultBuilder {
+	return &_BVLCResultBuilder{_BVLCResult: new(_BVLCResult)}
+}
+
+type _BVLCResultBuilder struct {
+	*_BVLCResult
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCResultBuilder) = (*_BVLCResultBuilder)(nil)
+
+func (b *_BVLCResultBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCResultBuilder) WithMandatoryFields(code BVLCResultCode) BVLCResultBuilder {
+	return b.WithCode(code)
+}
+
+func (b *_BVLCResultBuilder) WithCode(code BVLCResultCode) BVLCResultBuilder {
+	b.Code = code
+	return b
+}
+
+func (b *_BVLCResultBuilder) Build() (BVLCResult, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCResult.deepCopy(), nil
+}
+
+func (b *_BVLCResultBuilder) MustBuild() BVLCResult {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCResultBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCResultBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCResultBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCResultBuilder().(*_BVLCResultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCResultBuilder creates a BVLCResultBuilder
+func (b *_BVLCResult) CreateBVLCResultBuilder() BVLCResultBuilder {
+	if b == nil {
+		return NewBVLCResultBuilder()
+	}
+	return &_BVLCResultBuilder{_BVLCResult: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +191,6 @@ func (m *_BVLCResult) GetCode() BVLCResultCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCResult factory function for _BVLCResult
-func NewBVLCResult(code BVLCResultCode) *_BVLCResult {
-	_result := &_BVLCResult{
-		BVLCContract: NewBVLC(),
-		Code:         code,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCResult(structType any) BVLCResult {
@@ -182,13 +276,33 @@ func (m *_BVLCResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_BVLCResult) IsBVLCResult() {}
 
+func (m *_BVLCResult) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCResult) deepCopy() *_BVLCResult {
+	if m == nil {
+		return nil
+	}
+	_BVLCResultCopy := &_BVLCResult{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Code,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCResultCopy
+}
+
 func (m *_BVLCResult) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

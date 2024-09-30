@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataFaultValues interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFaultValues()
+	// CreateBuilder creates a BACnetConstructedDataFaultValuesBuilder
+	CreateBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValuesBuilder
 }
 
 // _BACnetConstructedDataFaultValues is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataFaultValues struct {
 
 var _ BACnetConstructedDataFaultValues = (*_BACnetConstructedDataFaultValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultValues)(nil)
+
+// NewBACnetConstructedDataFaultValues factory function for _BACnetConstructedDataFaultValues
+func NewBACnetConstructedDataFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultValues {
+	_result := &_BACnetConstructedDataFaultValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		FaultValues:                   faultValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFaultValuesBuilder is a builder for BACnetConstructedDataFaultValues
+type BACnetConstructedDataFaultValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultValuesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultValuesBuilder
+	// WithFaultValues adds FaultValues (property field)
+	WithFaultValues(...BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder
+	// Build builds the BACnetConstructedDataFaultValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataFaultValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFaultValues
+}
+
+// NewBACnetConstructedDataFaultValuesBuilder() creates a BACnetConstructedDataFaultValuesBuilder
+func NewBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValuesBuilder {
+	return &_BACnetConstructedDataFaultValuesBuilder{_BACnetConstructedDataFaultValues: new(_BACnetConstructedDataFaultValues)}
+}
+
+type _BACnetConstructedDataFaultValuesBuilder struct {
+	*_BACnetConstructedDataFaultValues
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFaultValuesBuilder) = (*_BACnetConstructedDataFaultValuesBuilder)(nil)
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataFaultValuesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataFaultValuesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) WithFaultValues(faultValues ...BACnetLifeSafetyStateTagged) BACnetConstructedDataFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) Build() (BACnetConstructedDataFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFaultValues.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) MustBuild() BACnetConstructedDataFaultValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultValuesBuilder().(*_BACnetConstructedDataFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFaultValuesBuilder creates a BACnetConstructedDataFaultValuesBuilder
+func (b *_BACnetConstructedDataFaultValues) CreateBACnetConstructedDataFaultValuesBuilder() BACnetConstructedDataFaultValuesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFaultValuesBuilder()
+	}
+	return &_BACnetConstructedDataFaultValuesBuilder{_BACnetConstructedDataFaultValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataFaultValues) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultValues factory function for _BACnetConstructedDataFaultValues
-func NewBACnetConstructedDataFaultValues(numberOfDataElements BACnetApplicationTagUnsignedInteger, faultValues []BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultValues {
-	_result := &_BACnetConstructedDataFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		FaultValues:                   faultValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultValues(structType any) BACnetConstructedDataFaultValues {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataFaultValues) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataFaultValues) IsBACnetConstructedDataFaultValues() {}
 
+func (m *_BACnetConstructedDataFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultValues) deepCopy() *_BACnetConstructedDataFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultValuesCopy := &_BACnetConstructedDataFaultValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetLifeSafetyStateTagged, BACnetLifeSafetyStateTagged](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultValuesCopy
+}
+
 func (m *_BACnetConstructedDataFaultValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

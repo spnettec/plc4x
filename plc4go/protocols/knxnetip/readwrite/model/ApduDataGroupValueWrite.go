@@ -38,6 +38,7 @@ type ApduDataGroupValueWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// GetDataFirstByte returns DataFirstByte (property field)
 	GetDataFirstByte() int8
@@ -45,6 +46,8 @@ type ApduDataGroupValueWrite interface {
 	GetData() []byte
 	// IsApduDataGroupValueWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataGroupValueWrite()
+	// CreateBuilder creates a ApduDataGroupValueWriteBuilder
+	CreateApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder
 }
 
 // _ApduDataGroupValueWrite is the data-structure of this message
@@ -56,6 +59,115 @@ type _ApduDataGroupValueWrite struct {
 
 var _ ApduDataGroupValueWrite = (*_ApduDataGroupValueWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataGroupValueWrite)(nil)
+
+// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
+func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
+	_result := &_ApduDataGroupValueWrite{
+		ApduDataContract: NewApduData(dataLength),
+		DataFirstByte:    dataFirstByte,
+		Data:             data,
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataGroupValueWriteBuilder is a builder for ApduDataGroupValueWrite
+type ApduDataGroupValueWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueWriteBuilder
+	// WithDataFirstByte adds DataFirstByte (property field)
+	WithDataFirstByte(int8) ApduDataGroupValueWriteBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataGroupValueWriteBuilder
+	// Build builds the ApduDataGroupValueWrite or returns an error if something is wrong
+	Build() (ApduDataGroupValueWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataGroupValueWrite
+}
+
+// NewApduDataGroupValueWriteBuilder() creates a ApduDataGroupValueWriteBuilder
+func NewApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder {
+	return &_ApduDataGroupValueWriteBuilder{_ApduDataGroupValueWrite: new(_ApduDataGroupValueWrite)}
+}
+
+type _ApduDataGroupValueWriteBuilder struct {
+	*_ApduDataGroupValueWrite
+
+	parentBuilder *_ApduDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataGroupValueWriteBuilder) = (*_ApduDataGroupValueWriteBuilder)(nil)
+
+func (b *_ApduDataGroupValueWriteBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) WithMandatoryFields(dataFirstByte int8, data []byte) ApduDataGroupValueWriteBuilder {
+	return b.WithDataFirstByte(dataFirstByte).WithData(data...)
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) WithDataFirstByte(dataFirstByte int8) ApduDataGroupValueWriteBuilder {
+	b.DataFirstByte = dataFirstByte
+	return b
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) WithData(data ...byte) ApduDataGroupValueWriteBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) Build() (ApduDataGroupValueWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataGroupValueWrite.deepCopy(), nil
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) MustBuild() ApduDataGroupValueWrite {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataGroupValueWriteBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataGroupValueWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataGroupValueWriteBuilder().(*_ApduDataGroupValueWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataGroupValueWriteBuilder creates a ApduDataGroupValueWriteBuilder
+func (b *_ApduDataGroupValueWrite) CreateApduDataGroupValueWriteBuilder() ApduDataGroupValueWriteBuilder {
+	if b == nil {
+		return NewApduDataGroupValueWriteBuilder()
+	}
+	return &_ApduDataGroupValueWriteBuilder{_ApduDataGroupValueWrite: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_ApduDataGroupValueWrite) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataGroupValueWrite factory function for _ApduDataGroupValueWrite
-func NewApduDataGroupValueWrite(dataFirstByte int8, data []byte, dataLength uint8) *_ApduDataGroupValueWrite {
-	_result := &_ApduDataGroupValueWrite{
-		ApduDataContract: NewApduData(dataLength),
-		DataFirstByte:    dataFirstByte,
-		Data:             data,
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataGroupValueWrite(structType any) ApduDataGroupValueWrite {
@@ -203,13 +304,34 @@ func (m *_ApduDataGroupValueWrite) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_ApduDataGroupValueWrite) IsApduDataGroupValueWrite() {}
 
+func (m *_ApduDataGroupValueWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataGroupValueWrite) deepCopy() *_ApduDataGroupValueWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataGroupValueWriteCopy := &_ApduDataGroupValueWrite{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+		m.DataFirstByte,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataGroupValueWriteCopy
+}
+
 func (m *_ApduDataGroupValueWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

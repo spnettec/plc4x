@@ -40,8 +40,11 @@ type CALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALData()
+	// CreateBuilder creates a CALDataBuilder
+	CreateCALDataBuilder() CALDataBuilder
 }
 
 // CALDataContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type CALDataContract interface {
 	GetRequestContext() RequestContext
 	// IsCALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALData()
+	// CreateBuilder creates a CALDataBuilder
+	CreateCALDataBuilder() CALDataBuilder
 }
 
 // CALDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -81,6 +86,353 @@ type _CALData struct {
 }
 
 var _ CALDataContract = (*_CALData)(nil)
+
+// NewCALData factory function for _CALData
+func NewCALData(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALData {
+	return &_CALData{CommandTypeContainer: commandTypeContainer, AdditionalData: additionalData, RequestContext: requestContext}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataBuilder is a builder for CALData
+type CALDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer CALCommandTypeContainer) CALDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(CALCommandTypeContainer) CALDataBuilder
+	// WithAdditionalData adds AdditionalData (property field)
+	WithOptionalAdditionalData(CALData) CALDataBuilder
+	// WithOptionalAdditionalDataBuilder adds AdditionalData (property field) which is build by the builder
+	WithOptionalAdditionalDataBuilder(func(CALDataBuilder) CALDataBuilder) CALDataBuilder
+	// AsCALDataReset converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataReset() interface {
+		CALDataResetBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataRecall converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataRecall() interface {
+		CALDataRecallBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataIdentify converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataIdentify() interface {
+		CALDataIdentifyBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataGetStatus converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataGetStatus() interface {
+		CALDataGetStatusBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataWrite converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataWrite() interface {
+		CALDataWriteBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataIdentifyReply converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataIdentifyReply() interface {
+		CALDataIdentifyReplyBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataReply converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataReply() interface {
+		CALDataReplyBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataAcknowledge converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataAcknowledge() interface {
+		CALDataAcknowledgeBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataStatus converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataStatus() interface {
+		CALDataStatusBuilder
+		Done() CALDataBuilder
+	}
+	// AsCALDataStatusExtended converts this build to a subType of CALData. It is always possible to return to current builder using Done()
+	AsCALDataStatusExtended() interface {
+		CALDataStatusExtendedBuilder
+		Done() CALDataBuilder
+	}
+	// Build builds the CALData or returns an error if something is wrong
+	PartialBuild() (CALDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() CALDataContract
+	// Build builds the CALData or returns an error if something is wrong
+	Build() (CALData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALData
+}
+
+// NewCALDataBuilder() creates a CALDataBuilder
+func NewCALDataBuilder() CALDataBuilder {
+	return &_CALDataBuilder{_CALData: new(_CALData)}
+}
+
+type _CALDataChildBuilder interface {
+	utils.Copyable
+	setParent(CALDataContract)
+	buildForCALData() (CALData, error)
+}
+
+type _CALDataBuilder struct {
+	*_CALData
+
+	childBuilder _CALDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CALDataBuilder) = (*_CALDataBuilder)(nil)
+
+func (b *_CALDataBuilder) WithMandatoryFields(commandTypeContainer CALCommandTypeContainer) CALDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer)
+}
+
+func (b *_CALDataBuilder) WithCommandTypeContainer(commandTypeContainer CALCommandTypeContainer) CALDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_CALDataBuilder) WithOptionalAdditionalData(additionalData CALData) CALDataBuilder {
+	b.AdditionalData = additionalData
+	return b
+}
+
+func (b *_CALDataBuilder) WithOptionalAdditionalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) CALDataBuilder {
+	builder := builderSupplier(b.AdditionalData.CreateCALDataBuilder())
+	var err error
+	b.AdditionalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CALDataBuilder) PartialBuild() (CALDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALData.deepCopy(), nil
+}
+
+func (b *_CALDataBuilder) PartialMustBuild() CALDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CALDataBuilder) AsCALDataReset() interface {
+	CALDataResetBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataResetBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataResetBuilder().(*_CALDataResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataRecall() interface {
+	CALDataRecallBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataRecallBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataRecallBuilder().(*_CALDataRecallBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataIdentify() interface {
+	CALDataIdentifyBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataIdentifyBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataIdentifyBuilder().(*_CALDataIdentifyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataGetStatus() interface {
+	CALDataGetStatusBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataGetStatusBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataGetStatusBuilder().(*_CALDataGetStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataWrite() interface {
+	CALDataWriteBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataWriteBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataWriteBuilder().(*_CALDataWriteBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataIdentifyReply() interface {
+	CALDataIdentifyReplyBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataIdentifyReplyBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataIdentifyReplyBuilder().(*_CALDataIdentifyReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataReply() interface {
+	CALDataReplyBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataReplyBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataReplyBuilder().(*_CALDataReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataAcknowledge() interface {
+	CALDataAcknowledgeBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataAcknowledgeBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataAcknowledgeBuilder().(*_CALDataAcknowledgeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataStatus() interface {
+	CALDataStatusBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataStatusBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataStatusBuilder().(*_CALDataStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) AsCALDataStatusExtended() interface {
+	CALDataStatusExtendedBuilder
+	Done() CALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CALDataStatusExtendedBuilder
+		Done() CALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCALDataStatusExtendedBuilder().(*_CALDataStatusExtendedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CALDataBuilder) Build() (CALData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCALData()
+}
+
+func (b *_CALDataBuilder) MustBuild() CALData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CALDataBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataBuilder().(*_CALDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CALDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCALDataBuilder creates a CALDataBuilder
+func (b *_CALData) CreateCALDataBuilder() CALDataBuilder {
+	if b == nil {
+		return NewCALDataBuilder()
+	}
+	return &_CALDataBuilder{_CALData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -126,11 +478,6 @@ func (pm *_CALData) GetSendIdentifyRequestBefore() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALData factory function for _CALData
-func NewCALData(commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALData {
-	return &_CALData{CommandTypeContainer: commandTypeContainer, AdditionalData: additionalData, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALData(structType any) CALData {
@@ -180,7 +527,7 @@ func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) fu
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -190,7 +537,12 @@ func CALDataParseWithBuffer[T CALData](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (__cALData CALData, err error) {
@@ -229,43 +581,43 @@ func (m *_CALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, reque
 	var _child CALData
 	switch {
 	case commandType == CALCommandType_RESET: // CALDataReset
-		if _child, err = (&_CALDataReset{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataReset).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReset for type-switch of CALData")
 		}
 	case commandType == CALCommandType_RECALL: // CALDataRecall
-		if _child, err = (&_CALDataRecall{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataRecall).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataRecall for type-switch of CALData")
 		}
 	case commandType == CALCommandType_IDENTIFY: // CALDataIdentify
-		if _child, err = (&_CALDataIdentify{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataIdentify).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentify for type-switch of CALData")
 		}
 	case commandType == CALCommandType_GET_STATUS: // CALDataGetStatus
-		if _child, err = (&_CALDataGetStatus{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataGetStatus).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataGetStatus for type-switch of CALData")
 		}
 	case commandType == CALCommandType_WRITE: // CALDataWrite
-		if _child, err = (&_CALDataWrite{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataWrite).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataWrite for type-switch of CALData")
 		}
 	case commandType == CALCommandType_REPLY && sendIdentifyRequestBefore == bool(true): // CALDataIdentifyReply
-		if _child, err = (&_CALDataIdentifyReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataIdentifyReply).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataIdentifyReply for type-switch of CALData")
 		}
 	case commandType == CALCommandType_REPLY: // CALDataReply
-		if _child, err = (&_CALDataReply{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataReply).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataReply for type-switch of CALData")
 		}
 	case commandType == CALCommandType_ACKNOWLEDGE: // CALDataAcknowledge
-		if _child, err = (&_CALDataAcknowledge{}).parse(ctx, readBuffer, m, requestContext); err != nil {
+		if _child, err = new(_CALDataAcknowledge).parse(ctx, readBuffer, m, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataAcknowledge for type-switch of CALData")
 		}
 	case commandType == CALCommandType_STATUS: // CALDataStatus
-		if _child, err = (&_CALDataStatus{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataStatus).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatus for type-switch of CALData")
 		}
 	case commandType == CALCommandType_STATUS_EXTENDED: // CALDataStatusExtended
-		if _child, err = (&_CALDataStatusExtended{}).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
+		if _child, err = new(_CALDataStatusExtended).parse(ctx, readBuffer, m, commandTypeContainer, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CALDataStatusExtended for type-switch of CALData")
 		}
 	default:
@@ -343,3 +695,20 @@ func (m *_CALData) GetRequestContext() RequestContext {
 ////
 
 func (m *_CALData) IsCALData() {}
+
+func (m *_CALData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALData) deepCopy() *_CALData {
+	if m == nil {
+		return nil
+	}
+	_CALDataCopy := &_CALData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.AdditionalData.DeepCopy().(CALData),
+		m.RequestContext,
+	}
+	return _CALDataCopy
+}

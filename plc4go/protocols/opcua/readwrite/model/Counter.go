@@ -36,8 +36,11 @@ type Counter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCounter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCounter()
+	// CreateBuilder creates a CounterBuilder
+	CreateCounterBuilder() CounterBuilder
 }
 
 // _Counter is the data-structure of this message
@@ -50,6 +53,75 @@ var _ Counter = (*_Counter)(nil)
 func NewCounter() *_Counter {
 	return &_Counter{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CounterBuilder is a builder for Counter
+type CounterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CounterBuilder
+	// Build builds the Counter or returns an error if something is wrong
+	Build() (Counter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Counter
+}
+
+// NewCounterBuilder() creates a CounterBuilder
+func NewCounterBuilder() CounterBuilder {
+	return &_CounterBuilder{_Counter: new(_Counter)}
+}
+
+type _CounterBuilder struct {
+	*_Counter
+
+	err *utils.MultiError
+}
+
+var _ (CounterBuilder) = (*_CounterBuilder)(nil)
+
+func (b *_CounterBuilder) WithMandatoryFields() CounterBuilder {
+	return b
+}
+
+func (b *_CounterBuilder) Build() (Counter, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Counter.deepCopy(), nil
+}
+
+func (b *_CounterBuilder) MustBuild() Counter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CounterBuilder) DeepCopy() any {
+	_copy := b.CreateCounterBuilder().(*_CounterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCounterBuilder creates a CounterBuilder
+func (b *_Counter) CreateCounterBuilder() CounterBuilder {
+	if b == nil {
+		return NewCounterBuilder()
+	}
+	return &_CounterBuilder{_Counter: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastCounter(structType any) Counter {
@@ -91,7 +163,7 @@ func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (C
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Counter) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__counter Counter, err error) {
@@ -135,13 +207,29 @@ func (m *_Counter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 func (m *_Counter) IsCounter() {}
 
+func (m *_Counter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Counter) deepCopy() *_Counter {
+	if m == nil {
+		return nil
+	}
+	_CounterCopy := &_Counter{}
+	return _CounterCopy
+}
+
 func (m *_Counter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

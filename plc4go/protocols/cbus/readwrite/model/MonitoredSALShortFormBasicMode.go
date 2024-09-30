@@ -38,6 +38,7 @@ type MonitoredSALShortFormBasicMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetCounts returns Counts (property field)
 	GetCounts() byte
@@ -53,6 +54,8 @@ type MonitoredSALShortFormBasicMode interface {
 	GetSalData() SALData
 	// IsMonitoredSALShortFormBasicMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSALShortFormBasicMode()
+	// CreateBuilder creates a MonitoredSALShortFormBasicModeBuilder
+	CreateMonitoredSALShortFormBasicModeBuilder() MonitoredSALShortFormBasicModeBuilder
 }
 
 // _MonitoredSALShortFormBasicMode is the data-structure of this message
@@ -68,6 +71,162 @@ type _MonitoredSALShortFormBasicMode struct {
 
 var _ MonitoredSALShortFormBasicMode = (*_MonitoredSALShortFormBasicMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALShortFormBasicMode)(nil)
+
+// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
+func NewMonitoredSALShortFormBasicMode(salType byte, counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
+	_result := &_MonitoredSALShortFormBasicMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		Counts:               counts,
+		BridgeCount:          bridgeCount,
+		NetworkNumber:        networkNumber,
+		NoCounts:             noCounts,
+		Application:          application,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredSALShortFormBasicModeBuilder is a builder for MonitoredSALShortFormBasicMode
+type MonitoredSALShortFormBasicModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(counts byte, application ApplicationIdContainer) MonitoredSALShortFormBasicModeBuilder
+	// WithCounts adds Counts (property field)
+	WithCounts(byte) MonitoredSALShortFormBasicModeBuilder
+	// WithBridgeCount adds BridgeCount (property field)
+	WithOptionalBridgeCount(uint8) MonitoredSALShortFormBasicModeBuilder
+	// WithNetworkNumber adds NetworkNumber (property field)
+	WithOptionalNetworkNumber(uint8) MonitoredSALShortFormBasicModeBuilder
+	// WithNoCounts adds NoCounts (property field)
+	WithOptionalNoCounts(byte) MonitoredSALShortFormBasicModeBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) MonitoredSALShortFormBasicModeBuilder
+	// WithSalData adds SalData (property field)
+	WithOptionalSalData(SALData) MonitoredSALShortFormBasicModeBuilder
+	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
+	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) MonitoredSALShortFormBasicModeBuilder
+	// Build builds the MonitoredSALShortFormBasicMode or returns an error if something is wrong
+	Build() (MonitoredSALShortFormBasicMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredSALShortFormBasicMode
+}
+
+// NewMonitoredSALShortFormBasicModeBuilder() creates a MonitoredSALShortFormBasicModeBuilder
+func NewMonitoredSALShortFormBasicModeBuilder() MonitoredSALShortFormBasicModeBuilder {
+	return &_MonitoredSALShortFormBasicModeBuilder{_MonitoredSALShortFormBasicMode: new(_MonitoredSALShortFormBasicMode)}
+}
+
+type _MonitoredSALShortFormBasicModeBuilder struct {
+	*_MonitoredSALShortFormBasicMode
+
+	parentBuilder *_MonitoredSALBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredSALShortFormBasicModeBuilder) = (*_MonitoredSALShortFormBasicModeBuilder)(nil)
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) setParent(contract MonitoredSALContract) {
+	b.MonitoredSALContract = contract
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithMandatoryFields(counts byte, application ApplicationIdContainer) MonitoredSALShortFormBasicModeBuilder {
+	return b.WithCounts(counts).WithApplication(application)
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithCounts(counts byte) MonitoredSALShortFormBasicModeBuilder {
+	b.Counts = counts
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithOptionalBridgeCount(bridgeCount uint8) MonitoredSALShortFormBasicModeBuilder {
+	b.BridgeCount = &bridgeCount
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithOptionalNetworkNumber(networkNumber uint8) MonitoredSALShortFormBasicModeBuilder {
+	b.NetworkNumber = &networkNumber
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithOptionalNoCounts(noCounts byte) MonitoredSALShortFormBasicModeBuilder {
+	b.NoCounts = &noCounts
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithApplication(application ApplicationIdContainer) MonitoredSALShortFormBasicModeBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithOptionalSalData(salData SALData) MonitoredSALShortFormBasicModeBuilder {
+	b.SalData = salData
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) MonitoredSALShortFormBasicModeBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) Build() (MonitoredSALShortFormBasicMode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSALShortFormBasicMode.deepCopy(), nil
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) MustBuild() MonitoredSALShortFormBasicMode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredSALShortFormBasicModeBuilder) Done() MonitoredSALBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) buildForMonitoredSAL() (MonitoredSAL, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredSALShortFormBasicModeBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALShortFormBasicModeBuilder().(*_MonitoredSALShortFormBasicModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredSALShortFormBasicModeBuilder creates a MonitoredSALShortFormBasicModeBuilder
+func (b *_MonitoredSALShortFormBasicMode) CreateMonitoredSALShortFormBasicModeBuilder() MonitoredSALShortFormBasicModeBuilder {
+	if b == nil {
+		return NewMonitoredSALShortFormBasicModeBuilder()
+	}
+	return &_MonitoredSALShortFormBasicModeBuilder{_MonitoredSALShortFormBasicMode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,21 +275,6 @@ func (m *_MonitoredSALShortFormBasicMode) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALShortFormBasicMode factory function for _MonitoredSALShortFormBasicMode
-func NewMonitoredSALShortFormBasicMode(counts byte, bridgeCount *uint8, networkNumber *uint8, noCounts *byte, application ApplicationIdContainer, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALShortFormBasicMode {
-	_result := &_MonitoredSALShortFormBasicMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		Counts:               counts,
-		BridgeCount:          bridgeCount,
-		NetworkNumber:        networkNumber,
-		NoCounts:             noCounts,
-		Application:          application,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALShortFormBasicMode(structType any) MonitoredSALShortFormBasicMode {
@@ -289,13 +433,38 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_MonitoredSALShortFormBasicMode) IsMonitoredSALShortFormBasicMode() {}
 
+func (m *_MonitoredSALShortFormBasicMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALShortFormBasicMode) deepCopy() *_MonitoredSALShortFormBasicMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALShortFormBasicModeCopy := &_MonitoredSALShortFormBasicMode{
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
+		m.Counts,
+		utils.CopyPtr[uint8](m.BridgeCount),
+		utils.CopyPtr[uint8](m.NetworkNumber),
+		utils.CopyPtr[byte](m.NoCounts),
+		m.Application,
+		m.SalData.DeepCopy().(SALData),
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALShortFormBasicModeCopy
+}
+
 func (m *_MonitoredSALShortFormBasicMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

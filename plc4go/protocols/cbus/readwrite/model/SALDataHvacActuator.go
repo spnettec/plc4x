@@ -38,11 +38,14 @@ type SALDataHvacActuator interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetHvacActuatorData returns HvacActuatorData (property field)
 	GetHvacActuatorData() LightingData
 	// IsSALDataHvacActuator is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataHvacActuator()
+	// CreateBuilder creates a SALDataHvacActuatorBuilder
+	CreateSALDataHvacActuatorBuilder() SALDataHvacActuatorBuilder
 }
 
 // _SALDataHvacActuator is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataHvacActuator struct {
 
 var _ SALDataHvacActuator = (*_SALDataHvacActuator)(nil)
 var _ SALDataRequirements = (*_SALDataHvacActuator)(nil)
+
+// NewSALDataHvacActuator factory function for _SALDataHvacActuator
+func NewSALDataHvacActuator(salData SALData, hvacActuatorData LightingData) *_SALDataHvacActuator {
+	if hvacActuatorData == nil {
+		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
+	}
+	_result := &_SALDataHvacActuator{
+		SALDataContract:  NewSALData(salData),
+		HvacActuatorData: hvacActuatorData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataHvacActuatorBuilder is a builder for SALDataHvacActuator
+type SALDataHvacActuatorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hvacActuatorData LightingData) SALDataHvacActuatorBuilder
+	// WithHvacActuatorData adds HvacActuatorData (property field)
+	WithHvacActuatorData(LightingData) SALDataHvacActuatorBuilder
+	// WithHvacActuatorDataBuilder adds HvacActuatorData (property field) which is build by the builder
+	WithHvacActuatorDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataHvacActuatorBuilder
+	// Build builds the SALDataHvacActuator or returns an error if something is wrong
+	Build() (SALDataHvacActuator, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataHvacActuator
+}
+
+// NewSALDataHvacActuatorBuilder() creates a SALDataHvacActuatorBuilder
+func NewSALDataHvacActuatorBuilder() SALDataHvacActuatorBuilder {
+	return &_SALDataHvacActuatorBuilder{_SALDataHvacActuator: new(_SALDataHvacActuator)}
+}
+
+type _SALDataHvacActuatorBuilder struct {
+	*_SALDataHvacActuator
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataHvacActuatorBuilder) = (*_SALDataHvacActuatorBuilder)(nil)
+
+func (b *_SALDataHvacActuatorBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataHvacActuatorBuilder) WithMandatoryFields(hvacActuatorData LightingData) SALDataHvacActuatorBuilder {
+	return b.WithHvacActuatorData(hvacActuatorData)
+}
+
+func (b *_SALDataHvacActuatorBuilder) WithHvacActuatorData(hvacActuatorData LightingData) SALDataHvacActuatorBuilder {
+	b.HvacActuatorData = hvacActuatorData
+	return b
+}
+
+func (b *_SALDataHvacActuatorBuilder) WithHvacActuatorDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataHvacActuatorBuilder {
+	builder := builderSupplier(b.HvacActuatorData.CreateLightingDataBuilder())
+	var err error
+	b.HvacActuatorData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataHvacActuatorBuilder) Build() (SALDataHvacActuator, error) {
+	if b.HvacActuatorData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hvacActuatorData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataHvacActuator.deepCopy(), nil
+}
+
+func (b *_SALDataHvacActuatorBuilder) MustBuild() SALDataHvacActuator {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataHvacActuatorBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataHvacActuatorBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataHvacActuatorBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataHvacActuatorBuilder().(*_SALDataHvacActuatorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataHvacActuatorBuilder creates a SALDataHvacActuatorBuilder
+func (b *_SALDataHvacActuator) CreateSALDataHvacActuatorBuilder() SALDataHvacActuatorBuilder {
+	if b == nil {
+		return NewSALDataHvacActuatorBuilder()
+	}
+	return &_SALDataHvacActuatorBuilder{_SALDataHvacActuator: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataHvacActuator) GetHvacActuatorData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataHvacActuator factory function for _SALDataHvacActuator
-func NewSALDataHvacActuator(hvacActuatorData LightingData, salData SALData) *_SALDataHvacActuator {
-	if hvacActuatorData == nil {
-		panic("hvacActuatorData of type LightingData for SALDataHvacActuator must not be nil")
-	}
-	_result := &_SALDataHvacActuator{
-		SALDataContract:  NewSALData(salData),
-		HvacActuatorData: hvacActuatorData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataHvacActuator(structType any) SALDataHvacActuator {
@@ -183,13 +298,33 @@ func (m *_SALDataHvacActuator) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_SALDataHvacActuator) IsSALDataHvacActuator() {}
 
+func (m *_SALDataHvacActuator) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataHvacActuator) deepCopy() *_SALDataHvacActuator {
+	if m == nil {
+		return nil
+	}
+	_SALDataHvacActuatorCopy := &_SALDataHvacActuator{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.HvacActuatorData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataHvacActuatorCopy
+}
+
 func (m *_SALDataHvacActuator) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

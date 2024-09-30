@@ -38,6 +38,7 @@ type LDataReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetAdditionalInformationLength returns AdditionalInformationLength (property field)
 	GetAdditionalInformationLength() uint8
@@ -47,6 +48,8 @@ type LDataReq interface {
 	GetDataFrame() LDataFrame
 	// IsLDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLDataReq()
+	// CreateBuilder creates a LDataReqBuilder
+	CreateLDataReqBuilder() LDataReqBuilder
 }
 
 // _LDataReq is the data-structure of this message
@@ -59,6 +62,147 @@ type _LDataReq struct {
 
 var _ LDataReq = (*_LDataReq)(nil)
 var _ CEMIRequirements = (*_LDataReq)(nil)
+
+// NewLDataReq factory function for _LDataReq
+func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
+	if dataFrame == nil {
+		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
+	}
+	_result := &_LDataReq{
+		CEMIContract:                NewCEMI(size),
+		AdditionalInformationLength: additionalInformationLength,
+		AdditionalInformation:       additionalInformation,
+		DataFrame:                   dataFrame,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LDataReqBuilder is a builder for LDataReq
+type LDataReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataReqBuilder
+	// WithAdditionalInformationLength adds AdditionalInformationLength (property field)
+	WithAdditionalInformationLength(uint8) LDataReqBuilder
+	// WithAdditionalInformation adds AdditionalInformation (property field)
+	WithAdditionalInformation(...CEMIAdditionalInformation) LDataReqBuilder
+	// WithDataFrame adds DataFrame (property field)
+	WithDataFrame(LDataFrame) LDataReqBuilder
+	// WithDataFrameBuilder adds DataFrame (property field) which is build by the builder
+	WithDataFrameBuilder(func(LDataFrameBuilder) LDataFrameBuilder) LDataReqBuilder
+	// Build builds the LDataReq or returns an error if something is wrong
+	Build() (LDataReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LDataReq
+}
+
+// NewLDataReqBuilder() creates a LDataReqBuilder
+func NewLDataReqBuilder() LDataReqBuilder {
+	return &_LDataReqBuilder{_LDataReq: new(_LDataReq)}
+}
+
+type _LDataReqBuilder struct {
+	*_LDataReq
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LDataReqBuilder) = (*_LDataReqBuilder)(nil)
+
+func (b *_LDataReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_LDataReqBuilder) WithMandatoryFields(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame) LDataReqBuilder {
+	return b.WithAdditionalInformationLength(additionalInformationLength).WithAdditionalInformation(additionalInformation...).WithDataFrame(dataFrame)
+}
+
+func (b *_LDataReqBuilder) WithAdditionalInformationLength(additionalInformationLength uint8) LDataReqBuilder {
+	b.AdditionalInformationLength = additionalInformationLength
+	return b
+}
+
+func (b *_LDataReqBuilder) WithAdditionalInformation(additionalInformation ...CEMIAdditionalInformation) LDataReqBuilder {
+	b.AdditionalInformation = additionalInformation
+	return b
+}
+
+func (b *_LDataReqBuilder) WithDataFrame(dataFrame LDataFrame) LDataReqBuilder {
+	b.DataFrame = dataFrame
+	return b
+}
+
+func (b *_LDataReqBuilder) WithDataFrameBuilder(builderSupplier func(LDataFrameBuilder) LDataFrameBuilder) LDataReqBuilder {
+	builder := builderSupplier(b.DataFrame.CreateLDataFrameBuilder())
+	var err error
+	b.DataFrame, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LDataFrameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_LDataReqBuilder) Build() (LDataReq, error) {
+	if b.DataFrame == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataFrame' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LDataReq.deepCopy(), nil
+}
+
+func (b *_LDataReqBuilder) MustBuild() LDataReq {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LDataReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LDataReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LDataReqBuilder) DeepCopy() any {
+	_copy := b.CreateLDataReqBuilder().(*_LDataReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLDataReqBuilder creates a LDataReqBuilder
+func (b *_LDataReq) CreateLDataReqBuilder() LDataReqBuilder {
+	if b == nil {
+		return NewLDataReqBuilder()
+	}
+	return &_LDataReqBuilder{_LDataReq: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_LDataReq) GetDataFrame() LDataFrame {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLDataReq factory function for _LDataReq
-func NewLDataReq(additionalInformationLength uint8, additionalInformation []CEMIAdditionalInformation, dataFrame LDataFrame, size uint16) *_LDataReq {
-	if dataFrame == nil {
-		panic("dataFrame of type LDataFrame for LDataReq must not be nil")
-	}
-	_result := &_LDataReq{
-		CEMIContract:                NewCEMI(size),
-		AdditionalInformationLength: additionalInformationLength,
-		AdditionalInformation:       additionalInformation,
-		DataFrame:                   dataFrame,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLDataReq(structType any) LDataReq {
@@ -229,13 +358,35 @@ func (m *_LDataReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_LDataReq) IsLDataReq() {}
 
+func (m *_LDataReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LDataReq) deepCopy() *_LDataReq {
+	if m == nil {
+		return nil
+	}
+	_LDataReqCopy := &_LDataReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+		m.AdditionalInformationLength,
+		utils.DeepCopySlice[CEMIAdditionalInformation, CEMIAdditionalInformation](m.AdditionalInformation),
+		m.DataFrame.DeepCopy().(LDataFrame),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LDataReqCopy
+}
+
 func (m *_LDataReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

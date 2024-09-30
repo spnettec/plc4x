@@ -40,11 +40,14 @@ type CIPEncapsulationReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CIPEncapsulationPacket
 	// GetResponse returns Response (property field)
 	GetResponse() DF1ResponseMessage
 	// IsCIPEncapsulationReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationReadResponse()
+	// CreateBuilder creates a CIPEncapsulationReadResponseBuilder
+	CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder
 }
 
 // _CIPEncapsulationReadResponse is the data-structure of this message
@@ -58,6 +61,131 @@ type _CIPEncapsulationReadResponse struct {
 
 var _ CIPEncapsulationReadResponse = (*_CIPEncapsulationReadResponse)(nil)
 var _ CIPEncapsulationPacketRequirements = (*_CIPEncapsulationReadResponse)(nil)
+
+// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
+func NewCIPEncapsulationReadResponse(sessionHandle uint32, status uint32, senderContext []uint8, options uint32, response DF1ResponseMessage, packetLen uint16) *_CIPEncapsulationReadResponse {
+	if response == nil {
+		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
+	}
+	_result := &_CIPEncapsulationReadResponse{
+		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
+		Response:                       response,
+	}
+	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationReadResponseBuilder is a builder for CIPEncapsulationReadResponse
+type CIPEncapsulationReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
+	// WithResponse adds Response (property field)
+	WithResponse(DF1ResponseMessage) CIPEncapsulationReadResponseBuilder
+	// WithResponseBuilder adds Response (property field) which is build by the builder
+	WithResponseBuilder(func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder
+	// Build builds the CIPEncapsulationReadResponse or returns an error if something is wrong
+	Build() (CIPEncapsulationReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationReadResponse
+}
+
+// NewCIPEncapsulationReadResponseBuilder() creates a CIPEncapsulationReadResponseBuilder
+func NewCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
+	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: new(_CIPEncapsulationReadResponse)}
+}
+
+type _CIPEncapsulationReadResponseBuilder struct {
+	*_CIPEncapsulationReadResponse
+
+	parentBuilder *_CIPEncapsulationPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationReadResponseBuilder) = (*_CIPEncapsulationReadResponseBuilder)(nil)
+
+func (b *_CIPEncapsulationReadResponseBuilder) setParent(contract CIPEncapsulationPacketContract) {
+	b.CIPEncapsulationPacketContract = contract
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) WithMandatoryFields(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	return b.WithResponse(response)
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) WithResponse(response DF1ResponseMessage) CIPEncapsulationReadResponseBuilder {
+	b.Response = response
+	return b
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) WithResponseBuilder(builderSupplier func(DF1ResponseMessageBuilder) DF1ResponseMessageBuilder) CIPEncapsulationReadResponseBuilder {
+	builder := builderSupplier(b.Response.CreateDF1ResponseMessageBuilder())
+	var err error
+	b.Response, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DF1ResponseMessageBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) Build() (CIPEncapsulationReadResponse, error) {
+	if b.Response == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'response' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPEncapsulationReadResponse.deepCopy(), nil
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) MustBuild() CIPEncapsulationReadResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CIPEncapsulationReadResponseBuilder) Done() CIPEncapsulationPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error) {
+	return b.Build()
+}
+
+func (b *_CIPEncapsulationReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationReadResponseBuilder().(*_CIPEncapsulationReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCIPEncapsulationReadResponseBuilder creates a CIPEncapsulationReadResponseBuilder
+func (b *_CIPEncapsulationReadResponse) CreateCIPEncapsulationReadResponseBuilder() CIPEncapsulationReadResponseBuilder {
+	if b == nil {
+		return NewCIPEncapsulationReadResponseBuilder()
+	}
+	return &_CIPEncapsulationReadResponseBuilder{_CIPEncapsulationReadResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +218,6 @@ func (m *_CIPEncapsulationReadResponse) GetResponse() DF1ResponseMessage {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationReadResponse factory function for _CIPEncapsulationReadResponse
-func NewCIPEncapsulationReadResponse(response DF1ResponseMessage, sessionHandle uint32, status uint32, senderContext []uint8, options uint32, packetLen uint16) *_CIPEncapsulationReadResponse {
-	if response == nil {
-		panic("response of type DF1ResponseMessage for CIPEncapsulationReadResponse must not be nil")
-	}
-	_result := &_CIPEncapsulationReadResponse{
-		CIPEncapsulationPacketContract: NewCIPEncapsulationPacket(sessionHandle, status, senderContext, options),
-		Response:                       response,
-	}
-	_result.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationReadResponse(structType any) CIPEncapsulationReadResponse {
@@ -198,13 +313,34 @@ func (m *_CIPEncapsulationReadResponse) GetPacketLen() uint16 {
 
 func (m *_CIPEncapsulationReadResponse) IsCIPEncapsulationReadResponse() {}
 
+func (m *_CIPEncapsulationReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationReadResponse) deepCopy() *_CIPEncapsulationReadResponse {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationReadResponseCopy := &_CIPEncapsulationReadResponse{
+		m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket).deepCopy(),
+		m.Response.DeepCopy().(DF1ResponseMessage),
+		m.PacketLen,
+	}
+	m.CIPEncapsulationPacketContract.(*_CIPEncapsulationPacket)._SubType = m
+	return _CIPEncapsulationReadResponseCopy
+}
+
 func (m *_CIPEncapsulationReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

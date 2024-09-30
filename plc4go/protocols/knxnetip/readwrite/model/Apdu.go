@@ -40,8 +40,11 @@ type Apdu interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
+	// CreateBuilder creates a ApduBuilder
+	CreateApduBuilder() ApduBuilder
 }
 
 // ApduContract provides a set of functions which can be overwritten by a sub struct
@@ -54,6 +57,8 @@ type ApduContract interface {
 	GetDataLength() uint8
 	// IsApdu is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApdu()
+	// CreateBuilder creates a ApduBuilder
+	CreateApduBuilder() ApduBuilder
 }
 
 // ApduRequirements provides a set of functions which need to be implemented by a sub struct
@@ -76,6 +81,170 @@ type _Apdu struct {
 
 var _ ApduContract = (*_Apdu)(nil)
 
+// NewApdu factory function for _Apdu
+func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
+	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduBuilder is a builder for Apdu
+type ApduBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numbered bool, counter uint8) ApduBuilder
+	// WithNumbered adds Numbered (property field)
+	WithNumbered(bool) ApduBuilder
+	// WithCounter adds Counter (property field)
+	WithCounter(uint8) ApduBuilder
+	// AsApduControlContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
+	AsApduControlContainer() interface {
+		ApduControlContainerBuilder
+		Done() ApduBuilder
+	}
+	// AsApduDataContainer converts this build to a subType of Apdu. It is always possible to return to current builder using Done()
+	AsApduDataContainer() interface {
+		ApduDataContainerBuilder
+		Done() ApduBuilder
+	}
+	// Build builds the Apdu or returns an error if something is wrong
+	PartialBuild() (ApduContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ApduContract
+	// Build builds the Apdu or returns an error if something is wrong
+	Build() (Apdu, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Apdu
+}
+
+// NewApduBuilder() creates a ApduBuilder
+func NewApduBuilder() ApduBuilder {
+	return &_ApduBuilder{_Apdu: new(_Apdu)}
+}
+
+type _ApduChildBuilder interface {
+	utils.Copyable
+	setParent(ApduContract)
+	buildForApdu() (Apdu, error)
+}
+
+type _ApduBuilder struct {
+	*_Apdu
+
+	childBuilder _ApduChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduBuilder) = (*_ApduBuilder)(nil)
+
+func (b *_ApduBuilder) WithMandatoryFields(numbered bool, counter uint8) ApduBuilder {
+	return b.WithNumbered(numbered).WithCounter(counter)
+}
+
+func (b *_ApduBuilder) WithNumbered(numbered bool) ApduBuilder {
+	b.Numbered = numbered
+	return b
+}
+
+func (b *_ApduBuilder) WithCounter(counter uint8) ApduBuilder {
+	b.Counter = counter
+	return b
+}
+
+func (b *_ApduBuilder) PartialBuild() (ApduContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Apdu.deepCopy(), nil
+}
+
+func (b *_ApduBuilder) PartialMustBuild() ApduContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduBuilder) AsApduControlContainer() interface {
+	ApduControlContainerBuilder
+	Done() ApduBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlContainerBuilder
+		Done() ApduBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlContainerBuilder().(*_ApduControlContainerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduBuilder) AsApduDataContainer() interface {
+	ApduDataContainerBuilder
+	Done() ApduBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduDataContainerBuilder
+		Done() ApduBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduDataContainerBuilder().(*_ApduDataContainerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduBuilder) Build() (Apdu, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForApdu()
+}
+
+func (b *_ApduBuilder) MustBuild() Apdu {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduBuilder) DeepCopy() any {
+	_copy := b.CreateApduBuilder().(*_ApduBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduBuilder creates a ApduBuilder
+func (b *_Apdu) CreateApduBuilder() ApduBuilder {
+	if b == nil {
+		return NewApduBuilder()
+	}
+	return &_ApduBuilder{_Apdu: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -93,11 +262,6 @@ func (m *_Apdu) GetCounter() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApdu factory function for _Apdu
-func NewApdu(numbered bool, counter uint8, dataLength uint8) *_Apdu {
-	return &_Apdu{Numbered: numbered, Counter: counter, DataLength: dataLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastApdu(structType any) Apdu {
@@ -143,7 +307,7 @@ func ApduParseWithBufferProducer[T Apdu](dataLength uint8) func(ctx context.Cont
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -153,7 +317,12 @@ func ApduParseWithBuffer[T Apdu](ctx context.Context, readBuffer utils.ReadBuffe
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Apdu) parse(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (__apdu Apdu, err error) {
@@ -186,11 +355,11 @@ func (m *_Apdu) parse(ctx context.Context, readBuffer utils.ReadBuffer, dataLeng
 	var _child Apdu
 	switch {
 	case control == uint8(1): // ApduControlContainer
-		if _child, err = (&_ApduControlContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduControlContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlContainer for type-switch of Apdu")
 		}
 	case control == uint8(0): // ApduDataContainer
-		if _child, err = (&_ApduDataContainer{}).parse(ctx, readBuffer, m, dataLength); err != nil {
+		if _child, err = new(_ApduDataContainer).parse(ctx, readBuffer, m, dataLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduDataContainer for type-switch of Apdu")
 		}
 	default:
@@ -250,3 +419,20 @@ func (m *_Apdu) GetDataLength() uint8 {
 ////
 
 func (m *_Apdu) IsApdu() {}
+
+func (m *_Apdu) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Apdu) deepCopy() *_Apdu {
+	if m == nil {
+		return nil
+	}
+	_ApduCopy := &_Apdu{
+		nil, // will be set by child
+		m.Numbered,
+		m.Counter,
+		m.DataLength,
+	}
+	return _ApduCopy
+}

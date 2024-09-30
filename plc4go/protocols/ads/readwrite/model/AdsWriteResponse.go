@@ -38,11 +38,14 @@ type AdsWriteResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
 	// IsAdsWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsWriteResponse()
+	// CreateBuilder creates a AdsWriteResponseBuilder
+	CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder
 }
 
 // _AdsWriteResponse is the data-structure of this message
@@ -53,6 +56,107 @@ type _AdsWriteResponse struct {
 
 var _ AdsWriteResponse = (*_AdsWriteResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsWriteResponse)(nil)
+
+// NewAdsWriteResponse factory function for _AdsWriteResponse
+func NewAdsWriteResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode) *_AdsWriteResponse {
+	_result := &_AdsWriteResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsWriteResponseBuilder is a builder for AdsWriteResponse
+type AdsWriteResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsWriteResponseBuilder
+	// Build builds the AdsWriteResponse or returns an error if something is wrong
+	Build() (AdsWriteResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsWriteResponse
+}
+
+// NewAdsWriteResponseBuilder() creates a AdsWriteResponseBuilder
+func NewAdsWriteResponseBuilder() AdsWriteResponseBuilder {
+	return &_AdsWriteResponseBuilder{_AdsWriteResponse: new(_AdsWriteResponse)}
+}
+
+type _AdsWriteResponseBuilder struct {
+	*_AdsWriteResponse
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsWriteResponseBuilder) = (*_AdsWriteResponseBuilder)(nil)
+
+func (b *_AdsWriteResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsWriteResponseBuilder) WithMandatoryFields(result ReturnCode) AdsWriteResponseBuilder {
+	return b.WithResult(result)
+}
+
+func (b *_AdsWriteResponseBuilder) WithResult(result ReturnCode) AdsWriteResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsWriteResponseBuilder) Build() (AdsWriteResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsWriteResponse.deepCopy(), nil
+}
+
+func (b *_AdsWriteResponseBuilder) MustBuild() AdsWriteResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsWriteResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsWriteResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsWriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsWriteResponseBuilder().(*_AdsWriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsWriteResponseBuilder creates a AdsWriteResponseBuilder
+func (b *_AdsWriteResponse) CreateAdsWriteResponseBuilder() AdsWriteResponseBuilder {
+	if b == nil {
+		return NewAdsWriteResponseBuilder()
+	}
+	return &_AdsWriteResponseBuilder{_AdsWriteResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_AdsWriteResponse) GetResult() ReturnCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsWriteResponse factory function for _AdsWriteResponse
-func NewAdsWriteResponse(result ReturnCode, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsWriteResponse {
-	_result := &_AdsWriteResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsWriteResponse(structType any) AdsWriteResponse {
@@ -184,13 +278,33 @@ func (m *_AdsWriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_AdsWriteResponse) IsAdsWriteResponse() {}
 
+func (m *_AdsWriteResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsWriteResponse) deepCopy() *_AdsWriteResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsWriteResponseCopy := &_AdsWriteResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsWriteResponseCopy
+}
+
 func (m *_AdsWriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

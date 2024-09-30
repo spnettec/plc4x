@@ -36,8 +36,11 @@ type SessionAuthenticationToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSessionAuthenticationToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSessionAuthenticationToken()
+	// CreateBuilder creates a SessionAuthenticationTokenBuilder
+	CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder
 }
 
 // _SessionAuthenticationToken is the data-structure of this message
@@ -50,6 +53,75 @@ var _ SessionAuthenticationToken = (*_SessionAuthenticationToken)(nil)
 func NewSessionAuthenticationToken() *_SessionAuthenticationToken {
 	return &_SessionAuthenticationToken{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SessionAuthenticationTokenBuilder is a builder for SessionAuthenticationToken
+type SessionAuthenticationTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SessionAuthenticationTokenBuilder
+	// Build builds the SessionAuthenticationToken or returns an error if something is wrong
+	Build() (SessionAuthenticationToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SessionAuthenticationToken
+}
+
+// NewSessionAuthenticationTokenBuilder() creates a SessionAuthenticationTokenBuilder
+func NewSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
+	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: new(_SessionAuthenticationToken)}
+}
+
+type _SessionAuthenticationTokenBuilder struct {
+	*_SessionAuthenticationToken
+
+	err *utils.MultiError
+}
+
+var _ (SessionAuthenticationTokenBuilder) = (*_SessionAuthenticationTokenBuilder)(nil)
+
+func (b *_SessionAuthenticationTokenBuilder) WithMandatoryFields() SessionAuthenticationTokenBuilder {
+	return b
+}
+
+func (b *_SessionAuthenticationTokenBuilder) Build() (SessionAuthenticationToken, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SessionAuthenticationToken.deepCopy(), nil
+}
+
+func (b *_SessionAuthenticationTokenBuilder) MustBuild() SessionAuthenticationToken {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SessionAuthenticationTokenBuilder) DeepCopy() any {
+	_copy := b.CreateSessionAuthenticationTokenBuilder().(*_SessionAuthenticationTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSessionAuthenticationTokenBuilder creates a SessionAuthenticationTokenBuilder
+func (b *_SessionAuthenticationToken) CreateSessionAuthenticationTokenBuilder() SessionAuthenticationTokenBuilder {
+	if b == nil {
+		return NewSessionAuthenticationTokenBuilder()
+	}
+	return &_SessionAuthenticationTokenBuilder{_SessionAuthenticationToken: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastSessionAuthenticationToken(structType any) SessionAuthenticationToken {
@@ -91,7 +163,7 @@ func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SessionAuthenticationToken) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__sessionAuthenticationToken SessionAuthenticationToken, err error) {
@@ -135,13 +207,29 @@ func (m *_SessionAuthenticationToken) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_SessionAuthenticationToken) IsSessionAuthenticationToken() {}
 
+func (m *_SessionAuthenticationToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SessionAuthenticationToken) deepCopy() *_SessionAuthenticationToken {
+	if m == nil {
+		return nil
+	}
+	_SessionAuthenticationTokenCopy := &_SessionAuthenticationToken{}
+	return _SessionAuthenticationTokenCopy
+}
+
 func (m *_SessionAuthenticationToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

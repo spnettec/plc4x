@@ -36,8 +36,11 @@ type Index interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsIndex is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIndex()
+	// CreateBuilder creates a IndexBuilder
+	CreateIndexBuilder() IndexBuilder
 }
 
 // _Index is the data-structure of this message
@@ -50,6 +53,75 @@ var _ Index = (*_Index)(nil)
 func NewIndex() *_Index {
 	return &_Index{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IndexBuilder is a builder for Index
+type IndexBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() IndexBuilder
+	// Build builds the Index or returns an error if something is wrong
+	Build() (Index, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Index
+}
+
+// NewIndexBuilder() creates a IndexBuilder
+func NewIndexBuilder() IndexBuilder {
+	return &_IndexBuilder{_Index: new(_Index)}
+}
+
+type _IndexBuilder struct {
+	*_Index
+
+	err *utils.MultiError
+}
+
+var _ (IndexBuilder) = (*_IndexBuilder)(nil)
+
+func (b *_IndexBuilder) WithMandatoryFields() IndexBuilder {
+	return b
+}
+
+func (b *_IndexBuilder) Build() (Index, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Index.deepCopy(), nil
+}
+
+func (b *_IndexBuilder) MustBuild() Index {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_IndexBuilder) DeepCopy() any {
+	_copy := b.CreateIndexBuilder().(*_IndexBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIndexBuilder creates a IndexBuilder
+func (b *_Index) CreateIndexBuilder() IndexBuilder {
+	if b == nil {
+		return NewIndexBuilder()
+	}
+	return &_IndexBuilder{_Index: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastIndex(structType any) Index {
@@ -91,7 +163,7 @@ func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ind
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Index) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__index Index, err error) {
@@ -135,13 +207,29 @@ func (m *_Index) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 func (m *_Index) IsIndex() {}
 
+func (m *_Index) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Index) deepCopy() *_Index {
+	if m == nil {
+		return nil
+	}
+	_IndexCopy := &_Index{}
+	return _IndexCopy
+}
+
 func (m *_Index) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

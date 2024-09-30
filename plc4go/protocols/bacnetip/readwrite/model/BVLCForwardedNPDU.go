@@ -40,6 +40,7 @@ type BVLCForwardedNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetIp returns Ip (property field)
 	GetIp() []uint8
@@ -49,6 +50,8 @@ type BVLCForwardedNPDU interface {
 	GetNpdu() NPDU
 	// IsBVLCForwardedNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCForwardedNPDU()
+	// CreateBuilder creates a BVLCForwardedNPDUBuilder
+	CreateBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder
 }
 
 // _BVLCForwardedNPDU is the data-structure of this message
@@ -64,6 +67,147 @@ type _BVLCForwardedNPDU struct {
 
 var _ BVLCForwardedNPDU = (*_BVLCForwardedNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCForwardedNPDU)(nil)
+
+// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
+func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
+	}
+	_result := &_BVLCForwardedNPDU{
+		BVLCContract: NewBVLC(),
+		Ip:           ip,
+		Port:         port,
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCForwardedNPDUBuilder is a builder for BVLCForwardedNPDU
+type BVLCForwardedNPDUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ip []uint8, port uint16, npdu NPDU) BVLCForwardedNPDUBuilder
+	// WithIp adds Ip (property field)
+	WithIp(...uint8) BVLCForwardedNPDUBuilder
+	// WithPort adds Port (property field)
+	WithPort(uint16) BVLCForwardedNPDUBuilder
+	// WithNpdu adds Npdu (property field)
+	WithNpdu(NPDU) BVLCForwardedNPDUBuilder
+	// WithNpduBuilder adds Npdu (property field) which is build by the builder
+	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder
+	// Build builds the BVLCForwardedNPDU or returns an error if something is wrong
+	Build() (BVLCForwardedNPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCForwardedNPDU
+}
+
+// NewBVLCForwardedNPDUBuilder() creates a BVLCForwardedNPDUBuilder
+func NewBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder {
+	return &_BVLCForwardedNPDUBuilder{_BVLCForwardedNPDU: new(_BVLCForwardedNPDU)}
+}
+
+type _BVLCForwardedNPDUBuilder struct {
+	*_BVLCForwardedNPDU
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCForwardedNPDUBuilder) = (*_BVLCForwardedNPDUBuilder)(nil)
+
+func (b *_BVLCForwardedNPDUBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithMandatoryFields(ip []uint8, port uint16, npdu NPDU) BVLCForwardedNPDUBuilder {
+	return b.WithIp(ip...).WithPort(port).WithNpdu(npdu)
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithIp(ip ...uint8) BVLCForwardedNPDUBuilder {
+	b.Ip = ip
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithPort(port uint16) BVLCForwardedNPDUBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithNpdu(npdu NPDU) BVLCForwardedNPDUBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCForwardedNPDUBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
+	var err error
+	b.Npdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BVLCForwardedNPDUBuilder) Build() (BVLCForwardedNPDU, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCForwardedNPDU.deepCopy(), nil
+}
+
+func (b *_BVLCForwardedNPDUBuilder) MustBuild() BVLCForwardedNPDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCForwardedNPDUBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCForwardedNPDUBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCForwardedNPDUBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCForwardedNPDUBuilder().(*_BVLCForwardedNPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCForwardedNPDUBuilder creates a BVLCForwardedNPDUBuilder
+func (b *_BVLCForwardedNPDU) CreateBVLCForwardedNPDUBuilder() BVLCForwardedNPDUBuilder {
+	if b == nil {
+		return NewBVLCForwardedNPDUBuilder()
+	}
+	return &_BVLCForwardedNPDUBuilder{_BVLCForwardedNPDU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,21 +248,6 @@ func (m *_BVLCForwardedNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCForwardedNPDU factory function for _BVLCForwardedNPDU
-func NewBVLCForwardedNPDU(ip []uint8, port uint16, npdu NPDU, bvlcPayloadLength uint16) *_BVLCForwardedNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCForwardedNPDU must not be nil")
-	}
-	_result := &_BVLCForwardedNPDU{
-		BVLCContract: NewBVLC(),
-		Ip:           ip,
-		Port:         port,
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCForwardedNPDU(structType any) BVLCForwardedNPDU {
@@ -242,13 +371,36 @@ func (m *_BVLCForwardedNPDU) GetBvlcPayloadLength() uint16 {
 
 func (m *_BVLCForwardedNPDU) IsBVLCForwardedNPDU() {}
 
+func (m *_BVLCForwardedNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCForwardedNPDU) deepCopy() *_BVLCForwardedNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCForwardedNPDUCopy := &_BVLCForwardedNPDU{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		utils.DeepCopySlice[uint8, uint8](m.Ip),
+		m.Port,
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCForwardedNPDUCopy
+}
+
 func (m *_BVLCForwardedNPDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

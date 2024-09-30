@@ -38,6 +38,7 @@ type BACnetConstructedDataOutputUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUnits returns Units (property field)
 	GetUnits() BACnetEngineeringUnitsTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataOutputUnits interface {
 	GetActualValue() BACnetEngineeringUnitsTagged
 	// IsBACnetConstructedDataOutputUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOutputUnits()
+	// CreateBuilder creates a BACnetConstructedDataOutputUnitsBuilder
+	CreateBACnetConstructedDataOutputUnitsBuilder() BACnetConstructedDataOutputUnitsBuilder
 }
 
 // _BACnetConstructedDataOutputUnits is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataOutputUnits struct {
 
 var _ BACnetConstructedDataOutputUnits = (*_BACnetConstructedDataOutputUnits)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOutputUnits)(nil)
+
+// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
+func NewBACnetConstructedDataOutputUnits(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, units BACnetEngineeringUnitsTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
+	if units == nil {
+		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
+	}
+	_result := &_BACnetConstructedDataOutputUnits{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Units:                         units,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOutputUnitsBuilder is a builder for BACnetConstructedDataOutputUnits
+type BACnetConstructedDataOutputUnitsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataOutputUnitsBuilder
+	// WithUnits adds Units (property field)
+	WithUnits(BACnetEngineeringUnitsTagged) BACnetConstructedDataOutputUnitsBuilder
+	// WithUnitsBuilder adds Units (property field) which is build by the builder
+	WithUnitsBuilder(func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataOutputUnitsBuilder
+	// Build builds the BACnetConstructedDataOutputUnits or returns an error if something is wrong
+	Build() (BACnetConstructedDataOutputUnits, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOutputUnits
+}
+
+// NewBACnetConstructedDataOutputUnitsBuilder() creates a BACnetConstructedDataOutputUnitsBuilder
+func NewBACnetConstructedDataOutputUnitsBuilder() BACnetConstructedDataOutputUnitsBuilder {
+	return &_BACnetConstructedDataOutputUnitsBuilder{_BACnetConstructedDataOutputUnits: new(_BACnetConstructedDataOutputUnits)}
+}
+
+type _BACnetConstructedDataOutputUnitsBuilder struct {
+	*_BACnetConstructedDataOutputUnits
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOutputUnitsBuilder) = (*_BACnetConstructedDataOutputUnitsBuilder)(nil)
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) WithMandatoryFields(units BACnetEngineeringUnitsTagged) BACnetConstructedDataOutputUnitsBuilder {
+	return b.WithUnits(units)
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) WithUnits(units BACnetEngineeringUnitsTagged) BACnetConstructedDataOutputUnitsBuilder {
+	b.Units = units
+	return b
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) WithUnitsBuilder(builderSupplier func(BACnetEngineeringUnitsTaggedBuilder) BACnetEngineeringUnitsTaggedBuilder) BACnetConstructedDataOutputUnitsBuilder {
+	builder := builderSupplier(b.Units.CreateBACnetEngineeringUnitsTaggedBuilder())
+	var err error
+	b.Units, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEngineeringUnitsTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) Build() (BACnetConstructedDataOutputUnits, error) {
+	if b.Units == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'units' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataOutputUnits.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) MustBuild() BACnetConstructedDataOutputUnits {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOutputUnitsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOutputUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOutputUnitsBuilder().(*_BACnetConstructedDataOutputUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataOutputUnitsBuilder creates a BACnetConstructedDataOutputUnitsBuilder
+func (b *_BACnetConstructedDataOutputUnits) CreateBACnetConstructedDataOutputUnitsBuilder() BACnetConstructedDataOutputUnitsBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataOutputUnitsBuilder()
+	}
+	return &_BACnetConstructedDataOutputUnitsBuilder{_BACnetConstructedDataOutputUnits: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataOutputUnits) GetActualValue() BACnetEngineeringUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOutputUnits factory function for _BACnetConstructedDataOutputUnits
-func NewBACnetConstructedDataOutputUnits(units BACnetEngineeringUnitsTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOutputUnits {
-	if units == nil {
-		panic("units of type BACnetEngineeringUnitsTagged for BACnetConstructedDataOutputUnits must not be nil")
-	}
-	_result := &_BACnetConstructedDataOutputUnits{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Units:                         units,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOutputUnits(structType any) BACnetConstructedDataOutputUnits {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataOutputUnits) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataOutputUnits) IsBACnetConstructedDataOutputUnits() {}
 
+func (m *_BACnetConstructedDataOutputUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOutputUnits) deepCopy() *_BACnetConstructedDataOutputUnits {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOutputUnitsCopy := &_BACnetConstructedDataOutputUnits{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Units.DeepCopy().(BACnetEngineeringUnitsTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOutputUnitsCopy
+}
+
 func (m *_BACnetConstructedDataOutputUnits) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

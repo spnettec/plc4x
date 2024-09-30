@@ -38,11 +38,14 @@ type S7ParameterWriteVarRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
 	// IsS7ParameterWriteVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterWriteVarRequest()
+	// CreateBuilder creates a S7ParameterWriteVarRequestBuilder
+	CreateS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder
 }
 
 // _S7ParameterWriteVarRequest is the data-structure of this message
@@ -53,6 +56,107 @@ type _S7ParameterWriteVarRequest struct {
 
 var _ S7ParameterWriteVarRequest = (*_S7ParameterWriteVarRequest)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterWriteVarRequest)(nil)
+
+// NewS7ParameterWriteVarRequest factory function for _S7ParameterWriteVarRequest
+func NewS7ParameterWriteVarRequest(items []S7VarRequestParameterItem) *_S7ParameterWriteVarRequest {
+	_result := &_S7ParameterWriteVarRequest{
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterWriteVarRequestBuilder is a builder for S7ParameterWriteVarRequest
+type S7ParameterWriteVarRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder
+	// Build builds the S7ParameterWriteVarRequest or returns an error if something is wrong
+	Build() (S7ParameterWriteVarRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterWriteVarRequest
+}
+
+// NewS7ParameterWriteVarRequestBuilder() creates a S7ParameterWriteVarRequestBuilder
+func NewS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder {
+	return &_S7ParameterWriteVarRequestBuilder{_S7ParameterWriteVarRequest: new(_S7ParameterWriteVarRequest)}
+}
+
+type _S7ParameterWriteVarRequestBuilder struct {
+	*_S7ParameterWriteVarRequest
+
+	parentBuilder *_S7ParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterWriteVarRequestBuilder) = (*_S7ParameterWriteVarRequestBuilder)(nil)
+
+func (b *_S7ParameterWriteVarRequestBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
+	return b.WithItems(items...)
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) WithItems(items ...S7VarRequestParameterItem) S7ParameterWriteVarRequestBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) Build() (S7ParameterWriteVarRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7ParameterWriteVarRequest.deepCopy(), nil
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) MustBuild() S7ParameterWriteVarRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterWriteVarRequestBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterWriteVarRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterWriteVarRequestBuilder().(*_S7ParameterWriteVarRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7ParameterWriteVarRequestBuilder creates a S7ParameterWriteVarRequestBuilder
+func (b *_S7ParameterWriteVarRequest) CreateS7ParameterWriteVarRequestBuilder() S7ParameterWriteVarRequestBuilder {
+	if b == nil {
+		return NewS7ParameterWriteVarRequestBuilder()
+	}
+	return &_S7ParameterWriteVarRequestBuilder{_S7ParameterWriteVarRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_S7ParameterWriteVarRequest) GetItems() []S7VarRequestParameterItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterWriteVarRequest factory function for _S7ParameterWriteVarRequest
-func NewS7ParameterWriteVarRequest(items []S7VarRequestParameterItem) *_S7ParameterWriteVarRequest {
-	_result := &_S7ParameterWriteVarRequest{
-		S7ParameterContract: NewS7Parameter(),
-		Items:               items,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterWriteVarRequest(structType any) S7ParameterWriteVarRequest {
@@ -204,13 +298,33 @@ func (m *_S7ParameterWriteVarRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_S7ParameterWriteVarRequest) IsS7ParameterWriteVarRequest() {}
 
+func (m *_S7ParameterWriteVarRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterWriteVarRequest) deepCopy() *_S7ParameterWriteVarRequest {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterWriteVarRequestCopy := &_S7ParameterWriteVarRequest{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		utils.DeepCopySlice[S7VarRequestParameterItem, S7VarRequestParameterItem](m.Items),
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterWriteVarRequestCopy
+}
+
 func (m *_S7ParameterWriteVarRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

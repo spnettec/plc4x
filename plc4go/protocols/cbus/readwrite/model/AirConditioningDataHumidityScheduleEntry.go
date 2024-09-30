@@ -38,6 +38,7 @@ type AirConditioningDataHumidityScheduleEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -57,6 +58,8 @@ type AirConditioningDataHumidityScheduleEntry interface {
 	GetRawLevel() HVACRawLevels
 	// IsAirConditioningDataHumidityScheduleEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataHumidityScheduleEntry()
+	// CreateBuilder creates a AirConditioningDataHumidityScheduleEntryBuilder
+	CreateAirConditioningDataHumidityScheduleEntryBuilder() AirConditioningDataHumidityScheduleEntryBuilder
 }
 
 // _AirConditioningDataHumidityScheduleEntry is the data-structure of this message
@@ -74,6 +77,265 @@ type _AirConditioningDataHumidityScheduleEntry struct {
 
 var _ AirConditioningDataHumidityScheduleEntry = (*_AirConditioningDataHumidityScheduleEntry)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataHumidityScheduleEntry)(nil)
+
+// NewAirConditioningDataHumidityScheduleEntry factory function for _AirConditioningDataHumidityScheduleEntry
+func NewAirConditioningDataHumidityScheduleEntry(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime, level HVACHumidity, rawLevel HVACRawLevels) *_AirConditioningDataHumidityScheduleEntry {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	if humidityModeAndFlags == nil {
+		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	if startTime == nil {
+		panic("startTime of type HVACStartTime for AirConditioningDataHumidityScheduleEntry must not be nil")
+	}
+	_result := &_AirConditioningDataHumidityScheduleEntry{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Entry:                       entry,
+		Format:                      format,
+		HumidityModeAndFlags:        humidityModeAndFlags,
+		StartTime:                   startTime,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataHumidityScheduleEntryBuilder is a builder for AirConditioningDataHumidityScheduleEntry
+type AirConditioningDataHumidityScheduleEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithZoneList adds ZoneList (property field)
+	WithZoneList(HVACZoneList) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithZoneListBuilder adds ZoneList (property field) which is build by the builder
+	WithZoneListBuilder(func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithEntry adds Entry (property field)
+	WithEntry(uint8) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithFormat adds Format (property field)
+	WithFormat(byte) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithHumidityModeAndFlags adds HumidityModeAndFlags (property field)
+	WithHumidityModeAndFlags(HVACHumidityModeAndFlags) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithHumidityModeAndFlagsBuilder adds HumidityModeAndFlags (property field) which is build by the builder
+	WithHumidityModeAndFlagsBuilder(func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(HVACStartTime) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithStartTimeBuilder adds StartTime (property field) which is build by the builder
+	WithStartTimeBuilder(func(HVACStartTimeBuilder) HVACStartTimeBuilder) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithLevel adds Level (property field)
+	WithOptionalLevel(HVACHumidity) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithOptionalLevelBuilder adds Level (property field) which is build by the builder
+	WithOptionalLevelBuilder(func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithRawLevel adds RawLevel (property field)
+	WithOptionalRawLevel(HVACRawLevels) AirConditioningDataHumidityScheduleEntryBuilder
+	// WithOptionalRawLevelBuilder adds RawLevel (property field) which is build by the builder
+	WithOptionalRawLevelBuilder(func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataHumidityScheduleEntryBuilder
+	// Build builds the AirConditioningDataHumidityScheduleEntry or returns an error if something is wrong
+	Build() (AirConditioningDataHumidityScheduleEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataHumidityScheduleEntry
+}
+
+// NewAirConditioningDataHumidityScheduleEntryBuilder() creates a AirConditioningDataHumidityScheduleEntryBuilder
+func NewAirConditioningDataHumidityScheduleEntryBuilder() AirConditioningDataHumidityScheduleEntryBuilder {
+	return &_AirConditioningDataHumidityScheduleEntryBuilder{_AirConditioningDataHumidityScheduleEntry: new(_AirConditioningDataHumidityScheduleEntry)}
+}
+
+type _AirConditioningDataHumidityScheduleEntryBuilder struct {
+	*_AirConditioningDataHumidityScheduleEntry
+
+	parentBuilder *_AirConditioningDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataHumidityScheduleEntryBuilder) = (*_AirConditioningDataHumidityScheduleEntryBuilder)(nil)
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime) AirConditioningDataHumidityScheduleEntryBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithEntry(entry).WithFormat(format).WithHumidityModeAndFlags(humidityModeAndFlags).WithStartTime(startTime)
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataHumidityScheduleEntryBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
+	var err error
+	b.ZoneList, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithEntry(entry uint8) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.Entry = entry
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithFormat(format byte) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.Format = format
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithHumidityModeAndFlags(humidityModeAndFlags HVACHumidityModeAndFlags) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.HumidityModeAndFlags = humidityModeAndFlags
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithHumidityModeAndFlagsBuilder(builderSupplier func(HVACHumidityModeAndFlagsBuilder) HVACHumidityModeAndFlagsBuilder) AirConditioningDataHumidityScheduleEntryBuilder {
+	builder := builderSupplier(b.HumidityModeAndFlags.CreateHVACHumidityModeAndFlagsBuilder())
+	var err error
+	b.HumidityModeAndFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACHumidityModeAndFlagsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithStartTime(startTime HVACStartTime) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithStartTimeBuilder(builderSupplier func(HVACStartTimeBuilder) HVACStartTimeBuilder) AirConditioningDataHumidityScheduleEntryBuilder {
+	builder := builderSupplier(b.StartTime.CreateHVACStartTimeBuilder())
+	var err error
+	b.StartTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACStartTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithOptionalLevel(level HVACHumidity) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACHumidityBuilder) HVACHumidityBuilder) AirConditioningDataHumidityScheduleEntryBuilder {
+	builder := builderSupplier(b.Level.CreateHVACHumidityBuilder())
+	var err error
+	b.Level, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACHumidityBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataHumidityScheduleEntryBuilder {
+	b.RawLevel = rawLevel
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataHumidityScheduleEntryBuilder {
+	builder := builderSupplier(b.RawLevel.CreateHVACRawLevelsBuilder())
+	var err error
+	b.RawLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) Build() (AirConditioningDataHumidityScheduleEntry, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+	}
+	if b.HumidityModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'humidityModeAndFlags' not set"))
+	}
+	if b.StartTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'startTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AirConditioningDataHumidityScheduleEntry.deepCopy(), nil
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) MustBuild() AirConditioningDataHumidityScheduleEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataHumidityScheduleEntryBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataHumidityScheduleEntryBuilder().(*_AirConditioningDataHumidityScheduleEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAirConditioningDataHumidityScheduleEntryBuilder creates a AirConditioningDataHumidityScheduleEntryBuilder
+func (b *_AirConditioningDataHumidityScheduleEntry) CreateAirConditioningDataHumidityScheduleEntryBuilder() AirConditioningDataHumidityScheduleEntryBuilder {
+	if b == nil {
+		return NewAirConditioningDataHumidityScheduleEntryBuilder()
+	}
+	return &_AirConditioningDataHumidityScheduleEntryBuilder{_AirConditioningDataHumidityScheduleEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,32 +392,6 @@ func (m *_AirConditioningDataHumidityScheduleEntry) GetRawLevel() HVACRawLevels 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataHumidityScheduleEntry factory function for _AirConditioningDataHumidityScheduleEntry
-func NewAirConditioningDataHumidityScheduleEntry(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, humidityModeAndFlags HVACHumidityModeAndFlags, startTime HVACStartTime, level HVACHumidity, rawLevel HVACRawLevels, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataHumidityScheduleEntry {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	if humidityModeAndFlags == nil {
-		panic("humidityModeAndFlags of type HVACHumidityModeAndFlags for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	if startTime == nil {
-		panic("startTime of type HVACStartTime for AirConditioningDataHumidityScheduleEntry must not be nil")
-	}
-	_result := &_AirConditioningDataHumidityScheduleEntry{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Entry:                       entry,
-		Format:                      format,
-		HumidityModeAndFlags:        humidityModeAndFlags,
-		StartTime:                   startTime,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataHumidityScheduleEntry(structType any) AirConditioningDataHumidityScheduleEntry {
@@ -344,13 +580,40 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx
 
 func (m *_AirConditioningDataHumidityScheduleEntry) IsAirConditioningDataHumidityScheduleEntry() {}
 
+func (m *_AirConditioningDataHumidityScheduleEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataHumidityScheduleEntry) deepCopy() *_AirConditioningDataHumidityScheduleEntry {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataHumidityScheduleEntryCopy := &_AirConditioningDataHumidityScheduleEntry{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Entry,
+		m.Format,
+		m.HumidityModeAndFlags.DeepCopy().(HVACHumidityModeAndFlags),
+		m.StartTime.DeepCopy().(HVACStartTime),
+		m.Level.DeepCopy().(HVACHumidity),
+		m.RawLevel.DeepCopy().(HVACRawLevels),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataHumidityScheduleEntryCopy
+}
+
 func (m *_AirConditioningDataHumidityScheduleEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

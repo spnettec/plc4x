@@ -38,6 +38,7 @@ type BACnetConstructedDataTrackingValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTrackingValue returns TrackingValue (property field)
 	GetTrackingValue() BACnetLifeSafetyStateTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataTrackingValue interface {
 	GetActualValue() BACnetLifeSafetyStateTagged
 	// IsBACnetConstructedDataTrackingValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTrackingValue()
+	// CreateBuilder creates a BACnetConstructedDataTrackingValueBuilder
+	CreateBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackingValueBuilder
 }
 
 // _BACnetConstructedDataTrackingValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataTrackingValue struct {
 
 var _ BACnetConstructedDataTrackingValue = (*_BACnetConstructedDataTrackingValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTrackingValue)(nil)
+
+// NewBACnetConstructedDataTrackingValue factory function for _BACnetConstructedDataTrackingValue
+func NewBACnetConstructedDataTrackingValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, trackingValue BACnetLifeSafetyStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrackingValue {
+	if trackingValue == nil {
+		panic("trackingValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataTrackingValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataTrackingValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TrackingValue:                 trackingValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTrackingValueBuilder is a builder for BACnetConstructedDataTrackingValue
+type BACnetConstructedDataTrackingValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder
+	// WithTrackingValue adds TrackingValue (property field)
+	WithTrackingValue(BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder
+	// WithTrackingValueBuilder adds TrackingValue (property field) which is build by the builder
+	WithTrackingValueBuilder(func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataTrackingValueBuilder
+	// Build builds the BACnetConstructedDataTrackingValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataTrackingValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTrackingValue
+}
+
+// NewBACnetConstructedDataTrackingValueBuilder() creates a BACnetConstructedDataTrackingValueBuilder
+func NewBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackingValueBuilder {
+	return &_BACnetConstructedDataTrackingValueBuilder{_BACnetConstructedDataTrackingValue: new(_BACnetConstructedDataTrackingValue)}
+}
+
+type _BACnetConstructedDataTrackingValueBuilder struct {
+	*_BACnetConstructedDataTrackingValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTrackingValueBuilder) = (*_BACnetConstructedDataTrackingValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithMandatoryFields(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
+	return b.WithTrackingValue(trackingValue)
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValue(trackingValue BACnetLifeSafetyStateTagged) BACnetConstructedDataTrackingValueBuilder {
+	b.TrackingValue = trackingValue
+	return b
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) WithTrackingValueBuilder(builderSupplier func(BACnetLifeSafetyStateTaggedBuilder) BACnetLifeSafetyStateTaggedBuilder) BACnetConstructedDataTrackingValueBuilder {
+	builder := builderSupplier(b.TrackingValue.CreateBACnetLifeSafetyStateTaggedBuilder())
+	var err error
+	b.TrackingValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLifeSafetyStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) Build() (BACnetConstructedDataTrackingValue, error) {
+	if b.TrackingValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'trackingValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTrackingValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) MustBuild() BACnetConstructedDataTrackingValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTrackingValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTrackingValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTrackingValueBuilder().(*_BACnetConstructedDataTrackingValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTrackingValueBuilder creates a BACnetConstructedDataTrackingValueBuilder
+func (b *_BACnetConstructedDataTrackingValue) CreateBACnetConstructedDataTrackingValueBuilder() BACnetConstructedDataTrackingValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTrackingValueBuilder()
+	}
+	return &_BACnetConstructedDataTrackingValueBuilder{_BACnetConstructedDataTrackingValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataTrackingValue) GetActualValue() BACnetLifeSafetyS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTrackingValue factory function for _BACnetConstructedDataTrackingValue
-func NewBACnetConstructedDataTrackingValue(trackingValue BACnetLifeSafetyStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTrackingValue {
-	if trackingValue == nil {
-		panic("trackingValue of type BACnetLifeSafetyStateTagged for BACnetConstructedDataTrackingValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataTrackingValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TrackingValue:                 trackingValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTrackingValue(structType any) BACnetConstructedDataTrackingValue {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataTrackingValue) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataTrackingValue) IsBACnetConstructedDataTrackingValue() {}
 
+func (m *_BACnetConstructedDataTrackingValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTrackingValue) deepCopy() *_BACnetConstructedDataTrackingValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTrackingValueCopy := &_BACnetConstructedDataTrackingValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TrackingValue.DeepCopy().(BACnetLifeSafetyStateTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTrackingValueCopy
+}
+
 func (m *_BACnetConstructedDataTrackingValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

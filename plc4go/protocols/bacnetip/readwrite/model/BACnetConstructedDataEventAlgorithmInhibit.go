@@ -38,6 +38,7 @@ type BACnetConstructedDataEventAlgorithmInhibit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEventAlgorithmInhibit returns EventAlgorithmInhibit (property field)
 	GetEventAlgorithmInhibit() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataEventAlgorithmInhibit interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataEventAlgorithmInhibit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventAlgorithmInhibit()
+	// CreateBuilder creates a BACnetConstructedDataEventAlgorithmInhibitBuilder
+	CreateBACnetConstructedDataEventAlgorithmInhibitBuilder() BACnetConstructedDataEventAlgorithmInhibitBuilder
 }
 
 // _BACnetConstructedDataEventAlgorithmInhibit is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataEventAlgorithmInhibit struct {
 
 var _ BACnetConstructedDataEventAlgorithmInhibit = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventAlgorithmInhibit)(nil)
+
+// NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
+func NewBACnetConstructedDataEventAlgorithmInhibit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, eventAlgorithmInhibit BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
+	if eventAlgorithmInhibit == nil {
+		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
+	}
+	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EventAlgorithmInhibit:         eventAlgorithmInhibit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventAlgorithmInhibitBuilder is a builder for BACnetConstructedDataEventAlgorithmInhibit
+type BACnetConstructedDataEventAlgorithmInhibitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(eventAlgorithmInhibit BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder
+	// WithEventAlgorithmInhibit adds EventAlgorithmInhibit (property field)
+	WithEventAlgorithmInhibit(BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder
+	// WithEventAlgorithmInhibitBuilder adds EventAlgorithmInhibit (property field) which is build by the builder
+	WithEventAlgorithmInhibitBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventAlgorithmInhibitBuilder
+	// Build builds the BACnetConstructedDataEventAlgorithmInhibit or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventAlgorithmInhibit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventAlgorithmInhibit
+}
+
+// NewBACnetConstructedDataEventAlgorithmInhibitBuilder() creates a BACnetConstructedDataEventAlgorithmInhibitBuilder
+func NewBACnetConstructedDataEventAlgorithmInhibitBuilder() BACnetConstructedDataEventAlgorithmInhibitBuilder {
+	return &_BACnetConstructedDataEventAlgorithmInhibitBuilder{_BACnetConstructedDataEventAlgorithmInhibit: new(_BACnetConstructedDataEventAlgorithmInhibit)}
+}
+
+type _BACnetConstructedDataEventAlgorithmInhibitBuilder struct {
+	*_BACnetConstructedDataEventAlgorithmInhibit
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventAlgorithmInhibitBuilder) = (*_BACnetConstructedDataEventAlgorithmInhibitBuilder)(nil)
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) WithMandatoryFields(eventAlgorithmInhibit BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder {
+	return b.WithEventAlgorithmInhibit(eventAlgorithmInhibit)
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) WithEventAlgorithmInhibit(eventAlgorithmInhibit BACnetApplicationTagBoolean) BACnetConstructedDataEventAlgorithmInhibitBuilder {
+	b.EventAlgorithmInhibit = eventAlgorithmInhibit
+	return b
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) WithEventAlgorithmInhibitBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataEventAlgorithmInhibitBuilder {
+	builder := builderSupplier(b.EventAlgorithmInhibit.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.EventAlgorithmInhibit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) Build() (BACnetConstructedDataEventAlgorithmInhibit, error) {
+	if b.EventAlgorithmInhibit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'eventAlgorithmInhibit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEventAlgorithmInhibit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) MustBuild() BACnetConstructedDataEventAlgorithmInhibit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventAlgorithmInhibitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventAlgorithmInhibitBuilder().(*_BACnetConstructedDataEventAlgorithmInhibitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEventAlgorithmInhibitBuilder creates a BACnetConstructedDataEventAlgorithmInhibitBuilder
+func (b *_BACnetConstructedDataEventAlgorithmInhibit) CreateBACnetConstructedDataEventAlgorithmInhibitBuilder() BACnetConstructedDataEventAlgorithmInhibitBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEventAlgorithmInhibitBuilder()
+	}
+	return &_BACnetConstructedDataEventAlgorithmInhibitBuilder{_BACnetConstructedDataEventAlgorithmInhibit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) GetActualValue() BACnetApp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventAlgorithmInhibit factory function for _BACnetConstructedDataEventAlgorithmInhibit
-func NewBACnetConstructedDataEventAlgorithmInhibit(eventAlgorithmInhibit BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventAlgorithmInhibit {
-	if eventAlgorithmInhibit == nil {
-		panic("eventAlgorithmInhibit of type BACnetApplicationTagBoolean for BACnetConstructedDataEventAlgorithmInhibit must not be nil")
-	}
-	_result := &_BACnetConstructedDataEventAlgorithmInhibit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EventAlgorithmInhibit:         eventAlgorithmInhibit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventAlgorithmInhibit(structType any) BACnetConstructedDataEventAlgorithmInhibit {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataEventAlgorithmInhibit) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) IsBACnetConstructedDataEventAlgorithmInhibit() {
 }
 
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventAlgorithmInhibit) deepCopy() *_BACnetConstructedDataEventAlgorithmInhibit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventAlgorithmInhibitCopy := &_BACnetConstructedDataEventAlgorithmInhibit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EventAlgorithmInhibit.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventAlgorithmInhibitCopy
+}
+
 func (m *_BACnetConstructedDataEventAlgorithmInhibit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

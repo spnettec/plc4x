@@ -38,6 +38,7 @@ type BACnetConstructedDataLastKeyServer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLastKeyServer returns LastKeyServer (property field)
 	GetLastKeyServer() BACnetAddressBinding
@@ -45,6 +46,8 @@ type BACnetConstructedDataLastKeyServer interface {
 	GetActualValue() BACnetAddressBinding
 	// IsBACnetConstructedDataLastKeyServer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLastKeyServer()
+	// CreateBuilder creates a BACnetConstructedDataLastKeyServerBuilder
+	CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder
 }
 
 // _BACnetConstructedDataLastKeyServer is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLastKeyServer struct {
 
 var _ BACnetConstructedDataLastKeyServer = (*_BACnetConstructedDataLastKeyServer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLastKeyServer)(nil)
+
+// NewBACnetConstructedDataLastKeyServer factory function for _BACnetConstructedDataLastKeyServer
+func NewBACnetConstructedDataLastKeyServer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lastKeyServer BACnetAddressBinding, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
+	if lastKeyServer == nil {
+		panic("lastKeyServer of type BACnetAddressBinding for BACnetConstructedDataLastKeyServer must not be nil")
+	}
+	_result := &_BACnetConstructedDataLastKeyServer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LastKeyServer:                 lastKeyServer,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLastKeyServerBuilder is a builder for BACnetConstructedDataLastKeyServer
+type BACnetConstructedDataLastKeyServerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder
+	// WithLastKeyServer adds LastKeyServer (property field)
+	WithLastKeyServer(BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder
+	// WithLastKeyServerBuilder adds LastKeyServer (property field) which is build by the builder
+	WithLastKeyServerBuilder(func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder
+	// Build builds the BACnetConstructedDataLastKeyServer or returns an error if something is wrong
+	Build() (BACnetConstructedDataLastKeyServer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLastKeyServer
+}
+
+// NewBACnetConstructedDataLastKeyServerBuilder() creates a BACnetConstructedDataLastKeyServerBuilder
+func NewBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
+	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: new(_BACnetConstructedDataLastKeyServer)}
+}
+
+type _BACnetConstructedDataLastKeyServerBuilder struct {
+	*_BACnetConstructedDataLastKeyServer
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLastKeyServerBuilder) = (*_BACnetConstructedDataLastKeyServerBuilder)(nil)
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithMandatoryFields(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	return b.WithLastKeyServer(lastKeyServer)
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServer(lastKeyServer BACnetAddressBinding) BACnetConstructedDataLastKeyServerBuilder {
+	b.LastKeyServer = lastKeyServer
+	return b
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) WithLastKeyServerBuilder(builderSupplier func(BACnetAddressBindingBuilder) BACnetAddressBindingBuilder) BACnetConstructedDataLastKeyServerBuilder {
+	builder := builderSupplier(b.LastKeyServer.CreateBACnetAddressBindingBuilder())
+	var err error
+	b.LastKeyServer, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAddressBindingBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) Build() (BACnetConstructedDataLastKeyServer, error) {
+	if b.LastKeyServer == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lastKeyServer' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLastKeyServer.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) MustBuild() BACnetConstructedDataLastKeyServer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLastKeyServerBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLastKeyServerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLastKeyServerBuilder().(*_BACnetConstructedDataLastKeyServerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLastKeyServerBuilder creates a BACnetConstructedDataLastKeyServerBuilder
+func (b *_BACnetConstructedDataLastKeyServer) CreateBACnetConstructedDataLastKeyServerBuilder() BACnetConstructedDataLastKeyServerBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLastKeyServerBuilder()
+	}
+	return &_BACnetConstructedDataLastKeyServerBuilder{_BACnetConstructedDataLastKeyServer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLastKeyServer) GetActualValue() BACnetAddressBind
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLastKeyServer factory function for _BACnetConstructedDataLastKeyServer
-func NewBACnetConstructedDataLastKeyServer(lastKeyServer BACnetAddressBinding, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLastKeyServer {
-	if lastKeyServer == nil {
-		panic("lastKeyServer of type BACnetAddressBinding for BACnetConstructedDataLastKeyServer must not be nil")
-	}
-	_result := &_BACnetConstructedDataLastKeyServer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LastKeyServer:                 lastKeyServer,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLastKeyServer(structType any) BACnetConstructedDataLastKeyServer {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLastKeyServer) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataLastKeyServer) IsBACnetConstructedDataLastKeyServer() {}
 
+func (m *_BACnetConstructedDataLastKeyServer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLastKeyServer) deepCopy() *_BACnetConstructedDataLastKeyServer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLastKeyServerCopy := &_BACnetConstructedDataLastKeyServer{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LastKeyServer.DeepCopy().(BACnetAddressBinding),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLastKeyServerCopy
+}
+
 func (m *_BACnetConstructedDataLastKeyServer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

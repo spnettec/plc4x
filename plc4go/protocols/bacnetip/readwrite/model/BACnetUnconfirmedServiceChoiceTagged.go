@@ -38,12 +38,15 @@ type BACnetUnconfirmedServiceChoiceTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetUnconfirmedServiceChoice
 	// IsBACnetUnconfirmedServiceChoiceTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceChoiceTagged()
+	// CreateBuilder creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+	CreateBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder
 }
 
 // _BACnetUnconfirmedServiceChoiceTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetUnconfirmedServiceChoiceTagged struct {
 }
 
 var _ BACnetUnconfirmedServiceChoiceTagged = (*_BACnetUnconfirmedServiceChoiceTagged)(nil)
+
+// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
+func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceChoiceTaggedBuilder is a builder for BACnetUnconfirmedServiceChoiceTagged
+type BACnetUnconfirmedServiceChoiceTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder
+	// Build builds the BACnetUnconfirmedServiceChoiceTagged or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceChoiceTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceChoiceTagged
+}
+
+// NewBACnetUnconfirmedServiceChoiceTaggedBuilder() creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+func NewBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	return &_BACnetUnconfirmedServiceChoiceTaggedBuilder{_BACnetUnconfirmedServiceChoiceTagged: new(_BACnetUnconfirmedServiceChoiceTagged)}
+}
+
+type _BACnetUnconfirmedServiceChoiceTaggedBuilder struct {
+	*_BACnetUnconfirmedServiceChoiceTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceChoiceTaggedBuilder) = (*_BACnetUnconfirmedServiceChoiceTaggedBuilder)(nil)
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) WithValue(value BACnetUnconfirmedServiceChoice) BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) Build() (BACnetUnconfirmedServiceChoiceTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceChoiceTagged.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) MustBuild() BACnetUnconfirmedServiceChoiceTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetUnconfirmedServiceChoiceTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceChoiceTaggedBuilder().(*_BACnetUnconfirmedServiceChoiceTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetUnconfirmedServiceChoiceTaggedBuilder creates a BACnetUnconfirmedServiceChoiceTaggedBuilder
+func (b *_BACnetUnconfirmedServiceChoiceTagged) CreateBACnetUnconfirmedServiceChoiceTaggedBuilder() BACnetUnconfirmedServiceChoiceTaggedBuilder {
+	if b == nil {
+		return NewBACnetUnconfirmedServiceChoiceTaggedBuilder()
+	}
+	return &_BACnetUnconfirmedServiceChoiceTaggedBuilder{_BACnetUnconfirmedServiceChoiceTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetValue() BACnetUnconfirmedServ
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceChoiceTagged factory function for _BACnetUnconfirmedServiceChoiceTagged
-func NewBACnetUnconfirmedServiceChoiceTagged(header BACnetTagHeader, value BACnetUnconfirmedServiceChoice, tagNumber uint8, tagClass TagClass) *_BACnetUnconfirmedServiceChoiceTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetUnconfirmedServiceChoiceTagged must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceChoiceTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceChoiceTagged(structType any) BACnetUnconfirmedServiceChoiceTagged {
@@ -130,7 +237,7 @@ func BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetUnconfirmedServiceChoiceTagged BACnetUnconfirmedServiceChoiceTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetUnconfirmedServiceChoiceTagged) GetTagClass() TagClass {
 
 func (m *_BACnetUnconfirmedServiceChoiceTagged) IsBACnetUnconfirmedServiceChoiceTagged() {}
 
+func (m *_BACnetUnconfirmedServiceChoiceTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceChoiceTagged) deepCopy() *_BACnetUnconfirmedServiceChoiceTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceChoiceTaggedCopy := &_BACnetUnconfirmedServiceChoiceTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetUnconfirmedServiceChoiceTaggedCopy
+}
+
 func (m *_BACnetUnconfirmedServiceChoiceTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

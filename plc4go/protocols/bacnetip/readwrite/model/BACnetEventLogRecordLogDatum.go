@@ -40,8 +40,11 @@ type BACnetEventLogRecordLogDatum interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetEventLogRecordLogDatum is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatum()
+	// CreateBuilder creates a BACnetEventLogRecordLogDatumBuilder
+	CreateBACnetEventLogRecordLogDatumBuilder() BACnetEventLogRecordLogDatumBuilder
 }
 
 // BACnetEventLogRecordLogDatumContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type BACnetEventLogRecordLogDatumContract interface {
 	GetTagNumber() uint8
 	// IsBACnetEventLogRecordLogDatum is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventLogRecordLogDatum()
+	// CreateBuilder creates a BACnetEventLogRecordLogDatumBuilder
+	CreateBACnetEventLogRecordLogDatumBuilder() BACnetEventLogRecordLogDatumBuilder
 }
 
 // BACnetEventLogRecordLogDatumRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,270 @@ type _BACnetEventLogRecordLogDatum struct {
 }
 
 var _ BACnetEventLogRecordLogDatumContract = (*_BACnetEventLogRecordLogDatum)(nil)
+
+// NewBACnetEventLogRecordLogDatum factory function for _BACnetEventLogRecordLogDatum
+func NewBACnetEventLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatum {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatum must not be nil")
+	}
+	return &_BACnetEventLogRecordLogDatum{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventLogRecordLogDatumBuilder is a builder for BACnetEventLogRecordLogDatum
+type BACnetEventLogRecordLogDatumBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventLogRecordLogDatumBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventLogRecordLogDatumBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetEventLogRecordLogDatumBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventLogRecordLogDatumBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventLogRecordLogDatumBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumBuilder
+	// AsBACnetEventLogRecordLogDatumLogStatus converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetEventLogRecordLogDatumLogStatus() interface {
+		BACnetEventLogRecordLogDatumLogStatusBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}
+	// AsBACnetEventLogRecordLogDatumNotification converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetEventLogRecordLogDatumNotification() interface {
+		BACnetEventLogRecordLogDatumNotificationBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}
+	// AsBACnetEventLogRecordLogDatumTimeChange converts this build to a subType of BACnetEventLogRecordLogDatum. It is always possible to return to current builder using Done()
+	AsBACnetEventLogRecordLogDatumTimeChange() interface {
+		BACnetEventLogRecordLogDatumTimeChangeBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}
+	// Build builds the BACnetEventLogRecordLogDatum or returns an error if something is wrong
+	PartialBuild() (BACnetEventLogRecordLogDatumContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetEventLogRecordLogDatumContract
+	// Build builds the BACnetEventLogRecordLogDatum or returns an error if something is wrong
+	Build() (BACnetEventLogRecordLogDatum, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventLogRecordLogDatum
+}
+
+// NewBACnetEventLogRecordLogDatumBuilder() creates a BACnetEventLogRecordLogDatumBuilder
+func NewBACnetEventLogRecordLogDatumBuilder() BACnetEventLogRecordLogDatumBuilder {
+	return &_BACnetEventLogRecordLogDatumBuilder{_BACnetEventLogRecordLogDatum: new(_BACnetEventLogRecordLogDatum)}
+}
+
+type _BACnetEventLogRecordLogDatumChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetEventLogRecordLogDatumContract)
+	buildForBACnetEventLogRecordLogDatum() (BACnetEventLogRecordLogDatum, error)
+}
+
+type _BACnetEventLogRecordLogDatumBuilder struct {
+	*_BACnetEventLogRecordLogDatum
+
+	childBuilder _BACnetEventLogRecordLogDatumChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventLogRecordLogDatumBuilder) = (*_BACnetEventLogRecordLogDatumBuilder)(nil)
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventLogRecordLogDatumBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventLogRecordLogDatumBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventLogRecordLogDatumBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventLogRecordLogDatumBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventLogRecordLogDatumBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) PartialBuild() (BACnetEventLogRecordLogDatumContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventLogRecordLogDatum.deepCopy(), nil
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) PartialMustBuild() BACnetEventLogRecordLogDatumContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumLogStatus() interface {
+	BACnetEventLogRecordLogDatumLogStatusBuilder
+	Done() BACnetEventLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventLogRecordLogDatumLogStatusBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventLogRecordLogDatumLogStatusBuilder().(*_BACnetEventLogRecordLogDatumLogStatusBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumNotification() interface {
+	BACnetEventLogRecordLogDatumNotificationBuilder
+	Done() BACnetEventLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventLogRecordLogDatumNotificationBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventLogRecordLogDatumNotificationBuilder().(*_BACnetEventLogRecordLogDatumNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) AsBACnetEventLogRecordLogDatumTimeChange() interface {
+	BACnetEventLogRecordLogDatumTimeChangeBuilder
+	Done() BACnetEventLogRecordLogDatumBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetEventLogRecordLogDatumTimeChangeBuilder
+		Done() BACnetEventLogRecordLogDatumBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetEventLogRecordLogDatumTimeChangeBuilder().(*_BACnetEventLogRecordLogDatumTimeChangeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) Build() (BACnetEventLogRecordLogDatum, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetEventLogRecordLogDatum()
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) MustBuild() BACnetEventLogRecordLogDatum {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventLogRecordLogDatumBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventLogRecordLogDatumBuilder().(*_BACnetEventLogRecordLogDatumBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetEventLogRecordLogDatumChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventLogRecordLogDatumBuilder creates a BACnetEventLogRecordLogDatumBuilder
+func (b *_BACnetEventLogRecordLogDatum) CreateBACnetEventLogRecordLogDatumBuilder() BACnetEventLogRecordLogDatumBuilder {
+	if b == nil {
+		return NewBACnetEventLogRecordLogDatumBuilder()
+	}
+	return &_BACnetEventLogRecordLogDatumBuilder{_BACnetEventLogRecordLogDatum: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,20 +387,6 @@ func (pm *_BACnetEventLogRecordLogDatum) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventLogRecordLogDatum factory function for _BACnetEventLogRecordLogDatum
-func NewBACnetEventLogRecordLogDatum(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventLogRecordLogDatum {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventLogRecordLogDatum must not be nil")
-	}
-	return &_BACnetEventLogRecordLogDatum{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventLogRecordLogDatum(structType any) BACnetEventLogRecordLogDatum {
@@ -177,7 +432,7 @@ func BACnetEventLogRecordLogDatumParseWithBufferProducer[T BACnetEventLogRecordL
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -187,7 +442,12 @@ func BACnetEventLogRecordLogDatumParseWithBuffer[T BACnetEventLogRecordLogDatum]
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetEventLogRecordLogDatum) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventLogRecordLogDatum BACnetEventLogRecordLogDatum, err error) {
@@ -221,15 +481,15 @@ func (m *_BACnetEventLogRecordLogDatum) parse(ctx context.Context, readBuffer ut
 	var _child BACnetEventLogRecordLogDatum
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetEventLogRecordLogDatumLogStatus
-		if _child, err = (&_BACnetEventLogRecordLogDatumLogStatus{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumLogStatus).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumLogStatus for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(1): // BACnetEventLogRecordLogDatumNotification
-		if _child, err = (&_BACnetEventLogRecordLogDatumNotification{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumNotification).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumNotification for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	case peekedTagNumber == uint8(2): // BACnetEventLogRecordLogDatumTimeChange
-		if _child, err = (&_BACnetEventLogRecordLogDatumTimeChange{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetEventLogRecordLogDatumTimeChange).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetEventLogRecordLogDatumTimeChange for type-switch of BACnetEventLogRecordLogDatum")
 		}
 	default:
@@ -297,3 +557,21 @@ func (m *_BACnetEventLogRecordLogDatum) GetTagNumber() uint8 {
 ////
 
 func (m *_BACnetEventLogRecordLogDatum) IsBACnetEventLogRecordLogDatum() {}
+
+func (m *_BACnetEventLogRecordLogDatum) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventLogRecordLogDatum) deepCopy() *_BACnetEventLogRecordLogDatum {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventLogRecordLogDatumCopy := &_BACnetEventLogRecordLogDatum{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventLogRecordLogDatumCopy
+}

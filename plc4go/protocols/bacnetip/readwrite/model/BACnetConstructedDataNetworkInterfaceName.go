@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkInterfaceName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkInterfaceName returns NetworkInterfaceName (property field)
 	GetNetworkInterfaceName() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataNetworkInterfaceName interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataNetworkInterfaceName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkInterfaceName()
+	// CreateBuilder creates a BACnetConstructedDataNetworkInterfaceNameBuilder
+	CreateBACnetConstructedDataNetworkInterfaceNameBuilder() BACnetConstructedDataNetworkInterfaceNameBuilder
 }
 
 // _BACnetConstructedDataNetworkInterfaceName is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataNetworkInterfaceName struct {
 
 var _ BACnetConstructedDataNetworkInterfaceName = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkInterfaceName)(nil)
+
+// NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
+func NewBACnetConstructedDataNetworkInterfaceName(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkInterfaceName BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
+	if networkInterfaceName == nil {
+		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkInterfaceName{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkInterfaceName:          networkInterfaceName,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNetworkInterfaceNameBuilder is a builder for BACnetConstructedDataNetworkInterfaceName
+type BACnetConstructedDataNetworkInterfaceNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkInterfaceName BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder
+	// WithNetworkInterfaceName adds NetworkInterfaceName (property field)
+	WithNetworkInterfaceName(BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder
+	// WithNetworkInterfaceNameBuilder adds NetworkInterfaceName (property field) which is build by the builder
+	WithNetworkInterfaceNameBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataNetworkInterfaceNameBuilder
+	// Build builds the BACnetConstructedDataNetworkInterfaceName or returns an error if something is wrong
+	Build() (BACnetConstructedDataNetworkInterfaceName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNetworkInterfaceName
+}
+
+// NewBACnetConstructedDataNetworkInterfaceNameBuilder() creates a BACnetConstructedDataNetworkInterfaceNameBuilder
+func NewBACnetConstructedDataNetworkInterfaceNameBuilder() BACnetConstructedDataNetworkInterfaceNameBuilder {
+	return &_BACnetConstructedDataNetworkInterfaceNameBuilder{_BACnetConstructedDataNetworkInterfaceName: new(_BACnetConstructedDataNetworkInterfaceName)}
+}
+
+type _BACnetConstructedDataNetworkInterfaceNameBuilder struct {
+	*_BACnetConstructedDataNetworkInterfaceName
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNetworkInterfaceNameBuilder) = (*_BACnetConstructedDataNetworkInterfaceNameBuilder)(nil)
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) WithMandatoryFields(networkInterfaceName BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder {
+	return b.WithNetworkInterfaceName(networkInterfaceName)
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) WithNetworkInterfaceName(networkInterfaceName BACnetApplicationTagCharacterString) BACnetConstructedDataNetworkInterfaceNameBuilder {
+	b.NetworkInterfaceName = networkInterfaceName
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) WithNetworkInterfaceNameBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataNetworkInterfaceNameBuilder {
+	builder := builderSupplier(b.NetworkInterfaceName.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.NetworkInterfaceName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) Build() (BACnetConstructedDataNetworkInterfaceName, error) {
+	if b.NetworkInterfaceName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'networkInterfaceName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataNetworkInterfaceName.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) MustBuild() BACnetConstructedDataNetworkInterfaceName {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkInterfaceNameBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkInterfaceNameBuilder().(*_BACnetConstructedDataNetworkInterfaceNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataNetworkInterfaceNameBuilder creates a BACnetConstructedDataNetworkInterfaceNameBuilder
+func (b *_BACnetConstructedDataNetworkInterfaceName) CreateBACnetConstructedDataNetworkInterfaceNameBuilder() BACnetConstructedDataNetworkInterfaceNameBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataNetworkInterfaceNameBuilder()
+	}
+	return &_BACnetConstructedDataNetworkInterfaceNameBuilder{_BACnetConstructedDataNetworkInterfaceName: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkInterfaceName factory function for _BACnetConstructedDataNetworkInterfaceName
-func NewBACnetConstructedDataNetworkInterfaceName(networkInterfaceName BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkInterfaceName {
-	if networkInterfaceName == nil {
-		panic("networkInterfaceName of type BACnetApplicationTagCharacterString for BACnetConstructedDataNetworkInterfaceName must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkInterfaceName{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkInterfaceName:          networkInterfaceName,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkInterfaceName(structType any) BACnetConstructedDataNetworkInterfaceName {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataNetworkInterfaceName) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataNetworkInterfaceName) IsBACnetConstructedDataNetworkInterfaceName() {}
 
+func (m *_BACnetConstructedDataNetworkInterfaceName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkInterfaceName) deepCopy() *_BACnetConstructedDataNetworkInterfaceName {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkInterfaceNameCopy := &_BACnetConstructedDataNetworkInterfaceName{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NetworkInterfaceName.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkInterfaceNameCopy
+}
+
 func (m *_BACnetConstructedDataNetworkInterfaceName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

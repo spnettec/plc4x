@@ -38,6 +38,7 @@ type ReferenceDescription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReferenceTypeId returns ReferenceTypeId (property field)
 	GetReferenceTypeId() NodeId
@@ -55,6 +56,8 @@ type ReferenceDescription interface {
 	GetTypeDefinition() ExpandedNodeId
 	// IsReferenceDescription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReferenceDescription()
+	// CreateBuilder creates a ReferenceDescriptionBuilder
+	CreateReferenceDescriptionBuilder() ReferenceDescriptionBuilder
 }
 
 // _ReferenceDescription is the data-structure of this message
@@ -73,6 +76,275 @@ type _ReferenceDescription struct {
 
 var _ ReferenceDescription = (*_ReferenceDescription)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReferenceDescription)(nil)
+
+// NewReferenceDescription factory function for _ReferenceDescription
+func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) *_ReferenceDescription {
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for ReferenceDescription must not be nil")
+	}
+	if nodeId == nil {
+		panic("nodeId of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
+	if browseName == nil {
+		panic("browseName of type QualifiedName for ReferenceDescription must not be nil")
+	}
+	if displayName == nil {
+		panic("displayName of type LocalizedText for ReferenceDescription must not be nil")
+	}
+	if typeDefinition == nil {
+		panic("typeDefinition of type ExpandedNodeId for ReferenceDescription must not be nil")
+	}
+	_result := &_ReferenceDescription{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		NodeId:                            nodeId,
+		BrowseName:                        browseName,
+		DisplayName:                       displayName,
+		NodeClass:                         nodeClass,
+		TypeDefinition:                    typeDefinition,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReferenceDescriptionBuilder is a builder for ReferenceDescription
+type ReferenceDescriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) ReferenceDescriptionBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionBuilder
+	// WithIsForward adds IsForward (property field)
+	WithIsForward(bool) ReferenceDescriptionBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(ExpandedNodeId) ReferenceDescriptionBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder
+	// WithBrowseName adds BrowseName (property field)
+	WithBrowseName(QualifiedName) ReferenceDescriptionBuilder
+	// WithBrowseNameBuilder adds BrowseName (property field) which is build by the builder
+	WithBrowseNameBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) ReferenceDescriptionBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) ReferenceDescriptionBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceDescriptionBuilder
+	// WithNodeClass adds NodeClass (property field)
+	WithNodeClass(NodeClass) ReferenceDescriptionBuilder
+	// WithTypeDefinition adds TypeDefinition (property field)
+	WithTypeDefinition(ExpandedNodeId) ReferenceDescriptionBuilder
+	// WithTypeDefinitionBuilder adds TypeDefinition (property field) which is build by the builder
+	WithTypeDefinitionBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder
+	// Build builds the ReferenceDescription or returns an error if something is wrong
+	Build() (ReferenceDescription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReferenceDescription
+}
+
+// NewReferenceDescriptionBuilder() creates a ReferenceDescriptionBuilder
+func NewReferenceDescriptionBuilder() ReferenceDescriptionBuilder {
+	return &_ReferenceDescriptionBuilder{_ReferenceDescription: new(_ReferenceDescription)}
+}
+
+type _ReferenceDescriptionBuilder struct {
+	*_ReferenceDescription
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReferenceDescriptionBuilder) = (*_ReferenceDescriptionBuilder)(nil)
+
+func (b *_ReferenceDescriptionBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReferenceDescriptionBuilder) WithMandatoryFields(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
+	return b.WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithNodeId(nodeId).WithBrowseName(browseName).WithDisplayName(displayName).WithNodeClass(nodeClass).WithTypeDefinition(typeDefinition)
+}
+
+func (b *_ReferenceDescriptionBuilder) WithReferenceTypeId(referenceTypeId NodeId) ReferenceDescriptionBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	b.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithIsForward(isForward bool) ReferenceDescriptionBuilder {
+	b.IsForward = isForward
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithNodeId(nodeId ExpandedNodeId) ReferenceDescriptionBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.NodeId.CreateExpandedNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithBrowseName(browseName QualifiedName) ReferenceDescriptionBuilder {
+	b.BrowseName = browseName
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithBrowseNameBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.BrowseName.CreateQualifiedNameBuilder())
+	var err error
+	b.BrowseName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithDisplayName(displayName LocalizedText) ReferenceDescriptionBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithNodeClass(nodeClass NodeClass) ReferenceDescriptionBuilder {
+	b.NodeClass = nodeClass
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithTypeDefinition(typeDefinition ExpandedNodeId) ReferenceDescriptionBuilder {
+	b.TypeDefinition = typeDefinition
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) WithTypeDefinitionBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) ReferenceDescriptionBuilder {
+	builder := builderSupplier(b.TypeDefinition.CreateExpandedNodeIdBuilder())
+	var err error
+	b.TypeDefinition, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReferenceDescriptionBuilder) Build() (ReferenceDescription, error) {
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.BrowseName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'browseName' not set"))
+	}
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.TypeDefinition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'typeDefinition' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReferenceDescription.deepCopy(), nil
+}
+
+func (b *_ReferenceDescriptionBuilder) MustBuild() ReferenceDescription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReferenceDescriptionBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReferenceDescriptionBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReferenceDescriptionBuilder) DeepCopy() any {
+	_copy := b.CreateReferenceDescriptionBuilder().(*_ReferenceDescriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReferenceDescriptionBuilder creates a ReferenceDescriptionBuilder
+func (b *_ReferenceDescription) CreateReferenceDescriptionBuilder() ReferenceDescriptionBuilder {
+	if b == nil {
+		return NewReferenceDescriptionBuilder()
+	}
+	return &_ReferenceDescriptionBuilder{_ReferenceDescription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -129,37 +401,6 @@ func (m *_ReferenceDescription) GetTypeDefinition() ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReferenceDescription factory function for _ReferenceDescription
-func NewReferenceDescription(referenceTypeId NodeId, isForward bool, nodeId ExpandedNodeId, browseName QualifiedName, displayName LocalizedText, nodeClass NodeClass, typeDefinition ExpandedNodeId) *_ReferenceDescription {
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for ReferenceDescription must not be nil")
-	}
-	if nodeId == nil {
-		panic("nodeId of type ExpandedNodeId for ReferenceDescription must not be nil")
-	}
-	if browseName == nil {
-		panic("browseName of type QualifiedName for ReferenceDescription must not be nil")
-	}
-	if displayName == nil {
-		panic("displayName of type LocalizedText for ReferenceDescription must not be nil")
-	}
-	if typeDefinition == nil {
-		panic("typeDefinition of type ExpandedNodeId for ReferenceDescription must not be nil")
-	}
-	_result := &_ReferenceDescription{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		NodeId:                            nodeId,
-		BrowseName:                        browseName,
-		DisplayName:                       displayName,
-		NodeClass:                         nodeClass,
-		TypeDefinition:                    typeDefinition,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReferenceDescription(structType any) ReferenceDescription {
@@ -336,13 +577,40 @@ func (m *_ReferenceDescription) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_ReferenceDescription) IsReferenceDescription() {}
 
+func (m *_ReferenceDescription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReferenceDescription) deepCopy() *_ReferenceDescription {
+	if m == nil {
+		return nil
+	}
+	_ReferenceDescriptionCopy := &_ReferenceDescription{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.NodeId.DeepCopy().(ExpandedNodeId),
+		m.BrowseName.DeepCopy().(QualifiedName),
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.NodeClass,
+		m.TypeDefinition.DeepCopy().(ExpandedNodeId),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReferenceDescriptionCopy
+}
+
 func (m *_ReferenceDescription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

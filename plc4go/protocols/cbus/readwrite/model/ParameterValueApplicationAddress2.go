@@ -38,6 +38,7 @@ type ParameterValueApplicationAddress2 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() ApplicationAddress2
@@ -45,6 +46,8 @@ type ParameterValueApplicationAddress2 interface {
 	GetData() []byte
 	// IsParameterValueApplicationAddress2 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueApplicationAddress2()
+	// CreateBuilder creates a ParameterValueApplicationAddress2Builder
+	CreateParameterValueApplicationAddress2Builder() ParameterValueApplicationAddress2Builder
 }
 
 // _ParameterValueApplicationAddress2 is the data-structure of this message
@@ -56,6 +59,139 @@ type _ParameterValueApplicationAddress2 struct {
 
 var _ ParameterValueApplicationAddress2 = (*_ParameterValueApplicationAddress2)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueApplicationAddress2)(nil)
+
+// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
+func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
+	if value == nil {
+		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
+	}
+	_result := &_ParameterValueApplicationAddress2{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+		Data:                   data,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueApplicationAddress2Builder is a builder for ParameterValueApplicationAddress2
+type ParameterValueApplicationAddress2Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value ApplicationAddress2, data []byte) ParameterValueApplicationAddress2Builder
+	// WithValue adds Value (property field)
+	WithValue(ApplicationAddress2) ParameterValueApplicationAddress2Builder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(ApplicationAddress2Builder) ApplicationAddress2Builder) ParameterValueApplicationAddress2Builder
+	// WithData adds Data (property field)
+	WithData(...byte) ParameterValueApplicationAddress2Builder
+	// Build builds the ParameterValueApplicationAddress2 or returns an error if something is wrong
+	Build() (ParameterValueApplicationAddress2, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueApplicationAddress2
+}
+
+// NewParameterValueApplicationAddress2Builder() creates a ParameterValueApplicationAddress2Builder
+func NewParameterValueApplicationAddress2Builder() ParameterValueApplicationAddress2Builder {
+	return &_ParameterValueApplicationAddress2Builder{_ParameterValueApplicationAddress2: new(_ParameterValueApplicationAddress2)}
+}
+
+type _ParameterValueApplicationAddress2Builder struct {
+	*_ParameterValueApplicationAddress2
+
+	parentBuilder *_ParameterValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueApplicationAddress2Builder) = (*_ParameterValueApplicationAddress2Builder)(nil)
+
+func (b *_ParameterValueApplicationAddress2Builder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) WithMandatoryFields(value ApplicationAddress2, data []byte) ParameterValueApplicationAddress2Builder {
+	return b.WithValue(value).WithData(data...)
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) WithValue(value ApplicationAddress2) ParameterValueApplicationAddress2Builder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) WithValueBuilder(builderSupplier func(ApplicationAddress2Builder) ApplicationAddress2Builder) ParameterValueApplicationAddress2Builder {
+	builder := builderSupplier(b.Value.CreateApplicationAddress2Builder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ApplicationAddress2Builder failed"))
+	}
+	return b
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) WithData(data ...byte) ParameterValueApplicationAddress2Builder {
+	b.Data = data
+	return b
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) Build() (ParameterValueApplicationAddress2, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterValueApplicationAddress2.deepCopy(), nil
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) MustBuild() ParameterValueApplicationAddress2 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueApplicationAddress2Builder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueApplicationAddress2Builder) DeepCopy() any {
+	_copy := b.CreateParameterValueApplicationAddress2Builder().(*_ParameterValueApplicationAddress2Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterValueApplicationAddress2Builder creates a ParameterValueApplicationAddress2Builder
+func (b *_ParameterValueApplicationAddress2) CreateParameterValueApplicationAddress2Builder() ParameterValueApplicationAddress2Builder {
+	if b == nil {
+		return NewParameterValueApplicationAddress2Builder()
+	}
+	return &_ParameterValueApplicationAddress2Builder{_ParameterValueApplicationAddress2: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_ParameterValueApplicationAddress2) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueApplicationAddress2 factory function for _ParameterValueApplicationAddress2
-func NewParameterValueApplicationAddress2(value ApplicationAddress2, data []byte, numBytes uint8) *_ParameterValueApplicationAddress2 {
-	if value == nil {
-		panic("value of type ApplicationAddress2 for ParameterValueApplicationAddress2 must not be nil")
-	}
-	_result := &_ParameterValueApplicationAddress2{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-		Data:                   data,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueApplicationAddress2(structType any) ParameterValueApplicationAddress2 {
@@ -211,13 +333,34 @@ func (m *_ParameterValueApplicationAddress2) SerializeWithWriteBuffer(ctx contex
 
 func (m *_ParameterValueApplicationAddress2) IsParameterValueApplicationAddress2() {}
 
+func (m *_ParameterValueApplicationAddress2) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueApplicationAddress2) deepCopy() *_ParameterValueApplicationAddress2 {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueApplicationAddress2Copy := &_ParameterValueApplicationAddress2{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(ApplicationAddress2),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueApplicationAddress2Copy
+}
+
 func (m *_ParameterValueApplicationAddress2) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

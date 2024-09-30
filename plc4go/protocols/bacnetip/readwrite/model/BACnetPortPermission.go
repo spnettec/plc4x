@@ -38,12 +38,15 @@ type BACnetPortPermission interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPort returns Port (property field)
 	GetPort() BACnetContextTagUnsignedInteger
 	// GetEnable returns Enable (property field)
 	GetEnable() BACnetContextTagBoolean
 	// IsBACnetPortPermission is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPortPermission()
+	// CreateBuilder creates a BACnetPortPermissionBuilder
+	CreateBACnetPortPermissionBuilder() BACnetPortPermissionBuilder
 }
 
 // _BACnetPortPermission is the data-structure of this message
@@ -53,6 +56,133 @@ type _BACnetPortPermission struct {
 }
 
 var _ BACnetPortPermission = (*_BACnetPortPermission)(nil)
+
+// NewBACnetPortPermission factory function for _BACnetPortPermission
+func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
+	if port == nil {
+		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
+	}
+	return &_BACnetPortPermission{Port: port, Enable: enable}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPortPermissionBuilder is a builder for BACnetPortPermission
+type BACnetPortPermissionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(port BACnetContextTagUnsignedInteger) BACnetPortPermissionBuilder
+	// WithPort adds Port (property field)
+	WithPort(BACnetContextTagUnsignedInteger) BACnetPortPermissionBuilder
+	// WithPortBuilder adds Port (property field) which is build by the builder
+	WithPortBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPortPermissionBuilder
+	// WithEnable adds Enable (property field)
+	WithOptionalEnable(BACnetContextTagBoolean) BACnetPortPermissionBuilder
+	// WithOptionalEnableBuilder adds Enable (property field) which is build by the builder
+	WithOptionalEnableBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetPortPermissionBuilder
+	// Build builds the BACnetPortPermission or returns an error if something is wrong
+	Build() (BACnetPortPermission, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPortPermission
+}
+
+// NewBACnetPortPermissionBuilder() creates a BACnetPortPermissionBuilder
+func NewBACnetPortPermissionBuilder() BACnetPortPermissionBuilder {
+	return &_BACnetPortPermissionBuilder{_BACnetPortPermission: new(_BACnetPortPermission)}
+}
+
+type _BACnetPortPermissionBuilder struct {
+	*_BACnetPortPermission
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPortPermissionBuilder) = (*_BACnetPortPermissionBuilder)(nil)
+
+func (b *_BACnetPortPermissionBuilder) WithMandatoryFields(port BACnetContextTagUnsignedInteger) BACnetPortPermissionBuilder {
+	return b.WithPort(port)
+}
+
+func (b *_BACnetPortPermissionBuilder) WithPort(port BACnetContextTagUnsignedInteger) BACnetPortPermissionBuilder {
+	b.Port = port
+	return b
+}
+
+func (b *_BACnetPortPermissionBuilder) WithPortBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetPortPermissionBuilder {
+	builder := builderSupplier(b.Port.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.Port, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPortPermissionBuilder) WithOptionalEnable(enable BACnetContextTagBoolean) BACnetPortPermissionBuilder {
+	b.Enable = enable
+	return b
+}
+
+func (b *_BACnetPortPermissionBuilder) WithOptionalEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetPortPermissionBuilder {
+	builder := builderSupplier(b.Enable.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.Enable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPortPermissionBuilder) Build() (BACnetPortPermission, error) {
+	if b.Port == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'port' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPortPermission.deepCopy(), nil
+}
+
+func (b *_BACnetPortPermissionBuilder) MustBuild() BACnetPortPermission {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPortPermissionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPortPermissionBuilder().(*_BACnetPortPermissionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPortPermissionBuilder creates a BACnetPortPermissionBuilder
+func (b *_BACnetPortPermission) CreateBACnetPortPermissionBuilder() BACnetPortPermissionBuilder {
+	if b == nil {
+		return NewBACnetPortPermissionBuilder()
+	}
+	return &_BACnetPortPermissionBuilder{_BACnetPortPermission: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +201,6 @@ func (m *_BACnetPortPermission) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPortPermission factory function for _BACnetPortPermission
-func NewBACnetPortPermission(port BACnetContextTagUnsignedInteger, enable BACnetContextTagBoolean) *_BACnetPortPermission {
-	if port == nil {
-		panic("port of type BACnetContextTagUnsignedInteger for BACnetPortPermission must not be nil")
-	}
-	return &_BACnetPortPermission{Port: port, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPortPermission(structType any) BACnetPortPermission {
@@ -128,7 +250,7 @@ func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPortPermission) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetPortPermission BACnetPortPermission, err error) {
@@ -196,13 +318,32 @@ func (m *_BACnetPortPermission) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetPortPermission) IsBACnetPortPermission() {}
 
+func (m *_BACnetPortPermission) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPortPermission) deepCopy() *_BACnetPortPermission {
+	if m == nil {
+		return nil
+	}
+	_BACnetPortPermissionCopy := &_BACnetPortPermission{
+		m.Port.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetPortPermissionCopy
+}
+
 func (m *_BACnetPortPermission) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

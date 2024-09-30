@@ -40,11 +40,14 @@ type BVLCOriginalUnicastNPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BVLC
 	// GetNpdu returns Npdu (property field)
 	GetNpdu() NPDU
 	// IsBVLCOriginalUnicastNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBVLCOriginalUnicastNPDU()
+	// CreateBuilder creates a BVLCOriginalUnicastNPDUBuilder
+	CreateBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder
 }
 
 // _BVLCOriginalUnicastNPDU is the data-structure of this message
@@ -58,6 +61,131 @@ type _BVLCOriginalUnicastNPDU struct {
 
 var _ BVLCOriginalUnicastNPDU = (*_BVLCOriginalUnicastNPDU)(nil)
 var _ BVLCRequirements = (*_BVLCOriginalUnicastNPDU)(nil)
+
+// NewBVLCOriginalUnicastNPDU factory function for _BVLCOriginalUnicastNPDU
+func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalUnicastNPDU {
+	if npdu == nil {
+		panic("npdu of type NPDU for BVLCOriginalUnicastNPDU must not be nil")
+	}
+	_result := &_BVLCOriginalUnicastNPDU{
+		BVLCContract: NewBVLC(),
+		Npdu:         npdu,
+	}
+	_result.BVLCContract.(*_BVLC)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BVLCOriginalUnicastNPDUBuilder is a builder for BVLCOriginalUnicastNPDU
+type BVLCOriginalUnicastNPDUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(npdu NPDU) BVLCOriginalUnicastNPDUBuilder
+	// WithNpdu adds Npdu (property field)
+	WithNpdu(NPDU) BVLCOriginalUnicastNPDUBuilder
+	// WithNpduBuilder adds Npdu (property field) which is build by the builder
+	WithNpduBuilder(func(NPDUBuilder) NPDUBuilder) BVLCOriginalUnicastNPDUBuilder
+	// Build builds the BVLCOriginalUnicastNPDU or returns an error if something is wrong
+	Build() (BVLCOriginalUnicastNPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BVLCOriginalUnicastNPDU
+}
+
+// NewBVLCOriginalUnicastNPDUBuilder() creates a BVLCOriginalUnicastNPDUBuilder
+func NewBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder {
+	return &_BVLCOriginalUnicastNPDUBuilder{_BVLCOriginalUnicastNPDU: new(_BVLCOriginalUnicastNPDU)}
+}
+
+type _BVLCOriginalUnicastNPDUBuilder struct {
+	*_BVLCOriginalUnicastNPDU
+
+	parentBuilder *_BVLCBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BVLCOriginalUnicastNPDUBuilder) = (*_BVLCOriginalUnicastNPDUBuilder)(nil)
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) setParent(contract BVLCContract) {
+	b.BVLCContract = contract
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithMandatoryFields(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
+	return b.WithNpdu(npdu)
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithNpdu(npdu NPDU) BVLCOriginalUnicastNPDUBuilder {
+	b.Npdu = npdu
+	return b
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) WithNpduBuilder(builderSupplier func(NPDUBuilder) NPDUBuilder) BVLCOriginalUnicastNPDUBuilder {
+	builder := builderSupplier(b.Npdu.CreateNPDUBuilder())
+	var err error
+	b.Npdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NPDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) Build() (BVLCOriginalUnicastNPDU, error) {
+	if b.Npdu == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'npdu' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BVLCOriginalUnicastNPDU.deepCopy(), nil
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) MustBuild() BVLCOriginalUnicastNPDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BVLCOriginalUnicastNPDUBuilder) Done() BVLCBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) buildForBVLC() (BVLC, error) {
+	return b.Build()
+}
+
+func (b *_BVLCOriginalUnicastNPDUBuilder) DeepCopy() any {
+	_copy := b.CreateBVLCOriginalUnicastNPDUBuilder().(*_BVLCOriginalUnicastNPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBVLCOriginalUnicastNPDUBuilder creates a BVLCOriginalUnicastNPDUBuilder
+func (b *_BVLCOriginalUnicastNPDU) CreateBVLCOriginalUnicastNPDUBuilder() BVLCOriginalUnicastNPDUBuilder {
+	if b == nil {
+		return NewBVLCOriginalUnicastNPDUBuilder()
+	}
+	return &_BVLCOriginalUnicastNPDUBuilder{_BVLCOriginalUnicastNPDU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -90,19 +218,6 @@ func (m *_BVLCOriginalUnicastNPDU) GetNpdu() NPDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBVLCOriginalUnicastNPDU factory function for _BVLCOriginalUnicastNPDU
-func NewBVLCOriginalUnicastNPDU(npdu NPDU, bvlcPayloadLength uint16) *_BVLCOriginalUnicastNPDU {
-	if npdu == nil {
-		panic("npdu of type NPDU for BVLCOriginalUnicastNPDU must not be nil")
-	}
-	_result := &_BVLCOriginalUnicastNPDU{
-		BVLCContract: NewBVLC(),
-		Npdu:         npdu,
-	}
-	_result.BVLCContract.(*_BVLC)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBVLCOriginalUnicastNPDU(structType any) BVLCOriginalUnicastNPDU {
@@ -198,13 +313,34 @@ func (m *_BVLCOriginalUnicastNPDU) GetBvlcPayloadLength() uint16 {
 
 func (m *_BVLCOriginalUnicastNPDU) IsBVLCOriginalUnicastNPDU() {}
 
+func (m *_BVLCOriginalUnicastNPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BVLCOriginalUnicastNPDU) deepCopy() *_BVLCOriginalUnicastNPDU {
+	if m == nil {
+		return nil
+	}
+	_BVLCOriginalUnicastNPDUCopy := &_BVLCOriginalUnicastNPDU{
+		m.BVLCContract.(*_BVLC).deepCopy(),
+		m.Npdu.DeepCopy().(NPDU),
+		m.BvlcPayloadLength,
+	}
+	m.BVLCContract.(*_BVLC)._SubType = m
+	return _BVLCOriginalUnicastNPDUCopy
+}
+
 func (m *_BVLCOriginalUnicastNPDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

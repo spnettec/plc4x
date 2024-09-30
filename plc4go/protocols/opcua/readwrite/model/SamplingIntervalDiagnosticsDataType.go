@@ -38,6 +38,7 @@ type SamplingIntervalDiagnosticsDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSamplingInterval returns SamplingInterval (property field)
 	GetSamplingInterval() float64
@@ -49,6 +50,8 @@ type SamplingIntervalDiagnosticsDataType interface {
 	GetDisabledMonitoredItemCount() uint32
 	// IsSamplingIntervalDiagnosticsDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSamplingIntervalDiagnosticsDataType()
+	// CreateBuilder creates a SamplingIntervalDiagnosticsDataTypeBuilder
+	CreateSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnosticsDataTypeBuilder
 }
 
 // _SamplingIntervalDiagnosticsDataType is the data-structure of this message
@@ -62,6 +65,131 @@ type _SamplingIntervalDiagnosticsDataType struct {
 
 var _ SamplingIntervalDiagnosticsDataType = (*_SamplingIntervalDiagnosticsDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SamplingIntervalDiagnosticsDataType)(nil)
+
+// NewSamplingIntervalDiagnosticsDataType factory function for _SamplingIntervalDiagnosticsDataType
+func NewSamplingIntervalDiagnosticsDataType(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) *_SamplingIntervalDiagnosticsDataType {
+	_result := &_SamplingIntervalDiagnosticsDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SamplingInterval:                  samplingInterval,
+		MonitoredItemCount:                monitoredItemCount,
+		MaxMonitoredItemCount:             maxMonitoredItemCount,
+		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SamplingIntervalDiagnosticsDataTypeBuilder is a builder for SamplingIntervalDiagnosticsDataType
+type SamplingIntervalDiagnosticsDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder
+	// WithSamplingInterval adds SamplingInterval (property field)
+	WithSamplingInterval(float64) SamplingIntervalDiagnosticsDataTypeBuilder
+	// WithMonitoredItemCount adds MonitoredItemCount (property field)
+	WithMonitoredItemCount(uint32) SamplingIntervalDiagnosticsDataTypeBuilder
+	// WithMaxMonitoredItemCount adds MaxMonitoredItemCount (property field)
+	WithMaxMonitoredItemCount(uint32) SamplingIntervalDiagnosticsDataTypeBuilder
+	// WithDisabledMonitoredItemCount adds DisabledMonitoredItemCount (property field)
+	WithDisabledMonitoredItemCount(uint32) SamplingIntervalDiagnosticsDataTypeBuilder
+	// Build builds the SamplingIntervalDiagnosticsDataType or returns an error if something is wrong
+	Build() (SamplingIntervalDiagnosticsDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SamplingIntervalDiagnosticsDataType
+}
+
+// NewSamplingIntervalDiagnosticsDataTypeBuilder() creates a SamplingIntervalDiagnosticsDataTypeBuilder
+func NewSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnosticsDataTypeBuilder {
+	return &_SamplingIntervalDiagnosticsDataTypeBuilder{_SamplingIntervalDiagnosticsDataType: new(_SamplingIntervalDiagnosticsDataType)}
+}
+
+type _SamplingIntervalDiagnosticsDataTypeBuilder struct {
+	*_SamplingIntervalDiagnosticsDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SamplingIntervalDiagnosticsDataTypeBuilder) = (*_SamplingIntervalDiagnosticsDataTypeBuilder)(nil)
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMandatoryFields(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	return b.WithSamplingInterval(samplingInterval).WithMonitoredItemCount(monitoredItemCount).WithMaxMonitoredItemCount(maxMonitoredItemCount).WithDisabledMonitoredItemCount(disabledMonitoredItemCount)
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithSamplingInterval(samplingInterval float64) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.SamplingInterval = samplingInterval
+	return b
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMonitoredItemCount(monitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.MonitoredItemCount = monitoredItemCount
+	return b
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithMaxMonitoredItemCount(maxMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.MaxMonitoredItemCount = maxMonitoredItemCount
+	return b
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) WithDisabledMonitoredItemCount(disabledMonitoredItemCount uint32) SamplingIntervalDiagnosticsDataTypeBuilder {
+	b.DisabledMonitoredItemCount = disabledMonitoredItemCount
+	return b
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Build() (SamplingIntervalDiagnosticsDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SamplingIntervalDiagnosticsDataType.deepCopy(), nil
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) MustBuild() SamplingIntervalDiagnosticsDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SamplingIntervalDiagnosticsDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSamplingIntervalDiagnosticsDataTypeBuilder().(*_SamplingIntervalDiagnosticsDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSamplingIntervalDiagnosticsDataTypeBuilder creates a SamplingIntervalDiagnosticsDataTypeBuilder
+func (b *_SamplingIntervalDiagnosticsDataType) CreateSamplingIntervalDiagnosticsDataTypeBuilder() SamplingIntervalDiagnosticsDataTypeBuilder {
+	if b == nil {
+		return NewSamplingIntervalDiagnosticsDataTypeBuilder()
+	}
+	return &_SamplingIntervalDiagnosticsDataTypeBuilder{_SamplingIntervalDiagnosticsDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_SamplingIntervalDiagnosticsDataType) GetDisabledMonitoredItemCount() u
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSamplingIntervalDiagnosticsDataType factory function for _SamplingIntervalDiagnosticsDataType
-func NewSamplingIntervalDiagnosticsDataType(samplingInterval float64, monitoredItemCount uint32, maxMonitoredItemCount uint32, disabledMonitoredItemCount uint32) *_SamplingIntervalDiagnosticsDataType {
-	_result := &_SamplingIntervalDiagnosticsDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SamplingInterval:                  samplingInterval,
-		MonitoredItemCount:                monitoredItemCount,
-		MaxMonitoredItemCount:             maxMonitoredItemCount,
-		DisabledMonitoredItemCount:        disabledMonitoredItemCount,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSamplingIntervalDiagnosticsDataType(structType any) SamplingIntervalDiagnosticsDataType {
@@ -243,13 +358,36 @@ func (m *_SamplingIntervalDiagnosticsDataType) SerializeWithWriteBuffer(ctx cont
 
 func (m *_SamplingIntervalDiagnosticsDataType) IsSamplingIntervalDiagnosticsDataType() {}
 
+func (m *_SamplingIntervalDiagnosticsDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SamplingIntervalDiagnosticsDataType) deepCopy() *_SamplingIntervalDiagnosticsDataType {
+	if m == nil {
+		return nil
+	}
+	_SamplingIntervalDiagnosticsDataTypeCopy := &_SamplingIntervalDiagnosticsDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SamplingInterval,
+		m.MonitoredItemCount,
+		m.MaxMonitoredItemCount,
+		m.DisabledMonitoredItemCount,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SamplingIntervalDiagnosticsDataTypeCopy
+}
+
 func (m *_SamplingIntervalDiagnosticsDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

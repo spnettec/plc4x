@@ -38,6 +38,7 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetProcessIdentifierFilter returns ProcessIdentifierFilter (property field)
 	GetProcessIdentifierFilter() BACnetProcessIdSelection
@@ -45,6 +46,8 @@ type BACnetConstructedDataProcessIdentifierFilter interface {
 	GetActualValue() BACnetProcessIdSelection
 	// IsBACnetConstructedDataProcessIdentifierFilter is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataProcessIdentifierFilter()
+	// CreateBuilder creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+	CreateBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder
 }
 
 // _BACnetConstructedDataProcessIdentifierFilter is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataProcessIdentifierFilter struct {
 
 var _ BACnetConstructedDataProcessIdentifierFilter = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataProcessIdentifierFilter)(nil)
+
+// NewBACnetConstructedDataProcessIdentifierFilter factory function for _BACnetConstructedDataProcessIdentifierFilter
+func NewBACnetConstructedDataProcessIdentifierFilter(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, processIdentifierFilter BACnetProcessIdSelection, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifierFilter {
+	if processIdentifierFilter == nil {
+		panic("processIdentifierFilter of type BACnetProcessIdSelection for BACnetConstructedDataProcessIdentifierFilter must not be nil")
+	}
+	_result := &_BACnetConstructedDataProcessIdentifierFilter{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ProcessIdentifierFilter:       processIdentifierFilter,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataProcessIdentifierFilterBuilder is a builder for BACnetConstructedDataProcessIdentifierFilter
+type BACnetConstructedDataProcessIdentifierFilterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// WithProcessIdentifierFilter adds ProcessIdentifierFilter (property field)
+	WithProcessIdentifierFilter(BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// WithProcessIdentifierFilterBuilder adds ProcessIdentifierFilter (property field) which is build by the builder
+	WithProcessIdentifierFilterBuilder(func(BACnetProcessIdSelectionBuilder) BACnetProcessIdSelectionBuilder) BACnetConstructedDataProcessIdentifierFilterBuilder
+	// Build builds the BACnetConstructedDataProcessIdentifierFilter or returns an error if something is wrong
+	Build() (BACnetConstructedDataProcessIdentifierFilter, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataProcessIdentifierFilter
+}
+
+// NewBACnetConstructedDataProcessIdentifierFilterBuilder() creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+func NewBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder {
+	return &_BACnetConstructedDataProcessIdentifierFilterBuilder{_BACnetConstructedDataProcessIdentifierFilter: new(_BACnetConstructedDataProcessIdentifierFilter)}
+}
+
+type _BACnetConstructedDataProcessIdentifierFilterBuilder struct {
+	*_BACnetConstructedDataProcessIdentifierFilter
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataProcessIdentifierFilterBuilder) = (*_BACnetConstructedDataProcessIdentifierFilterBuilder)(nil)
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithMandatoryFields(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder {
+	return b.WithProcessIdentifierFilter(processIdentifierFilter)
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithProcessIdentifierFilter(processIdentifierFilter BACnetProcessIdSelection) BACnetConstructedDataProcessIdentifierFilterBuilder {
+	b.ProcessIdentifierFilter = processIdentifierFilter
+	return b
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) WithProcessIdentifierFilterBuilder(builderSupplier func(BACnetProcessIdSelectionBuilder) BACnetProcessIdSelectionBuilder) BACnetConstructedDataProcessIdentifierFilterBuilder {
+	builder := builderSupplier(b.ProcessIdentifierFilter.CreateBACnetProcessIdSelectionBuilder())
+	var err error
+	b.ProcessIdentifierFilter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetProcessIdSelectionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) Build() (BACnetConstructedDataProcessIdentifierFilter, error) {
+	if b.ProcessIdentifierFilter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'processIdentifierFilter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataProcessIdentifierFilter.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) MustBuild() BACnetConstructedDataProcessIdentifierFilter {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataProcessIdentifierFilterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataProcessIdentifierFilterBuilder().(*_BACnetConstructedDataProcessIdentifierFilterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataProcessIdentifierFilterBuilder creates a BACnetConstructedDataProcessIdentifierFilterBuilder
+func (b *_BACnetConstructedDataProcessIdentifierFilter) CreateBACnetConstructedDataProcessIdentifierFilterBuilder() BACnetConstructedDataProcessIdentifierFilterBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataProcessIdentifierFilterBuilder()
+	}
+	return &_BACnetConstructedDataProcessIdentifierFilterBuilder{_BACnetConstructedDataProcessIdentifierFilter: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) GetActualValue() BACnetP
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataProcessIdentifierFilter factory function for _BACnetConstructedDataProcessIdentifierFilter
-func NewBACnetConstructedDataProcessIdentifierFilter(processIdentifierFilter BACnetProcessIdSelection, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataProcessIdentifierFilter {
-	if processIdentifierFilter == nil {
-		panic("processIdentifierFilter of type BACnetProcessIdSelection for BACnetConstructedDataProcessIdentifierFilter must not be nil")
-	}
-	_result := &_BACnetConstructedDataProcessIdentifierFilter{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ProcessIdentifierFilter:       processIdentifierFilter,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataProcessIdentifierFilter(structType any) BACnetConstructedDataProcessIdentifierFilter {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataProcessIdentifierFilter) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataProcessIdentifierFilter) IsBACnetConstructedDataProcessIdentifierFilter() {
 }
 
+func (m *_BACnetConstructedDataProcessIdentifierFilter) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataProcessIdentifierFilter) deepCopy() *_BACnetConstructedDataProcessIdentifierFilter {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataProcessIdentifierFilterCopy := &_BACnetConstructedDataProcessIdentifierFilter{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ProcessIdentifierFilter.DeepCopy().(BACnetProcessIdSelection),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataProcessIdentifierFilterCopy
+}
+
 func (m *_BACnetConstructedDataProcessIdentifierFilter) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

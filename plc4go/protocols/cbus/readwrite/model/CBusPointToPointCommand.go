@@ -40,8 +40,11 @@ type CBusPointToPointCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
+	// CreateBuilder creates a CBusPointToPointCommandBuilder
+	CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder
 }
 
 // CBusPointToPointCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type CBusPointToPointCommandContract interface {
 	GetCBusOptions() CBusOptions
 	// IsCBusPointToPointCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusPointToPointCommand()
+	// CreateBuilder creates a CBusPointToPointCommandBuilder
+	CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder
 }
 
 // CBusPointToPointCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -77,6 +82,194 @@ type _CBusPointToPointCommand struct {
 }
 
 var _ CBusPointToPointCommandContract = (*_CBusPointToPointCommand)(nil)
+
+// NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
+func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
+	if calData == nil {
+		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
+	}
+	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusPointToPointCommandBuilder is a builder for CBusPointToPointCommand
+type CBusPointToPointCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bridgeAddressCountPeek uint16, calData CALData) CBusPointToPointCommandBuilder
+	// WithBridgeAddressCountPeek adds BridgeAddressCountPeek (property field)
+	WithBridgeAddressCountPeek(uint16) CBusPointToPointCommandBuilder
+	// WithCalData adds CalData (property field)
+	WithCalData(CALData) CBusPointToPointCommandBuilder
+	// WithCalDataBuilder adds CalData (property field) which is build by the builder
+	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) CBusPointToPointCommandBuilder
+	// AsCBusPointToPointCommandDirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
+	AsCBusPointToPointCommandDirect() interface {
+		CBusPointToPointCommandDirectBuilder
+		Done() CBusPointToPointCommandBuilder
+	}
+	// AsCBusPointToPointCommandIndirect converts this build to a subType of CBusPointToPointCommand. It is always possible to return to current builder using Done()
+	AsCBusPointToPointCommandIndirect() interface {
+		CBusPointToPointCommandIndirectBuilder
+		Done() CBusPointToPointCommandBuilder
+	}
+	// Build builds the CBusPointToPointCommand or returns an error if something is wrong
+	PartialBuild() (CBusPointToPointCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() CBusPointToPointCommandContract
+	// Build builds the CBusPointToPointCommand or returns an error if something is wrong
+	Build() (CBusPointToPointCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusPointToPointCommand
+}
+
+// NewCBusPointToPointCommandBuilder() creates a CBusPointToPointCommandBuilder
+func NewCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder {
+	return &_CBusPointToPointCommandBuilder{_CBusPointToPointCommand: new(_CBusPointToPointCommand)}
+}
+
+type _CBusPointToPointCommandChildBuilder interface {
+	utils.Copyable
+	setParent(CBusPointToPointCommandContract)
+	buildForCBusPointToPointCommand() (CBusPointToPointCommand, error)
+}
+
+type _CBusPointToPointCommandBuilder struct {
+	*_CBusPointToPointCommand
+
+	childBuilder _CBusPointToPointCommandChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusPointToPointCommandBuilder) = (*_CBusPointToPointCommandBuilder)(nil)
+
+func (b *_CBusPointToPointCommandBuilder) WithMandatoryFields(bridgeAddressCountPeek uint16, calData CALData) CBusPointToPointCommandBuilder {
+	return b.WithBridgeAddressCountPeek(bridgeAddressCountPeek).WithCalData(calData)
+}
+
+func (b *_CBusPointToPointCommandBuilder) WithBridgeAddressCountPeek(bridgeAddressCountPeek uint16) CBusPointToPointCommandBuilder {
+	b.BridgeAddressCountPeek = bridgeAddressCountPeek
+	return b
+}
+
+func (b *_CBusPointToPointCommandBuilder) WithCalData(calData CALData) CBusPointToPointCommandBuilder {
+	b.CalData = calData
+	return b
+}
+
+func (b *_CBusPointToPointCommandBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) CBusPointToPointCommandBuilder {
+	builder := builderSupplier(b.CalData.CreateCALDataBuilder())
+	var err error
+	b.CalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusPointToPointCommandBuilder) PartialBuild() (CBusPointToPointCommandContract, error) {
+	if b.CalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusPointToPointCommand.deepCopy(), nil
+}
+
+func (b *_CBusPointToPointCommandBuilder) PartialMustBuild() CBusPointToPointCommandContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandDirect() interface {
+	CBusPointToPointCommandDirectBuilder
+	Done() CBusPointToPointCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusPointToPointCommandDirectBuilder
+		Done() CBusPointToPointCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusPointToPointCommandDirectBuilder().(*_CBusPointToPointCommandDirectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusPointToPointCommandBuilder) AsCBusPointToPointCommandIndirect() interface {
+	CBusPointToPointCommandIndirectBuilder
+	Done() CBusPointToPointCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusPointToPointCommandIndirectBuilder
+		Done() CBusPointToPointCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusPointToPointCommandIndirectBuilder().(*_CBusPointToPointCommandIndirectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusPointToPointCommandBuilder) Build() (CBusPointToPointCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCBusPointToPointCommand()
+}
+
+func (b *_CBusPointToPointCommandBuilder) MustBuild() CBusPointToPointCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusPointToPointCommandBuilder) DeepCopy() any {
+	_copy := b.CreateCBusPointToPointCommandBuilder().(*_CBusPointToPointCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusPointToPointCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusPointToPointCommandBuilder creates a CBusPointToPointCommandBuilder
+func (b *_CBusPointToPointCommand) CreateCBusPointToPointCommandBuilder() CBusPointToPointCommandBuilder {
+	if b == nil {
+		return NewCBusPointToPointCommandBuilder()
+	}
+	return &_CBusPointToPointCommandBuilder{_CBusPointToPointCommand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -111,14 +304,6 @@ func (pm *_CBusPointToPointCommand) GetIsDirect() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusPointToPointCommand factory function for _CBusPointToPointCommand
-func NewCBusPointToPointCommand(bridgeAddressCountPeek uint16, calData CALData, cBusOptions CBusOptions) *_CBusPointToPointCommand {
-	if calData == nil {
-		panic("calData of type CALData for CBusPointToPointCommand must not be nil")
-	}
-	return &_CBusPointToPointCommand{BridgeAddressCountPeek: bridgeAddressCountPeek, CalData: calData, CBusOptions: cBusOptions}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusPointToPointCommand(structType any) CBusPointToPointCommand {
@@ -161,7 +346,7 @@ func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](c
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -171,7 +356,12 @@ func CBusPointToPointCommandParseWithBuffer[T CBusPointToPointCommand](ctx conte
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (__cBusPointToPointCommand CBusPointToPointCommand, err error) {
@@ -199,11 +389,11 @@ func (m *_CBusPointToPointCommand) parse(ctx context.Context, readBuffer utils.R
 	var _child CBusPointToPointCommand
 	switch {
 	case isDirect == bool(true): // CBusPointToPointCommandDirect
-		if _child, err = (&_CBusPointToPointCommandDirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandDirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandDirect for type-switch of CBusPointToPointCommand")
 		}
 	case isDirect == bool(false): // CBusPointToPointCommandIndirect
-		if _child, err = (&_CBusPointToPointCommandIndirect{}).parse(ctx, readBuffer, m, cBusOptions); err != nil {
+		if _child, err = new(_CBusPointToPointCommandIndirect).parse(ctx, readBuffer, m, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusPointToPointCommandIndirect for type-switch of CBusPointToPointCommand")
 		}
 	default:
@@ -267,3 +457,20 @@ func (m *_CBusPointToPointCommand) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusPointToPointCommand) IsCBusPointToPointCommand() {}
+
+func (m *_CBusPointToPointCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusPointToPointCommand) deepCopy() *_CBusPointToPointCommand {
+	if m == nil {
+		return nil
+	}
+	_CBusPointToPointCommandCopy := &_CBusPointToPointCommand{
+		nil, // will be set by child
+		m.BridgeAddressCountPeek,
+		m.CalData.DeepCopy().(CALData),
+		m.CBusOptions,
+	}
+	return _CBusPointToPointCommandCopy
+}

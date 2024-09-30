@@ -38,6 +38,7 @@ type VariantDouble interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantDouble interface {
 	GetValue() []float64
 	// IsVariantDouble is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantDouble()
+	// CreateBuilder creates a VariantDoubleBuilder
+	CreateVariantDoubleBuilder() VariantDoubleBuilder
 }
 
 // _VariantDouble is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantDouble struct {
 
 var _ VariantDouble = (*_VariantDouble)(nil)
 var _ VariantRequirements = (*_VariantDouble)(nil)
+
+// NewVariantDouble factory function for _VariantDouble
+func NewVariantDouble(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []float64) *_VariantDouble {
+	_result := &_VariantDouble{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantDoubleBuilder is a builder for VariantDouble
+type VariantDoubleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []float64) VariantDoubleBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantDoubleBuilder
+	// WithValue adds Value (property field)
+	WithValue(...float64) VariantDoubleBuilder
+	// Build builds the VariantDouble or returns an error if something is wrong
+	Build() (VariantDouble, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantDouble
+}
+
+// NewVariantDoubleBuilder() creates a VariantDoubleBuilder
+func NewVariantDoubleBuilder() VariantDoubleBuilder {
+	return &_VariantDoubleBuilder{_VariantDouble: new(_VariantDouble)}
+}
+
+type _VariantDoubleBuilder struct {
+	*_VariantDouble
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantDoubleBuilder) = (*_VariantDoubleBuilder)(nil)
+
+func (b *_VariantDoubleBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantDoubleBuilder) WithMandatoryFields(value []float64) VariantDoubleBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantDoubleBuilder) WithOptionalArrayLength(arrayLength int32) VariantDoubleBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantDoubleBuilder) WithValue(value ...float64) VariantDoubleBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantDoubleBuilder) Build() (VariantDouble, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantDouble.deepCopy(), nil
+}
+
+func (b *_VariantDoubleBuilder) MustBuild() VariantDouble {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantDoubleBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantDoubleBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantDoubleBuilder) DeepCopy() any {
+	_copy := b.CreateVariantDoubleBuilder().(*_VariantDoubleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantDoubleBuilder creates a VariantDoubleBuilder
+func (b *_VariantDouble) CreateVariantDoubleBuilder() VariantDoubleBuilder {
+	if b == nil {
+		return NewVariantDoubleBuilder()
+	}
+	return &_VariantDoubleBuilder{_VariantDouble: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantDouble) GetValue() []float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantDouble factory function for _VariantDouble
-func NewVariantDouble(arrayLength *int32, value []float64, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantDouble {
-	_result := &_VariantDouble{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantDouble(structType any) VariantDouble {
@@ -206,13 +307,34 @@ func (m *_VariantDouble) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_VariantDouble) IsVariantDouble() {}
 
+func (m *_VariantDouble) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantDouble) deepCopy() *_VariantDouble {
+	if m == nil {
+		return nil
+	}
+	_VariantDoubleCopy := &_VariantDouble{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[float64, float64](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantDoubleCopy
+}
+
 func (m *_VariantDouble) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

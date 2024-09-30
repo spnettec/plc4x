@@ -38,6 +38,7 @@ type BACnetConstructedDataPassbackTimeout interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPassbackTimeout returns PassbackTimeout (property field)
 	GetPassbackTimeout() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataPassbackTimeout interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPassbackTimeout is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPassbackTimeout()
+	// CreateBuilder creates a BACnetConstructedDataPassbackTimeoutBuilder
+	CreateBACnetConstructedDataPassbackTimeoutBuilder() BACnetConstructedDataPassbackTimeoutBuilder
 }
 
 // _BACnetConstructedDataPassbackTimeout is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataPassbackTimeout struct {
 
 var _ BACnetConstructedDataPassbackTimeout = (*_BACnetConstructedDataPassbackTimeout)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPassbackTimeout)(nil)
+
+// NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
+func NewBACnetConstructedDataPassbackTimeout(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, passbackTimeout BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
+	if passbackTimeout == nil {
+		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
+	}
+	_result := &_BACnetConstructedDataPassbackTimeout{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PassbackTimeout:               passbackTimeout,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPassbackTimeoutBuilder is a builder for BACnetConstructedDataPassbackTimeout
+type BACnetConstructedDataPassbackTimeoutBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(passbackTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder
+	// WithPassbackTimeout adds PassbackTimeout (property field)
+	WithPassbackTimeout(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder
+	// WithPassbackTimeoutBuilder adds PassbackTimeout (property field) which is build by the builder
+	WithPassbackTimeoutBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPassbackTimeoutBuilder
+	// Build builds the BACnetConstructedDataPassbackTimeout or returns an error if something is wrong
+	Build() (BACnetConstructedDataPassbackTimeout, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPassbackTimeout
+}
+
+// NewBACnetConstructedDataPassbackTimeoutBuilder() creates a BACnetConstructedDataPassbackTimeoutBuilder
+func NewBACnetConstructedDataPassbackTimeoutBuilder() BACnetConstructedDataPassbackTimeoutBuilder {
+	return &_BACnetConstructedDataPassbackTimeoutBuilder{_BACnetConstructedDataPassbackTimeout: new(_BACnetConstructedDataPassbackTimeout)}
+}
+
+type _BACnetConstructedDataPassbackTimeoutBuilder struct {
+	*_BACnetConstructedDataPassbackTimeout
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPassbackTimeoutBuilder) = (*_BACnetConstructedDataPassbackTimeoutBuilder)(nil)
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) WithMandatoryFields(passbackTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder {
+	return b.WithPassbackTimeout(passbackTimeout)
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) WithPassbackTimeout(passbackTimeout BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPassbackTimeoutBuilder {
+	b.PassbackTimeout = passbackTimeout
+	return b
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) WithPassbackTimeoutBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPassbackTimeoutBuilder {
+	builder := builderSupplier(b.PassbackTimeout.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.PassbackTimeout, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) Build() (BACnetConstructedDataPassbackTimeout, error) {
+	if b.PassbackTimeout == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'passbackTimeout' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataPassbackTimeout.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) MustBuild() BACnetConstructedDataPassbackTimeout {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPassbackTimeoutBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPassbackTimeoutBuilder().(*_BACnetConstructedDataPassbackTimeoutBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataPassbackTimeoutBuilder creates a BACnetConstructedDataPassbackTimeoutBuilder
+func (b *_BACnetConstructedDataPassbackTimeout) CreateBACnetConstructedDataPassbackTimeoutBuilder() BACnetConstructedDataPassbackTimeoutBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataPassbackTimeoutBuilder()
+	}
+	return &_BACnetConstructedDataPassbackTimeoutBuilder{_BACnetConstructedDataPassbackTimeout: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataPassbackTimeout) GetActualValue() BACnetApplicati
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPassbackTimeout factory function for _BACnetConstructedDataPassbackTimeout
-func NewBACnetConstructedDataPassbackTimeout(passbackTimeout BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPassbackTimeout {
-	if passbackTimeout == nil {
-		panic("passbackTimeout of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPassbackTimeout must not be nil")
-	}
-	_result := &_BACnetConstructedDataPassbackTimeout{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PassbackTimeout:               passbackTimeout,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPassbackTimeout(structType any) BACnetConstructedDataPassbackTimeout {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataPassbackTimeout) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataPassbackTimeout) IsBACnetConstructedDataPassbackTimeout() {}
 
+func (m *_BACnetConstructedDataPassbackTimeout) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPassbackTimeout) deepCopy() *_BACnetConstructedDataPassbackTimeout {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPassbackTimeoutCopy := &_BACnetConstructedDataPassbackTimeout{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PassbackTimeout.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPassbackTimeoutCopy
+}
+
 func (m *_BACnetConstructedDataPassbackTimeout) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

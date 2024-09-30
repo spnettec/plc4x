@@ -38,6 +38,7 @@ type BACnetSecurityKeySetKeyIds interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetKeyIds returns KeyIds (property field)
@@ -46,6 +47,8 @@ type BACnetSecurityKeySetKeyIds interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetSecurityKeySetKeyIds is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSecurityKeySetKeyIds()
+	// CreateBuilder creates a BACnetSecurityKeySetKeyIdsBuilder
+	CreateBACnetSecurityKeySetKeyIdsBuilder() BACnetSecurityKeySetKeyIdsBuilder
 }
 
 // _BACnetSecurityKeySetKeyIds is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetSecurityKeySetKeyIds struct {
 }
 
 var _ BACnetSecurityKeySetKeyIds = (*_BACnetSecurityKeySetKeyIds)(nil)
+
+// NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
+func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
+	}
+	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSecurityKeySetKeyIdsBuilder is a builder for BACnetSecurityKeySetKeyIds
+type BACnetSecurityKeySetKeyIdsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetSecurityKeySetKeyIdsBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSecurityKeySetKeyIdsBuilder
+	// WithKeyIds adds KeyIds (property field)
+	WithKeyIds(...BACnetKeyIdentifier) BACnetSecurityKeySetKeyIdsBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder
+	// Build builds the BACnetSecurityKeySetKeyIds or returns an error if something is wrong
+	Build() (BACnetSecurityKeySetKeyIds, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSecurityKeySetKeyIds
+}
+
+// NewBACnetSecurityKeySetKeyIdsBuilder() creates a BACnetSecurityKeySetKeyIdsBuilder
+func NewBACnetSecurityKeySetKeyIdsBuilder() BACnetSecurityKeySetKeyIdsBuilder {
+	return &_BACnetSecurityKeySetKeyIdsBuilder{_BACnetSecurityKeySetKeyIds: new(_BACnetSecurityKeySetKeyIds)}
+}
+
+type _BACnetSecurityKeySetKeyIdsBuilder struct {
+	*_BACnetSecurityKeySetKeyIds
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSecurityKeySetKeyIdsBuilder) = (*_BACnetSecurityKeySetKeyIdsBuilder)(nil)
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
+	return b.WithOpeningTag(openingTag).WithKeyIds(keyIds...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetSecurityKeySetKeyIdsBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithKeyIds(keyIds ...BACnetKeyIdentifier) BACnetSecurityKeySetKeyIdsBuilder {
+	b.KeyIds = keyIds
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetSecurityKeySetKeyIdsBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetSecurityKeySetKeyIdsBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) Build() (BACnetSecurityKeySetKeyIds, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSecurityKeySetKeyIds.deepCopy(), nil
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) MustBuild() BACnetSecurityKeySetKeyIds {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSecurityKeySetKeyIdsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityKeySetKeyIdsBuilder().(*_BACnetSecurityKeySetKeyIdsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSecurityKeySetKeyIdsBuilder creates a BACnetSecurityKeySetKeyIdsBuilder
+func (b *_BACnetSecurityKeySetKeyIds) CreateBACnetSecurityKeySetKeyIdsBuilder() BACnetSecurityKeySetKeyIdsBuilder {
+	if b == nil {
+		return NewBACnetSecurityKeySetKeyIdsBuilder()
+	}
+	return &_BACnetSecurityKeySetKeyIdsBuilder{_BACnetSecurityKeySetKeyIds: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetSecurityKeySetKeyIds) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityKeySetKeyIds factory function for _BACnetSecurityKeySetKeyIds
-func NewBACnetSecurityKeySetKeyIds(openingTag BACnetOpeningTag, keyIds []BACnetKeyIdentifier, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetSecurityKeySetKeyIds {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetSecurityKeySetKeyIds must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetSecurityKeySetKeyIds must not be nil")
-	}
-	return &_BACnetSecurityKeySetKeyIds{OpeningTag: openingTag, KeyIds: keyIds, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityKeySetKeyIds(structType any) BACnetSecurityKeySetKeyIds {
@@ -146,7 +281,7 @@ func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSecurityKeySetKeyIds) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetSecurityKeySetKeyIds BACnetSecurityKeySetKeyIds, err error) {
@@ -230,13 +365,34 @@ func (m *_BACnetSecurityKeySetKeyIds) GetTagNumber() uint8 {
 
 func (m *_BACnetSecurityKeySetKeyIds) IsBACnetSecurityKeySetKeyIds() {}
 
+func (m *_BACnetSecurityKeySetKeyIds) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityKeySetKeyIds) deepCopy() *_BACnetSecurityKeySetKeyIds {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityKeySetKeyIdsCopy := &_BACnetSecurityKeySetKeyIds{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetKeyIdentifier, BACnetKeyIdentifier](m.KeyIds),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetSecurityKeySetKeyIdsCopy
+}
+
 func (m *_BACnetSecurityKeySetKeyIds) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

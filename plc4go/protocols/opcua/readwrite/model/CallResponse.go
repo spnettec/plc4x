@@ -38,6 +38,7 @@ type CallResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type CallResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsCallResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCallResponse()
+	// CreateBuilder creates a CallResponseBuilder
+	CreateCallResponseBuilder() CallResponseBuilder
 }
 
 // _CallResponse is the data-structure of this message
@@ -65,6 +68,163 @@ type _CallResponse struct {
 
 var _ CallResponse = (*_CallResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_CallResponse)(nil)
+
+// NewCallResponse factory function for _CallResponse
+func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CallResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for CallResponse must not be nil")
+	}
+	_result := &_CallResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CallResponseBuilder is a builder for CallResponse
+type CallResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) CallResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) CallResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) CallResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) CallResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) CallResponseBuilder
+	// Build builds the CallResponse or returns an error if something is wrong
+	Build() (CallResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CallResponse
+}
+
+// NewCallResponseBuilder() creates a CallResponseBuilder
+func NewCallResponseBuilder() CallResponseBuilder {
+	return &_CallResponseBuilder{_CallResponse: new(_CallResponse)}
+}
+
+type _CallResponseBuilder struct {
+	*_CallResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CallResponseBuilder) = (*_CallResponseBuilder)(nil)
+
+func (b *_CallResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_CallResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) CallResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_CallResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) CallResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_CallResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) CallResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CallResponseBuilder) WithNoOfResults(noOfResults int32) CallResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_CallResponseBuilder) WithResults(results ...ExtensionObjectDefinition) CallResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_CallResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) CallResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_CallResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) CallResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_CallResponseBuilder) Build() (CallResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CallResponse.deepCopy(), nil
+}
+
+func (b *_CallResponseBuilder) MustBuild() CallResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CallResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CallResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_CallResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCallResponseBuilder().(*_CallResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCallResponseBuilder creates a CallResponseBuilder
+func (b *_CallResponse) CreateCallResponseBuilder() CallResponseBuilder {
+	if b == nil {
+		return NewCallResponseBuilder()
+	}
+	return &_CallResponseBuilder{_CallResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_CallResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCallResponse factory function for _CallResponse
-func NewCallResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_CallResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for CallResponse must not be nil")
-	}
-	_result := &_CallResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCallResponse(structType any) CallResponse {
@@ -281,13 +424,37 @@ func (m *_CallResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_CallResponse) IsCallResponse() {}
 
+func (m *_CallResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CallResponse) deepCopy() *_CallResponse {
+	if m == nil {
+		return nil
+	}
+	_CallResponseCopy := &_CallResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _CallResponseCopy
+}
+
 func (m *_CallResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

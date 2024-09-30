@@ -41,6 +41,7 @@ type AlarmMessageAckObjectPushType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLengthSpec returns LengthSpec (property field)
 	GetLengthSpec() uint8
 	// GetSyntaxId returns SyntaxId (property field)
@@ -55,6 +56,8 @@ type AlarmMessageAckObjectPushType interface {
 	GetAckStateComing() State
 	// IsAlarmMessageAckObjectPushType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlarmMessageAckObjectPushType()
+	// CreateBuilder creates a AlarmMessageAckObjectPushTypeBuilder
+	CreateAlarmMessageAckObjectPushTypeBuilder() AlarmMessageAckObjectPushTypeBuilder
 }
 
 // _AlarmMessageAckObjectPushType is the data-structure of this message
@@ -68,6 +71,170 @@ type _AlarmMessageAckObjectPushType struct {
 }
 
 var _ AlarmMessageAckObjectPushType = (*_AlarmMessageAckObjectPushType)(nil)
+
+// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
+func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
+	if ackStateGoing == nil {
+		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	if ackStateComing == nil {
+		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
+	}
+	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlarmMessageAckObjectPushTypeBuilder is a builder for AlarmMessageAckObjectPushType
+type AlarmMessageAckObjectPushTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) AlarmMessageAckObjectPushTypeBuilder
+	// WithLengthSpec adds LengthSpec (property field)
+	WithLengthSpec(uint8) AlarmMessageAckObjectPushTypeBuilder
+	// WithSyntaxId adds SyntaxId (property field)
+	WithSyntaxId(SyntaxIdType) AlarmMessageAckObjectPushTypeBuilder
+	// WithNumberOfValues adds NumberOfValues (property field)
+	WithNumberOfValues(uint8) AlarmMessageAckObjectPushTypeBuilder
+	// WithEventId adds EventId (property field)
+	WithEventId(uint32) AlarmMessageAckObjectPushTypeBuilder
+	// WithAckStateGoing adds AckStateGoing (property field)
+	WithAckStateGoing(State) AlarmMessageAckObjectPushTypeBuilder
+	// WithAckStateGoingBuilder adds AckStateGoing (property field) which is build by the builder
+	WithAckStateGoingBuilder(func(StateBuilder) StateBuilder) AlarmMessageAckObjectPushTypeBuilder
+	// WithAckStateComing adds AckStateComing (property field)
+	WithAckStateComing(State) AlarmMessageAckObjectPushTypeBuilder
+	// WithAckStateComingBuilder adds AckStateComing (property field) which is build by the builder
+	WithAckStateComingBuilder(func(StateBuilder) StateBuilder) AlarmMessageAckObjectPushTypeBuilder
+	// Build builds the AlarmMessageAckObjectPushType or returns an error if something is wrong
+	Build() (AlarmMessageAckObjectPushType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AlarmMessageAckObjectPushType
+}
+
+// NewAlarmMessageAckObjectPushTypeBuilder() creates a AlarmMessageAckObjectPushTypeBuilder
+func NewAlarmMessageAckObjectPushTypeBuilder() AlarmMessageAckObjectPushTypeBuilder {
+	return &_AlarmMessageAckObjectPushTypeBuilder{_AlarmMessageAckObjectPushType: new(_AlarmMessageAckObjectPushType)}
+}
+
+type _AlarmMessageAckObjectPushTypeBuilder struct {
+	*_AlarmMessageAckObjectPushType
+
+	err *utils.MultiError
+}
+
+var _ (AlarmMessageAckObjectPushTypeBuilder) = (*_AlarmMessageAckObjectPushTypeBuilder)(nil)
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithMandatoryFields(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) AlarmMessageAckObjectPushTypeBuilder {
+	return b.WithLengthSpec(lengthSpec).WithSyntaxId(syntaxId).WithNumberOfValues(numberOfValues).WithEventId(eventId).WithAckStateGoing(ackStateGoing).WithAckStateComing(ackStateComing)
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithLengthSpec(lengthSpec uint8) AlarmMessageAckObjectPushTypeBuilder {
+	b.LengthSpec = lengthSpec
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithSyntaxId(syntaxId SyntaxIdType) AlarmMessageAckObjectPushTypeBuilder {
+	b.SyntaxId = syntaxId
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithNumberOfValues(numberOfValues uint8) AlarmMessageAckObjectPushTypeBuilder {
+	b.NumberOfValues = numberOfValues
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithEventId(eventId uint32) AlarmMessageAckObjectPushTypeBuilder {
+	b.EventId = eventId
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithAckStateGoing(ackStateGoing State) AlarmMessageAckObjectPushTypeBuilder {
+	b.AckStateGoing = ackStateGoing
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithAckStateGoingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageAckObjectPushTypeBuilder {
+	builder := builderSupplier(b.AckStateGoing.CreateStateBuilder())
+	var err error
+	b.AckStateGoing, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithAckStateComing(ackStateComing State) AlarmMessageAckObjectPushTypeBuilder {
+	b.AckStateComing = ackStateComing
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) WithAckStateComingBuilder(builderSupplier func(StateBuilder) StateBuilder) AlarmMessageAckObjectPushTypeBuilder {
+	builder := builderSupplier(b.AckStateComing.CreateStateBuilder())
+	var err error
+	b.AckStateComing, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "StateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) Build() (AlarmMessageAckObjectPushType, error) {
+	if b.AckStateGoing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ackStateGoing' not set"))
+	}
+	if b.AckStateComing == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ackStateComing' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AlarmMessageAckObjectPushType.deepCopy(), nil
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) MustBuild() AlarmMessageAckObjectPushType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AlarmMessageAckObjectPushTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAlarmMessageAckObjectPushTypeBuilder().(*_AlarmMessageAckObjectPushTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAlarmMessageAckObjectPushTypeBuilder creates a AlarmMessageAckObjectPushTypeBuilder
+func (b *_AlarmMessageAckObjectPushType) CreateAlarmMessageAckObjectPushTypeBuilder() AlarmMessageAckObjectPushTypeBuilder {
+	if b == nil {
+		return NewAlarmMessageAckObjectPushTypeBuilder()
+	}
+	return &_AlarmMessageAckObjectPushTypeBuilder{_AlarmMessageAckObjectPushType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +282,6 @@ func (m *_AlarmMessageAckObjectPushType) GetVariableSpec() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlarmMessageAckObjectPushType factory function for _AlarmMessageAckObjectPushType
-func NewAlarmMessageAckObjectPushType(lengthSpec uint8, syntaxId SyntaxIdType, numberOfValues uint8, eventId uint32, ackStateGoing State, ackStateComing State) *_AlarmMessageAckObjectPushType {
-	if ackStateGoing == nil {
-		panic("ackStateGoing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	if ackStateComing == nil {
-		panic("ackStateComing of type State for AlarmMessageAckObjectPushType must not be nil")
-	}
-	return &_AlarmMessageAckObjectPushType{LengthSpec: lengthSpec, SyntaxId: syntaxId, NumberOfValues: numberOfValues, EventId: eventId, AckStateGoing: ackStateGoing, AckStateComing: ackStateComing}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlarmMessageAckObjectPushType(structType any) AlarmMessageAckObjectPushType {
@@ -188,7 +344,7 @@ func AlarmMessageAckObjectPushTypeParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AlarmMessageAckObjectPushType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alarmMessageAckObjectPushType AlarmMessageAckObjectPushType, err error) {
@@ -302,13 +458,36 @@ func (m *_AlarmMessageAckObjectPushType) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_AlarmMessageAckObjectPushType) IsAlarmMessageAckObjectPushType() {}
 
+func (m *_AlarmMessageAckObjectPushType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AlarmMessageAckObjectPushType) deepCopy() *_AlarmMessageAckObjectPushType {
+	if m == nil {
+		return nil
+	}
+	_AlarmMessageAckObjectPushTypeCopy := &_AlarmMessageAckObjectPushType{
+		m.LengthSpec,
+		m.SyntaxId,
+		m.NumberOfValues,
+		m.EventId,
+		m.AckStateGoing.DeepCopy().(State),
+		m.AckStateComing.DeepCopy().(State),
+	}
+	return _AlarmMessageAckObjectPushTypeCopy
+}
+
 func (m *_AlarmMessageAckObjectPushType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

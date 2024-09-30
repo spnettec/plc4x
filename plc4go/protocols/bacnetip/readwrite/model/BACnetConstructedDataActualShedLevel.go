@@ -38,6 +38,7 @@ type BACnetConstructedDataActualShedLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActualShedLevel returns ActualShedLevel (property field)
 	GetActualShedLevel() BACnetShedLevel
@@ -45,6 +46,8 @@ type BACnetConstructedDataActualShedLevel interface {
 	GetActualValue() BACnetShedLevel
 	// IsBACnetConstructedDataActualShedLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActualShedLevel()
+	// CreateBuilder creates a BACnetConstructedDataActualShedLevelBuilder
+	CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder
 }
 
 // _BACnetConstructedDataActualShedLevel is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataActualShedLevel struct {
 
 var _ BACnetConstructedDataActualShedLevel = (*_BACnetConstructedDataActualShedLevel)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActualShedLevel)(nil)
+
+// NewBACnetConstructedDataActualShedLevel factory function for _BACnetConstructedDataActualShedLevel
+func NewBACnetConstructedDataActualShedLevel(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, actualShedLevel BACnetShedLevel, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActualShedLevel {
+	if actualShedLevel == nil {
+		panic("actualShedLevel of type BACnetShedLevel for BACnetConstructedDataActualShedLevel must not be nil")
+	}
+	_result := &_BACnetConstructedDataActualShedLevel{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActualShedLevel:               actualShedLevel,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActualShedLevelBuilder is a builder for BACnetConstructedDataActualShedLevel
+type BACnetConstructedDataActualShedLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
+	// WithActualShedLevel adds ActualShedLevel (property field)
+	WithActualShedLevel(BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder
+	// WithActualShedLevelBuilder adds ActualShedLevel (property field) which is build by the builder
+	WithActualShedLevelBuilder(func(BACnetShedLevelBuilder) BACnetShedLevelBuilder) BACnetConstructedDataActualShedLevelBuilder
+	// Build builds the BACnetConstructedDataActualShedLevel or returns an error if something is wrong
+	Build() (BACnetConstructedDataActualShedLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActualShedLevel
+}
+
+// NewBACnetConstructedDataActualShedLevelBuilder() creates a BACnetConstructedDataActualShedLevelBuilder
+func NewBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
+	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: new(_BACnetConstructedDataActualShedLevel)}
+}
+
+type _BACnetConstructedDataActualShedLevelBuilder struct {
+	*_BACnetConstructedDataActualShedLevel
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActualShedLevelBuilder) = (*_BACnetConstructedDataActualShedLevelBuilder)(nil)
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithMandatoryFields(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	return b.WithActualShedLevel(actualShedLevel)
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevel(actualShedLevel BACnetShedLevel) BACnetConstructedDataActualShedLevelBuilder {
+	b.ActualShedLevel = actualShedLevel
+	return b
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) WithActualShedLevelBuilder(builderSupplier func(BACnetShedLevelBuilder) BACnetShedLevelBuilder) BACnetConstructedDataActualShedLevelBuilder {
+	builder := builderSupplier(b.ActualShedLevel.CreateBACnetShedLevelBuilder())
+	var err error
+	b.ActualShedLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetShedLevelBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) Build() (BACnetConstructedDataActualShedLevel, error) {
+	if b.ActualShedLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'actualShedLevel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataActualShedLevel.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) MustBuild() BACnetConstructedDataActualShedLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActualShedLevelBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActualShedLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActualShedLevelBuilder().(*_BACnetConstructedDataActualShedLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataActualShedLevelBuilder creates a BACnetConstructedDataActualShedLevelBuilder
+func (b *_BACnetConstructedDataActualShedLevel) CreateBACnetConstructedDataActualShedLevelBuilder() BACnetConstructedDataActualShedLevelBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataActualShedLevelBuilder()
+	}
+	return &_BACnetConstructedDataActualShedLevelBuilder{_BACnetConstructedDataActualShedLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataActualShedLevel) GetActualValue() BACnetShedLevel
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActualShedLevel factory function for _BACnetConstructedDataActualShedLevel
-func NewBACnetConstructedDataActualShedLevel(actualShedLevel BACnetShedLevel, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActualShedLevel {
-	if actualShedLevel == nil {
-		panic("actualShedLevel of type BACnetShedLevel for BACnetConstructedDataActualShedLevel must not be nil")
-	}
-	_result := &_BACnetConstructedDataActualShedLevel{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActualShedLevel:               actualShedLevel,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActualShedLevel(structType any) BACnetConstructedDataActualShedLevel {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataActualShedLevel) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataActualShedLevel) IsBACnetConstructedDataActualShedLevel() {}
 
+func (m *_BACnetConstructedDataActualShedLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActualShedLevel) deepCopy() *_BACnetConstructedDataActualShedLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActualShedLevelCopy := &_BACnetConstructedDataActualShedLevel{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ActualShedLevel.DeepCopy().(BACnetShedLevel),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActualShedLevelCopy
+}
+
 func (m *_BACnetConstructedDataActualShedLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

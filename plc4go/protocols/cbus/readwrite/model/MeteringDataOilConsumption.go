@@ -38,11 +38,14 @@ type MeteringDataOilConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetL returns L (property field)
 	GetL() uint32
 	// IsMeteringDataOilConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataOilConsumption()
+	// CreateBuilder creates a MeteringDataOilConsumptionBuilder
+	CreateMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder
 }
 
 // _MeteringDataOilConsumption is the data-structure of this message
@@ -53,6 +56,107 @@ type _MeteringDataOilConsumption struct {
 
 var _ MeteringDataOilConsumption = (*_MeteringDataOilConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataOilConsumption)(nil)
+
+// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
+func NewMeteringDataOilConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, L uint32) *_MeteringDataOilConsumption {
+	_result := &_MeteringDataOilConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		L:                    L,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataOilConsumptionBuilder is a builder for MeteringDataOilConsumption
+type MeteringDataOilConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(L uint32) MeteringDataOilConsumptionBuilder
+	// WithL adds L (property field)
+	WithL(uint32) MeteringDataOilConsumptionBuilder
+	// Build builds the MeteringDataOilConsumption or returns an error if something is wrong
+	Build() (MeteringDataOilConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataOilConsumption
+}
+
+// NewMeteringDataOilConsumptionBuilder() creates a MeteringDataOilConsumptionBuilder
+func NewMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder {
+	return &_MeteringDataOilConsumptionBuilder{_MeteringDataOilConsumption: new(_MeteringDataOilConsumption)}
+}
+
+type _MeteringDataOilConsumptionBuilder struct {
+	*_MeteringDataOilConsumption
+
+	parentBuilder *_MeteringDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataOilConsumptionBuilder) = (*_MeteringDataOilConsumptionBuilder)(nil)
+
+func (b *_MeteringDataOilConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) WithMandatoryFields(L uint32) MeteringDataOilConsumptionBuilder {
+	return b.WithL(L)
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) WithL(L uint32) MeteringDataOilConsumptionBuilder {
+	b.L = L
+	return b
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) Build() (MeteringDataOilConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MeteringDataOilConsumption.deepCopy(), nil
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) MustBuild() MeteringDataOilConsumption {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataOilConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataOilConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataOilConsumptionBuilder().(*_MeteringDataOilConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMeteringDataOilConsumptionBuilder creates a MeteringDataOilConsumptionBuilder
+func (b *_MeteringDataOilConsumption) CreateMeteringDataOilConsumptionBuilder() MeteringDataOilConsumptionBuilder {
+	if b == nil {
+		return NewMeteringDataOilConsumptionBuilder()
+	}
+	return &_MeteringDataOilConsumptionBuilder{_MeteringDataOilConsumption: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_MeteringDataOilConsumption) GetL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataOilConsumption factory function for _MeteringDataOilConsumption
-func NewMeteringDataOilConsumption(L uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataOilConsumption {
-	_result := &_MeteringDataOilConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		L:                    L,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataOilConsumption(structType any) MeteringDataOilConsumption {
@@ -176,13 +270,33 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_MeteringDataOilConsumption) IsMeteringDataOilConsumption() {}
 
+func (m *_MeteringDataOilConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataOilConsumption) deepCopy() *_MeteringDataOilConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataOilConsumptionCopy := &_MeteringDataOilConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.L,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataOilConsumptionCopy
+}
+
 func (m *_MeteringDataOilConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

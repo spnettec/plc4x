@@ -40,14 +40,19 @@ type LogicalSegmentType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
+	// CreateBuilder creates a LogicalSegmentTypeBuilder
+	CreateLogicalSegmentTypeBuilder() LogicalSegmentTypeBuilder
 }
 
 // LogicalSegmentTypeContract provides a set of functions which can be overwritten by a sub struct
 type LogicalSegmentTypeContract interface {
 	// IsLogicalSegmentType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicalSegmentType()
+	// CreateBuilder creates a LogicalSegmentTypeBuilder
+	CreateLogicalSegmentTypeBuilder() LogicalSegmentTypeBuilder
 }
 
 // LogicalSegmentTypeRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,172 @@ var _ LogicalSegmentTypeContract = (*_LogicalSegmentType)(nil)
 func NewLogicalSegmentType() *_LogicalSegmentType {
 	return &_LogicalSegmentType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LogicalSegmentTypeBuilder is a builder for LogicalSegmentType
+type LogicalSegmentTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LogicalSegmentTypeBuilder
+	// AsClassID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
+	AsClassID() interface {
+		ClassIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}
+	// AsInstanceID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
+	AsInstanceID() interface {
+		InstanceIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}
+	// AsMemberID converts this build to a subType of LogicalSegmentType. It is always possible to return to current builder using Done()
+	AsMemberID() interface {
+		MemberIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}
+	// Build builds the LogicalSegmentType or returns an error if something is wrong
+	PartialBuild() (LogicalSegmentTypeContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() LogicalSegmentTypeContract
+	// Build builds the LogicalSegmentType or returns an error if something is wrong
+	Build() (LogicalSegmentType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LogicalSegmentType
+}
+
+// NewLogicalSegmentTypeBuilder() creates a LogicalSegmentTypeBuilder
+func NewLogicalSegmentTypeBuilder() LogicalSegmentTypeBuilder {
+	return &_LogicalSegmentTypeBuilder{_LogicalSegmentType: new(_LogicalSegmentType)}
+}
+
+type _LogicalSegmentTypeChildBuilder interface {
+	utils.Copyable
+	setParent(LogicalSegmentTypeContract)
+	buildForLogicalSegmentType() (LogicalSegmentType, error)
+}
+
+type _LogicalSegmentTypeBuilder struct {
+	*_LogicalSegmentType
+
+	childBuilder _LogicalSegmentTypeChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LogicalSegmentTypeBuilder) = (*_LogicalSegmentTypeBuilder)(nil)
+
+func (b *_LogicalSegmentTypeBuilder) WithMandatoryFields() LogicalSegmentTypeBuilder {
+	return b
+}
+
+func (b *_LogicalSegmentTypeBuilder) PartialBuild() (LogicalSegmentTypeContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LogicalSegmentType.deepCopy(), nil
+}
+
+func (b *_LogicalSegmentTypeBuilder) PartialMustBuild() LogicalSegmentTypeContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LogicalSegmentTypeBuilder) AsClassID() interface {
+	ClassIDBuilder
+	Done() LogicalSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ClassIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewClassIDBuilder().(*_ClassIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LogicalSegmentTypeBuilder) AsInstanceID() interface {
+	InstanceIDBuilder
+	Done() LogicalSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		InstanceIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewInstanceIDBuilder().(*_InstanceIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LogicalSegmentTypeBuilder) AsMemberID() interface {
+	MemberIDBuilder
+	Done() LogicalSegmentTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		MemberIDBuilder
+		Done() LogicalSegmentTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewMemberIDBuilder().(*_MemberIDBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_LogicalSegmentTypeBuilder) Build() (LogicalSegmentType, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForLogicalSegmentType()
+}
+
+func (b *_LogicalSegmentTypeBuilder) MustBuild() LogicalSegmentType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LogicalSegmentTypeBuilder) DeepCopy() any {
+	_copy := b.CreateLogicalSegmentTypeBuilder().(*_LogicalSegmentTypeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_LogicalSegmentTypeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLogicalSegmentTypeBuilder creates a LogicalSegmentTypeBuilder
+func (b *_LogicalSegmentType) CreateLogicalSegmentTypeBuilder() LogicalSegmentTypeBuilder {
+	if b == nil {
+		return NewLogicalSegmentTypeBuilder()
+	}
+	return &_LogicalSegmentTypeBuilder{_LogicalSegmentType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastLogicalSegmentType(structType any) LogicalSegmentType {
@@ -108,7 +279,7 @@ func LogicalSegmentTypeParseWithBufferProducer[T LogicalSegmentType]() func(ctx 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +289,12 @@ func LogicalSegmentTypeParseWithBuffer[T LogicalSegmentType](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__logicalSegmentType LogicalSegmentType, err error) {
@@ -139,15 +315,15 @@ func (m *_LogicalSegmentType) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child LogicalSegmentType
 	switch {
 	case logicalSegmentType == 0x00: // ClassID
-		if _child, err = (&_ClassID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ClassID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ClassID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x01: // InstanceID
-		if _child, err = (&_InstanceID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_InstanceID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type InstanceID for type-switch of LogicalSegmentType")
 		}
 	case logicalSegmentType == 0x02: // MemberID
-		if _child, err = (&_MemberID{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_MemberID).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type MemberID for type-switch of LogicalSegmentType")
 		}
 	default:
@@ -189,3 +365,17 @@ func (pm *_LogicalSegmentType) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_LogicalSegmentType) IsLogicalSegmentType() {}
+
+func (m *_LogicalSegmentType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicalSegmentType) deepCopy() *_LogicalSegmentType {
+	if m == nil {
+		return nil
+	}
+	_LogicalSegmentTypeCopy := &_LogicalSegmentType{
+		nil, // will be set by child
+	}
+	return _LogicalSegmentTypeCopy
+}

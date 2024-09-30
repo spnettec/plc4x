@@ -38,6 +38,7 @@ type BACnetSilencedStateTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetSilencedStateTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetSilencedStateTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSilencedStateTagged()
+	// CreateBuilder creates a BACnetSilencedStateTaggedBuilder
+	CreateBACnetSilencedStateTaggedBuilder() BACnetSilencedStateTaggedBuilder
 }
 
 // _BACnetSilencedStateTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetSilencedStateTagged struct {
 }
 
 var _ BACnetSilencedStateTagged = (*_BACnetSilencedStateTagged)(nil)
+
+// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
+func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
+	}
+	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSilencedStateTaggedBuilder is a builder for BACnetSilencedStateTagged
+type BACnetSilencedStateTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32) BACnetSilencedStateTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetSilencedStateTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSilencedStateTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetSilencedState) BACnetSilencedStateTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetSilencedStateTaggedBuilder
+	// Build builds the BACnetSilencedStateTagged or returns an error if something is wrong
+	Build() (BACnetSilencedStateTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSilencedStateTagged
+}
+
+// NewBACnetSilencedStateTaggedBuilder() creates a BACnetSilencedStateTaggedBuilder
+func NewBACnetSilencedStateTaggedBuilder() BACnetSilencedStateTaggedBuilder {
+	return &_BACnetSilencedStateTaggedBuilder{_BACnetSilencedStateTagged: new(_BACnetSilencedStateTagged)}
+}
+
+type _BACnetSilencedStateTaggedBuilder struct {
+	*_BACnetSilencedStateTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSilencedStateTaggedBuilder) = (*_BACnetSilencedStateTaggedBuilder)(nil)
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSilencedStateTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSilencedStateTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithValue(value BACnetSilencedState) BACnetSilencedStateTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetSilencedStateTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) Build() (BACnetSilencedStateTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSilencedStateTagged.deepCopy(), nil
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) MustBuild() BACnetSilencedStateTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSilencedStateTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSilencedStateTaggedBuilder().(*_BACnetSilencedStateTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSilencedStateTaggedBuilder creates a BACnetSilencedStateTaggedBuilder
+func (b *_BACnetSilencedStateTagged) CreateBACnetSilencedStateTaggedBuilder() BACnetSilencedStateTaggedBuilder {
+	if b == nil {
+		return NewBACnetSilencedStateTaggedBuilder()
+	}
+	return &_BACnetSilencedStateTaggedBuilder{_BACnetSilencedStateTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetSilencedStateTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSilencedStateTagged factory function for _BACnetSilencedStateTagged
-func NewBACnetSilencedStateTagged(header BACnetTagHeader, value BACnetSilencedState, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetSilencedStateTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSilencedStateTagged must not be nil")
-	}
-	return &_BACnetSilencedStateTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSilencedStateTagged(structType any) BACnetSilencedStateTagged {
@@ -159,7 +273,7 @@ func BACnetSilencedStateTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSilencedStateTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetSilencedStateTagged BACnetSilencedStateTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetSilencedStateTagged) GetTagClass() TagClass {
 
 func (m *_BACnetSilencedStateTagged) IsBACnetSilencedStateTagged() {}
 
+func (m *_BACnetSilencedStateTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSilencedStateTagged) deepCopy() *_BACnetSilencedStateTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSilencedStateTaggedCopy := &_BACnetSilencedStateTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSilencedStateTaggedCopy
+}
+
 func (m *_BACnetSilencedStateTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type SetPublishingModeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -49,6 +50,8 @@ type SetPublishingModeRequest interface {
 	GetSubscriptionIds() []uint32
 	// IsSetPublishingModeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetPublishingModeRequest()
+	// CreateBuilder creates a SetPublishingModeRequestBuilder
+	CreateSetPublishingModeRequestBuilder() SetPublishingModeRequestBuilder
 }
 
 // _SetPublishingModeRequest is the data-structure of this message
@@ -64,6 +67,155 @@ type _SetPublishingModeRequest struct {
 
 var _ SetPublishingModeRequest = (*_SetPublishingModeRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetPublishingModeRequest)(nil)
+
+// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
+func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
+	}
+	_result := &_SetPublishingModeRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		PublishingEnabled:                 publishingEnabled,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetPublishingModeRequestBuilder is a builder for SetPublishingModeRequest
+type SetPublishingModeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) SetPublishingModeRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) SetPublishingModeRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeRequestBuilder
+	// WithPublishingEnabled adds PublishingEnabled (property field)
+	WithPublishingEnabled(bool) SetPublishingModeRequestBuilder
+	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
+	WithNoOfSubscriptionIds(int32) SetPublishingModeRequestBuilder
+	// WithSubscriptionIds adds SubscriptionIds (property field)
+	WithSubscriptionIds(...uint32) SetPublishingModeRequestBuilder
+	// Build builds the SetPublishingModeRequest or returns an error if something is wrong
+	Build() (SetPublishingModeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetPublishingModeRequest
+}
+
+// NewSetPublishingModeRequestBuilder() creates a SetPublishingModeRequestBuilder
+func NewSetPublishingModeRequestBuilder() SetPublishingModeRequestBuilder {
+	return &_SetPublishingModeRequestBuilder{_SetPublishingModeRequest: new(_SetPublishingModeRequest)}
+}
+
+type _SetPublishingModeRequestBuilder struct {
+	*_SetPublishingModeRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SetPublishingModeRequestBuilder) = (*_SetPublishingModeRequestBuilder)(nil)
+
+func (b *_SetPublishingModeRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) SetPublishingModeRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithPublishingEnabled(publishingEnabled).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...)
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) SetPublishingModeRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetPublishingModeRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithPublishingEnabled(publishingEnabled bool) SetPublishingModeRequestBuilder {
+	b.PublishingEnabled = publishingEnabled
+	return b
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) SetPublishingModeRequestBuilder {
+	b.NoOfSubscriptionIds = noOfSubscriptionIds
+	return b
+}
+
+func (b *_SetPublishingModeRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) SetPublishingModeRequestBuilder {
+	b.SubscriptionIds = subscriptionIds
+	return b
+}
+
+func (b *_SetPublishingModeRequestBuilder) Build() (SetPublishingModeRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SetPublishingModeRequest.deepCopy(), nil
+}
+
+func (b *_SetPublishingModeRequestBuilder) MustBuild() SetPublishingModeRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetPublishingModeRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetPublishingModeRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SetPublishingModeRequestBuilder) DeepCopy() any {
+	_copy := b.CreateSetPublishingModeRequestBuilder().(*_SetPublishingModeRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSetPublishingModeRequestBuilder creates a SetPublishingModeRequestBuilder
+func (b *_SetPublishingModeRequest) CreateSetPublishingModeRequestBuilder() SetPublishingModeRequestBuilder {
+	if b == nil {
+		return NewSetPublishingModeRequestBuilder()
+	}
+	return &_SetPublishingModeRequestBuilder{_SetPublishingModeRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +260,6 @@ func (m *_SetPublishingModeRequest) GetSubscriptionIds() []uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetPublishingModeRequest factory function for _SetPublishingModeRequest
-func NewSetPublishingModeRequest(requestHeader ExtensionObjectDefinition, publishingEnabled bool, noOfSubscriptionIds int32, subscriptionIds []uint32) *_SetPublishingModeRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for SetPublishingModeRequest must not be nil")
-	}
-	_result := &_SetPublishingModeRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		PublishingEnabled:                 publishingEnabled,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetPublishingModeRequest(structType any) SetPublishingModeRequest {
@@ -263,13 +399,37 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_SetPublishingModeRequest) IsSetPublishingModeRequest() {}
 
+func (m *_SetPublishingModeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetPublishingModeRequest) deepCopy() *_SetPublishingModeRequest {
+	if m == nil {
+		return nil
+	}
+	_SetPublishingModeRequestCopy := &_SetPublishingModeRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.PublishingEnabled,
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetPublishingModeRequestCopy
+}
+
 func (m *_SetPublishingModeRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

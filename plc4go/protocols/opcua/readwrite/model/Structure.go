@@ -36,8 +36,11 @@ type Structure interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsStructure is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsStructure()
+	// CreateBuilder creates a StructureBuilder
+	CreateStructureBuilder() StructureBuilder
 }
 
 // _Structure is the data-structure of this message
@@ -50,6 +53,75 @@ var _ Structure = (*_Structure)(nil)
 func NewStructure() *_Structure {
 	return &_Structure{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// StructureBuilder is a builder for Structure
+type StructureBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() StructureBuilder
+	// Build builds the Structure or returns an error if something is wrong
+	Build() (Structure, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Structure
+}
+
+// NewStructureBuilder() creates a StructureBuilder
+func NewStructureBuilder() StructureBuilder {
+	return &_StructureBuilder{_Structure: new(_Structure)}
+}
+
+type _StructureBuilder struct {
+	*_Structure
+
+	err *utils.MultiError
+}
+
+var _ (StructureBuilder) = (*_StructureBuilder)(nil)
+
+func (b *_StructureBuilder) WithMandatoryFields() StructureBuilder {
+	return b
+}
+
+func (b *_StructureBuilder) Build() (Structure, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Structure.deepCopy(), nil
+}
+
+func (b *_StructureBuilder) MustBuild() Structure {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_StructureBuilder) DeepCopy() any {
+	_copy := b.CreateStructureBuilder().(*_StructureBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateStructureBuilder creates a StructureBuilder
+func (b *_Structure) CreateStructureBuilder() StructureBuilder {
+	if b == nil {
+		return NewStructureBuilder()
+	}
+	return &_StructureBuilder{_Structure: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastStructure(structType any) Structure {
@@ -91,7 +163,7 @@ func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Structure) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__structure Structure, err error) {
@@ -135,13 +207,29 @@ func (m *_Structure) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_Structure) IsStructure() {}
 
+func (m *_Structure) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Structure) deepCopy() *_Structure {
+	if m == nil {
+		return nil
+	}
+	_StructureCopy := &_Structure{}
+	return _StructureCopy
+}
+
 func (m *_Structure) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaintenanceRequired returns MaintenanceRequired (property field)
 	GetMaintenanceRequired() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataLifeSafetyZoneMaintenanceRequired interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+	CreateBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder() BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired struct {
 
 var _ BACnetConstructedDataLifeSafetyZoneMaintenanceRequired = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)(nil)
+
+// NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maintenanceRequired BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+	if maintenanceRequired == nil {
+		panic("maintenanceRequired of type BACnetApplicationTagBoolean for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired must not be nil")
+	}
+	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaintenanceRequired:           maintenanceRequired,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder is a builder for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+type BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maintenanceRequired BACnetApplicationTagBoolean) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+	// WithMaintenanceRequired adds MaintenanceRequired (property field)
+	WithMaintenanceRequired(BACnetApplicationTagBoolean) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+	// WithMaintenanceRequiredBuilder adds MaintenanceRequired (property field) which is build by the builder
+	WithMaintenanceRequiredBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyZoneMaintenanceRequired or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+}
+
+// NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder() creates a BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder() BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder {
+	return &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder{_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired: new(_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired)}
+}
+
+type _BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder struct {
+	*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) = (*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder)(nil)
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) WithMandatoryFields(maintenanceRequired BACnetApplicationTagBoolean) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder {
+	return b.WithMaintenanceRequired(maintenanceRequired)
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) WithMaintenanceRequired(maintenanceRequired BACnetApplicationTagBoolean) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder {
+	b.MaintenanceRequired = maintenanceRequired
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) WithMaintenanceRequiredBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder {
+	builder := builderSupplier(b.MaintenanceRequired.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.MaintenanceRequired, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) Build() (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+	if b.MaintenanceRequired == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maintenanceRequired' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLifeSafetyZoneMaintenanceRequired.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) MustBuild() BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder().(*_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder creates a BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder
+func (b *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) CreateBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder() BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredBuilder{_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) GetActualValue
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired factory function for _BACnetConstructedDataLifeSafetyZoneMaintenanceRequired
-func NewBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(maintenanceRequired BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
-	if maintenanceRequired == nil {
-		panic("maintenanceRequired of type BACnetApplicationTagBoolean for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired must not be nil")
-	}
-	_result := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaintenanceRequired:           maintenanceRequired,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLifeSafetyZoneMaintenanceRequired(structType any) BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) SerializeWithW
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) IsBACnetConstructedDataLifeSafetyZoneMaintenanceRequired() {
 }
 
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) deepCopy() *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredCopy := &_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaintenanceRequired.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredCopy
+}
+
 func (m *_BACnetConstructedDataLifeSafetyZoneMaintenanceRequired) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

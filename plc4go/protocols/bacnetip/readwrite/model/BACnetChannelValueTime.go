@@ -38,11 +38,14 @@ type BACnetChannelValueTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetChannelValue
 	// GetTimeValue returns TimeValue (property field)
 	GetTimeValue() BACnetApplicationTagTime
 	// IsBACnetChannelValueTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValueTime()
+	// CreateBuilder creates a BACnetChannelValueTimeBuilder
+	CreateBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder
 }
 
 // _BACnetChannelValueTime is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetChannelValueTime struct {
 
 var _ BACnetChannelValueTime = (*_BACnetChannelValueTime)(nil)
 var _ BACnetChannelValueRequirements = (*_BACnetChannelValueTime)(nil)
+
+// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
+func NewBACnetChannelValueTime(peekedTagHeader BACnetTagHeader, timeValue BACnetApplicationTagTime) *_BACnetChannelValueTime {
+	if timeValue == nil {
+		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
+	}
+	_result := &_BACnetChannelValueTime{
+		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
+		TimeValue:                  timeValue,
+	}
+	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueTimeBuilder is a builder for BACnetChannelValueTime
+type BACnetChannelValueTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithTimeValue(BACnetApplicationTagTime) BACnetChannelValueTimeBuilder
+	// WithTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetChannelValueTimeBuilder
+	// Build builds the BACnetChannelValueTime or returns an error if something is wrong
+	Build() (BACnetChannelValueTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValueTime
+}
+
+// NewBACnetChannelValueTimeBuilder() creates a BACnetChannelValueTimeBuilder
+func NewBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder {
+	return &_BACnetChannelValueTimeBuilder{_BACnetChannelValueTime: new(_BACnetChannelValueTime)}
+}
+
+type _BACnetChannelValueTimeBuilder struct {
+	*_BACnetChannelValueTime
+
+	parentBuilder *_BACnetChannelValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueTimeBuilder) = (*_BACnetChannelValueTimeBuilder)(nil)
+
+func (b *_BACnetChannelValueTimeBuilder) setParent(contract BACnetChannelValueContract) {
+	b.BACnetChannelValueContract = contract
+}
+
+func (b *_BACnetChannelValueTimeBuilder) WithMandatoryFields(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
+	return b.WithTimeValue(timeValue)
+}
+
+func (b *_BACnetChannelValueTimeBuilder) WithTimeValue(timeValue BACnetApplicationTagTime) BACnetChannelValueTimeBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetChannelValueTimeBuilder) WithTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetChannelValueTimeBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	b.TimeValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetChannelValueTimeBuilder) Build() (BACnetChannelValueTime, error) {
+	if b.TimeValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetChannelValueTime.deepCopy(), nil
+}
+
+func (b *_BACnetChannelValueTimeBuilder) MustBuild() BACnetChannelValueTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetChannelValueTimeBuilder) Done() BACnetChannelValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetChannelValueTimeBuilder) buildForBACnetChannelValue() (BACnetChannelValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetChannelValueTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueTimeBuilder().(*_BACnetChannelValueTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetChannelValueTimeBuilder creates a BACnetChannelValueTimeBuilder
+func (b *_BACnetChannelValueTime) CreateBACnetChannelValueTimeBuilder() BACnetChannelValueTimeBuilder {
+	if b == nil {
+		return NewBACnetChannelValueTimeBuilder()
+	}
+	return &_BACnetChannelValueTimeBuilder{_BACnetChannelValueTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetChannelValueTime) GetTimeValue() BACnetApplicationTagTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValueTime factory function for _BACnetChannelValueTime
-func NewBACnetChannelValueTime(timeValue BACnetApplicationTagTime, peekedTagHeader BACnetTagHeader) *_BACnetChannelValueTime {
-	if timeValue == nil {
-		panic("timeValue of type BACnetApplicationTagTime for BACnetChannelValueTime must not be nil")
-	}
-	_result := &_BACnetChannelValueTime{
-		BACnetChannelValueContract: NewBACnetChannelValue(peekedTagHeader),
-		TimeValue:                  timeValue,
-	}
-	_result.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValueTime(structType any) BACnetChannelValueTime {
@@ -179,13 +294,33 @@ func (m *_BACnetChannelValueTime) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetChannelValueTime) IsBACnetChannelValueTime() {}
 
+func (m *_BACnetChannelValueTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValueTime) deepCopy() *_BACnetChannelValueTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueTimeCopy := &_BACnetChannelValueTime{
+		m.BACnetChannelValueContract.(*_BACnetChannelValue).deepCopy(),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+	}
+	m.BACnetChannelValueContract.(*_BACnetChannelValue)._SubType = m
+	return _BACnetChannelValueTimeCopy
+}
+
 func (m *_BACnetChannelValueTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

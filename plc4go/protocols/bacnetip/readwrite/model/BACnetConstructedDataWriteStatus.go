@@ -38,6 +38,7 @@ type BACnetConstructedDataWriteStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWriteStatus returns WriteStatus (property field)
 	GetWriteStatus() BACnetWriteStatusTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataWriteStatus interface {
 	GetActualValue() BACnetWriteStatusTagged
 	// IsBACnetConstructedDataWriteStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWriteStatus()
+	// CreateBuilder creates a BACnetConstructedDataWriteStatusBuilder
+	CreateBACnetConstructedDataWriteStatusBuilder() BACnetConstructedDataWriteStatusBuilder
 }
 
 // _BACnetConstructedDataWriteStatus is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataWriteStatus struct {
 
 var _ BACnetConstructedDataWriteStatus = (*_BACnetConstructedDataWriteStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWriteStatus)(nil)
+
+// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
+func NewBACnetConstructedDataWriteStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, writeStatus BACnetWriteStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
+	if writeStatus == nil {
+		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataWriteStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WriteStatus:                   writeStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataWriteStatusBuilder is a builder for BACnetConstructedDataWriteStatus
+type BACnetConstructedDataWriteStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(writeStatus BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder
+	// WithWriteStatus adds WriteStatus (property field)
+	WithWriteStatus(BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder
+	// WithWriteStatusBuilder adds WriteStatus (property field) which is build by the builder
+	WithWriteStatusBuilder(func(BACnetWriteStatusTaggedBuilder) BACnetWriteStatusTaggedBuilder) BACnetConstructedDataWriteStatusBuilder
+	// Build builds the BACnetConstructedDataWriteStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataWriteStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataWriteStatus
+}
+
+// NewBACnetConstructedDataWriteStatusBuilder() creates a BACnetConstructedDataWriteStatusBuilder
+func NewBACnetConstructedDataWriteStatusBuilder() BACnetConstructedDataWriteStatusBuilder {
+	return &_BACnetConstructedDataWriteStatusBuilder{_BACnetConstructedDataWriteStatus: new(_BACnetConstructedDataWriteStatus)}
+}
+
+type _BACnetConstructedDataWriteStatusBuilder struct {
+	*_BACnetConstructedDataWriteStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataWriteStatusBuilder) = (*_BACnetConstructedDataWriteStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) WithMandatoryFields(writeStatus BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder {
+	return b.WithWriteStatus(writeStatus)
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) WithWriteStatus(writeStatus BACnetWriteStatusTagged) BACnetConstructedDataWriteStatusBuilder {
+	b.WriteStatus = writeStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) WithWriteStatusBuilder(builderSupplier func(BACnetWriteStatusTaggedBuilder) BACnetWriteStatusTaggedBuilder) BACnetConstructedDataWriteStatusBuilder {
+	builder := builderSupplier(b.WriteStatus.CreateBACnetWriteStatusTaggedBuilder())
+	var err error
+	b.WriteStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetWriteStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) Build() (BACnetConstructedDataWriteStatus, error) {
+	if b.WriteStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'writeStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataWriteStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) MustBuild() BACnetConstructedDataWriteStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataWriteStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataWriteStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataWriteStatusBuilder().(*_BACnetConstructedDataWriteStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataWriteStatusBuilder creates a BACnetConstructedDataWriteStatusBuilder
+func (b *_BACnetConstructedDataWriteStatus) CreateBACnetConstructedDataWriteStatusBuilder() BACnetConstructedDataWriteStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataWriteStatusBuilder()
+	}
+	return &_BACnetConstructedDataWriteStatusBuilder{_BACnetConstructedDataWriteStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataWriteStatus) GetActualValue() BACnetWriteStatusTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWriteStatus factory function for _BACnetConstructedDataWriteStatus
-func NewBACnetConstructedDataWriteStatus(writeStatus BACnetWriteStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWriteStatus {
-	if writeStatus == nil {
-		panic("writeStatus of type BACnetWriteStatusTagged for BACnetConstructedDataWriteStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataWriteStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		WriteStatus:                   writeStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWriteStatus(structType any) BACnetConstructedDataWriteStatus {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataWriteStatus) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataWriteStatus) IsBACnetConstructedDataWriteStatus() {}
 
+func (m *_BACnetConstructedDataWriteStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWriteStatus) deepCopy() *_BACnetConstructedDataWriteStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWriteStatusCopy := &_BACnetConstructedDataWriteStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.WriteStatus.DeepCopy().(BACnetWriteStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWriteStatusCopy
+}
+
 func (m *_BACnetConstructedDataWriteStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -45,7 +45,7 @@ type _PCI struct {
 
 var _ PCI = (*_PCI)(nil)
 
-func NewPCI(args Args, kwArgs KWArgs) *_PCI {
+func NewPCI(args Args, kwArgs KWArgs, options ...Option) *_PCI {
 	if _debug != nil {
 		_debug("__init__ %r %r", args, kwArgs)
 	}
@@ -62,15 +62,17 @@ func NewPCI(args Args, kwArgs KWArgs) *_PCI {
 		}
 	}
 	if _debug != nil {
-		_debug("    - my_kwArgs: %r", myKwargs)
+		_debug("    - my_kwargs: %r", myKwargs)
 	}
 	if _debug != nil {
-		_debug("    - other_kwArgs: %r", otherKwargs)
+		_debug("    - other_kwargs: %r", otherKwargs)
 	}
+	expectingReply, _ := KWO(kwArgs, KWPCIExpectingReply, false)
+	networkPriority, _ := KWO(kwArgs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE)
 	i := &_PCI{
-		new__PCI(args, otherKwargs),
-		KWO(myKwargs, KWPCIExpectingReply, false),
-		KWO(myKwargs, KWPCINetworkPriority, model.NPDUNetworkPriority_NORMAL_MESSAGE),
+		new__PCI(args, kwArgs, options...),
+		expectingReply,
+		networkPriority,
 	}
 	i.AddDebugContents(i, "pduExpectingReply", "pduNetworkPriority")
 	return i
@@ -79,7 +81,11 @@ func NewPCI(args Args, kwArgs KWArgs) *_PCI {
 func (p *_PCI) GetDebugAttr(attr string) any {
 	switch attr {
 	case "pduExpectingReply":
-		return p.pduExpectingReply
+		if p.pduExpectingReply {
+			return 1
+		} else {
+			return 0
+		}
 	case "pduNetworkPriority":
 		return p.pduNetworkPriority
 	default:

@@ -38,6 +38,7 @@ type BACnetPriorityArray interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
 	// GetData returns Data (property field)
@@ -82,6 +83,8 @@ type BACnetPriorityArray interface {
 	GetIndexEntry() BACnetPriorityValue
 	// IsBACnetPriorityArray is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityArray()
+	// CreateBuilder creates a BACnetPriorityArrayBuilder
+	CreateBACnetPriorityArrayBuilder() BACnetPriorityArrayBuilder
 }
 
 // _BACnetPriorityArray is the data-structure of this message
@@ -96,6 +99,109 @@ type _BACnetPriorityArray struct {
 }
 
 var _ BACnetPriorityArray = (*_BACnetPriorityArray)(nil)
+
+// NewBACnetPriorityArray factory function for _BACnetPriorityArray
+func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPriorityArray {
+	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityArrayBuilder is a builder for BACnetPriorityArray
+type BACnetPriorityArrayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []BACnetPriorityValue) BACnetPriorityArrayBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetPriorityArrayBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder
+	// WithData adds Data (property field)
+	WithData(...BACnetPriorityValue) BACnetPriorityArrayBuilder
+	// Build builds the BACnetPriorityArray or returns an error if something is wrong
+	Build() (BACnetPriorityArray, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityArray
+}
+
+// NewBACnetPriorityArrayBuilder() creates a BACnetPriorityArrayBuilder
+func NewBACnetPriorityArrayBuilder() BACnetPriorityArrayBuilder {
+	return &_BACnetPriorityArrayBuilder{_BACnetPriorityArray: new(_BACnetPriorityArray)}
+}
+
+type _BACnetPriorityArrayBuilder struct {
+	*_BACnetPriorityArray
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityArrayBuilder) = (*_BACnetPriorityArrayBuilder)(nil)
+
+func (b *_BACnetPriorityArrayBuilder) WithMandatoryFields(data []BACnetPriorityValue) BACnetPriorityArrayBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetPriorityArrayBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetPriorityArrayBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetPriorityArrayBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityArrayBuilder) WithData(data ...BACnetPriorityValue) BACnetPriorityArrayBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_BACnetPriorityArrayBuilder) Build() (BACnetPriorityArray, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityArray.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityArrayBuilder) MustBuild() BACnetPriorityArray {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPriorityArrayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityArrayBuilder().(*_BACnetPriorityArrayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityArrayBuilder creates a BACnetPriorityArrayBuilder
+func (b *_BACnetPriorityArray) CreateBACnetPriorityArrayBuilder() BACnetPriorityArrayBuilder {
+	if b == nil {
+		return NewBACnetPriorityArrayBuilder()
+	}
+	return &_BACnetPriorityArrayBuilder{_BACnetPriorityArray: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -276,11 +382,6 @@ func (m *_BACnetPriorityArray) GetIndexEntry() BACnetPriorityValue {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetPriorityArray factory function for _BACnetPriorityArray
-func NewBACnetPriorityArray(numberOfDataElements BACnetApplicationTagUnsignedInteger, data []BACnetPriorityValue, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetPriorityArray {
-	return &_BACnetPriorityArray{NumberOfDataElements: numberOfDataElements, Data: data, ObjectTypeArgument: objectTypeArgument, TagNumber: tagNumber, ArrayIndexArgument: arrayIndexArgument}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityArray(structType any) BACnetPriorityArray {
 	if casted, ok := structType.(BACnetPriorityArray); ok {
@@ -371,7 +472,7 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetPriorityArray) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetPriorityArray BACnetPriorityArray, err error) {
@@ -688,13 +789,35 @@ func (m *_BACnetPriorityArray) GetArrayIndexArgument() BACnetTagPayloadUnsignedI
 
 func (m *_BACnetPriorityArray) IsBACnetPriorityArray() {}
 
+func (m *_BACnetPriorityArray) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityArray) deepCopy() *_BACnetPriorityArray {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityArrayCopy := &_BACnetPriorityArray{
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetPriorityValue, BACnetPriorityValue](m.Data),
+		m.ObjectTypeArgument,
+		m.TagNumber,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetPriorityArrayCopy
+}
+
 func (m *_BACnetPriorityArray) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

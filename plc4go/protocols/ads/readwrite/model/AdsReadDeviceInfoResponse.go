@@ -38,6 +38,7 @@ type AdsReadDeviceInfoResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -51,6 +52,8 @@ type AdsReadDeviceInfoResponse interface {
 	GetDevice() []byte
 	// IsAdsReadDeviceInfoResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsReadDeviceInfoResponse()
+	// CreateBuilder creates a AdsReadDeviceInfoResponseBuilder
+	CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder
 }
 
 // _AdsReadDeviceInfoResponse is the data-structure of this message
@@ -65,6 +68,139 @@ type _AdsReadDeviceInfoResponse struct {
 
 var _ AdsReadDeviceInfoResponse = (*_AdsReadDeviceInfoResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsReadDeviceInfoResponse)(nil)
+
+// NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
+func NewAdsReadDeviceInfoResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) *_AdsReadDeviceInfoResponse {
+	_result := &_AdsReadDeviceInfoResponse{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:            result,
+		MajorVersion:      majorVersion,
+		MinorVersion:      minorVersion,
+		Version:           version,
+		Device:            device,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsReadDeviceInfoResponseBuilder is a builder for AdsReadDeviceInfoResponse
+type AdsReadDeviceInfoResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsReadDeviceInfoResponseBuilder
+	// WithMajorVersion adds MajorVersion (property field)
+	WithMajorVersion(uint8) AdsReadDeviceInfoResponseBuilder
+	// WithMinorVersion adds MinorVersion (property field)
+	WithMinorVersion(uint8) AdsReadDeviceInfoResponseBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint16) AdsReadDeviceInfoResponseBuilder
+	// WithDevice adds Device (property field)
+	WithDevice(...byte) AdsReadDeviceInfoResponseBuilder
+	// Build builds the AdsReadDeviceInfoResponse or returns an error if something is wrong
+	Build() (AdsReadDeviceInfoResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsReadDeviceInfoResponse
+}
+
+// NewAdsReadDeviceInfoResponseBuilder() creates a AdsReadDeviceInfoResponseBuilder
+func NewAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
+	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: new(_AdsReadDeviceInfoResponse)}
+}
+
+type _AdsReadDeviceInfoResponseBuilder struct {
+	*_AdsReadDeviceInfoResponse
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsReadDeviceInfoResponseBuilder) = (*_AdsReadDeviceInfoResponseBuilder)(nil)
+
+func (b *_AdsReadDeviceInfoResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMandatoryFields(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte) AdsReadDeviceInfoResponseBuilder {
+	return b.WithResult(result).WithMajorVersion(majorVersion).WithMinorVersion(minorVersion).WithVersion(version).WithDevice(device...)
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithResult(result ReturnCode) AdsReadDeviceInfoResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMajorVersion(majorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	b.MajorVersion = majorVersion
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithMinorVersion(minorVersion uint8) AdsReadDeviceInfoResponseBuilder {
+	b.MinorVersion = minorVersion
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithVersion(version uint16) AdsReadDeviceInfoResponseBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) WithDevice(device ...byte) AdsReadDeviceInfoResponseBuilder {
+	b.Device = device
+	return b
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) Build() (AdsReadDeviceInfoResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsReadDeviceInfoResponse.deepCopy(), nil
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) MustBuild() AdsReadDeviceInfoResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsReadDeviceInfoResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsReadDeviceInfoResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsReadDeviceInfoResponseBuilder().(*_AdsReadDeviceInfoResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsReadDeviceInfoResponseBuilder creates a AdsReadDeviceInfoResponseBuilder
+func (b *_AdsReadDeviceInfoResponse) CreateAdsReadDeviceInfoResponseBuilder() AdsReadDeviceInfoResponseBuilder {
+	if b == nil {
+		return NewAdsReadDeviceInfoResponseBuilder()
+	}
+	return &_AdsReadDeviceInfoResponseBuilder{_AdsReadDeviceInfoResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -117,20 +253,6 @@ func (m *_AdsReadDeviceInfoResponse) GetDevice() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsReadDeviceInfoResponse factory function for _AdsReadDeviceInfoResponse
-func NewAdsReadDeviceInfoResponse(result ReturnCode, majorVersion uint8, minorVersion uint8, version uint16, device []byte, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsReadDeviceInfoResponse {
-	_result := &_AdsReadDeviceInfoResponse{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:            result,
-		MajorVersion:      majorVersion,
-		MinorVersion:      minorVersion,
-		Version:           version,
-		Device:            device,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsReadDeviceInfoResponse(structType any) AdsReadDeviceInfoResponse {
@@ -270,13 +392,37 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_AdsReadDeviceInfoResponse) IsAdsReadDeviceInfoResponse() {}
 
+func (m *_AdsReadDeviceInfoResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsReadDeviceInfoResponse) deepCopy() *_AdsReadDeviceInfoResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsReadDeviceInfoResponseCopy := &_AdsReadDeviceInfoResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+		m.MajorVersion,
+		m.MinorVersion,
+		m.Version,
+		utils.DeepCopySlice[byte, byte](m.Device),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsReadDeviceInfoResponseCopy
+}
+
 func (m *_AdsReadDeviceInfoResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

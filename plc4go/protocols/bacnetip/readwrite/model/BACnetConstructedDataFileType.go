@@ -38,6 +38,7 @@ type BACnetConstructedDataFileType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFileType returns FileType (property field)
 	GetFileType() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataFileType interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataFileType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFileType()
+	// CreateBuilder creates a BACnetConstructedDataFileTypeBuilder
+	CreateBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuilder
 }
 
 // _BACnetConstructedDataFileType is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataFileType struct {
 
 var _ BACnetConstructedDataFileType = (*_BACnetConstructedDataFileType)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFileType)(nil)
+
+// NewBACnetConstructedDataFileType factory function for _BACnetConstructedDataFileType
+func NewBACnetConstructedDataFileType(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fileType BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileType {
+	if fileType == nil {
+		panic("fileType of type BACnetApplicationTagCharacterString for BACnetConstructedDataFileType must not be nil")
+	}
+	_result := &_BACnetConstructedDataFileType{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FileType:                      fileType,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFileTypeBuilder is a builder for BACnetConstructedDataFileType
+type BACnetConstructedDataFileTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder
+	// WithFileType adds FileType (property field)
+	WithFileType(BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder
+	// WithFileTypeBuilder adds FileType (property field) which is build by the builder
+	WithFileTypeBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFileTypeBuilder
+	// Build builds the BACnetConstructedDataFileType or returns an error if something is wrong
+	Build() (BACnetConstructedDataFileType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFileType
+}
+
+// NewBACnetConstructedDataFileTypeBuilder() creates a BACnetConstructedDataFileTypeBuilder
+func NewBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuilder {
+	return &_BACnetConstructedDataFileTypeBuilder{_BACnetConstructedDataFileType: new(_BACnetConstructedDataFileType)}
+}
+
+type _BACnetConstructedDataFileTypeBuilder struct {
+	*_BACnetConstructedDataFileType
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFileTypeBuilder) = (*_BACnetConstructedDataFileTypeBuilder)(nil)
+
+func (b *_BACnetConstructedDataFileTypeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) WithMandatoryFields(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
+	return b.WithFileType(fileType)
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) WithFileType(fileType BACnetApplicationTagCharacterString) BACnetConstructedDataFileTypeBuilder {
+	b.FileType = fileType
+	return b
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) WithFileTypeBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataFileTypeBuilder {
+	builder := builderSupplier(b.FileType.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.FileType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) Build() (BACnetConstructedDataFileType, error) {
+	if b.FileType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'fileType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFileType.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) MustBuild() BACnetConstructedDataFileType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFileTypeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFileTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFileTypeBuilder().(*_BACnetConstructedDataFileTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFileTypeBuilder creates a BACnetConstructedDataFileTypeBuilder
+func (b *_BACnetConstructedDataFileType) CreateBACnetConstructedDataFileTypeBuilder() BACnetConstructedDataFileTypeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFileTypeBuilder()
+	}
+	return &_BACnetConstructedDataFileTypeBuilder{_BACnetConstructedDataFileType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataFileType) GetActualValue() BACnetApplicationTagCh
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFileType factory function for _BACnetConstructedDataFileType
-func NewBACnetConstructedDataFileType(fileType BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFileType {
-	if fileType == nil {
-		panic("fileType of type BACnetApplicationTagCharacterString for BACnetConstructedDataFileType must not be nil")
-	}
-	_result := &_BACnetConstructedDataFileType{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FileType:                      fileType,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFileType(structType any) BACnetConstructedDataFileType {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataFileType) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataFileType) IsBACnetConstructedDataFileType() {}
 
+func (m *_BACnetConstructedDataFileType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFileType) deepCopy() *_BACnetConstructedDataFileType {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFileTypeCopy := &_BACnetConstructedDataFileType{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FileType.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFileTypeCopy
+}
+
 func (m *_BACnetConstructedDataFileType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

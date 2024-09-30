@@ -40,8 +40,11 @@ type BACnetUnconfirmedServiceRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetUnconfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequest()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestBuilder
+	CreateBACnetUnconfirmedServiceRequestBuilder() BACnetUnconfirmedServiceRequestBuilder
 }
 
 // BACnetUnconfirmedServiceRequestContract provides a set of functions which can be overwritten by a sub struct
@@ -50,6 +53,8 @@ type BACnetUnconfirmedServiceRequestContract interface {
 	GetServiceRequestLength() uint16
 	// IsBACnetUnconfirmedServiceRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequest()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestBuilder
+	CreateBACnetUnconfirmedServiceRequestBuilder() BACnetUnconfirmedServiceRequestBuilder
 }
 
 // BACnetUnconfirmedServiceRequestRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +79,382 @@ var _ BACnetUnconfirmedServiceRequestContract = (*_BACnetUnconfirmedServiceReque
 func NewBACnetUnconfirmedServiceRequest(serviceRequestLength uint16) *_BACnetUnconfirmedServiceRequest {
 	return &_BACnetUnconfirmedServiceRequest{ServiceRequestLength: serviceRequestLength}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestBuilder is a builder for BACnetUnconfirmedServiceRequest
+type BACnetUnconfirmedServiceRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetUnconfirmedServiceRequestBuilder
+	// AsBACnetUnconfirmedServiceRequestIAm converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestIAm() interface {
+		BACnetUnconfirmedServiceRequestIAmBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestIHave converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestIHave() interface {
+		BACnetUnconfirmedServiceRequestIHaveBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnconfirmedEventNotification converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestTimeSynchronization converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestTimeSynchronization() interface {
+		BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestWhoHas converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestWhoHas() interface {
+		BACnetUnconfirmedServiceRequestWhoHasBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestWhoIs converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestWhoIs() interface {
+		BACnetUnconfirmedServiceRequestWhoIsBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUTCTimeSynchronization converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUTCTimeSynchronization() interface {
+		BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestWriteGroup converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestWriteGroup() interface {
+		BACnetUnconfirmedServiceRequestWriteGroupBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestUnknown converts this build to a subType of BACnetUnconfirmedServiceRequest. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestUnknown() interface {
+		BACnetUnconfirmedServiceRequestUnknownBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}
+	// Build builds the BACnetUnconfirmedServiceRequest or returns an error if something is wrong
+	PartialBuild() (BACnetUnconfirmedServiceRequestContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetUnconfirmedServiceRequestContract
+	// Build builds the BACnetUnconfirmedServiceRequest or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequest
+}
+
+// NewBACnetUnconfirmedServiceRequestBuilder() creates a BACnetUnconfirmedServiceRequestBuilder
+func NewBACnetUnconfirmedServiceRequestBuilder() BACnetUnconfirmedServiceRequestBuilder {
+	return &_BACnetUnconfirmedServiceRequestBuilder{_BACnetUnconfirmedServiceRequest: new(_BACnetUnconfirmedServiceRequest)}
+}
+
+type _BACnetUnconfirmedServiceRequestChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetUnconfirmedServiceRequestContract)
+	buildForBACnetUnconfirmedServiceRequest() (BACnetUnconfirmedServiceRequest, error)
+}
+
+type _BACnetUnconfirmedServiceRequestBuilder struct {
+	*_BACnetUnconfirmedServiceRequest
+
+	childBuilder _BACnetUnconfirmedServiceRequestChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestBuilder) = (*_BACnetUnconfirmedServiceRequestBuilder)(nil)
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) WithMandatoryFields() BACnetUnconfirmedServiceRequestBuilder {
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) PartialBuild() (BACnetUnconfirmedServiceRequestContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceRequest.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) PartialMustBuild() BACnetUnconfirmedServiceRequestContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestIAm() interface {
+	BACnetUnconfirmedServiceRequestIAmBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestIAmBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestIAmBuilder().(*_BACnetUnconfirmedServiceRequestIAmBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestIHave() interface {
+	BACnetUnconfirmedServiceRequestIHaveBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestIHaveBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestIHaveBuilder().(*_BACnetUnconfirmedServiceRequestIHaveBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotification() interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnconfirmedEventNotification() interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer() interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransferBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnconfirmedTextMessage() interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedTextMessageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestTimeSynchronization() interface {
+	BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestTimeSynchronizationBuilder().(*_BACnetUnconfirmedServiceRequestTimeSynchronizationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestWhoHas() interface {
+	BACnetUnconfirmedServiceRequestWhoHasBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestWhoHasBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestWhoHasBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestWhoIs() interface {
+	BACnetUnconfirmedServiceRequestWhoIsBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestWhoIsBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestWhoIsBuilder().(*_BACnetUnconfirmedServiceRequestWhoIsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUTCTimeSynchronization() interface {
+	BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder().(*_BACnetUnconfirmedServiceRequestUTCTimeSynchronizationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestWriteGroup() interface {
+	BACnetUnconfirmedServiceRequestWriteGroupBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestWriteGroupBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestWriteGroupBuilder().(*_BACnetUnconfirmedServiceRequestWriteGroupBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple() interface {
+	BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder().(*_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultipleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) AsBACnetUnconfirmedServiceRequestUnknown() interface {
+	BACnetUnconfirmedServiceRequestUnknownBuilder
+	Done() BACnetUnconfirmedServiceRequestBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestUnknownBuilder
+		Done() BACnetUnconfirmedServiceRequestBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestUnknownBuilder().(*_BACnetUnconfirmedServiceRequestUnknownBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) Build() (BACnetUnconfirmedServiceRequest, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetUnconfirmedServiceRequest()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) MustBuild() BACnetUnconfirmedServiceRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetUnconfirmedServiceRequestBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestBuilder().(*_BACnetUnconfirmedServiceRequestBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetUnconfirmedServiceRequestChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetUnconfirmedServiceRequestBuilder creates a BACnetUnconfirmedServiceRequestBuilder
+func (b *_BACnetUnconfirmedServiceRequest) CreateBACnetUnconfirmedServiceRequestBuilder() BACnetUnconfirmedServiceRequestBuilder {
+	if b == nil {
+		return NewBACnetUnconfirmedServiceRequestBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestBuilder{_BACnetUnconfirmedServiceRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequest(structType any) BACnetUnconfirmedServiceRequest {
@@ -113,7 +494,7 @@ func BACnetUnconfirmedServiceRequestParseWithBufferProducer[T BACnetUnconfirmedS
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -123,7 +504,12 @@ func BACnetUnconfirmedServiceRequestParseWithBuffer[T BACnetUnconfirmedServiceRe
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetUnconfirmedServiceRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (__bACnetUnconfirmedServiceRequest BACnetUnconfirmedServiceRequest, err error) {
@@ -144,55 +530,55 @@ func (m *_BACnetUnconfirmedServiceRequest) parse(ctx context.Context, readBuffer
 	var _child BACnetUnconfirmedServiceRequest
 	switch {
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_AM: // BACnetUnconfirmedServiceRequestIAm
-		if _child, err = (&_BACnetUnconfirmedServiceRequestIAm{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestIAm).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestIAm for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_I_HAVE: // BACnetUnconfirmedServiceRequestIHave
-		if _child, err = (&_BACnetUnconfirmedServiceRequestIHave{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestIHave).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestIHave for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_EVENT_NOTIFICATION: // BACnetUnconfirmedServiceRequestUnconfirmedEventNotification
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedEventNotification).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedEventNotification for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_PRIVATE_TRANSFER: // BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_TEXT_MESSAGE: // BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedTextMessage).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedTextMessage for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestTimeSynchronization
-		if _child, err = (&_BACnetUnconfirmedServiceRequestTimeSynchronization{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestTimeSynchronization).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestTimeSynchronization for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_HAS: // BACnetUnconfirmedServiceRequestWhoHas
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHas{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHas).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHas for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WHO_IS: // BACnetUnconfirmedServiceRequestWhoIs
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoIs{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoIs).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoIs for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UTC_TIME_SYNCHRONIZATION: // BACnetUnconfirmedServiceRequestUTCTimeSynchronization
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUTCTimeSynchronization{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUTCTimeSynchronization).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUTCTimeSynchronization for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_WRITE_GROUP: // BACnetUnconfirmedServiceRequestWriteGroup
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWriteGroup{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWriteGroup).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWriteGroup for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case serviceChoice == BACnetUnconfirmedServiceChoice_UNCONFIRMED_COV_NOTIFICATION_MULTIPLE: // BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	case 0 == 0: // BACnetUnconfirmedServiceRequestUnknown
-		if _child, err = (&_BACnetUnconfirmedServiceRequestUnknown{}).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestUnknown).parse(ctx, readBuffer, m, serviceRequestLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestUnknown for type-switch of BACnetUnconfirmedServiceRequest")
 		}
 	default:
@@ -244,3 +630,18 @@ func (m *_BACnetUnconfirmedServiceRequest) GetServiceRequestLength() uint16 {
 ////
 
 func (m *_BACnetUnconfirmedServiceRequest) IsBACnetUnconfirmedServiceRequest() {}
+
+func (m *_BACnetUnconfirmedServiceRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequest) deepCopy() *_BACnetUnconfirmedServiceRequest {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestCopy := &_BACnetUnconfirmedServiceRequest{
+		nil, // will be set by child
+		m.ServiceRequestLength,
+	}
+	return _BACnetUnconfirmedServiceRequestCopy
+}

@@ -38,6 +38,7 @@ type EndpointConfiguration interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetOperationTimeout returns OperationTimeout (property field)
 	GetOperationTimeout() int32
@@ -59,6 +60,8 @@ type EndpointConfiguration interface {
 	GetSecurityTokenLifetime() int32
 	// IsEndpointConfiguration is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEndpointConfiguration()
+	// CreateBuilder creates a EndpointConfigurationBuilder
+	CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder
 }
 
 // _EndpointConfiguration is the data-structure of this message
@@ -79,6 +82,171 @@ type _EndpointConfiguration struct {
 
 var _ EndpointConfiguration = (*_EndpointConfiguration)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EndpointConfiguration)(nil)
+
+// NewEndpointConfiguration factory function for _EndpointConfiguration
+func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) *_EndpointConfiguration {
+	_result := &_EndpointConfiguration{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		OperationTimeout:                  operationTimeout,
+		UseBinaryEncoding:                 useBinaryEncoding,
+		MaxStringLength:                   maxStringLength,
+		MaxByteStringLength:               maxByteStringLength,
+		MaxArrayLength:                    maxArrayLength,
+		MaxMessageSize:                    maxMessageSize,
+		MaxBufferSize:                     maxBufferSize,
+		ChannelLifetime:                   channelLifetime,
+		SecurityTokenLifetime:             securityTokenLifetime,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EndpointConfigurationBuilder is a builder for EndpointConfiguration
+type EndpointConfigurationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder
+	// WithOperationTimeout adds OperationTimeout (property field)
+	WithOperationTimeout(int32) EndpointConfigurationBuilder
+	// WithUseBinaryEncoding adds UseBinaryEncoding (property field)
+	WithUseBinaryEncoding(bool) EndpointConfigurationBuilder
+	// WithMaxStringLength adds MaxStringLength (property field)
+	WithMaxStringLength(int32) EndpointConfigurationBuilder
+	// WithMaxByteStringLength adds MaxByteStringLength (property field)
+	WithMaxByteStringLength(int32) EndpointConfigurationBuilder
+	// WithMaxArrayLength adds MaxArrayLength (property field)
+	WithMaxArrayLength(int32) EndpointConfigurationBuilder
+	// WithMaxMessageSize adds MaxMessageSize (property field)
+	WithMaxMessageSize(int32) EndpointConfigurationBuilder
+	// WithMaxBufferSize adds MaxBufferSize (property field)
+	WithMaxBufferSize(int32) EndpointConfigurationBuilder
+	// WithChannelLifetime adds ChannelLifetime (property field)
+	WithChannelLifetime(int32) EndpointConfigurationBuilder
+	// WithSecurityTokenLifetime adds SecurityTokenLifetime (property field)
+	WithSecurityTokenLifetime(int32) EndpointConfigurationBuilder
+	// Build builds the EndpointConfiguration or returns an error if something is wrong
+	Build() (EndpointConfiguration, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EndpointConfiguration
+}
+
+// NewEndpointConfigurationBuilder() creates a EndpointConfigurationBuilder
+func NewEndpointConfigurationBuilder() EndpointConfigurationBuilder {
+	return &_EndpointConfigurationBuilder{_EndpointConfiguration: new(_EndpointConfiguration)}
+}
+
+type _EndpointConfigurationBuilder struct {
+	*_EndpointConfiguration
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EndpointConfigurationBuilder) = (*_EndpointConfigurationBuilder)(nil)
+
+func (b *_EndpointConfigurationBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EndpointConfigurationBuilder) WithMandatoryFields(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) EndpointConfigurationBuilder {
+	return b.WithOperationTimeout(operationTimeout).WithUseBinaryEncoding(useBinaryEncoding).WithMaxStringLength(maxStringLength).WithMaxByteStringLength(maxByteStringLength).WithMaxArrayLength(maxArrayLength).WithMaxMessageSize(maxMessageSize).WithMaxBufferSize(maxBufferSize).WithChannelLifetime(channelLifetime).WithSecurityTokenLifetime(securityTokenLifetime)
+}
+
+func (b *_EndpointConfigurationBuilder) WithOperationTimeout(operationTimeout int32) EndpointConfigurationBuilder {
+	b.OperationTimeout = operationTimeout
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithUseBinaryEncoding(useBinaryEncoding bool) EndpointConfigurationBuilder {
+	b.UseBinaryEncoding = useBinaryEncoding
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithMaxStringLength(maxStringLength int32) EndpointConfigurationBuilder {
+	b.MaxStringLength = maxStringLength
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithMaxByteStringLength(maxByteStringLength int32) EndpointConfigurationBuilder {
+	b.MaxByteStringLength = maxByteStringLength
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithMaxArrayLength(maxArrayLength int32) EndpointConfigurationBuilder {
+	b.MaxArrayLength = maxArrayLength
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithMaxMessageSize(maxMessageSize int32) EndpointConfigurationBuilder {
+	b.MaxMessageSize = maxMessageSize
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithMaxBufferSize(maxBufferSize int32) EndpointConfigurationBuilder {
+	b.MaxBufferSize = maxBufferSize
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithChannelLifetime(channelLifetime int32) EndpointConfigurationBuilder {
+	b.ChannelLifetime = channelLifetime
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) WithSecurityTokenLifetime(securityTokenLifetime int32) EndpointConfigurationBuilder {
+	b.SecurityTokenLifetime = securityTokenLifetime
+	return b
+}
+
+func (b *_EndpointConfigurationBuilder) Build() (EndpointConfiguration, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EndpointConfiguration.deepCopy(), nil
+}
+
+func (b *_EndpointConfigurationBuilder) MustBuild() EndpointConfiguration {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EndpointConfigurationBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EndpointConfigurationBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EndpointConfigurationBuilder) DeepCopy() any {
+	_copy := b.CreateEndpointConfigurationBuilder().(*_EndpointConfigurationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEndpointConfigurationBuilder creates a EndpointConfigurationBuilder
+func (b *_EndpointConfiguration) CreateEndpointConfigurationBuilder() EndpointConfigurationBuilder {
+	if b == nil {
+		return NewEndpointConfigurationBuilder()
+	}
+	return &_EndpointConfigurationBuilder{_EndpointConfiguration: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -143,24 +311,6 @@ func (m *_EndpointConfiguration) GetSecurityTokenLifetime() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEndpointConfiguration factory function for _EndpointConfiguration
-func NewEndpointConfiguration(operationTimeout int32, useBinaryEncoding bool, maxStringLength int32, maxByteStringLength int32, maxArrayLength int32, maxMessageSize int32, maxBufferSize int32, channelLifetime int32, securityTokenLifetime int32) *_EndpointConfiguration {
-	_result := &_EndpointConfiguration{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		OperationTimeout:                  operationTimeout,
-		UseBinaryEncoding:                 useBinaryEncoding,
-		MaxStringLength:                   maxStringLength,
-		MaxByteStringLength:               maxByteStringLength,
-		MaxArrayLength:                    maxArrayLength,
-		MaxMessageSize:                    maxMessageSize,
-		MaxBufferSize:                     maxBufferSize,
-		ChannelLifetime:                   channelLifetime,
-		SecurityTokenLifetime:             securityTokenLifetime,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEndpointConfiguration(structType any) EndpointConfiguration {
@@ -363,13 +513,42 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_EndpointConfiguration) IsEndpointConfiguration() {}
 
+func (m *_EndpointConfiguration) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EndpointConfiguration) deepCopy() *_EndpointConfiguration {
+	if m == nil {
+		return nil
+	}
+	_EndpointConfigurationCopy := &_EndpointConfiguration{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.OperationTimeout,
+		m.UseBinaryEncoding,
+		m.MaxStringLength,
+		m.MaxByteStringLength,
+		m.MaxArrayLength,
+		m.MaxMessageSize,
+		m.MaxBufferSize,
+		m.ChannelLifetime,
+		m.SecurityTokenLifetime,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EndpointConfigurationCopy
+}
+
 func (m *_EndpointConfiguration) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

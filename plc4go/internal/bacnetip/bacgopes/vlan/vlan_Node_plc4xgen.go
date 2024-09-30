@@ -79,6 +79,10 @@ func (d *Node) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	if err := writeBuffer.WriteBit("spoofing", d.spoofing); err != nil {
 		return err
 	}
+
+	if err := writeBuffer.WriteString("_leafName", uint32(len(d._leafName)*8), d._leafName); err != nil {
+		return err
+	}
 	if err := writeBuffer.PopContext("Node"); err != nil {
 		return err
 	}
@@ -91,9 +95,9 @@ func (d *Node) String() string {
 			return alternateString
 		}
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), d); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedMergeSingleBoxes(), utils.WithWriteBufferBoxBasedOmitEmptyBoxes())
+	if err := wb.WriteSerializable(context.Background(), d); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

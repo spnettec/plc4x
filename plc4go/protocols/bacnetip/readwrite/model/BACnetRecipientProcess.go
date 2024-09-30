@@ -38,12 +38,15 @@ type BACnetRecipientProcess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientEnclosed
 	// GetProcessIdentifier returns ProcessIdentifier (property field)
 	GetProcessIdentifier() BACnetContextTagUnsignedInteger
 	// IsBACnetRecipientProcess is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRecipientProcess()
+	// CreateBuilder creates a BACnetRecipientProcessBuilder
+	CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder
 }
 
 // _BACnetRecipientProcess is the data-structure of this message
@@ -53,6 +56,133 @@ type _BACnetRecipientProcess struct {
 }
 
 var _ BACnetRecipientProcess = (*_BACnetRecipientProcess)(nil)
+
+// NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
+func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
+	}
+	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRecipientProcessBuilder is a builder for BACnetRecipientProcess
+type BACnetRecipientProcessBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder
+	// WithRecipient adds Recipient (property field)
+	WithRecipient(BACnetRecipientEnclosed) BACnetRecipientProcessBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder
+	// WithProcessIdentifier adds ProcessIdentifier (property field)
+	WithOptionalProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder
+	// WithOptionalProcessIdentifierBuilder adds ProcessIdentifier (property field) which is build by the builder
+	WithOptionalProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder
+	// Build builds the BACnetRecipientProcess or returns an error if something is wrong
+	Build() (BACnetRecipientProcess, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRecipientProcess
+}
+
+// NewBACnetRecipientProcessBuilder() creates a BACnetRecipientProcessBuilder
+func NewBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
+	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: new(_BACnetRecipientProcess)}
+}
+
+type _BACnetRecipientProcessBuilder struct {
+	*_BACnetRecipientProcess
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRecipientProcessBuilder) = (*_BACnetRecipientProcessBuilder)(nil)
+
+func (b *_BACnetRecipientProcessBuilder) WithMandatoryFields(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	return b.WithRecipient(recipient)
+}
+
+func (b *_BACnetRecipientProcessBuilder) WithRecipient(recipient BACnetRecipientEnclosed) BACnetRecipientProcessBuilder {
+	b.Recipient = recipient
+	return b
+}
+
+func (b *_BACnetRecipientProcessBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientEnclosedBuilder) BACnetRecipientEnclosedBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientEnclosedBuilder())
+	var err error
+	b.Recipient, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetRecipientEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifier(processIdentifier BACnetContextTagUnsignedInteger) BACnetRecipientProcessBuilder {
+	b.ProcessIdentifier = processIdentifier
+	return b
+}
+
+func (b *_BACnetRecipientProcessBuilder) WithOptionalProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRecipientProcessBuilder {
+	builder := builderSupplier(b.ProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.ProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRecipientProcessBuilder) Build() (BACnetRecipientProcess, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetRecipientProcess.deepCopy(), nil
+}
+
+func (b *_BACnetRecipientProcessBuilder) MustBuild() BACnetRecipientProcess {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRecipientProcessBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRecipientProcessBuilder().(*_BACnetRecipientProcessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetRecipientProcessBuilder creates a BACnetRecipientProcessBuilder
+func (b *_BACnetRecipientProcess) CreateBACnetRecipientProcessBuilder() BACnetRecipientProcessBuilder {
+	if b == nil {
+		return NewBACnetRecipientProcessBuilder()
+	}
+	return &_BACnetRecipientProcessBuilder{_BACnetRecipientProcess: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +201,6 @@ func (m *_BACnetRecipientProcess) GetProcessIdentifier() BACnetContextTagUnsigne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRecipientProcess factory function for _BACnetRecipientProcess
-func NewBACnetRecipientProcess(recipient BACnetRecipientEnclosed, processIdentifier BACnetContextTagUnsignedInteger) *_BACnetRecipientProcess {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientEnclosed for BACnetRecipientProcess must not be nil")
-	}
-	return &_BACnetRecipientProcess{Recipient: recipient, ProcessIdentifier: processIdentifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRecipientProcess(structType any) BACnetRecipientProcess {
@@ -128,7 +250,7 @@ func BACnetRecipientProcessParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetRecipientProcess) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetRecipientProcess BACnetRecipientProcess, err error) {
@@ -196,13 +318,32 @@ func (m *_BACnetRecipientProcess) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_BACnetRecipientProcess) IsBACnetRecipientProcess() {}
 
+func (m *_BACnetRecipientProcess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRecipientProcess) deepCopy() *_BACnetRecipientProcess {
+	if m == nil {
+		return nil
+	}
+	_BACnetRecipientProcessCopy := &_BACnetRecipientProcess{
+		m.Recipient.DeepCopy().(BACnetRecipientEnclosed),
+		m.ProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetRecipientProcessCopy
+}
+
 func (m *_BACnetRecipientProcess) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -36,9 +36,12 @@ type SubscribedDataSetDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsSubscribedDataSetDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubscribedDataSetDataType()
+	// CreateBuilder creates a SubscribedDataSetDataTypeBuilder
+	CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder
 }
 
 // _SubscribedDataSetDataType is the data-structure of this message
@@ -48,6 +51,99 @@ type _SubscribedDataSetDataType struct {
 
 var _ SubscribedDataSetDataType = (*_SubscribedDataSetDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SubscribedDataSetDataType)(nil)
+
+// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
+func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
+	_result := &_SubscribedDataSetDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubscribedDataSetDataTypeBuilder is a builder for SubscribedDataSetDataType
+type SubscribedDataSetDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SubscribedDataSetDataTypeBuilder
+	// Build builds the SubscribedDataSetDataType or returns an error if something is wrong
+	Build() (SubscribedDataSetDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubscribedDataSetDataType
+}
+
+// NewSubscribedDataSetDataTypeBuilder() creates a SubscribedDataSetDataTypeBuilder
+func NewSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
+	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: new(_SubscribedDataSetDataType)}
+}
+
+type _SubscribedDataSetDataTypeBuilder struct {
+	*_SubscribedDataSetDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SubscribedDataSetDataTypeBuilder) = (*_SubscribedDataSetDataTypeBuilder)(nil)
+
+func (b *_SubscribedDataSetDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) WithMandatoryFields() SubscribedDataSetDataTypeBuilder {
+	return b
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) Build() (SubscribedDataSetDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SubscribedDataSetDataType.deepCopy(), nil
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) MustBuild() SubscribedDataSetDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SubscribedDataSetDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SubscribedDataSetDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSubscribedDataSetDataTypeBuilder().(*_SubscribedDataSetDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSubscribedDataSetDataTypeBuilder creates a SubscribedDataSetDataTypeBuilder
+func (b *_SubscribedDataSetDataType) CreateSubscribedDataSetDataTypeBuilder() SubscribedDataSetDataTypeBuilder {
+	if b == nil {
+		return NewSubscribedDataSetDataTypeBuilder()
+	}
+	return &_SubscribedDataSetDataTypeBuilder{_SubscribedDataSetDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_SubscribedDataSetDataType) GetIdentifier() string {
 
 func (m *_SubscribedDataSetDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewSubscribedDataSetDataType factory function for _SubscribedDataSetDataType
-func NewSubscribedDataSetDataType() *_SubscribedDataSetDataType {
-	_result := &_SubscribedDataSetDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_SubscribedDataSetDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_SubscribedDataSetDataType) IsSubscribedDataSetDataType() {}
 
+func (m *_SubscribedDataSetDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubscribedDataSetDataType) deepCopy() *_SubscribedDataSetDataType {
+	if m == nil {
+		return nil
+	}
+	_SubscribedDataSetDataTypeCopy := &_SubscribedDataSetDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SubscribedDataSetDataTypeCopy
+}
+
 func (m *_SubscribedDataSetDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

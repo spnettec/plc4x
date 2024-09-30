@@ -28,7 +28,6 @@ import (
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -89,38 +88,58 @@ type _APCI struct {
 
 	// Deprecated: hacky workaround
 	bytesToDiscard int
+
+	_leafName string
 }
 
 var _ APCI = (*_APCI)(nil)
 
-func NewAPCI(apdu readWriteModel.APDU) APCI {
-	a := &_APCI{}
+func NewAPCI(args Args, kwArgs KWArgs, options ...Option) (APCI, error) {
+	return newAPCI(args, kwArgs, options...)
+}
+
+func newAPCI(args Args, kwArgs KWArgs, options ...Option) (*_APCI, error) {
+	if _debug != nil {
+		_debug("__init__ %r %r", args, kwArgs)
+	}
+	a := &_APCI{
+		_leafName: ExtractLeafName(options, StructName()),
+	}
+	options = AddLeafTypeIfAbundant(options, a)
 	a.DebugContents = NewDebugContents(a, "apduType", "apduSeg", "apduMor", "apduSA", "apduSrv",
 		"apduNak", "apduSeq", "apduWin", "apduMaxSegs", "apduMaxResp",
 		"apduService", "apduInvokeID", "apduAbortRejectReason")
-	a.PCI = NewPCI(NoArgs, NKW(KWCompRootMessage, apdu)) // TODO: convert to args so we can solve all those todos
+	a.PCI = NewPCI(args, kwArgs, options...)
 	a.AddExtraPrinters(a.PCI.(DebugContentPrinter))
-	if apdu != nil {
-		apduType := apdu.GetApduType()
-		a.apduType = &apduType
-	}
-	return a
+	return a, nil
 }
 
 func (a *_APCI) GetDebugAttr(attr string) any {
 	switch attr {
 	case "apduType":
-		return a.apduType
+		if a.apduType != nil {
+			return *a.apduType
+		}
 	case "apduSeg":
-		return a.apduSeq
+		if a.apduSeg {
+			return a.apduSeq
+		}
 	case "apduMor":
-		return a.apduMor
+		if a.apduMor {
+			return a.apduMor
+		}
 	case "apduSA":
-		return a.apduSA
+		if a.apduSA {
+			return a.apduSA
+		}
 	case "apduSrv":
-		return a.apduSrv
+		if a.apduSrv {
+			return a.apduSrv
+		}
 	case "apduNak":
-		return a.apduNak
+		if a.apduNak {
+			return a.apduNak
+		}
 	case "apduSeq":
 		if a.apduSeq != nil {
 			return *a.apduSeq
@@ -149,7 +168,6 @@ func (a *_APCI) GetDebugAttr(attr string) any {
 		if a.apduAbortRejectReason != nil {
 			return *a.apduAbortRejectReason
 		}
-		panic("implement me")
 	default:
 		return nil
 	}
@@ -265,6 +283,9 @@ func (a *_APCI) Update(apci Arg) error {
 }
 
 func (a *_APCI) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %r", pdu)
+	}
 	switch pdu := pdu.(type) {
 	case PCI:
 		if err := pdu.GetPCI().Update(a); err != nil {
@@ -363,6 +384,9 @@ func (a *_APCI) Encode(pdu Arg) error {
 }
 
 func (a *_APCI) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %r", pdu)
+	}
 	if err := a.PCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
@@ -486,27 +510,22 @@ func (a *_APCI) deepCopy() *_APCI {
 }
 
 func (a *_APCI) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("APCI{%s}", a.PCI) // TODO: add other fields
-	} else {
-		sname := fmt.Sprintf("%T", a)
+	sname := a._leafName
 
-		// expand the type if possible
-
-		stype := ""
-		if a.apduType != nil {
-			if v, ok := APDUTypes[*a.apduType]; ok {
-				stype = fmt.Sprintf("%T", v)
-			} else {
-				stype = "?"
-			}
+	// expand the type if possible
+	stype := ""
+	if a.apduType != nil {
+		if v, ok := APDUTypes[*a.apduType]; ok {
+			stype = fmt.Sprintf("%s(%d)", QualifiedTypeName(v()), *a.apduType)
+		} else {
+			stype = "?"
 		}
-
-		// add the invoke ID if it has one
-		if a.apduInvokeID != nil {
-			stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
-		}
-		// put it together
-		return fmt.Sprintf("<%s(%s instance at %p)>", sname, stype, a)
 	}
+
+	// add the invoke ID if it has one
+	if a.apduInvokeID != nil {
+		stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
+	}
+	// put it together
+	return fmt.Sprintf("<%s(%s instance at %p)>", sname, stype, a)
 }

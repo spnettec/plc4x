@@ -38,11 +38,14 @@ type S7PayloadUserDataItemClkSetRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetTimeStamp returns TimeStamp (property field)
 	GetTimeStamp() DateAndTime
 	// IsS7PayloadUserDataItemClkSetRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemClkSetRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemClkSetRequestBuilder
+	CreateS7PayloadUserDataItemClkSetRequestBuilder() S7PayloadUserDataItemClkSetRequestBuilder
 }
 
 // _S7PayloadUserDataItemClkSetRequest is the data-structure of this message
@@ -56,6 +59,131 @@ type _S7PayloadUserDataItemClkSetRequest struct {
 
 var _ S7PayloadUserDataItemClkSetRequest = (*_S7PayloadUserDataItemClkSetRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemClkSetRequest)(nil)
+
+// NewS7PayloadUserDataItemClkSetRequest factory function for _S7PayloadUserDataItemClkSetRequest
+func NewS7PayloadUserDataItemClkSetRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, timeStamp DateAndTime) *_S7PayloadUserDataItemClkSetRequest {
+	if timeStamp == nil {
+		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkSetRequest must not be nil")
+	}
+	_result := &_S7PayloadUserDataItemClkSetRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		TimeStamp:                     timeStamp,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemClkSetRequestBuilder is a builder for S7PayloadUserDataItemClkSetRequest
+type S7PayloadUserDataItemClkSetRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeStamp DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder
+	// WithTimeStamp adds TimeStamp (property field)
+	WithTimeStamp(DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder
+	// WithTimeStampBuilder adds TimeStamp (property field) which is build by the builder
+	WithTimeStampBuilder(func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkSetRequestBuilder
+	// Build builds the S7PayloadUserDataItemClkSetRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemClkSetRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemClkSetRequest
+}
+
+// NewS7PayloadUserDataItemClkSetRequestBuilder() creates a S7PayloadUserDataItemClkSetRequestBuilder
+func NewS7PayloadUserDataItemClkSetRequestBuilder() S7PayloadUserDataItemClkSetRequestBuilder {
+	return &_S7PayloadUserDataItemClkSetRequestBuilder{_S7PayloadUserDataItemClkSetRequest: new(_S7PayloadUserDataItemClkSetRequest)}
+}
+
+type _S7PayloadUserDataItemClkSetRequestBuilder struct {
+	*_S7PayloadUserDataItemClkSetRequest
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemClkSetRequestBuilder) = (*_S7PayloadUserDataItemClkSetRequestBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) WithMandatoryFields(timeStamp DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder {
+	return b.WithTimeStamp(timeStamp)
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) WithTimeStamp(timeStamp DateAndTime) S7PayloadUserDataItemClkSetRequestBuilder {
+	b.TimeStamp = timeStamp
+	return b
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) WithTimeStampBuilder(builderSupplier func(DateAndTimeBuilder) DateAndTimeBuilder) S7PayloadUserDataItemClkSetRequestBuilder {
+	builder := builderSupplier(b.TimeStamp.CreateDateAndTimeBuilder())
+	var err error
+	b.TimeStamp, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "DateAndTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) Build() (S7PayloadUserDataItemClkSetRequest, error) {
+	if b.TimeStamp == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeStamp' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemClkSetRequest.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) MustBuild() S7PayloadUserDataItemClkSetRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemClkSetRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemClkSetRequestBuilder().(*_S7PayloadUserDataItemClkSetRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemClkSetRequestBuilder creates a S7PayloadUserDataItemClkSetRequestBuilder
+func (b *_S7PayloadUserDataItemClkSetRequest) CreateS7PayloadUserDataItemClkSetRequestBuilder() S7PayloadUserDataItemClkSetRequestBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemClkSetRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemClkSetRequestBuilder{_S7PayloadUserDataItemClkSetRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,19 +224,6 @@ func (m *_S7PayloadUserDataItemClkSetRequest) GetTimeStamp() DateAndTime {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadUserDataItemClkSetRequest factory function for _S7PayloadUserDataItemClkSetRequest
-func NewS7PayloadUserDataItemClkSetRequest(timeStamp DateAndTime, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemClkSetRequest {
-	if timeStamp == nil {
-		panic("timeStamp of type DateAndTime for S7PayloadUserDataItemClkSetRequest must not be nil")
-	}
-	_result := &_S7PayloadUserDataItemClkSetRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		TimeStamp:                     timeStamp,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadUserDataItemClkSetRequest(structType any) S7PayloadUserDataItemClkSetRequest {
@@ -220,13 +335,35 @@ func (m *_S7PayloadUserDataItemClkSetRequest) SerializeWithWriteBuffer(ctx conte
 
 func (m *_S7PayloadUserDataItemClkSetRequest) IsS7PayloadUserDataItemClkSetRequest() {}
 
+func (m *_S7PayloadUserDataItemClkSetRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemClkSetRequest) deepCopy() *_S7PayloadUserDataItemClkSetRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemClkSetRequestCopy := &_S7PayloadUserDataItemClkSetRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.TimeStamp.DeepCopy().(DateAndTime),
+		m.reservedField0,
+		m.reservedField1,
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemClkSetRequestCopy
+}
+
 func (m *_S7PayloadUserDataItemClkSetRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

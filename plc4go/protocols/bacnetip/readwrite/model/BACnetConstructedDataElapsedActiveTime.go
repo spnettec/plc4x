@@ -38,6 +38,7 @@ type BACnetConstructedDataElapsedActiveTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetElapsedActiveTime returns ElapsedActiveTime (property field)
 	GetElapsedActiveTime() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataElapsedActiveTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataElapsedActiveTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataElapsedActiveTime()
+	// CreateBuilder creates a BACnetConstructedDataElapsedActiveTimeBuilder
+	CreateBACnetConstructedDataElapsedActiveTimeBuilder() BACnetConstructedDataElapsedActiveTimeBuilder
 }
 
 // _BACnetConstructedDataElapsedActiveTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataElapsedActiveTime struct {
 
 var _ BACnetConstructedDataElapsedActiveTime = (*_BACnetConstructedDataElapsedActiveTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataElapsedActiveTime)(nil)
+
+// NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
+func NewBACnetConstructedDataElapsedActiveTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, elapsedActiveTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
+	if elapsedActiveTime == nil {
+		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataElapsedActiveTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ElapsedActiveTime:             elapsedActiveTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataElapsedActiveTimeBuilder is a builder for BACnetConstructedDataElapsedActiveTime
+type BACnetConstructedDataElapsedActiveTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(elapsedActiveTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder
+	// WithElapsedActiveTime adds ElapsedActiveTime (property field)
+	WithElapsedActiveTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder
+	// WithElapsedActiveTimeBuilder adds ElapsedActiveTime (property field) which is build by the builder
+	WithElapsedActiveTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElapsedActiveTimeBuilder
+	// Build builds the BACnetConstructedDataElapsedActiveTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataElapsedActiveTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataElapsedActiveTime
+}
+
+// NewBACnetConstructedDataElapsedActiveTimeBuilder() creates a BACnetConstructedDataElapsedActiveTimeBuilder
+func NewBACnetConstructedDataElapsedActiveTimeBuilder() BACnetConstructedDataElapsedActiveTimeBuilder {
+	return &_BACnetConstructedDataElapsedActiveTimeBuilder{_BACnetConstructedDataElapsedActiveTime: new(_BACnetConstructedDataElapsedActiveTime)}
+}
+
+type _BACnetConstructedDataElapsedActiveTimeBuilder struct {
+	*_BACnetConstructedDataElapsedActiveTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataElapsedActiveTimeBuilder) = (*_BACnetConstructedDataElapsedActiveTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) WithMandatoryFields(elapsedActiveTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder {
+	return b.WithElapsedActiveTime(elapsedActiveTime)
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) WithElapsedActiveTime(elapsedActiveTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataElapsedActiveTimeBuilder {
+	b.ElapsedActiveTime = elapsedActiveTime
+	return b
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) WithElapsedActiveTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataElapsedActiveTimeBuilder {
+	builder := builderSupplier(b.ElapsedActiveTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.ElapsedActiveTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) Build() (BACnetConstructedDataElapsedActiveTime, error) {
+	if b.ElapsedActiveTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'elapsedActiveTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataElapsedActiveTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) MustBuild() BACnetConstructedDataElapsedActiveTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataElapsedActiveTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataElapsedActiveTimeBuilder().(*_BACnetConstructedDataElapsedActiveTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataElapsedActiveTimeBuilder creates a BACnetConstructedDataElapsedActiveTimeBuilder
+func (b *_BACnetConstructedDataElapsedActiveTime) CreateBACnetConstructedDataElapsedActiveTimeBuilder() BACnetConstructedDataElapsedActiveTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataElapsedActiveTimeBuilder()
+	}
+	return &_BACnetConstructedDataElapsedActiveTimeBuilder{_BACnetConstructedDataElapsedActiveTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataElapsedActiveTime) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataElapsedActiveTime factory function for _BACnetConstructedDataElapsedActiveTime
-func NewBACnetConstructedDataElapsedActiveTime(elapsedActiveTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElapsedActiveTime {
-	if elapsedActiveTime == nil {
-		panic("elapsedActiveTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataElapsedActiveTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataElapsedActiveTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ElapsedActiveTime:             elapsedActiveTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElapsedActiveTime(structType any) BACnetConstructedDataElapsedActiveTime {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataElapsedActiveTime) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataElapsedActiveTime) IsBACnetConstructedDataElapsedActiveTime() {}
 
+func (m *_BACnetConstructedDataElapsedActiveTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElapsedActiveTime) deepCopy() *_BACnetConstructedDataElapsedActiveTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElapsedActiveTimeCopy := &_BACnetConstructedDataElapsedActiveTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ElapsedActiveTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataElapsedActiveTimeCopy
+}
+
 func (m *_BACnetConstructedDataElapsedActiveTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

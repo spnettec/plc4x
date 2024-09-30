@@ -53,27 +53,20 @@ type UDPDirector struct {
 
 	wg sync.WaitGroup
 
-	// Pass through args
-	argTimeout *int                `ignore:"true"`
-	argSid     *int                `ignore:"true"`
-	argSapID   *int                `ignore:"true"`
-	argSap     *ServiceAccessPoint `ignore:"true"`
-
 	passLogToModel bool
 	log            zerolog.Logger
 }
 
-func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], opts ...func(*UDPDirector)) (*UDPDirector, error) {
+func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16], options ...Option) (*UDPDirector, error) {
 	d := &UDPDirector{}
-	for _, opt := range opts {
-		opt(d)
-	}
+	ApplyAppliers(options, d)
+	optionsForParent := AddLeafTypeIfAbundant(options, d)
 	var err error
-	d.ServerContract, err = NewServer(localLog, OptionalOption2(d.argSid, ToPtr[ServerRequirements](d), WithServerSID))
+	d.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, OptionalOption2(d.argSapID, d.argSap, WithServiceAccessPointSapID))
+	d.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
@@ -145,10 +138,8 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	return d, nil
 }
 
-func WithUDPDirectorReuse(reuse bool) func(*UDPDirector) {
-	return func(d *UDPDirector) {
-		d.reuse = reuse
-	}
+func WithUDPDirectorReuse(reuse bool) GenericApplier[*UDPDirector] {
+	return WrapGenericApplier(func(d *UDPDirector) { d.reuse = reuse })
 }
 
 // AddActor adds an actor when a new one is connected
@@ -232,7 +223,7 @@ func (d *UDPDirector) handleRead() {
 		d.handleError(errors.Wrap(err, "error parsing destination address"))
 		return
 	}
-	pdu := NewCPDU(readBytes, NKW(KWCompRootMessage, bvlc, KWCPCISource, saddr, KWCPCIDestination, daddr)) // TODO: why do we set the destination here??? This might be completely wrong
+	pdu := NewCPDU(readBytes, NKW(KWCPCISource, saddr, KWCPCIDestination, daddr), WithRootMessage(bvlc)) // TODO: why do we set the destination here??? This might be completely wrong
 	// send the _PDU up to the client
 	d.wg.Add(1)
 	go func() {

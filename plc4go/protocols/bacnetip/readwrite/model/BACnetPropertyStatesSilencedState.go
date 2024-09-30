@@ -38,11 +38,14 @@ type BACnetPropertyStatesSilencedState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSilencedState returns SilencedState (property field)
 	GetSilencedState() BACnetSilencedStateTagged
 	// IsBACnetPropertyStatesSilencedState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesSilencedState()
+	// CreateBuilder creates a BACnetPropertyStatesSilencedStateBuilder
+	CreateBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder
 }
 
 // _BACnetPropertyStatesSilencedState is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesSilencedState struct {
 
 var _ BACnetPropertyStatesSilencedState = (*_BACnetPropertyStatesSilencedState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSilencedState)(nil)
+
+// NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
+func NewBACnetPropertyStatesSilencedState(peekedTagHeader BACnetTagHeader, silencedState BACnetSilencedStateTagged) *_BACnetPropertyStatesSilencedState {
+	if silencedState == nil {
+		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSilencedState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SilencedState:                silencedState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesSilencedStateBuilder is a builder for BACnetPropertyStatesSilencedState
+type BACnetPropertyStatesSilencedStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder
+	// WithSilencedState adds SilencedState (property field)
+	WithSilencedState(BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder
+	// WithSilencedStateBuilder adds SilencedState (property field) which is build by the builder
+	WithSilencedStateBuilder(func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetPropertyStatesSilencedStateBuilder
+	// Build builds the BACnetPropertyStatesSilencedState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesSilencedState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesSilencedState
+}
+
+// NewBACnetPropertyStatesSilencedStateBuilder() creates a BACnetPropertyStatesSilencedStateBuilder
+func NewBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder {
+	return &_BACnetPropertyStatesSilencedStateBuilder{_BACnetPropertyStatesSilencedState: new(_BACnetPropertyStatesSilencedState)}
+}
+
+type _BACnetPropertyStatesSilencedStateBuilder struct {
+	*_BACnetPropertyStatesSilencedState
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesSilencedStateBuilder) = (*_BACnetPropertyStatesSilencedStateBuilder)(nil)
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) WithMandatoryFields(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder {
+	return b.WithSilencedState(silencedState)
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) WithSilencedState(silencedState BACnetSilencedStateTagged) BACnetPropertyStatesSilencedStateBuilder {
+	b.SilencedState = silencedState
+	return b
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) WithSilencedStateBuilder(builderSupplier func(BACnetSilencedStateTaggedBuilder) BACnetSilencedStateTaggedBuilder) BACnetPropertyStatesSilencedStateBuilder {
+	builder := builderSupplier(b.SilencedState.CreateBACnetSilencedStateTaggedBuilder())
+	var err error
+	b.SilencedState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetSilencedStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) Build() (BACnetPropertyStatesSilencedState, error) {
+	if b.SilencedState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'silencedState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesSilencedState.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) MustBuild() BACnetPropertyStatesSilencedState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesSilencedStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesSilencedStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesSilencedStateBuilder().(*_BACnetPropertyStatesSilencedStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesSilencedStateBuilder creates a BACnetPropertyStatesSilencedStateBuilder
+func (b *_BACnetPropertyStatesSilencedState) CreateBACnetPropertyStatesSilencedStateBuilder() BACnetPropertyStatesSilencedStateBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesSilencedStateBuilder()
+	}
+	return &_BACnetPropertyStatesSilencedStateBuilder{_BACnetPropertyStatesSilencedState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesSilencedState) GetSilencedState() BACnetSilencedSt
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSilencedState factory function for _BACnetPropertyStatesSilencedState
-func NewBACnetPropertyStatesSilencedState(silencedState BACnetSilencedStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSilencedState {
-	if silencedState == nil {
-		panic("silencedState of type BACnetSilencedStateTagged for BACnetPropertyStatesSilencedState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSilencedState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SilencedState:                silencedState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSilencedState(structType any) BACnetPropertyStatesSilencedState {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesSilencedState) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetPropertyStatesSilencedState) IsBACnetPropertyStatesSilencedState() {}
 
+func (m *_BACnetPropertyStatesSilencedState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSilencedState) deepCopy() *_BACnetPropertyStatesSilencedState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSilencedStateCopy := &_BACnetPropertyStatesSilencedState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.SilencedState.DeepCopy().(BACnetSilencedStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSilencedStateCopy
+}
+
 func (m *_BACnetPropertyStatesSilencedState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

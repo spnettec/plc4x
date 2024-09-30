@@ -38,6 +38,7 @@ type AirConditioningDataHvacScheduleEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AirConditioningData
 	// GetZoneGroup returns ZoneGroup (property field)
 	GetZoneGroup() byte
@@ -57,6 +58,8 @@ type AirConditioningDataHvacScheduleEntry interface {
 	GetRawLevel() HVACRawLevels
 	// IsAirConditioningDataHvacScheduleEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAirConditioningDataHvacScheduleEntry()
+	// CreateBuilder creates a AirConditioningDataHvacScheduleEntryBuilder
+	CreateAirConditioningDataHvacScheduleEntryBuilder() AirConditioningDataHvacScheduleEntryBuilder
 }
 
 // _AirConditioningDataHvacScheduleEntry is the data-structure of this message
@@ -74,6 +77,265 @@ type _AirConditioningDataHvacScheduleEntry struct {
 
 var _ AirConditioningDataHvacScheduleEntry = (*_AirConditioningDataHvacScheduleEntry)(nil)
 var _ AirConditioningDataRequirements = (*_AirConditioningDataHvacScheduleEntry)(nil)
+
+// NewAirConditioningDataHvacScheduleEntry factory function for _AirConditioningDataHvacScheduleEntry
+func NewAirConditioningDataHvacScheduleEntry(commandTypeContainer AirConditioningCommandTypeContainer, zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime, level HVACTemperature, rawLevel HVACRawLevels) *_AirConditioningDataHvacScheduleEntry {
+	if zoneList == nil {
+		panic("zoneList of type HVACZoneList for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if hvacModeAndFlags == nil {
+		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	if startTime == nil {
+		panic("startTime of type HVACStartTime for AirConditioningDataHvacScheduleEntry must not be nil")
+	}
+	_result := &_AirConditioningDataHvacScheduleEntry{
+		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
+		ZoneGroup:                   zoneGroup,
+		ZoneList:                    zoneList,
+		Entry:                       entry,
+		Format:                      format,
+		HvacModeAndFlags:            hvacModeAndFlags,
+		StartTime:                   startTime,
+		Level:                       level,
+		RawLevel:                    rawLevel,
+	}
+	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AirConditioningDataHvacScheduleEntryBuilder is a builder for AirConditioningDataHvacScheduleEntry
+type AirConditioningDataHvacScheduleEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime) AirConditioningDataHvacScheduleEntryBuilder
+	// WithZoneGroup adds ZoneGroup (property field)
+	WithZoneGroup(byte) AirConditioningDataHvacScheduleEntryBuilder
+	// WithZoneList adds ZoneList (property field)
+	WithZoneList(HVACZoneList) AirConditioningDataHvacScheduleEntryBuilder
+	// WithZoneListBuilder adds ZoneList (property field) which is build by the builder
+	WithZoneListBuilder(func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataHvacScheduleEntryBuilder
+	// WithEntry adds Entry (property field)
+	WithEntry(uint8) AirConditioningDataHvacScheduleEntryBuilder
+	// WithFormat adds Format (property field)
+	WithFormat(byte) AirConditioningDataHvacScheduleEntryBuilder
+	// WithHvacModeAndFlags adds HvacModeAndFlags (property field)
+	WithHvacModeAndFlags(HVACModeAndFlags) AirConditioningDataHvacScheduleEntryBuilder
+	// WithHvacModeAndFlagsBuilder adds HvacModeAndFlags (property field) which is build by the builder
+	WithHvacModeAndFlagsBuilder(func(HVACModeAndFlagsBuilder) HVACModeAndFlagsBuilder) AirConditioningDataHvacScheduleEntryBuilder
+	// WithStartTime adds StartTime (property field)
+	WithStartTime(HVACStartTime) AirConditioningDataHvacScheduleEntryBuilder
+	// WithStartTimeBuilder adds StartTime (property field) which is build by the builder
+	WithStartTimeBuilder(func(HVACStartTimeBuilder) HVACStartTimeBuilder) AirConditioningDataHvacScheduleEntryBuilder
+	// WithLevel adds Level (property field)
+	WithOptionalLevel(HVACTemperature) AirConditioningDataHvacScheduleEntryBuilder
+	// WithOptionalLevelBuilder adds Level (property field) which is build by the builder
+	WithOptionalLevelBuilder(func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataHvacScheduleEntryBuilder
+	// WithRawLevel adds RawLevel (property field)
+	WithOptionalRawLevel(HVACRawLevels) AirConditioningDataHvacScheduleEntryBuilder
+	// WithOptionalRawLevelBuilder adds RawLevel (property field) which is build by the builder
+	WithOptionalRawLevelBuilder(func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataHvacScheduleEntryBuilder
+	// Build builds the AirConditioningDataHvacScheduleEntry or returns an error if something is wrong
+	Build() (AirConditioningDataHvacScheduleEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AirConditioningDataHvacScheduleEntry
+}
+
+// NewAirConditioningDataHvacScheduleEntryBuilder() creates a AirConditioningDataHvacScheduleEntryBuilder
+func NewAirConditioningDataHvacScheduleEntryBuilder() AirConditioningDataHvacScheduleEntryBuilder {
+	return &_AirConditioningDataHvacScheduleEntryBuilder{_AirConditioningDataHvacScheduleEntry: new(_AirConditioningDataHvacScheduleEntry)}
+}
+
+type _AirConditioningDataHvacScheduleEntryBuilder struct {
+	*_AirConditioningDataHvacScheduleEntry
+
+	parentBuilder *_AirConditioningDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AirConditioningDataHvacScheduleEntryBuilder) = (*_AirConditioningDataHvacScheduleEntryBuilder)(nil)
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) setParent(contract AirConditioningDataContract) {
+	b.AirConditioningDataContract = contract
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithMandatoryFields(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime) AirConditioningDataHvacScheduleEntryBuilder {
+	return b.WithZoneGroup(zoneGroup).WithZoneList(zoneList).WithEntry(entry).WithFormat(format).WithHvacModeAndFlags(hvacModeAndFlags).WithStartTime(startTime)
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithZoneGroup(zoneGroup byte) AirConditioningDataHvacScheduleEntryBuilder {
+	b.ZoneGroup = zoneGroup
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithZoneList(zoneList HVACZoneList) AirConditioningDataHvacScheduleEntryBuilder {
+	b.ZoneList = zoneList
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithZoneListBuilder(builderSupplier func(HVACZoneListBuilder) HVACZoneListBuilder) AirConditioningDataHvacScheduleEntryBuilder {
+	builder := builderSupplier(b.ZoneList.CreateHVACZoneListBuilder())
+	var err error
+	b.ZoneList, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACZoneListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithEntry(entry uint8) AirConditioningDataHvacScheduleEntryBuilder {
+	b.Entry = entry
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithFormat(format byte) AirConditioningDataHvacScheduleEntryBuilder {
+	b.Format = format
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithHvacModeAndFlags(hvacModeAndFlags HVACModeAndFlags) AirConditioningDataHvacScheduleEntryBuilder {
+	b.HvacModeAndFlags = hvacModeAndFlags
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithHvacModeAndFlagsBuilder(builderSupplier func(HVACModeAndFlagsBuilder) HVACModeAndFlagsBuilder) AirConditioningDataHvacScheduleEntryBuilder {
+	builder := builderSupplier(b.HvacModeAndFlags.CreateHVACModeAndFlagsBuilder())
+	var err error
+	b.HvacModeAndFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACModeAndFlagsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithStartTime(startTime HVACStartTime) AirConditioningDataHvacScheduleEntryBuilder {
+	b.StartTime = startTime
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithStartTimeBuilder(builderSupplier func(HVACStartTimeBuilder) HVACStartTimeBuilder) AirConditioningDataHvacScheduleEntryBuilder {
+	builder := builderSupplier(b.StartTime.CreateHVACStartTimeBuilder())
+	var err error
+	b.StartTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACStartTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithOptionalLevel(level HVACTemperature) AirConditioningDataHvacScheduleEntryBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithOptionalLevelBuilder(builderSupplier func(HVACTemperatureBuilder) HVACTemperatureBuilder) AirConditioningDataHvacScheduleEntryBuilder {
+	builder := builderSupplier(b.Level.CreateHVACTemperatureBuilder())
+	var err error
+	b.Level, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACTemperatureBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithOptionalRawLevel(rawLevel HVACRawLevels) AirConditioningDataHvacScheduleEntryBuilder {
+	b.RawLevel = rawLevel
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) WithOptionalRawLevelBuilder(builderSupplier func(HVACRawLevelsBuilder) HVACRawLevelsBuilder) AirConditioningDataHvacScheduleEntryBuilder {
+	builder := builderSupplier(b.RawLevel.CreateHVACRawLevelsBuilder())
+	var err error
+	b.RawLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HVACRawLevelsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) Build() (AirConditioningDataHvacScheduleEntry, error) {
+	if b.ZoneList == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneList' not set"))
+	}
+	if b.HvacModeAndFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hvacModeAndFlags' not set"))
+	}
+	if b.StartTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'startTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AirConditioningDataHvacScheduleEntry.deepCopy(), nil
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) MustBuild() AirConditioningDataHvacScheduleEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) Done() AirConditioningDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) buildForAirConditioningData() (AirConditioningData, error) {
+	return b.Build()
+}
+
+func (b *_AirConditioningDataHvacScheduleEntryBuilder) DeepCopy() any {
+	_copy := b.CreateAirConditioningDataHvacScheduleEntryBuilder().(*_AirConditioningDataHvacScheduleEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAirConditioningDataHvacScheduleEntryBuilder creates a AirConditioningDataHvacScheduleEntryBuilder
+func (b *_AirConditioningDataHvacScheduleEntry) CreateAirConditioningDataHvacScheduleEntryBuilder() AirConditioningDataHvacScheduleEntryBuilder {
+	if b == nil {
+		return NewAirConditioningDataHvacScheduleEntryBuilder()
+	}
+	return &_AirConditioningDataHvacScheduleEntryBuilder{_AirConditioningDataHvacScheduleEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -130,32 +392,6 @@ func (m *_AirConditioningDataHvacScheduleEntry) GetRawLevel() HVACRawLevels {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAirConditioningDataHvacScheduleEntry factory function for _AirConditioningDataHvacScheduleEntry
-func NewAirConditioningDataHvacScheduleEntry(zoneGroup byte, zoneList HVACZoneList, entry uint8, format byte, hvacModeAndFlags HVACModeAndFlags, startTime HVACStartTime, level HVACTemperature, rawLevel HVACRawLevels, commandTypeContainer AirConditioningCommandTypeContainer) *_AirConditioningDataHvacScheduleEntry {
-	if zoneList == nil {
-		panic("zoneList of type HVACZoneList for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	if hvacModeAndFlags == nil {
-		panic("hvacModeAndFlags of type HVACModeAndFlags for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	if startTime == nil {
-		panic("startTime of type HVACStartTime for AirConditioningDataHvacScheduleEntry must not be nil")
-	}
-	_result := &_AirConditioningDataHvacScheduleEntry{
-		AirConditioningDataContract: NewAirConditioningData(commandTypeContainer),
-		ZoneGroup:                   zoneGroup,
-		ZoneList:                    zoneList,
-		Entry:                       entry,
-		Format:                      format,
-		HvacModeAndFlags:            hvacModeAndFlags,
-		StartTime:                   startTime,
-		Level:                       level,
-		RawLevel:                    rawLevel,
-	}
-	_result.AirConditioningDataContract.(*_AirConditioningData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAirConditioningDataHvacScheduleEntry(structType any) AirConditioningDataHvacScheduleEntry {
@@ -344,13 +580,40 @@ func (m *_AirConditioningDataHvacScheduleEntry) SerializeWithWriteBuffer(ctx con
 
 func (m *_AirConditioningDataHvacScheduleEntry) IsAirConditioningDataHvacScheduleEntry() {}
 
+func (m *_AirConditioningDataHvacScheduleEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AirConditioningDataHvacScheduleEntry) deepCopy() *_AirConditioningDataHvacScheduleEntry {
+	if m == nil {
+		return nil
+	}
+	_AirConditioningDataHvacScheduleEntryCopy := &_AirConditioningDataHvacScheduleEntry{
+		m.AirConditioningDataContract.(*_AirConditioningData).deepCopy(),
+		m.ZoneGroup,
+		m.ZoneList.DeepCopy().(HVACZoneList),
+		m.Entry,
+		m.Format,
+		m.HvacModeAndFlags.DeepCopy().(HVACModeAndFlags),
+		m.StartTime.DeepCopy().(HVACStartTime),
+		m.Level.DeepCopy().(HVACTemperature),
+		m.RawLevel.DeepCopy().(HVACRawLevels),
+	}
+	m.AirConditioningDataContract.(*_AirConditioningData)._SubType = m
+	return _AirConditioningDataHvacScheduleEntryCopy
+}
+
 func (m *_AirConditioningDataHvacScheduleEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

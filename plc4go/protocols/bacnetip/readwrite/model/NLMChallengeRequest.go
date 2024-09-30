@@ -38,6 +38,7 @@ type NLMChallengeRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetMessageChallenge returns MessageChallenge (property field)
 	GetMessageChallenge() byte
@@ -47,6 +48,8 @@ type NLMChallengeRequest interface {
 	GetOriginalTimestamp() uint32
 	// IsNLMChallengeRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMChallengeRequest()
+	// CreateBuilder creates a NLMChallengeRequestBuilder
+	CreateNLMChallengeRequestBuilder() NLMChallengeRequestBuilder
 }
 
 // _NLMChallengeRequest is the data-structure of this message
@@ -59,6 +62,123 @@ type _NLMChallengeRequest struct {
 
 var _ NLMChallengeRequest = (*_NLMChallengeRequest)(nil)
 var _ NLMRequirements = (*_NLMChallengeRequest)(nil)
+
+// NewNLMChallengeRequest factory function for _NLMChallengeRequest
+func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
+	_result := &_NLMChallengeRequest{
+		NLMContract:       NewNLM(apduLength),
+		MessageChallenge:  messageChallenge,
+		OriginalMessageId: originalMessageId,
+		OriginalTimestamp: originalTimestamp,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMChallengeRequestBuilder is a builder for NLMChallengeRequest
+type NLMChallengeRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32) NLMChallengeRequestBuilder
+	// WithMessageChallenge adds MessageChallenge (property field)
+	WithMessageChallenge(byte) NLMChallengeRequestBuilder
+	// WithOriginalMessageId adds OriginalMessageId (property field)
+	WithOriginalMessageId(uint32) NLMChallengeRequestBuilder
+	// WithOriginalTimestamp adds OriginalTimestamp (property field)
+	WithOriginalTimestamp(uint32) NLMChallengeRequestBuilder
+	// Build builds the NLMChallengeRequest or returns an error if something is wrong
+	Build() (NLMChallengeRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMChallengeRequest
+}
+
+// NewNLMChallengeRequestBuilder() creates a NLMChallengeRequestBuilder
+func NewNLMChallengeRequestBuilder() NLMChallengeRequestBuilder {
+	return &_NLMChallengeRequestBuilder{_NLMChallengeRequest: new(_NLMChallengeRequest)}
+}
+
+type _NLMChallengeRequestBuilder struct {
+	*_NLMChallengeRequest
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMChallengeRequestBuilder) = (*_NLMChallengeRequestBuilder)(nil)
+
+func (b *_NLMChallengeRequestBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMChallengeRequestBuilder) WithMandatoryFields(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32) NLMChallengeRequestBuilder {
+	return b.WithMessageChallenge(messageChallenge).WithOriginalMessageId(originalMessageId).WithOriginalTimestamp(originalTimestamp)
+}
+
+func (b *_NLMChallengeRequestBuilder) WithMessageChallenge(messageChallenge byte) NLMChallengeRequestBuilder {
+	b.MessageChallenge = messageChallenge
+	return b
+}
+
+func (b *_NLMChallengeRequestBuilder) WithOriginalMessageId(originalMessageId uint32) NLMChallengeRequestBuilder {
+	b.OriginalMessageId = originalMessageId
+	return b
+}
+
+func (b *_NLMChallengeRequestBuilder) WithOriginalTimestamp(originalTimestamp uint32) NLMChallengeRequestBuilder {
+	b.OriginalTimestamp = originalTimestamp
+	return b
+}
+
+func (b *_NLMChallengeRequestBuilder) Build() (NLMChallengeRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMChallengeRequest.deepCopy(), nil
+}
+
+func (b *_NLMChallengeRequestBuilder) MustBuild() NLMChallengeRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMChallengeRequestBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMChallengeRequestBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMChallengeRequestBuilder) DeepCopy() any {
+	_copy := b.CreateNLMChallengeRequestBuilder().(*_NLMChallengeRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMChallengeRequestBuilder creates a NLMChallengeRequestBuilder
+func (b *_NLMChallengeRequest) CreateNLMChallengeRequestBuilder() NLMChallengeRequestBuilder {
+	if b == nil {
+		return NewNLMChallengeRequestBuilder()
+	}
+	return &_NLMChallengeRequestBuilder{_NLMChallengeRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,18 +219,6 @@ func (m *_NLMChallengeRequest) GetOriginalTimestamp() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMChallengeRequest factory function for _NLMChallengeRequest
-func NewNLMChallengeRequest(messageChallenge byte, originalMessageId uint32, originalTimestamp uint32, apduLength uint16) *_NLMChallengeRequest {
-	_result := &_NLMChallengeRequest{
-		NLMContract:       NewNLM(apduLength),
-		MessageChallenge:  messageChallenge,
-		OriginalMessageId: originalMessageId,
-		OriginalTimestamp: originalTimestamp,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMChallengeRequest(structType any) NLMChallengeRequest {
@@ -222,13 +330,35 @@ func (m *_NLMChallengeRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_NLMChallengeRequest) IsNLMChallengeRequest() {}
 
+func (m *_NLMChallengeRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMChallengeRequest) deepCopy() *_NLMChallengeRequest {
+	if m == nil {
+		return nil
+	}
+	_NLMChallengeRequestCopy := &_NLMChallengeRequest{
+		m.NLMContract.(*_NLM).deepCopy(),
+		m.MessageChallenge,
+		m.OriginalMessageId,
+		m.OriginalTimestamp,
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMChallengeRequestCopy
+}
+
 func (m *_NLMChallengeRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

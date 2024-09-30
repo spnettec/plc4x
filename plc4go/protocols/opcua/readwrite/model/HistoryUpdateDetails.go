@@ -36,9 +36,12 @@ type HistoryUpdateDetails interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsHistoryUpdateDetails is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryUpdateDetails()
+	// CreateBuilder creates a HistoryUpdateDetailsBuilder
+	CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder
 }
 
 // _HistoryUpdateDetails is the data-structure of this message
@@ -48,6 +51,99 @@ type _HistoryUpdateDetails struct {
 
 var _ HistoryUpdateDetails = (*_HistoryUpdateDetails)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryUpdateDetails)(nil)
+
+// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
+func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
+	_result := &_HistoryUpdateDetails{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryUpdateDetailsBuilder is a builder for HistoryUpdateDetails
+type HistoryUpdateDetailsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() HistoryUpdateDetailsBuilder
+	// Build builds the HistoryUpdateDetails or returns an error if something is wrong
+	Build() (HistoryUpdateDetails, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryUpdateDetails
+}
+
+// NewHistoryUpdateDetailsBuilder() creates a HistoryUpdateDetailsBuilder
+func NewHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
+	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: new(_HistoryUpdateDetails)}
+}
+
+type _HistoryUpdateDetailsBuilder struct {
+	*_HistoryUpdateDetails
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryUpdateDetailsBuilder) = (*_HistoryUpdateDetailsBuilder)(nil)
+
+func (b *_HistoryUpdateDetailsBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryUpdateDetailsBuilder) WithMandatoryFields() HistoryUpdateDetailsBuilder {
+	return b
+}
+
+func (b *_HistoryUpdateDetailsBuilder) Build() (HistoryUpdateDetails, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryUpdateDetails.deepCopy(), nil
+}
+
+func (b *_HistoryUpdateDetailsBuilder) MustBuild() HistoryUpdateDetails {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryUpdateDetailsBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryUpdateDetailsBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryUpdateDetailsBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryUpdateDetailsBuilder().(*_HistoryUpdateDetailsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryUpdateDetailsBuilder creates a HistoryUpdateDetailsBuilder
+func (b *_HistoryUpdateDetails) CreateHistoryUpdateDetailsBuilder() HistoryUpdateDetailsBuilder {
+	if b == nil {
+		return NewHistoryUpdateDetailsBuilder()
+	}
+	return &_HistoryUpdateDetailsBuilder{_HistoryUpdateDetails: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_HistoryUpdateDetails) GetIdentifier() string {
 
 func (m *_HistoryUpdateDetails) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewHistoryUpdateDetails factory function for _HistoryUpdateDetails
-func NewHistoryUpdateDetails() *_HistoryUpdateDetails {
-	_result := &_HistoryUpdateDetails{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_HistoryUpdateDetails) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_HistoryUpdateDetails) IsHistoryUpdateDetails() {}
 
+func (m *_HistoryUpdateDetails) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryUpdateDetails) deepCopy() *_HistoryUpdateDetails {
+	if m == nil {
+		return nil
+	}
+	_HistoryUpdateDetailsCopy := &_HistoryUpdateDetails{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryUpdateDetailsCopy
+}
+
 func (m *_HistoryUpdateDetails) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

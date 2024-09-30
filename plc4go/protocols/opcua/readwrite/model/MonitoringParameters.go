@@ -38,6 +38,7 @@ type MonitoringParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetClientHandle returns ClientHandle (property field)
 	GetClientHandle() uint32
@@ -51,6 +52,8 @@ type MonitoringParameters interface {
 	GetDiscardOldest() bool
 	// IsMonitoringParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoringParameters()
+	// CreateBuilder creates a MonitoringParametersBuilder
+	CreateMonitoringParametersBuilder() MonitoringParametersBuilder
 }
 
 // _MonitoringParameters is the data-structure of this message
@@ -67,6 +70,163 @@ type _MonitoringParameters struct {
 
 var _ MonitoringParameters = (*_MonitoringParameters)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoringParameters)(nil)
+
+// NewMonitoringParameters factory function for _MonitoringParameters
+func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
+	if filter == nil {
+		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
+	}
+	_result := &_MonitoringParameters{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ClientHandle:                      clientHandle,
+		SamplingInterval:                  samplingInterval,
+		Filter:                            filter,
+		QueueSize:                         queueSize,
+		DiscardOldest:                     discardOldest,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoringParametersBuilder is a builder for MonitoringParameters
+type MonitoringParametersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) MonitoringParametersBuilder
+	// WithClientHandle adds ClientHandle (property field)
+	WithClientHandle(uint32) MonitoringParametersBuilder
+	// WithSamplingInterval adds SamplingInterval (property field)
+	WithSamplingInterval(float64) MonitoringParametersBuilder
+	// WithFilter adds Filter (property field)
+	WithFilter(ExtensionObject) MonitoringParametersBuilder
+	// WithFilterBuilder adds Filter (property field) which is build by the builder
+	WithFilterBuilder(func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoringParametersBuilder
+	// WithQueueSize adds QueueSize (property field)
+	WithQueueSize(uint32) MonitoringParametersBuilder
+	// WithDiscardOldest adds DiscardOldest (property field)
+	WithDiscardOldest(bool) MonitoringParametersBuilder
+	// Build builds the MonitoringParameters or returns an error if something is wrong
+	Build() (MonitoringParameters, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoringParameters
+}
+
+// NewMonitoringParametersBuilder() creates a MonitoringParametersBuilder
+func NewMonitoringParametersBuilder() MonitoringParametersBuilder {
+	return &_MonitoringParametersBuilder{_MonitoringParameters: new(_MonitoringParameters)}
+}
+
+type _MonitoringParametersBuilder struct {
+	*_MonitoringParameters
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoringParametersBuilder) = (*_MonitoringParametersBuilder)(nil)
+
+func (b *_MonitoringParametersBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_MonitoringParametersBuilder) WithMandatoryFields(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) MonitoringParametersBuilder {
+	return b.WithClientHandle(clientHandle).WithSamplingInterval(samplingInterval).WithFilter(filter).WithQueueSize(queueSize).WithDiscardOldest(discardOldest)
+}
+
+func (b *_MonitoringParametersBuilder) WithClientHandle(clientHandle uint32) MonitoringParametersBuilder {
+	b.ClientHandle = clientHandle
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithSamplingInterval(samplingInterval float64) MonitoringParametersBuilder {
+	b.SamplingInterval = samplingInterval
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithFilter(filter ExtensionObject) MonitoringParametersBuilder {
+	b.Filter = filter
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithFilterBuilder(builderSupplier func(ExtensionObjectBuilder) ExtensionObjectBuilder) MonitoringParametersBuilder {
+	builder := builderSupplier(b.Filter.CreateExtensionObjectBuilder())
+	var err error
+	b.Filter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithQueueSize(queueSize uint32) MonitoringParametersBuilder {
+	b.QueueSize = queueSize
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) WithDiscardOldest(discardOldest bool) MonitoringParametersBuilder {
+	b.DiscardOldest = discardOldest
+	return b
+}
+
+func (b *_MonitoringParametersBuilder) Build() (MonitoringParameters, error) {
+	if b.Filter == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'filter' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoringParameters.deepCopy(), nil
+}
+
+func (b *_MonitoringParametersBuilder) MustBuild() MonitoringParameters {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoringParametersBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoringParametersBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoringParametersBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoringParametersBuilder().(*_MonitoringParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoringParametersBuilder creates a MonitoringParametersBuilder
+func (b *_MonitoringParameters) CreateMonitoringParametersBuilder() MonitoringParametersBuilder {
+	if b == nil {
+		return NewMonitoringParametersBuilder()
+	}
+	return &_MonitoringParametersBuilder{_MonitoringParameters: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,23 +275,6 @@ func (m *_MonitoringParameters) GetDiscardOldest() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoringParameters factory function for _MonitoringParameters
-func NewMonitoringParameters(clientHandle uint32, samplingInterval float64, filter ExtensionObject, queueSize uint32, discardOldest bool) *_MonitoringParameters {
-	if filter == nil {
-		panic("filter of type ExtensionObject for MonitoringParameters must not be nil")
-	}
-	_result := &_MonitoringParameters{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ClientHandle:                      clientHandle,
-		SamplingInterval:                  samplingInterval,
-		Filter:                            filter,
-		QueueSize:                         queueSize,
-		DiscardOldest:                     discardOldest,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoringParameters(structType any) MonitoringParameters {
@@ -282,13 +425,38 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_MonitoringParameters) IsMonitoringParameters() {}
 
+func (m *_MonitoringParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoringParameters) deepCopy() *_MonitoringParameters {
+	if m == nil {
+		return nil
+	}
+	_MonitoringParametersCopy := &_MonitoringParameters{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ClientHandle,
+		m.SamplingInterval,
+		m.Filter.DeepCopy().(ExtensionObject),
+		m.QueueSize,
+		m.DiscardOldest,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoringParametersCopy
+}
+
 func (m *_MonitoringParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

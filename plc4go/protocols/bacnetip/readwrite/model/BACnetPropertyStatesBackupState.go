@@ -38,11 +38,14 @@ type BACnetPropertyStatesBackupState interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetBackupState returns BackupState (property field)
 	GetBackupState() BACnetBackupStateTagged
 	// IsBACnetPropertyStatesBackupState is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesBackupState()
+	// CreateBuilder creates a BACnetPropertyStatesBackupStateBuilder
+	CreateBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder
 }
 
 // _BACnetPropertyStatesBackupState is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesBackupState struct {
 
 var _ BACnetPropertyStatesBackupState = (*_BACnetPropertyStatesBackupState)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesBackupState)(nil)
+
+// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
+func NewBACnetPropertyStatesBackupState(peekedTagHeader BACnetTagHeader, backupState BACnetBackupStateTagged) *_BACnetPropertyStatesBackupState {
+	if backupState == nil {
+		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
+	}
+	_result := &_BACnetPropertyStatesBackupState{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		BackupState:                  backupState,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesBackupStateBuilder is a builder for BACnetPropertyStatesBackupState
+type BACnetPropertyStatesBackupStateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder
+	// WithBackupState adds BackupState (property field)
+	WithBackupState(BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder
+	// WithBackupStateBuilder adds BackupState (property field) which is build by the builder
+	WithBackupStateBuilder(func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetPropertyStatesBackupStateBuilder
+	// Build builds the BACnetPropertyStatesBackupState or returns an error if something is wrong
+	Build() (BACnetPropertyStatesBackupState, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesBackupState
+}
+
+// NewBACnetPropertyStatesBackupStateBuilder() creates a BACnetPropertyStatesBackupStateBuilder
+func NewBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder {
+	return &_BACnetPropertyStatesBackupStateBuilder{_BACnetPropertyStatesBackupState: new(_BACnetPropertyStatesBackupState)}
+}
+
+type _BACnetPropertyStatesBackupStateBuilder struct {
+	*_BACnetPropertyStatesBackupState
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesBackupStateBuilder) = (*_BACnetPropertyStatesBackupStateBuilder)(nil)
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) WithMandatoryFields(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder {
+	return b.WithBackupState(backupState)
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) WithBackupState(backupState BACnetBackupStateTagged) BACnetPropertyStatesBackupStateBuilder {
+	b.BackupState = backupState
+	return b
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) WithBackupStateBuilder(builderSupplier func(BACnetBackupStateTaggedBuilder) BACnetBackupStateTaggedBuilder) BACnetPropertyStatesBackupStateBuilder {
+	builder := builderSupplier(b.BackupState.CreateBACnetBackupStateTaggedBuilder())
+	var err error
+	b.BackupState, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBackupStateTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) Build() (BACnetPropertyStatesBackupState, error) {
+	if b.BackupState == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'backupState' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesBackupState.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) MustBuild() BACnetPropertyStatesBackupState {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesBackupStateBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesBackupStateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesBackupStateBuilder().(*_BACnetPropertyStatesBackupStateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesBackupStateBuilder creates a BACnetPropertyStatesBackupStateBuilder
+func (b *_BACnetPropertyStatesBackupState) CreateBACnetPropertyStatesBackupStateBuilder() BACnetPropertyStatesBackupStateBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesBackupStateBuilder()
+	}
+	return &_BACnetPropertyStatesBackupStateBuilder{_BACnetPropertyStatesBackupState: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesBackupState) GetBackupState() BACnetBackupStateTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesBackupState factory function for _BACnetPropertyStatesBackupState
-func NewBACnetPropertyStatesBackupState(backupState BACnetBackupStateTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesBackupState {
-	if backupState == nil {
-		panic("backupState of type BACnetBackupStateTagged for BACnetPropertyStatesBackupState must not be nil")
-	}
-	_result := &_BACnetPropertyStatesBackupState{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		BackupState:                  backupState,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesBackupState(structType any) BACnetPropertyStatesBackupState {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesBackupState) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetPropertyStatesBackupState) IsBACnetPropertyStatesBackupState() {}
 
+func (m *_BACnetPropertyStatesBackupState) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesBackupState) deepCopy() *_BACnetPropertyStatesBackupState {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesBackupStateCopy := &_BACnetPropertyStatesBackupState{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.BackupState.DeepCopy().(BACnetBackupStateTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesBackupStateCopy
+}
+
 func (m *_BACnetPropertyStatesBackupState) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

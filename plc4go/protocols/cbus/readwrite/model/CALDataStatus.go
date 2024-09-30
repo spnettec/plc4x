@@ -38,6 +38,7 @@ type CALDataStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetApplication returns Application (property field)
 	GetApplication() ApplicationIdContainer
@@ -47,6 +48,8 @@ type CALDataStatus interface {
 	GetStatusBytes() []StatusByte
 	// IsCALDataStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataStatus()
+	// CreateBuilder creates a CALDataStatusBuilder
+	CreateCALDataStatusBuilder() CALDataStatusBuilder
 }
 
 // _CALDataStatus is the data-structure of this message
@@ -59,6 +62,123 @@ type _CALDataStatus struct {
 
 var _ CALDataStatus = (*_CALDataStatus)(nil)
 var _ CALDataRequirements = (*_CALDataStatus)(nil)
+
+// NewCALDataStatus factory function for _CALDataStatus
+func NewCALDataStatus(commandTypeContainer CALCommandTypeContainer, additionalData CALData, application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, requestContext RequestContext) *_CALDataStatus {
+	_result := &_CALDataStatus{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Application:     application,
+		BlockStart:      blockStart,
+		StatusBytes:     statusBytes,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataStatusBuilder is a builder for CALDataStatus
+type CALDataStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) CALDataStatusBuilder
+	// WithBlockStart adds BlockStart (property field)
+	WithBlockStart(uint8) CALDataStatusBuilder
+	// WithStatusBytes adds StatusBytes (property field)
+	WithStatusBytes(...StatusByte) CALDataStatusBuilder
+	// Build builds the CALDataStatus or returns an error if something is wrong
+	Build() (CALDataStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataStatus
+}
+
+// NewCALDataStatusBuilder() creates a CALDataStatusBuilder
+func NewCALDataStatusBuilder() CALDataStatusBuilder {
+	return &_CALDataStatusBuilder{_CALDataStatus: new(_CALDataStatus)}
+}
+
+type _CALDataStatusBuilder struct {
+	*_CALDataStatus
+
+	parentBuilder *_CALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CALDataStatusBuilder) = (*_CALDataStatusBuilder)(nil)
+
+func (b *_CALDataStatusBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
+}
+
+func (b *_CALDataStatusBuilder) WithMandatoryFields(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte) CALDataStatusBuilder {
+	return b.WithApplication(application).WithBlockStart(blockStart).WithStatusBytes(statusBytes...)
+}
+
+func (b *_CALDataStatusBuilder) WithApplication(application ApplicationIdContainer) CALDataStatusBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_CALDataStatusBuilder) WithBlockStart(blockStart uint8) CALDataStatusBuilder {
+	b.BlockStart = blockStart
+	return b
+}
+
+func (b *_CALDataStatusBuilder) WithStatusBytes(statusBytes ...StatusByte) CALDataStatusBuilder {
+	b.StatusBytes = statusBytes
+	return b
+}
+
+func (b *_CALDataStatusBuilder) Build() (CALDataStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataStatus.deepCopy(), nil
+}
+
+func (b *_CALDataStatusBuilder) MustBuild() CALDataStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataStatusBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataStatusBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataStatusBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataStatusBuilder().(*_CALDataStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCALDataStatusBuilder creates a CALDataStatusBuilder
+func (b *_CALDataStatus) CreateCALDataStatusBuilder() CALDataStatusBuilder {
+	if b == nil {
+		return NewCALDataStatusBuilder()
+	}
+	return &_CALDataStatusBuilder{_CALDataStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,18 +215,6 @@ func (m *_CALDataStatus) GetStatusBytes() []StatusByte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataStatus factory function for _CALDataStatus
-func NewCALDataStatus(application ApplicationIdContainer, blockStart uint8, statusBytes []StatusByte, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataStatus {
-	_result := &_CALDataStatus{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Application:     application,
-		BlockStart:      blockStart,
-		StatusBytes:     statusBytes,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataStatus(structType any) CALDataStatus {
@@ -225,13 +333,35 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_CALDataStatus) IsCALDataStatus() {}
 
+func (m *_CALDataStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataStatus) deepCopy() *_CALDataStatus {
+	if m == nil {
+		return nil
+	}
+	_CALDataStatusCopy := &_CALDataStatus{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Application,
+		m.BlockStart,
+		utils.DeepCopySlice[StatusByte, StatusByte](m.StatusBytes),
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataStatusCopy
+}
+
 func (m *_CALDataStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type AddReferencesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type AddReferencesRequest interface {
 	GetReferencesToAdd() []ExtensionObjectDefinition
 	// IsAddReferencesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddReferencesRequest()
+	// CreateBuilder creates a AddReferencesRequestBuilder
+	CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder
 }
 
 // _AddReferencesRequest is the data-structure of this message
@@ -59,6 +62,147 @@ type _AddReferencesRequest struct {
 
 var _ AddReferencesRequest = (*_AddReferencesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesRequest)(nil)
+
+// NewAddReferencesRequest factory function for _AddReferencesRequest
+func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
+	}
+	_result := &_AddReferencesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfReferencesToAdd:               noOfReferencesToAdd,
+		ReferencesToAdd:                   referencesToAdd,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AddReferencesRequestBuilder is a builder for AddReferencesRequest
+type AddReferencesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder
+	// WithNoOfReferencesToAdd adds NoOfReferencesToAdd (property field)
+	WithNoOfReferencesToAdd(int32) AddReferencesRequestBuilder
+	// WithReferencesToAdd adds ReferencesToAdd (property field)
+	WithReferencesToAdd(...ExtensionObjectDefinition) AddReferencesRequestBuilder
+	// Build builds the AddReferencesRequest or returns an error if something is wrong
+	Build() (AddReferencesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AddReferencesRequest
+}
+
+// NewAddReferencesRequestBuilder() creates a AddReferencesRequestBuilder
+func NewAddReferencesRequestBuilder() AddReferencesRequestBuilder {
+	return &_AddReferencesRequestBuilder{_AddReferencesRequest: new(_AddReferencesRequest)}
+}
+
+type _AddReferencesRequestBuilder struct {
+	*_AddReferencesRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AddReferencesRequestBuilder) = (*_AddReferencesRequestBuilder)(nil)
+
+func (b *_AddReferencesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AddReferencesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfReferencesToAdd(noOfReferencesToAdd).WithReferencesToAdd(referencesToAdd...)
+}
+
+func (b *_AddReferencesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) AddReferencesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) WithNoOfReferencesToAdd(noOfReferencesToAdd int32) AddReferencesRequestBuilder {
+	b.NoOfReferencesToAdd = noOfReferencesToAdd
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) WithReferencesToAdd(referencesToAdd ...ExtensionObjectDefinition) AddReferencesRequestBuilder {
+	b.ReferencesToAdd = referencesToAdd
+	return b
+}
+
+func (b *_AddReferencesRequestBuilder) Build() (AddReferencesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AddReferencesRequest.deepCopy(), nil
+}
+
+func (b *_AddReferencesRequestBuilder) MustBuild() AddReferencesRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddReferencesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddReferencesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddReferencesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAddReferencesRequestBuilder().(*_AddReferencesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAddReferencesRequestBuilder creates a AddReferencesRequestBuilder
+func (b *_AddReferencesRequest) CreateAddReferencesRequestBuilder() AddReferencesRequestBuilder {
+	if b == nil {
+		return NewAddReferencesRequestBuilder()
+	}
+	return &_AddReferencesRequestBuilder{_AddReferencesRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_AddReferencesRequest) GetReferencesToAdd() []ExtensionObjectDefinition
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesRequest factory function for _AddReferencesRequest
-func NewAddReferencesRequest(requestHeader ExtensionObjectDefinition, noOfReferencesToAdd int32, referencesToAdd []ExtensionObjectDefinition) *_AddReferencesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for AddReferencesRequest must not be nil")
-	}
-	_result := &_AddReferencesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfReferencesToAdd:               noOfReferencesToAdd,
-		ReferencesToAdd:                   referencesToAdd,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesRequest(structType any) AddReferencesRequest {
@@ -232,13 +361,35 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_AddReferencesRequest) IsAddReferencesRequest() {}
 
+func (m *_AddReferencesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesRequest) deepCopy() *_AddReferencesRequest {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesRequestCopy := &_AddReferencesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfReferencesToAdd,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.ReferencesToAdd),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesRequestCopy
+}
+
 func (m *_AddReferencesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

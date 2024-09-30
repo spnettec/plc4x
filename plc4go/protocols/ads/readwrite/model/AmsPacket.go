@@ -50,8 +50,11 @@ type AmsPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsPacket()
+	// CreateBuilder creates a AmsPacketBuilder
+	CreateAmsPacketBuilder() AmsPacketBuilder
 }
 
 // AmsPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -70,6 +73,8 @@ type AmsPacketContract interface {
 	GetInvokeId() uint32
 	// IsAmsPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsPacket()
+	// CreateBuilder creates a AmsPacketBuilder
+	CreateAmsPacketBuilder() AmsPacketBuilder
 }
 
 // AmsPacketRequirements provides a set of functions which need to be implemented by a sub struct
@@ -98,6 +103,645 @@ type _AmsPacket struct {
 }
 
 var _ AmsPacketContract = (*_AmsPacket)(nil)
+
+// NewAmsPacket factory function for _AmsPacket
+func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AmsPacket {
+	if targetAmsNetId == nil {
+		panic("targetAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
+	if sourceAmsNetId == nil {
+		panic("sourceAmsNetId of type AmsNetId for AmsPacket must not be nil")
+	}
+	return &_AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, ErrorCode: errorCode, InvokeId: invokeId}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsPacketBuilder is a builder for AmsPacket
+type AmsPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder
+	// WithTargetAmsNetId adds TargetAmsNetId (property field)
+	WithTargetAmsNetId(AmsNetId) AmsPacketBuilder
+	// WithTargetAmsNetIdBuilder adds TargetAmsNetId (property field) which is build by the builder
+	WithTargetAmsNetIdBuilder(func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder
+	// WithTargetAmsPort adds TargetAmsPort (property field)
+	WithTargetAmsPort(uint16) AmsPacketBuilder
+	// WithSourceAmsNetId adds SourceAmsNetId (property field)
+	WithSourceAmsNetId(AmsNetId) AmsPacketBuilder
+	// WithSourceAmsNetIdBuilder adds SourceAmsNetId (property field) which is build by the builder
+	WithSourceAmsNetIdBuilder(func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder
+	// WithSourceAmsPort adds SourceAmsPort (property field)
+	WithSourceAmsPort(uint16) AmsPacketBuilder
+	// WithErrorCode adds ErrorCode (property field)
+	WithErrorCode(uint32) AmsPacketBuilder
+	// WithInvokeId adds InvokeId (property field)
+	WithInvokeId(uint32) AmsPacketBuilder
+	// AsAdsInvalidRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsInvalidRequest() interface {
+		AdsInvalidRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsInvalidResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsInvalidResponse() interface {
+		AdsInvalidResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadDeviceInfoRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadDeviceInfoRequest() interface {
+		AdsReadDeviceInfoRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadDeviceInfoResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadDeviceInfoResponse() interface {
+		AdsReadDeviceInfoResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadRequest() interface {
+		AdsReadRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadResponse() interface {
+		AdsReadResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteRequest() interface {
+		AdsWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteResponse() interface {
+		AdsWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadStateRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadStateRequest() interface {
+		AdsReadStateRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadStateResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadStateResponse() interface {
+		AdsReadStateResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteControlRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteControlRequest() interface {
+		AdsWriteControlRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsWriteControlResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsWriteControlResponse() interface {
+		AdsWriteControlResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsAddDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsAddDeviceNotificationRequest() interface {
+		AdsAddDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsAddDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsAddDeviceNotificationResponse() interface {
+		AdsAddDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeleteDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeleteDeviceNotificationRequest() interface {
+		AdsDeleteDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeleteDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeleteDeviceNotificationResponse() interface {
+		AdsDeleteDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeviceNotificationRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeviceNotificationRequest() interface {
+		AdsDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsDeviceNotificationResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsDeviceNotificationResponse() interface {
+		AdsDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadWriteRequest converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadWriteRequest() interface {
+		AdsReadWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsAdsReadWriteResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsAdsReadWriteResponse() interface {
+		AdsReadWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// AsErrorResponse converts this build to a subType of AmsPacket. It is always possible to return to current builder using Done()
+	AsErrorResponse() interface {
+		ErrorResponseBuilder
+		Done() AmsPacketBuilder
+	}
+	// Build builds the AmsPacket or returns an error if something is wrong
+	PartialBuild() (AmsPacketContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() AmsPacketContract
+	// Build builds the AmsPacket or returns an error if something is wrong
+	Build() (AmsPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsPacket
+}
+
+// NewAmsPacketBuilder() creates a AmsPacketBuilder
+func NewAmsPacketBuilder() AmsPacketBuilder {
+	return &_AmsPacketBuilder{_AmsPacket: new(_AmsPacket)}
+}
+
+type _AmsPacketChildBuilder interface {
+	utils.Copyable
+	setParent(AmsPacketContract)
+	buildForAmsPacket() (AmsPacket, error)
+}
+
+type _AmsPacketBuilder struct {
+	*_AmsPacket
+
+	childBuilder _AmsPacketChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AmsPacketBuilder) = (*_AmsPacketBuilder)(nil)
+
+func (b *_AmsPacketBuilder) WithMandatoryFields(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) AmsPacketBuilder {
+	return b.WithTargetAmsNetId(targetAmsNetId).WithTargetAmsPort(targetAmsPort).WithSourceAmsNetId(sourceAmsNetId).WithSourceAmsPort(sourceAmsPort).WithErrorCode(errorCode).WithInvokeId(invokeId)
+}
+
+func (b *_AmsPacketBuilder) WithTargetAmsNetId(targetAmsNetId AmsNetId) AmsPacketBuilder {
+	b.TargetAmsNetId = targetAmsNetId
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithTargetAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
+	builder := builderSupplier(b.TargetAmsNetId.CreateAmsNetIdBuilder())
+	var err error
+	b.TargetAmsNetId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithTargetAmsPort(targetAmsPort uint16) AmsPacketBuilder {
+	b.TargetAmsPort = targetAmsPort
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithSourceAmsNetId(sourceAmsNetId AmsNetId) AmsPacketBuilder {
+	b.SourceAmsNetId = sourceAmsNetId
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithSourceAmsNetIdBuilder(builderSupplier func(AmsNetIdBuilder) AmsNetIdBuilder) AmsPacketBuilder {
+	builder := builderSupplier(b.SourceAmsNetId.CreateAmsNetIdBuilder())
+	var err error
+	b.SourceAmsNetId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AmsNetIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithSourceAmsPort(sourceAmsPort uint16) AmsPacketBuilder {
+	b.SourceAmsPort = sourceAmsPort
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithErrorCode(errorCode uint32) AmsPacketBuilder {
+	b.ErrorCode = errorCode
+	return b
+}
+
+func (b *_AmsPacketBuilder) WithInvokeId(invokeId uint32) AmsPacketBuilder {
+	b.InvokeId = invokeId
+	return b
+}
+
+func (b *_AmsPacketBuilder) PartialBuild() (AmsPacketContract, error) {
+	if b.TargetAmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'targetAmsNetId' not set"))
+	}
+	if b.SourceAmsNetId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sourceAmsNetId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsPacket.deepCopy(), nil
+}
+
+func (b *_AmsPacketBuilder) PartialMustBuild() AmsPacketContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsPacketBuilder) AsAdsInvalidRequest() interface {
+	AdsInvalidRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsInvalidRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsInvalidRequestBuilder().(*_AdsInvalidRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsInvalidResponse() interface {
+	AdsInvalidResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsInvalidResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsInvalidResponseBuilder().(*_AdsInvalidResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoRequest() interface {
+	AdsReadDeviceInfoRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadDeviceInfoRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadDeviceInfoRequestBuilder().(*_AdsReadDeviceInfoRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadDeviceInfoResponse() interface {
+	AdsReadDeviceInfoResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadDeviceInfoResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadDeviceInfoResponseBuilder().(*_AdsReadDeviceInfoResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadRequest() interface {
+	AdsReadRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadRequestBuilder().(*_AdsReadRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadResponse() interface {
+	AdsReadResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadResponseBuilder().(*_AdsReadResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteRequest() interface {
+	AdsWriteRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteRequestBuilder().(*_AdsWriteRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteResponse() interface {
+	AdsWriteResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteResponseBuilder().(*_AdsWriteResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadStateRequest() interface {
+	AdsReadStateRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadStateRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadStateRequestBuilder().(*_AdsReadStateRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadStateResponse() interface {
+	AdsReadStateResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadStateResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadStateResponseBuilder().(*_AdsReadStateResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteControlRequest() interface {
+	AdsWriteControlRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteControlRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteControlRequestBuilder().(*_AdsWriteControlRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsWriteControlResponse() interface {
+	AdsWriteControlResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsWriteControlResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsWriteControlResponseBuilder().(*_AdsWriteControlResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationRequest() interface {
+	AdsAddDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsAddDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsAddDeviceNotificationRequestBuilder().(*_AdsAddDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsAddDeviceNotificationResponse() interface {
+	AdsAddDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsAddDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsAddDeviceNotificationResponseBuilder().(*_AdsAddDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationRequest() interface {
+	AdsDeleteDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeleteDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeleteDeviceNotificationRequestBuilder().(*_AdsDeleteDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeleteDeviceNotificationResponse() interface {
+	AdsDeleteDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeleteDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeleteDeviceNotificationResponseBuilder().(*_AdsDeleteDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationRequest() interface {
+	AdsDeviceNotificationRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeviceNotificationRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeviceNotificationRequestBuilder().(*_AdsDeviceNotificationRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsDeviceNotificationResponse() interface {
+	AdsDeviceNotificationResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsDeviceNotificationResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsDeviceNotificationResponseBuilder().(*_AdsDeviceNotificationResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadWriteRequest() interface {
+	AdsReadWriteRequestBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadWriteRequestBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadWriteRequestBuilder().(*_AdsReadWriteRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsAdsReadWriteResponse() interface {
+	AdsReadWriteResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AdsReadWriteResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAdsReadWriteResponseBuilder().(*_AdsReadWriteResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) AsErrorResponse() interface {
+	ErrorResponseBuilder
+	Done() AmsPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorResponseBuilder
+		Done() AmsPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorResponseBuilder().(*_ErrorResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AmsPacketBuilder) Build() (AmsPacket, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAmsPacket()
+}
+
+func (b *_AmsPacketBuilder) MustBuild() AmsPacket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsPacketBuilder) DeepCopy() any {
+	_copy := b.CreateAmsPacketBuilder().(*_AmsPacketBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AmsPacketChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAmsPacketBuilder creates a AmsPacketBuilder
+func (b *_AmsPacket) CreateAmsPacketBuilder() AmsPacketBuilder {
+	if b == nil {
+		return NewAmsPacketBuilder()
+	}
+	return &_AmsPacketBuilder{_AmsPacket: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -173,17 +817,6 @@ func (m *_AmsPacket) GetBroadcast() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsPacket factory function for _AmsPacket
-func NewAmsPacket(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AmsPacket {
-	if targetAmsNetId == nil {
-		panic("targetAmsNetId of type AmsNetId for AmsPacket must not be nil")
-	}
-	if sourceAmsNetId == nil {
-		panic("sourceAmsNetId of type AmsNetId for AmsPacket must not be nil")
-	}
-	return &_AmsPacket{TargetAmsNetId: targetAmsNetId, TargetAmsPort: targetAmsPort, SourceAmsNetId: sourceAmsNetId, SourceAmsPort: sourceAmsPort, ErrorCode: errorCode, InvokeId: invokeId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsPacket(structType any) AmsPacket {
@@ -273,7 +906,7 @@ func AmsPacketParseWithBufferProducer[T AmsPacket]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -283,7 +916,12 @@ func AmsPacketParseWithBuffer[T AmsPacket](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsPacket AmsPacket, err error) {
@@ -405,87 +1043,87 @@ func (m *_AmsPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child AmsPacket
 	switch {
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(false): // AdsInvalidRequest
-		if _child, err = (&_AdsInvalidRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsInvalidRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_INVALID && response == bool(true): // AdsInvalidResponse
-		if _child, err = (&_AdsInvalidResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsInvalidResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsInvalidResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(false): // AdsReadDeviceInfoRequest
-		if _child, err = (&_AdsReadDeviceInfoRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadDeviceInfoRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_DEVICE_INFO && response == bool(true): // AdsReadDeviceInfoResponse
-		if _child, err = (&_AdsReadDeviceInfoResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadDeviceInfoResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadDeviceInfoResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(false): // AdsReadRequest
-		if _child, err = (&_AdsReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ && response == bool(true): // AdsReadResponse
-		if _child, err = (&_AdsReadResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(false): // AdsWriteRequest
-		if _child, err = (&_AdsWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE && response == bool(true): // AdsWriteResponse
-		if _child, err = (&_AdsWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(false): // AdsReadStateRequest
-		if _child, err = (&_AdsReadStateRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadStateRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_STATE && response == bool(true): // AdsReadStateResponse
-		if _child, err = (&_AdsReadStateResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadStateResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadStateResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(false): // AdsWriteControlRequest
-		if _child, err = (&_AdsWriteControlRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteControlRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_WRITE_CONTROL && response == bool(true): // AdsWriteControlResponse
-		if _child, err = (&_AdsWriteControlResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsWriteControlResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsWriteControlResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(false): // AdsAddDeviceNotificationRequest
-		if _child, err = (&_AdsAddDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsAddDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_ADD_DEVICE_NOTIFICATION && response == bool(true): // AdsAddDeviceNotificationResponse
-		if _child, err = (&_AdsAddDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsAddDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsAddDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(false): // AdsDeleteDeviceNotificationRequest
-		if _child, err = (&_AdsDeleteDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeleteDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DELETE_DEVICE_NOTIFICATION && response == bool(true): // AdsDeleteDeviceNotificationResponse
-		if _child, err = (&_AdsDeleteDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeleteDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeleteDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(false): // AdsDeviceNotificationRequest
-		if _child, err = (&_AdsDeviceNotificationRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeviceNotificationRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_DEVICE_NOTIFICATION && response == bool(true): // AdsDeviceNotificationResponse
-		if _child, err = (&_AdsDeviceNotificationResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsDeviceNotificationResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsDeviceNotificationResponse for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(false): // AdsReadWriteRequest
-		if _child, err = (&_AdsReadWriteRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadWriteRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteRequest for type-switch of AmsPacket")
 		}
 	case errorCode == 0x00000000 && commandId == CommandId_ADS_READ_WRITE && response == bool(true): // AdsReadWriteResponse
-		if _child, err = (&_AdsReadWriteResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AdsReadWriteResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AdsReadWriteResponse for type-switch of AmsPacket")
 		}
 	case true: // ErrorResponse
-		if _child, err = (&_ErrorResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ErrorResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorResponse for type-switch of AmsPacket")
 		}
 	default:
@@ -595,3 +1233,24 @@ func (pm *_AmsPacket) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_AmsPacket) IsAmsPacket() {}
+
+func (m *_AmsPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsPacket) deepCopy() *_AmsPacket {
+	if m == nil {
+		return nil
+	}
+	_AmsPacketCopy := &_AmsPacket{
+		nil, // will be set by child
+		m.TargetAmsNetId.DeepCopy().(AmsNetId),
+		m.TargetAmsPort,
+		m.SourceAmsNetId.DeepCopy().(AmsNetId),
+		m.SourceAmsPort,
+		m.ErrorCode,
+		m.InvokeId,
+		m.reservedField0,
+	}
+	return _AmsPacketCopy
+}

@@ -38,6 +38,7 @@ type BACnetServicesSupportedTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetPayload returns Payload (property field)
@@ -64,6 +65,8 @@ type BACnetServicesSupportedTagged interface {
 	GetGetEventInformation() bool
 	// IsBACnetServicesSupportedTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServicesSupportedTagged()
+	// CreateBuilder creates a BACnetServicesSupportedTaggedBuilder
+	CreateBACnetServicesSupportedTaggedBuilder() BACnetServicesSupportedTaggedBuilder
 }
 
 // _BACnetServicesSupportedTagged is the data-structure of this message
@@ -77,6 +80,142 @@ type _BACnetServicesSupportedTagged struct {
 }
 
 var _ BACnetServicesSupportedTagged = (*_BACnetServicesSupportedTagged)(nil)
+
+// NewBACnetServicesSupportedTagged factory function for _BACnetServicesSupportedTagged
+func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetServicesSupportedTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetServicesSupportedTagged must not be nil")
+	}
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBitString for BACnetServicesSupportedTagged must not be nil")
+	}
+	return &_BACnetServicesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServicesSupportedTaggedBuilder is a builder for BACnetServicesSupportedTagged
+type BACnetServicesSupportedTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetServicesSupportedTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetServicesSupportedTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetServicesSupportedTaggedBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBitString) BACnetServicesSupportedTaggedBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetServicesSupportedTaggedBuilder
+	// Build builds the BACnetServicesSupportedTagged or returns an error if something is wrong
+	Build() (BACnetServicesSupportedTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServicesSupportedTagged
+}
+
+// NewBACnetServicesSupportedTaggedBuilder() creates a BACnetServicesSupportedTaggedBuilder
+func NewBACnetServicesSupportedTaggedBuilder() BACnetServicesSupportedTaggedBuilder {
+	return &_BACnetServicesSupportedTaggedBuilder{_BACnetServicesSupportedTagged: new(_BACnetServicesSupportedTagged)}
+}
+
+type _BACnetServicesSupportedTaggedBuilder struct {
+	*_BACnetServicesSupportedTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServicesSupportedTaggedBuilder) = (*_BACnetServicesSupportedTaggedBuilder)(nil)
+
+func (b *_BACnetServicesSupportedTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, payload BACnetTagPayloadBitString) BACnetServicesSupportedTaggedBuilder {
+	return b.WithHeader(header).WithPayload(payload)
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetServicesSupportedTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetServicesSupportedTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) WithPayload(payload BACnetTagPayloadBitString) BACnetServicesSupportedTaggedBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBitStringBuilder) BACnetTagPayloadBitStringBuilder) BACnetServicesSupportedTaggedBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBitStringBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBitStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) Build() (BACnetServicesSupportedTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetServicesSupportedTagged.deepCopy(), nil
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) MustBuild() BACnetServicesSupportedTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetServicesSupportedTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServicesSupportedTaggedBuilder().(*_BACnetServicesSupportedTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetServicesSupportedTaggedBuilder creates a BACnetServicesSupportedTaggedBuilder
+func (b *_BACnetServicesSupportedTagged) CreateBACnetServicesSupportedTaggedBuilder() BACnetServicesSupportedTaggedBuilder {
+	if b == nil {
+		return NewBACnetServicesSupportedTaggedBuilder()
+	}
+	return &_BACnetServicesSupportedTaggedBuilder{_BACnetServicesSupportedTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -165,17 +304,6 @@ func (m *_BACnetServicesSupportedTagged) GetGetEventInformation() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetServicesSupportedTagged factory function for _BACnetServicesSupportedTagged
-func NewBACnetServicesSupportedTagged(header BACnetTagHeader, payload BACnetTagPayloadBitString, tagNumber uint8, tagClass TagClass) *_BACnetServicesSupportedTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetServicesSupportedTagged must not be nil")
-	}
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBitString for BACnetServicesSupportedTagged must not be nil")
-	}
-	return &_BACnetServicesSupportedTagged{Header: header, Payload: payload, TagNumber: tagNumber, TagClass: tagClass}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetServicesSupportedTagged(structType any) BACnetServicesSupportedTagged {
 	if casted, ok := structType.(BACnetServicesSupportedTagged); ok {
@@ -242,7 +370,7 @@ func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetServicesSupportedTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetServicesSupportedTagged BACnetServicesSupportedTagged, err error) {
@@ -449,13 +577,34 @@ func (m *_BACnetServicesSupportedTagged) GetTagClass() TagClass {
 
 func (m *_BACnetServicesSupportedTagged) IsBACnetServicesSupportedTagged() {}
 
+func (m *_BACnetServicesSupportedTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServicesSupportedTagged) deepCopy() *_BACnetServicesSupportedTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetServicesSupportedTaggedCopy := &_BACnetServicesSupportedTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Payload.DeepCopy().(BACnetTagPayloadBitString),
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetServicesSupportedTaggedCopy
+}
+
 func (m *_BACnetServicesSupportedTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

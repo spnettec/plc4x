@@ -38,11 +38,14 @@ type BACnetConstructedDataAcceptedModes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAcceptedModes returns AcceptedModes (property field)
 	GetAcceptedModes() []BACnetLifeSafetyModeTagged
 	// IsBACnetConstructedDataAcceptedModes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAcceptedModes()
+	// CreateBuilder creates a BACnetConstructedDataAcceptedModesBuilder
+	CreateBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAcceptedModesBuilder
 }
 
 // _BACnetConstructedDataAcceptedModes is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataAcceptedModes struct {
 
 var _ BACnetConstructedDataAcceptedModes = (*_BACnetConstructedDataAcceptedModes)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAcceptedModes)(nil)
+
+// NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
+func NewBACnetConstructedDataAcceptedModes(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, acceptedModes []BACnetLifeSafetyModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
+	_result := &_BACnetConstructedDataAcceptedModes{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AcceptedModes:                 acceptedModes,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAcceptedModesBuilder is a builder for BACnetConstructedDataAcceptedModes
+type BACnetConstructedDataAcceptedModesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder
+	// WithAcceptedModes adds AcceptedModes (property field)
+	WithAcceptedModes(...BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder
+	// Build builds the BACnetConstructedDataAcceptedModes or returns an error if something is wrong
+	Build() (BACnetConstructedDataAcceptedModes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAcceptedModes
+}
+
+// NewBACnetConstructedDataAcceptedModesBuilder() creates a BACnetConstructedDataAcceptedModesBuilder
+func NewBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAcceptedModesBuilder {
+	return &_BACnetConstructedDataAcceptedModesBuilder{_BACnetConstructedDataAcceptedModes: new(_BACnetConstructedDataAcceptedModes)}
+}
+
+type _BACnetConstructedDataAcceptedModesBuilder struct {
+	*_BACnetConstructedDataAcceptedModes
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAcceptedModesBuilder) = (*_BACnetConstructedDataAcceptedModesBuilder)(nil)
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) WithMandatoryFields(acceptedModes []BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
+	return b.WithAcceptedModes(acceptedModes...)
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) WithAcceptedModes(acceptedModes ...BACnetLifeSafetyModeTagged) BACnetConstructedDataAcceptedModesBuilder {
+	b.AcceptedModes = acceptedModes
+	return b
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) Build() (BACnetConstructedDataAcceptedModes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAcceptedModes.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) MustBuild() BACnetConstructedDataAcceptedModes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAcceptedModesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAcceptedModesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAcceptedModesBuilder().(*_BACnetConstructedDataAcceptedModesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAcceptedModesBuilder creates a BACnetConstructedDataAcceptedModesBuilder
+func (b *_BACnetConstructedDataAcceptedModes) CreateBACnetConstructedDataAcceptedModesBuilder() BACnetConstructedDataAcceptedModesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAcceptedModesBuilder()
+	}
+	return &_BACnetConstructedDataAcceptedModesBuilder{_BACnetConstructedDataAcceptedModes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataAcceptedModes) GetAcceptedModes() []BACnetLifeSaf
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAcceptedModes factory function for _BACnetConstructedDataAcceptedModes
-func NewBACnetConstructedDataAcceptedModes(acceptedModes []BACnetLifeSafetyModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAcceptedModes {
-	_result := &_BACnetConstructedDataAcceptedModes{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AcceptedModes:                 acceptedModes,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAcceptedModes(structType any) BACnetConstructedDataAcceptedModes {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataAcceptedModes) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataAcceptedModes) IsBACnetConstructedDataAcceptedModes() {}
 
+func (m *_BACnetConstructedDataAcceptedModes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAcceptedModes) deepCopy() *_BACnetConstructedDataAcceptedModes {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAcceptedModesCopy := &_BACnetConstructedDataAcceptedModes{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetLifeSafetyModeTagged, BACnetLifeSafetyModeTagged](m.AcceptedModes),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAcceptedModesCopy
+}
+
 func (m *_BACnetConstructedDataAcceptedModes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

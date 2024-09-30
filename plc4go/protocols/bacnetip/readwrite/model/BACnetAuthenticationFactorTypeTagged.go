@@ -38,12 +38,15 @@ type BACnetAuthenticationFactorTypeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAuthenticationFactorType
 	// IsBACnetAuthenticationFactorTypeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthenticationFactorTypeTagged()
+	// CreateBuilder creates a BACnetAuthenticationFactorTypeTaggedBuilder
+	CreateBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder
 }
 
 // _BACnetAuthenticationFactorTypeTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetAuthenticationFactorTypeTagged struct {
 }
 
 var _ BACnetAuthenticationFactorTypeTagged = (*_BACnetAuthenticationFactorTypeTagged)(nil)
+
+// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
+func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
+	}
+	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthenticationFactorTypeTaggedBuilder is a builder for BACnetAuthenticationFactorTypeTagged
+type BACnetAuthenticationFactorTypeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder
+	// Build builds the BACnetAuthenticationFactorTypeTagged or returns an error if something is wrong
+	Build() (BACnetAuthenticationFactorTypeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthenticationFactorTypeTagged
+}
+
+// NewBACnetAuthenticationFactorTypeTaggedBuilder() creates a BACnetAuthenticationFactorTypeTaggedBuilder
+func NewBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder {
+	return &_BACnetAuthenticationFactorTypeTaggedBuilder{_BACnetAuthenticationFactorTypeTagged: new(_BACnetAuthenticationFactorTypeTagged)}
+}
+
+type _BACnetAuthenticationFactorTypeTaggedBuilder struct {
+	*_BACnetAuthenticationFactorTypeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthenticationFactorTypeTaggedBuilder) = (*_BACnetAuthenticationFactorTypeTaggedBuilder)(nil)
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthenticationFactorTypeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthenticationFactorTypeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) WithValue(value BACnetAuthenticationFactorType) BACnetAuthenticationFactorTypeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) Build() (BACnetAuthenticationFactorTypeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAuthenticationFactorTypeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) MustBuild() BACnetAuthenticationFactorTypeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAuthenticationFactorTypeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationFactorTypeTaggedBuilder().(*_BACnetAuthenticationFactorTypeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAuthenticationFactorTypeTaggedBuilder creates a BACnetAuthenticationFactorTypeTaggedBuilder
+func (b *_BACnetAuthenticationFactorTypeTagged) CreateBACnetAuthenticationFactorTypeTaggedBuilder() BACnetAuthenticationFactorTypeTaggedBuilder {
+	if b == nil {
+		return NewBACnetAuthenticationFactorTypeTaggedBuilder()
+	}
+	return &_BACnetAuthenticationFactorTypeTaggedBuilder{_BACnetAuthenticationFactorTypeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetValue() BACnetAuthenticationF
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorTypeTagged factory function for _BACnetAuthenticationFactorTypeTagged
-func NewBACnetAuthenticationFactorTypeTagged(header BACnetTagHeader, value BACnetAuthenticationFactorType, tagNumber uint8, tagClass TagClass) *_BACnetAuthenticationFactorTypeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthenticationFactorTypeTagged must not be nil")
-	}
-	return &_BACnetAuthenticationFactorTypeTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorTypeTagged(structType any) BACnetAuthenticationFactorTypeTagged {
@@ -130,7 +237,7 @@ func BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthenticationFactorTypeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAuthenticationFactorTypeTagged BACnetAuthenticationFactorTypeTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetAuthenticationFactorTypeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAuthenticationFactorTypeTagged) IsBACnetAuthenticationFactorTypeTagged() {}
 
+func (m *_BACnetAuthenticationFactorTypeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactorTypeTagged) deepCopy() *_BACnetAuthenticationFactorTypeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorTypeTaggedCopy := &_BACnetAuthenticationFactorTypeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthenticationFactorTypeTaggedCopy
+}
+
 func (m *_BACnetAuthenticationFactorTypeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

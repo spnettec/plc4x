@@ -40,8 +40,11 @@ type BACnetUnconfirmedServiceRequestWhoHasObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObject()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetUnconfirmedServiceRequestWhoHasObjectContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetUnconfirmedServiceRequestWhoHasObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetUnconfirmedServiceRequestWhoHasObject()
+	// CreateBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
 }
 
 // BACnetUnconfirmedServiceRequestWhoHasObjectRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,187 @@ type _BACnetUnconfirmedServiceRequestWhoHasObject struct {
 }
 
 var _ BACnetUnconfirmedServiceRequestWhoHasObjectContract = (*_BACnetUnconfirmedServiceRequestWhoHasObject)(nil)
+
+// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
+func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetUnconfirmedServiceRequestWhoHasObjectBuilder is a builder for BACnetUnconfirmedServiceRequestWhoHasObject
+type BACnetUnconfirmedServiceRequestWhoHasObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	// AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier converts this build to a subType of BACnetUnconfirmedServiceRequestWhoHasObject. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() interface {
+		BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	}
+	// AsBACnetUnconfirmedServiceRequestWhoHasObjectName converts this build to a subType of BACnetUnconfirmedServiceRequestWhoHasObject. It is always possible to return to current builder using Done()
+	AsBACnetUnconfirmedServiceRequestWhoHasObjectName() interface {
+		BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	}
+	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObject or returns an error if something is wrong
+	PartialBuild() (BACnetUnconfirmedServiceRequestWhoHasObjectContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectContract
+	// Build builds the BACnetUnconfirmedServiceRequestWhoHasObject or returns an error if something is wrong
+	Build() (BACnetUnconfirmedServiceRequestWhoHasObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetUnconfirmedServiceRequestWhoHasObject
+}
+
+// NewBACnetUnconfirmedServiceRequestWhoHasObjectBuilder() creates a BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+func NewBACnetUnconfirmedServiceRequestWhoHasObjectBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	return &_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder{_BACnetUnconfirmedServiceRequestWhoHasObject: new(_BACnetUnconfirmedServiceRequestWhoHasObject)}
+}
+
+type _BACnetUnconfirmedServiceRequestWhoHasObjectChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetUnconfirmedServiceRequestWhoHasObjectContract)
+	buildForBACnetUnconfirmedServiceRequestWhoHasObject() (BACnetUnconfirmedServiceRequestWhoHasObject, error)
+}
+
+type _BACnetUnconfirmedServiceRequestWhoHasObjectBuilder struct {
+	*_BACnetUnconfirmedServiceRequestWhoHasObject
+
+	childBuilder _BACnetUnconfirmedServiceRequestWhoHasObjectChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) = (*_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder)(nil)
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) PartialBuild() (BACnetUnconfirmedServiceRequestWhoHasObjectContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetUnconfirmedServiceRequestWhoHasObject.deepCopy(), nil
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) PartialMustBuild() BACnetUnconfirmedServiceRequestWhoHasObjectContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectIdentifier() interface {
+	BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder
+		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) AsBACnetUnconfirmedServiceRequestWhoHasObjectName() interface {
+	BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+	Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder
+		Done() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectNameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) Build() (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetUnconfirmedServiceRequestWhoHasObject()
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) MustBuild() BACnetUnconfirmedServiceRequestWhoHasObject {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder().(*_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetUnconfirmedServiceRequestWhoHasObjectChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder creates a BACnetUnconfirmedServiceRequestWhoHasObjectBuilder
+func (b *_BACnetUnconfirmedServiceRequestWhoHasObject) CreateBACnetUnconfirmedServiceRequestWhoHasObjectBuilder() BACnetUnconfirmedServiceRequestWhoHasObjectBuilder {
+	if b == nil {
+		return NewBACnetUnconfirmedServiceRequestWhoHasObjectBuilder()
+	}
+	return &_BACnetUnconfirmedServiceRequestWhoHasObjectBuilder{_BACnetUnconfirmedServiceRequestWhoHasObject: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +285,6 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) GetPeekedTagNumber() uin
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetUnconfirmedServiceRequestWhoHasObject factory function for _BACnetUnconfirmedServiceRequestWhoHasObject
-func NewBACnetUnconfirmedServiceRequestWhoHasObject(peekedTagHeader BACnetTagHeader) *_BACnetUnconfirmedServiceRequestWhoHasObject {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetUnconfirmedServiceRequestWhoHasObject must not be nil")
-	}
-	return &_BACnetUnconfirmedServiceRequestWhoHasObject{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetUnconfirmedServiceRequestWhoHasObject(structType any) BACnetUnconfirmedServiceRequestWhoHasObject {
@@ -146,7 +324,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBufferProducer[T BACnet
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +334,12 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer[T BACnetUnconfir
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetUnconfirmedServiceRequestWhoHasObject BACnetUnconfirmedServiceRequestWhoHasObject, err error) {
@@ -184,11 +367,11 @@ func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) parse(ctx context.Context
 	var _child BACnetUnconfirmedServiceRequestWhoHasObject
 	switch {
 	case peekedTagNumber == uint8(2): // BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectIdentifier for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	case peekedTagNumber == uint8(3): // BACnetUnconfirmedServiceRequestWhoHasObjectName
-		if _child, err = (&_BACnetUnconfirmedServiceRequestWhoHasObjectName{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetUnconfirmedServiceRequestWhoHasObjectName).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetUnconfirmedServiceRequestWhoHasObjectName for type-switch of BACnetUnconfirmedServiceRequestWhoHasObject")
 		}
 	default:
@@ -232,4 +415,19 @@ func (pm *_BACnetUnconfirmedServiceRequestWhoHasObject) serializeParent(ctx cont
 }
 
 func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) IsBACnetUnconfirmedServiceRequestWhoHasObject() {
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetUnconfirmedServiceRequestWhoHasObject) deepCopy() *_BACnetUnconfirmedServiceRequestWhoHasObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetUnconfirmedServiceRequestWhoHasObjectCopy := &_BACnetUnconfirmedServiceRequestWhoHasObject{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetUnconfirmedServiceRequestWhoHasObjectCopy
 }

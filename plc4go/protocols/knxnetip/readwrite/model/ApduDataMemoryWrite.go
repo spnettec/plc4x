@@ -36,9 +36,12 @@ type ApduDataMemoryWrite interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduData
 	// IsApduDataMemoryWrite is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataMemoryWrite()
+	// CreateBuilder creates a ApduDataMemoryWriteBuilder
+	CreateApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder
 }
 
 // _ApduDataMemoryWrite is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataMemoryWrite struct {
 
 var _ ApduDataMemoryWrite = (*_ApduDataMemoryWrite)(nil)
 var _ ApduDataRequirements = (*_ApduDataMemoryWrite)(nil)
+
+// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
+func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
+	_result := &_ApduDataMemoryWrite{
+		ApduDataContract: NewApduData(dataLength),
+	}
+	_result.ApduDataContract.(*_ApduData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataMemoryWriteBuilder is a builder for ApduDataMemoryWrite
+type ApduDataMemoryWriteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataMemoryWriteBuilder
+	// Build builds the ApduDataMemoryWrite or returns an error if something is wrong
+	Build() (ApduDataMemoryWrite, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataMemoryWrite
+}
+
+// NewApduDataMemoryWriteBuilder() creates a ApduDataMemoryWriteBuilder
+func NewApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder {
+	return &_ApduDataMemoryWriteBuilder{_ApduDataMemoryWrite: new(_ApduDataMemoryWrite)}
+}
+
+type _ApduDataMemoryWriteBuilder struct {
+	*_ApduDataMemoryWrite
+
+	parentBuilder *_ApduDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataMemoryWriteBuilder) = (*_ApduDataMemoryWriteBuilder)(nil)
+
+func (b *_ApduDataMemoryWriteBuilder) setParent(contract ApduDataContract) {
+	b.ApduDataContract = contract
+}
+
+func (b *_ApduDataMemoryWriteBuilder) WithMandatoryFields() ApduDataMemoryWriteBuilder {
+	return b
+}
+
+func (b *_ApduDataMemoryWriteBuilder) Build() (ApduDataMemoryWrite, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataMemoryWrite.deepCopy(), nil
+}
+
+func (b *_ApduDataMemoryWriteBuilder) MustBuild() ApduDataMemoryWrite {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataMemoryWriteBuilder) Done() ApduDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataMemoryWriteBuilder) buildForApduData() (ApduData, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataMemoryWriteBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataMemoryWriteBuilder().(*_ApduDataMemoryWriteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataMemoryWriteBuilder creates a ApduDataMemoryWriteBuilder
+func (b *_ApduDataMemoryWrite) CreateApduDataMemoryWriteBuilder() ApduDataMemoryWriteBuilder {
+	if b == nil {
+		return NewApduDataMemoryWriteBuilder()
+	}
+	return &_ApduDataMemoryWriteBuilder{_ApduDataMemoryWrite: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataMemoryWrite) GetApciType() uint8 {
 
 func (m *_ApduDataMemoryWrite) GetParent() ApduDataContract {
 	return m.ApduDataContract
-}
-
-// NewApduDataMemoryWrite factory function for _ApduDataMemoryWrite
-func NewApduDataMemoryWrite(dataLength uint8) *_ApduDataMemoryWrite {
-	_result := &_ApduDataMemoryWrite{
-		ApduDataContract: NewApduData(dataLength),
-	}
-	_result.ApduDataContract.(*_ApduData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataMemoryWrite) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_ApduDataMemoryWrite) IsApduDataMemoryWrite() {}
 
+func (m *_ApduDataMemoryWrite) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataMemoryWrite) deepCopy() *_ApduDataMemoryWrite {
+	if m == nil {
+		return nil
+	}
+	_ApduDataMemoryWriteCopy := &_ApduDataMemoryWrite{
+		m.ApduDataContract.(*_ApduData).deepCopy(),
+	}
+	m.ApduDataContract.(*_ApduData)._SubType = m
+	return _ApduDataMemoryWriteCopy
+}
+
 func (m *_ApduDataMemoryWrite) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

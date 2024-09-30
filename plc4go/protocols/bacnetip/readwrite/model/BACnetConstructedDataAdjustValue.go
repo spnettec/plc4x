@@ -38,6 +38,7 @@ type BACnetConstructedDataAdjustValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetAdjustValue returns AdjustValue (property field)
 	GetAdjustValue() BACnetApplicationTagSignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataAdjustValue interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataAdjustValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAdjustValue()
+	// CreateBuilder creates a BACnetConstructedDataAdjustValueBuilder
+	CreateBACnetConstructedDataAdjustValueBuilder() BACnetConstructedDataAdjustValueBuilder
 }
 
 // _BACnetConstructedDataAdjustValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataAdjustValue struct {
 
 var _ BACnetConstructedDataAdjustValue = (*_BACnetConstructedDataAdjustValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAdjustValue)(nil)
+
+// NewBACnetConstructedDataAdjustValue factory function for _BACnetConstructedDataAdjustValue
+func NewBACnetConstructedDataAdjustValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, adjustValue BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAdjustValue {
+	if adjustValue == nil {
+		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAdjustValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataAdjustValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		AdjustValue:                   adjustValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAdjustValueBuilder is a builder for BACnetConstructedDataAdjustValue
+type BACnetConstructedDataAdjustValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder
+	// WithAdjustValue adds AdjustValue (property field)
+	WithAdjustValue(BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder
+	// WithAdjustValueBuilder adds AdjustValue (property field) which is build by the builder
+	WithAdjustValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAdjustValueBuilder
+	// Build builds the BACnetConstructedDataAdjustValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataAdjustValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAdjustValue
+}
+
+// NewBACnetConstructedDataAdjustValueBuilder() creates a BACnetConstructedDataAdjustValueBuilder
+func NewBACnetConstructedDataAdjustValueBuilder() BACnetConstructedDataAdjustValueBuilder {
+	return &_BACnetConstructedDataAdjustValueBuilder{_BACnetConstructedDataAdjustValue: new(_BACnetConstructedDataAdjustValue)}
+}
+
+type _BACnetConstructedDataAdjustValueBuilder struct {
+	*_BACnetConstructedDataAdjustValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAdjustValueBuilder) = (*_BACnetConstructedDataAdjustValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) WithMandatoryFields(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder {
+	return b.WithAdjustValue(adjustValue)
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) WithAdjustValue(adjustValue BACnetApplicationTagSignedInteger) BACnetConstructedDataAdjustValueBuilder {
+	b.AdjustValue = adjustValue
+	return b
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) WithAdjustValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataAdjustValueBuilder {
+	builder := builderSupplier(b.AdjustValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.AdjustValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) Build() (BACnetConstructedDataAdjustValue, error) {
+	if b.AdjustValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'adjustValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAdjustValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) MustBuild() BACnetConstructedDataAdjustValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAdjustValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAdjustValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAdjustValueBuilder().(*_BACnetConstructedDataAdjustValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAdjustValueBuilder creates a BACnetConstructedDataAdjustValueBuilder
+func (b *_BACnetConstructedDataAdjustValue) CreateBACnetConstructedDataAdjustValueBuilder() BACnetConstructedDataAdjustValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAdjustValueBuilder()
+	}
+	return &_BACnetConstructedDataAdjustValueBuilder{_BACnetConstructedDataAdjustValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataAdjustValue) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAdjustValue factory function for _BACnetConstructedDataAdjustValue
-func NewBACnetConstructedDataAdjustValue(adjustValue BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAdjustValue {
-	if adjustValue == nil {
-		panic("adjustValue of type BACnetApplicationTagSignedInteger for BACnetConstructedDataAdjustValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataAdjustValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		AdjustValue:                   adjustValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAdjustValue(structType any) BACnetConstructedDataAdjustValue {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataAdjustValue) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataAdjustValue) IsBACnetConstructedDataAdjustValue() {}
 
+func (m *_BACnetConstructedDataAdjustValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAdjustValue) deepCopy() *_BACnetConstructedDataAdjustValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAdjustValueCopy := &_BACnetConstructedDataAdjustValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.AdjustValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAdjustValueCopy
+}
+
 func (m *_BACnetConstructedDataAdjustValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

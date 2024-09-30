@@ -36,9 +36,12 @@ type SysexCommandAnalogMappingResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SysexCommand
 	// IsSysexCommandAnalogMappingResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSysexCommandAnalogMappingResponse()
+	// CreateBuilder creates a SysexCommandAnalogMappingResponseBuilder
+	CreateSysexCommandAnalogMappingResponseBuilder() SysexCommandAnalogMappingResponseBuilder
 }
 
 // _SysexCommandAnalogMappingResponse is the data-structure of this message
@@ -48,6 +51,99 @@ type _SysexCommandAnalogMappingResponse struct {
 
 var _ SysexCommandAnalogMappingResponse = (*_SysexCommandAnalogMappingResponse)(nil)
 var _ SysexCommandRequirements = (*_SysexCommandAnalogMappingResponse)(nil)
+
+// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
+func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
+	_result := &_SysexCommandAnalogMappingResponse{
+		SysexCommandContract: NewSysexCommand(),
+	}
+	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SysexCommandAnalogMappingResponseBuilder is a builder for SysexCommandAnalogMappingResponse
+type SysexCommandAnalogMappingResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SysexCommandAnalogMappingResponseBuilder
+	// Build builds the SysexCommandAnalogMappingResponse or returns an error if something is wrong
+	Build() (SysexCommandAnalogMappingResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SysexCommandAnalogMappingResponse
+}
+
+// NewSysexCommandAnalogMappingResponseBuilder() creates a SysexCommandAnalogMappingResponseBuilder
+func NewSysexCommandAnalogMappingResponseBuilder() SysexCommandAnalogMappingResponseBuilder {
+	return &_SysexCommandAnalogMappingResponseBuilder{_SysexCommandAnalogMappingResponse: new(_SysexCommandAnalogMappingResponse)}
+}
+
+type _SysexCommandAnalogMappingResponseBuilder struct {
+	*_SysexCommandAnalogMappingResponse
+
+	parentBuilder *_SysexCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SysexCommandAnalogMappingResponseBuilder) = (*_SysexCommandAnalogMappingResponseBuilder)(nil)
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) setParent(contract SysexCommandContract) {
+	b.SysexCommandContract = contract
+}
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) WithMandatoryFields() SysexCommandAnalogMappingResponseBuilder {
+	return b
+}
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) Build() (SysexCommandAnalogMappingResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SysexCommandAnalogMappingResponse.deepCopy(), nil
+}
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) MustBuild() SysexCommandAnalogMappingResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SysexCommandAnalogMappingResponseBuilder) Done() SysexCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) buildForSysexCommand() (SysexCommand, error) {
+	return b.Build()
+}
+
+func (b *_SysexCommandAnalogMappingResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSysexCommandAnalogMappingResponseBuilder().(*_SysexCommandAnalogMappingResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSysexCommandAnalogMappingResponseBuilder creates a SysexCommandAnalogMappingResponseBuilder
+func (b *_SysexCommandAnalogMappingResponse) CreateSysexCommandAnalogMappingResponseBuilder() SysexCommandAnalogMappingResponseBuilder {
+	if b == nil {
+		return NewSysexCommandAnalogMappingResponseBuilder()
+	}
+	return &_SysexCommandAnalogMappingResponseBuilder{_SysexCommandAnalogMappingResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_SysexCommandAnalogMappingResponse) GetResponse() bool {
 
 func (m *_SysexCommandAnalogMappingResponse) GetParent() SysexCommandContract {
 	return m.SysexCommandContract
-}
-
-// NewSysexCommandAnalogMappingResponse factory function for _SysexCommandAnalogMappingResponse
-func NewSysexCommandAnalogMappingResponse() *_SysexCommandAnalogMappingResponse {
-	_result := &_SysexCommandAnalogMappingResponse{
-		SysexCommandContract: NewSysexCommand(),
-	}
-	_result.SysexCommandContract.(*_SysexCommand)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -151,13 +238,32 @@ func (m *_SysexCommandAnalogMappingResponse) SerializeWithWriteBuffer(ctx contex
 
 func (m *_SysexCommandAnalogMappingResponse) IsSysexCommandAnalogMappingResponse() {}
 
+func (m *_SysexCommandAnalogMappingResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SysexCommandAnalogMappingResponse) deepCopy() *_SysexCommandAnalogMappingResponse {
+	if m == nil {
+		return nil
+	}
+	_SysexCommandAnalogMappingResponseCopy := &_SysexCommandAnalogMappingResponse{
+		m.SysexCommandContract.(*_SysexCommand).deepCopy(),
+	}
+	m.SysexCommandContract.(*_SysexCommand)._SubType = m
+	return _SysexCommandAnalogMappingResponseCopy
+}
+
 func (m *_SysexCommandAnalogMappingResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

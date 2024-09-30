@@ -38,6 +38,7 @@ type MediaTransportControlDataSourcePowerControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetState returns State (property field)
 	GetState() byte
@@ -47,6 +48,8 @@ type MediaTransportControlDataSourcePowerControl interface {
 	GetIsShouldPowerOff() bool
 	// IsMediaTransportControlDataSourcePowerControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataSourcePowerControl()
+	// CreateBuilder creates a MediaTransportControlDataSourcePowerControlBuilder
+	CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder
 }
 
 // _MediaTransportControlDataSourcePowerControl is the data-structure of this message
@@ -57,6 +60,107 @@ type _MediaTransportControlDataSourcePowerControl struct {
 
 var _ MediaTransportControlDataSourcePowerControl = (*_MediaTransportControlDataSourcePowerControl)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSourcePowerControl)(nil)
+
+// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
+func NewMediaTransportControlDataSourcePowerControl(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, state byte) *_MediaTransportControlDataSourcePowerControl {
+	_result := &_MediaTransportControlDataSourcePowerControl{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		State:                             state,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataSourcePowerControlBuilder is a builder for MediaTransportControlDataSourcePowerControl
+type MediaTransportControlDataSourcePowerControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder
+	// WithState adds State (property field)
+	WithState(byte) MediaTransportControlDataSourcePowerControlBuilder
+	// Build builds the MediaTransportControlDataSourcePowerControl or returns an error if something is wrong
+	Build() (MediaTransportControlDataSourcePowerControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataSourcePowerControl
+}
+
+// NewMediaTransportControlDataSourcePowerControlBuilder() creates a MediaTransportControlDataSourcePowerControlBuilder
+func NewMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
+	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: new(_MediaTransportControlDataSourcePowerControl)}
+}
+
+type _MediaTransportControlDataSourcePowerControlBuilder struct {
+	*_MediaTransportControlDataSourcePowerControl
+
+	parentBuilder *_MediaTransportControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataSourcePowerControlBuilder) = (*_MediaTransportControlDataSourcePowerControlBuilder)(nil)
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithMandatoryFields(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	return b.WithState(state)
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) WithState(state byte) MediaTransportControlDataSourcePowerControlBuilder {
+	b.State = state
+	return b
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) Build() (MediaTransportControlDataSourcePowerControl, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MediaTransportControlDataSourcePowerControl.deepCopy(), nil
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) MustBuild() MediaTransportControlDataSourcePowerControl {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSourcePowerControlBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSourcePowerControlBuilder().(*_MediaTransportControlDataSourcePowerControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMediaTransportControlDataSourcePowerControlBuilder creates a MediaTransportControlDataSourcePowerControlBuilder
+func (b *_MediaTransportControlDataSourcePowerControl) CreateMediaTransportControlDataSourcePowerControlBuilder() MediaTransportControlDataSourcePowerControlBuilder {
+	if b == nil {
+		return NewMediaTransportControlDataSourcePowerControlBuilder()
+	}
+	return &_MediaTransportControlDataSourcePowerControlBuilder{_MediaTransportControlDataSourcePowerControl: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +210,6 @@ func (m *_MediaTransportControlDataSourcePowerControl) GetIsShouldPowerOff() boo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSourcePowerControl factory function for _MediaTransportControlDataSourcePowerControl
-func NewMediaTransportControlDataSourcePowerControl(state byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSourcePowerControl {
-	_result := &_MediaTransportControlDataSourcePowerControl{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		State:                             state,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSourcePowerControl(structType any) MediaTransportControlDataSourcePowerControl {
@@ -230,13 +324,33 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 func (m *_MediaTransportControlDataSourcePowerControl) IsMediaTransportControlDataSourcePowerControl() {
 }
 
+func (m *_MediaTransportControlDataSourcePowerControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSourcePowerControl) deepCopy() *_MediaTransportControlDataSourcePowerControl {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSourcePowerControlCopy := &_MediaTransportControlDataSourcePowerControl{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.State,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSourcePowerControlCopy
+}
+
 func (m *_MediaTransportControlDataSourcePowerControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

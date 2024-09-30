@@ -36,9 +36,12 @@ type NLMWhatIsNetworkNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// IsNLMWhatIsNetworkNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMWhatIsNetworkNumber()
+	// CreateBuilder creates a NLMWhatIsNetworkNumberBuilder
+	CreateNLMWhatIsNetworkNumberBuilder() NLMWhatIsNetworkNumberBuilder
 }
 
 // _NLMWhatIsNetworkNumber is the data-structure of this message
@@ -48,6 +51,99 @@ type _NLMWhatIsNetworkNumber struct {
 
 var _ NLMWhatIsNetworkNumber = (*_NLMWhatIsNetworkNumber)(nil)
 var _ NLMRequirements = (*_NLMWhatIsNetworkNumber)(nil)
+
+// NewNLMWhatIsNetworkNumber factory function for _NLMWhatIsNetworkNumber
+func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
+	_result := &_NLMWhatIsNetworkNumber{
+		NLMContract: NewNLM(apduLength),
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMWhatIsNetworkNumberBuilder is a builder for NLMWhatIsNetworkNumber
+type NLMWhatIsNetworkNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NLMWhatIsNetworkNumberBuilder
+	// Build builds the NLMWhatIsNetworkNumber or returns an error if something is wrong
+	Build() (NLMWhatIsNetworkNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMWhatIsNetworkNumber
+}
+
+// NewNLMWhatIsNetworkNumberBuilder() creates a NLMWhatIsNetworkNumberBuilder
+func NewNLMWhatIsNetworkNumberBuilder() NLMWhatIsNetworkNumberBuilder {
+	return &_NLMWhatIsNetworkNumberBuilder{_NLMWhatIsNetworkNumber: new(_NLMWhatIsNetworkNumber)}
+}
+
+type _NLMWhatIsNetworkNumberBuilder struct {
+	*_NLMWhatIsNetworkNumber
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMWhatIsNetworkNumberBuilder) = (*_NLMWhatIsNetworkNumberBuilder)(nil)
+
+func (b *_NLMWhatIsNetworkNumberBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMWhatIsNetworkNumberBuilder) WithMandatoryFields() NLMWhatIsNetworkNumberBuilder {
+	return b
+}
+
+func (b *_NLMWhatIsNetworkNumberBuilder) Build() (NLMWhatIsNetworkNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMWhatIsNetworkNumber.deepCopy(), nil
+}
+
+func (b *_NLMWhatIsNetworkNumberBuilder) MustBuild() NLMWhatIsNetworkNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMWhatIsNetworkNumberBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMWhatIsNetworkNumberBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMWhatIsNetworkNumberBuilder) DeepCopy() any {
+	_copy := b.CreateNLMWhatIsNetworkNumberBuilder().(*_NLMWhatIsNetworkNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMWhatIsNetworkNumberBuilder creates a NLMWhatIsNetworkNumberBuilder
+func (b *_NLMWhatIsNetworkNumber) CreateNLMWhatIsNetworkNumberBuilder() NLMWhatIsNetworkNumberBuilder {
+	if b == nil {
+		return NewNLMWhatIsNetworkNumberBuilder()
+	}
+	return &_NLMWhatIsNetworkNumberBuilder{_NLMWhatIsNetworkNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_NLMWhatIsNetworkNumber) GetMessageType() uint8 {
 
 func (m *_NLMWhatIsNetworkNumber) GetParent() NLMContract {
 	return m.NLMContract
-}
-
-// NewNLMWhatIsNetworkNumber factory function for _NLMWhatIsNetworkNumber
-func NewNLMWhatIsNetworkNumber(apduLength uint16) *_NLMWhatIsNetworkNumber {
-	_result := &_NLMWhatIsNetworkNumber{
-		NLMContract: NewNLM(apduLength),
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_NLMWhatIsNetworkNumber) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_NLMWhatIsNetworkNumber) IsNLMWhatIsNetworkNumber() {}
 
+func (m *_NLMWhatIsNetworkNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMWhatIsNetworkNumber) deepCopy() *_NLMWhatIsNetworkNumber {
+	if m == nil {
+		return nil
+	}
+	_NLMWhatIsNetworkNumberCopy := &_NLMWhatIsNetworkNumber{
+		m.NLMContract.(*_NLM).deepCopy(),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMWhatIsNetworkNumberCopy
+}
+
 func (m *_NLMWhatIsNetworkNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

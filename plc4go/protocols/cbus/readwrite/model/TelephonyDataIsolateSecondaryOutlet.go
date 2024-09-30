@@ -38,6 +38,7 @@ type TelephonyDataIsolateSecondaryOutlet interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TelephonyData
 	// GetIsolateStatus returns IsolateStatus (property field)
 	GetIsolateStatus() byte
@@ -47,6 +48,8 @@ type TelephonyDataIsolateSecondaryOutlet interface {
 	GetIsToBeIsolated() bool
 	// IsTelephonyDataIsolateSecondaryOutlet is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTelephonyDataIsolateSecondaryOutlet()
+	// CreateBuilder creates a TelephonyDataIsolateSecondaryOutletBuilder
+	CreateTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSecondaryOutletBuilder
 }
 
 // _TelephonyDataIsolateSecondaryOutlet is the data-structure of this message
@@ -57,6 +60,107 @@ type _TelephonyDataIsolateSecondaryOutlet struct {
 
 var _ TelephonyDataIsolateSecondaryOutlet = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
 var _ TelephonyDataRequirements = (*_TelephonyDataIsolateSecondaryOutlet)(nil)
+
+// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
+func NewTelephonyDataIsolateSecondaryOutlet(commandTypeContainer TelephonyCommandTypeContainer, argument byte, isolateStatus byte) *_TelephonyDataIsolateSecondaryOutlet {
+	_result := &_TelephonyDataIsolateSecondaryOutlet{
+		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
+		IsolateStatus:         isolateStatus,
+	}
+	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TelephonyDataIsolateSecondaryOutletBuilder is a builder for TelephonyDataIsolateSecondaryOutlet
+type TelephonyDataIsolateSecondaryOutletBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder
+	// WithIsolateStatus adds IsolateStatus (property field)
+	WithIsolateStatus(byte) TelephonyDataIsolateSecondaryOutletBuilder
+	// Build builds the TelephonyDataIsolateSecondaryOutlet or returns an error if something is wrong
+	Build() (TelephonyDataIsolateSecondaryOutlet, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TelephonyDataIsolateSecondaryOutlet
+}
+
+// NewTelephonyDataIsolateSecondaryOutletBuilder() creates a TelephonyDataIsolateSecondaryOutletBuilder
+func NewTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSecondaryOutletBuilder {
+	return &_TelephonyDataIsolateSecondaryOutletBuilder{_TelephonyDataIsolateSecondaryOutlet: new(_TelephonyDataIsolateSecondaryOutlet)}
+}
+
+type _TelephonyDataIsolateSecondaryOutletBuilder struct {
+	*_TelephonyDataIsolateSecondaryOutlet
+
+	parentBuilder *_TelephonyDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TelephonyDataIsolateSecondaryOutletBuilder) = (*_TelephonyDataIsolateSecondaryOutletBuilder)(nil)
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) setParent(contract TelephonyDataContract) {
+	b.TelephonyDataContract = contract
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) WithMandatoryFields(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
+	return b.WithIsolateStatus(isolateStatus)
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) WithIsolateStatus(isolateStatus byte) TelephonyDataIsolateSecondaryOutletBuilder {
+	b.IsolateStatus = isolateStatus
+	return b
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) Build() (TelephonyDataIsolateSecondaryOutlet, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TelephonyDataIsolateSecondaryOutlet.deepCopy(), nil
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) MustBuild() TelephonyDataIsolateSecondaryOutlet {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) Done() TelephonyDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) buildForTelephonyData() (TelephonyData, error) {
+	return b.Build()
+}
+
+func (b *_TelephonyDataIsolateSecondaryOutletBuilder) DeepCopy() any {
+	_copy := b.CreateTelephonyDataIsolateSecondaryOutletBuilder().(*_TelephonyDataIsolateSecondaryOutletBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTelephonyDataIsolateSecondaryOutletBuilder creates a TelephonyDataIsolateSecondaryOutletBuilder
+func (b *_TelephonyDataIsolateSecondaryOutlet) CreateTelephonyDataIsolateSecondaryOutletBuilder() TelephonyDataIsolateSecondaryOutletBuilder {
+	if b == nil {
+		return NewTelephonyDataIsolateSecondaryOutletBuilder()
+	}
+	return &_TelephonyDataIsolateSecondaryOutletBuilder{_TelephonyDataIsolateSecondaryOutlet: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +210,6 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) GetIsToBeIsolated() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTelephonyDataIsolateSecondaryOutlet factory function for _TelephonyDataIsolateSecondaryOutlet
-func NewTelephonyDataIsolateSecondaryOutlet(isolateStatus byte, commandTypeContainer TelephonyCommandTypeContainer, argument byte) *_TelephonyDataIsolateSecondaryOutlet {
-	_result := &_TelephonyDataIsolateSecondaryOutlet{
-		TelephonyDataContract: NewTelephonyData(commandTypeContainer, argument),
-		IsolateStatus:         isolateStatus,
-	}
-	_result.TelephonyDataContract.(*_TelephonyData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTelephonyDataIsolateSecondaryOutlet(structType any) TelephonyDataIsolateSecondaryOutlet {
@@ -229,13 +323,33 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 
 func (m *_TelephonyDataIsolateSecondaryOutlet) IsTelephonyDataIsolateSecondaryOutlet() {}
 
+func (m *_TelephonyDataIsolateSecondaryOutlet) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TelephonyDataIsolateSecondaryOutlet) deepCopy() *_TelephonyDataIsolateSecondaryOutlet {
+	if m == nil {
+		return nil
+	}
+	_TelephonyDataIsolateSecondaryOutletCopy := &_TelephonyDataIsolateSecondaryOutlet{
+		m.TelephonyDataContract.(*_TelephonyData).deepCopy(),
+		m.IsolateStatus,
+	}
+	m.TelephonyDataContract.(*_TelephonyData)._SubType = m
+	return _TelephonyDataIsolateSecondaryOutletCopy
+}
+
 func (m *_TelephonyDataIsolateSecondaryOutlet) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

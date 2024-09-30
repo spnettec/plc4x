@@ -38,6 +38,7 @@ type OpcuaMessageRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetSecurityHeader returns SecurityHeader (property field)
 	GetSecurityHeader() SecurityHeader
@@ -45,6 +46,8 @@ type OpcuaMessageRequest interface {
 	GetMessage() Payload
 	// IsOpcuaMessageRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaMessageRequest()
+	// CreateBuilder creates a OpcuaMessageRequestBuilder
+	CreateOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder
 }
 
 // _OpcuaMessageRequest is the data-structure of this message
@@ -59,6 +62,163 @@ type _OpcuaMessageRequest struct {
 
 var _ OpcuaMessageRequest = (*_OpcuaMessageRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageRequest)(nil)
+
+// NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
+func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageRequest {
+	if securityHeader == nil {
+		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
+	}
+	if message == nil {
+		panic("message of type Payload for OpcuaMessageRequest must not be nil")
+	}
+	_result := &_OpcuaMessageRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		SecurityHeader:     securityHeader,
+		Message:            message,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaMessageRequestBuilder is a builder for OpcuaMessageRequest
+type OpcuaMessageRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageRequestBuilder
+	// WithSecurityHeader adds SecurityHeader (property field)
+	WithSecurityHeader(SecurityHeader) OpcuaMessageRequestBuilder
+	// WithSecurityHeaderBuilder adds SecurityHeader (property field) which is build by the builder
+	WithSecurityHeaderBuilder(func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageRequestBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(Payload) OpcuaMessageRequestBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder
+	// Build builds the OpcuaMessageRequest or returns an error if something is wrong
+	Build() (OpcuaMessageRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaMessageRequest
+}
+
+// NewOpcuaMessageRequestBuilder() creates a OpcuaMessageRequestBuilder
+func NewOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder {
+	return &_OpcuaMessageRequestBuilder{_OpcuaMessageRequest: new(_OpcuaMessageRequest)}
+}
+
+type _OpcuaMessageRequestBuilder struct {
+	*_OpcuaMessageRequest
+
+	parentBuilder *_MessagePDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaMessageRequestBuilder) = (*_OpcuaMessageRequestBuilder)(nil)
+
+func (b *_OpcuaMessageRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithMandatoryFields(securityHeader SecurityHeader, message Payload) OpcuaMessageRequestBuilder {
+	return b.WithSecurityHeader(securityHeader).WithMessage(message)
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithSecurityHeader(securityHeader SecurityHeader) OpcuaMessageRequestBuilder {
+	b.SecurityHeader = securityHeader
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithSecurityHeaderBuilder(builderSupplier func(SecurityHeaderBuilder) SecurityHeaderBuilder) OpcuaMessageRequestBuilder {
+	builder := builderSupplier(b.SecurityHeader.CreateSecurityHeaderBuilder())
+	var err error
+	b.SecurityHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SecurityHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithMessage(message Payload) OpcuaMessageRequestBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) WithMessageBuilder(builderSupplier func(PayloadBuilder) PayloadBuilder) OpcuaMessageRequestBuilder {
+	builder := builderSupplier(b.Message.CreatePayloadBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PayloadBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaMessageRequestBuilder) Build() (OpcuaMessageRequest, error) {
+	if b.SecurityHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityHeader' not set"))
+	}
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaMessageRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaMessageRequestBuilder) MustBuild() OpcuaMessageRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaMessageRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaMessageRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaMessageRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaMessageRequestBuilder().(*_OpcuaMessageRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaMessageRequestBuilder creates a OpcuaMessageRequestBuilder
+func (b *_OpcuaMessageRequest) CreateOpcuaMessageRequestBuilder() OpcuaMessageRequestBuilder {
+	if b == nil {
+		return NewOpcuaMessageRequestBuilder()
+	}
+	return &_OpcuaMessageRequestBuilder{_OpcuaMessageRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,23 +259,6 @@ func (m *_OpcuaMessageRequest) GetMessage() Payload {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
-func NewOpcuaMessageRequest(securityHeader SecurityHeader, message Payload, chunk ChunkType, totalLength uint32) *_OpcuaMessageRequest {
-	if securityHeader == nil {
-		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
-	}
-	if message == nil {
-		panic("message of type Payload for OpcuaMessageRequest must not be nil")
-	}
-	_result := &_OpcuaMessageRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		SecurityHeader:     securityHeader,
-		Message:            message,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaMessageRequest(structType any) OpcuaMessageRequest {
@@ -224,13 +367,35 @@ func (m *_OpcuaMessageRequest) GetTotalLength() uint32 {
 
 func (m *_OpcuaMessageRequest) IsOpcuaMessageRequest() {}
 
+func (m *_OpcuaMessageRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaMessageRequest) deepCopy() *_OpcuaMessageRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaMessageRequestCopy := &_OpcuaMessageRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.SecurityHeader.DeepCopy().(SecurityHeader),
+		m.Message.DeepCopy().(Payload),
+		m.TotalLength,
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaMessageRequestCopy
+}
+
 func (m *_OpcuaMessageRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

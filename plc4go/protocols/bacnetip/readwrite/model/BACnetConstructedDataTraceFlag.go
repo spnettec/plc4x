@@ -38,6 +38,7 @@ type BACnetConstructedDataTraceFlag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTraceFlag returns TraceFlag (property field)
 	GetTraceFlag() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataTraceFlag interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataTraceFlag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTraceFlag()
+	// CreateBuilder creates a BACnetConstructedDataTraceFlagBuilder
+	CreateBACnetConstructedDataTraceFlagBuilder() BACnetConstructedDataTraceFlagBuilder
 }
 
 // _BACnetConstructedDataTraceFlag is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataTraceFlag struct {
 
 var _ BACnetConstructedDataTraceFlag = (*_BACnetConstructedDataTraceFlag)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTraceFlag)(nil)
+
+// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
+func NewBACnetConstructedDataTraceFlag(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, traceFlag BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
+	if traceFlag == nil {
+		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
+	}
+	_result := &_BACnetConstructedDataTraceFlag{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		TraceFlag:                     traceFlag,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTraceFlagBuilder is a builder for BACnetConstructedDataTraceFlag
+type BACnetConstructedDataTraceFlagBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(traceFlag BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder
+	// WithTraceFlag adds TraceFlag (property field)
+	WithTraceFlag(BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder
+	// WithTraceFlagBuilder adds TraceFlag (property field) which is build by the builder
+	WithTraceFlagBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTraceFlagBuilder
+	// Build builds the BACnetConstructedDataTraceFlag or returns an error if something is wrong
+	Build() (BACnetConstructedDataTraceFlag, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTraceFlag
+}
+
+// NewBACnetConstructedDataTraceFlagBuilder() creates a BACnetConstructedDataTraceFlagBuilder
+func NewBACnetConstructedDataTraceFlagBuilder() BACnetConstructedDataTraceFlagBuilder {
+	return &_BACnetConstructedDataTraceFlagBuilder{_BACnetConstructedDataTraceFlag: new(_BACnetConstructedDataTraceFlag)}
+}
+
+type _BACnetConstructedDataTraceFlagBuilder struct {
+	*_BACnetConstructedDataTraceFlag
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTraceFlagBuilder) = (*_BACnetConstructedDataTraceFlagBuilder)(nil)
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) WithMandatoryFields(traceFlag BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder {
+	return b.WithTraceFlag(traceFlag)
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) WithTraceFlag(traceFlag BACnetApplicationTagBoolean) BACnetConstructedDataTraceFlagBuilder {
+	b.TraceFlag = traceFlag
+	return b
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) WithTraceFlagBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataTraceFlagBuilder {
+	builder := builderSupplier(b.TraceFlag.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.TraceFlag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) Build() (BACnetConstructedDataTraceFlag, error) {
+	if b.TraceFlag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'traceFlag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTraceFlag.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) MustBuild() BACnetConstructedDataTraceFlag {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTraceFlagBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTraceFlagBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTraceFlagBuilder().(*_BACnetConstructedDataTraceFlagBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTraceFlagBuilder creates a BACnetConstructedDataTraceFlagBuilder
+func (b *_BACnetConstructedDataTraceFlag) CreateBACnetConstructedDataTraceFlagBuilder() BACnetConstructedDataTraceFlagBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTraceFlagBuilder()
+	}
+	return &_BACnetConstructedDataTraceFlagBuilder{_BACnetConstructedDataTraceFlag: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataTraceFlag) GetActualValue() BACnetApplicationTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTraceFlag factory function for _BACnetConstructedDataTraceFlag
-func NewBACnetConstructedDataTraceFlag(traceFlag BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTraceFlag {
-	if traceFlag == nil {
-		panic("traceFlag of type BACnetApplicationTagBoolean for BACnetConstructedDataTraceFlag must not be nil")
-	}
-	_result := &_BACnetConstructedDataTraceFlag{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		TraceFlag:                     traceFlag,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTraceFlag(structType any) BACnetConstructedDataTraceFlag {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataTraceFlag) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetConstructedDataTraceFlag) IsBACnetConstructedDataTraceFlag() {}
 
+func (m *_BACnetConstructedDataTraceFlag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTraceFlag) deepCopy() *_BACnetConstructedDataTraceFlag {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTraceFlagCopy := &_BACnetConstructedDataTraceFlag{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.TraceFlag.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTraceFlagCopy
+}
+
 func (m *_BACnetConstructedDataTraceFlag) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

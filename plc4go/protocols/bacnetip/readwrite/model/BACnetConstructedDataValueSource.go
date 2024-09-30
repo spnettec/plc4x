@@ -38,6 +38,7 @@ type BACnetConstructedDataValueSource interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetValueSource returns ValueSource (property field)
 	GetValueSource() BACnetValueSource
@@ -45,6 +46,8 @@ type BACnetConstructedDataValueSource interface {
 	GetActualValue() BACnetValueSource
 	// IsBACnetConstructedDataValueSource is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataValueSource()
+	// CreateBuilder creates a BACnetConstructedDataValueSourceBuilder
+	CreateBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder
 }
 
 // _BACnetConstructedDataValueSource is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataValueSource struct {
 
 var _ BACnetConstructedDataValueSource = (*_BACnetConstructedDataValueSource)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataValueSource)(nil)
+
+// NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
+func NewBACnetConstructedDataValueSource(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, valueSource BACnetValueSource, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
+	if valueSource == nil {
+		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
+	}
+	_result := &_BACnetConstructedDataValueSource{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ValueSource:                   valueSource,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataValueSourceBuilder is a builder for BACnetConstructedDataValueSource
+type BACnetConstructedDataValueSourceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder
+	// WithValueSource adds ValueSource (property field)
+	WithValueSource(BACnetValueSource) BACnetConstructedDataValueSourceBuilder
+	// WithValueSourceBuilder adds ValueSource (property field) which is build by the builder
+	WithValueSourceBuilder(func(BACnetValueSourceBuilder) BACnetValueSourceBuilder) BACnetConstructedDataValueSourceBuilder
+	// Build builds the BACnetConstructedDataValueSource or returns an error if something is wrong
+	Build() (BACnetConstructedDataValueSource, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataValueSource
+}
+
+// NewBACnetConstructedDataValueSourceBuilder() creates a BACnetConstructedDataValueSourceBuilder
+func NewBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder {
+	return &_BACnetConstructedDataValueSourceBuilder{_BACnetConstructedDataValueSource: new(_BACnetConstructedDataValueSource)}
+}
+
+type _BACnetConstructedDataValueSourceBuilder struct {
+	*_BACnetConstructedDataValueSource
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataValueSourceBuilder) = (*_BACnetConstructedDataValueSourceBuilder)(nil)
+
+func (b *_BACnetConstructedDataValueSourceBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) WithMandatoryFields(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder {
+	return b.WithValueSource(valueSource)
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) WithValueSource(valueSource BACnetValueSource) BACnetConstructedDataValueSourceBuilder {
+	b.ValueSource = valueSource
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) WithValueSourceBuilder(builderSupplier func(BACnetValueSourceBuilder) BACnetValueSourceBuilder) BACnetConstructedDataValueSourceBuilder {
+	builder := builderSupplier(b.ValueSource.CreateBACnetValueSourceBuilder())
+	var err error
+	b.ValueSource, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetValueSourceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) Build() (BACnetConstructedDataValueSource, error) {
+	if b.ValueSource == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'valueSource' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataValueSource.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) MustBuild() BACnetConstructedDataValueSource {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataValueSourceBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataValueSourceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataValueSourceBuilder().(*_BACnetConstructedDataValueSourceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataValueSourceBuilder creates a BACnetConstructedDataValueSourceBuilder
+func (b *_BACnetConstructedDataValueSource) CreateBACnetConstructedDataValueSourceBuilder() BACnetConstructedDataValueSourceBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataValueSourceBuilder()
+	}
+	return &_BACnetConstructedDataValueSourceBuilder{_BACnetConstructedDataValueSource: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataValueSource) GetActualValue() BACnetValueSource {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataValueSource factory function for _BACnetConstructedDataValueSource
-func NewBACnetConstructedDataValueSource(valueSource BACnetValueSource, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataValueSource {
-	if valueSource == nil {
-		panic("valueSource of type BACnetValueSource for BACnetConstructedDataValueSource must not be nil")
-	}
-	_result := &_BACnetConstructedDataValueSource{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ValueSource:                   valueSource,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataValueSource(structType any) BACnetConstructedDataValueSource {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataValueSource) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataValueSource) IsBACnetConstructedDataValueSource() {}
 
+func (m *_BACnetConstructedDataValueSource) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataValueSource) deepCopy() *_BACnetConstructedDataValueSource {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataValueSourceCopy := &_BACnetConstructedDataValueSource{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ValueSource.DeepCopy().(BACnetValueSource),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataValueSourceCopy
+}
+
 func (m *_BACnetConstructedDataValueSource) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

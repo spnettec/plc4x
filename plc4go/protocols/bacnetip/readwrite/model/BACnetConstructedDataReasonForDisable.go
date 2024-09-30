@@ -38,11 +38,14 @@ type BACnetConstructedDataReasonForDisable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetReasonForDisable returns ReasonForDisable (property field)
 	GetReasonForDisable() []BACnetAccessCredentialDisableReasonTagged
 	// IsBACnetConstructedDataReasonForDisable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataReasonForDisable()
+	// CreateBuilder creates a BACnetConstructedDataReasonForDisableBuilder
+	CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder
 }
 
 // _BACnetConstructedDataReasonForDisable is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataReasonForDisable struct {
 
 var _ BACnetConstructedDataReasonForDisable = (*_BACnetConstructedDataReasonForDisable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataReasonForDisable)(nil)
+
+// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
+func NewBACnetConstructedDataReasonForDisable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, reasonForDisable []BACnetAccessCredentialDisableReasonTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
+	_result := &_BACnetConstructedDataReasonForDisable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ReasonForDisable:              reasonForDisable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataReasonForDisableBuilder is a builder for BACnetConstructedDataReasonForDisable
+type BACnetConstructedDataReasonForDisableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
+	// WithReasonForDisable adds ReasonForDisable (property field)
+	WithReasonForDisable(...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder
+	// Build builds the BACnetConstructedDataReasonForDisable or returns an error if something is wrong
+	Build() (BACnetConstructedDataReasonForDisable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataReasonForDisable
+}
+
+// NewBACnetConstructedDataReasonForDisableBuilder() creates a BACnetConstructedDataReasonForDisableBuilder
+func NewBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
+	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: new(_BACnetConstructedDataReasonForDisable)}
+}
+
+type _BACnetConstructedDataReasonForDisableBuilder struct {
+	*_BACnetConstructedDataReasonForDisable
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataReasonForDisableBuilder) = (*_BACnetConstructedDataReasonForDisableBuilder)(nil)
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) WithMandatoryFields(reasonForDisable []BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	return b.WithReasonForDisable(reasonForDisable...)
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) WithReasonForDisable(reasonForDisable ...BACnetAccessCredentialDisableReasonTagged) BACnetConstructedDataReasonForDisableBuilder {
+	b.ReasonForDisable = reasonForDisable
+	return b
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) Build() (BACnetConstructedDataReasonForDisable, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataReasonForDisable.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) MustBuild() BACnetConstructedDataReasonForDisable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataReasonForDisableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataReasonForDisableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataReasonForDisableBuilder().(*_BACnetConstructedDataReasonForDisableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataReasonForDisableBuilder creates a BACnetConstructedDataReasonForDisableBuilder
+func (b *_BACnetConstructedDataReasonForDisable) CreateBACnetConstructedDataReasonForDisableBuilder() BACnetConstructedDataReasonForDisableBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataReasonForDisableBuilder()
+	}
+	return &_BACnetConstructedDataReasonForDisableBuilder{_BACnetConstructedDataReasonForDisable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataReasonForDisable) GetReasonForDisable() []BACnetA
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataReasonForDisable factory function for _BACnetConstructedDataReasonForDisable
-func NewBACnetConstructedDataReasonForDisable(reasonForDisable []BACnetAccessCredentialDisableReasonTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataReasonForDisable {
-	_result := &_BACnetConstructedDataReasonForDisable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ReasonForDisable:              reasonForDisable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataReasonForDisable(structType any) BACnetConstructedDataReasonForDisable {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataReasonForDisable) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataReasonForDisable) IsBACnetConstructedDataReasonForDisable() {}
 
+func (m *_BACnetConstructedDataReasonForDisable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataReasonForDisable) deepCopy() *_BACnetConstructedDataReasonForDisable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataReasonForDisableCopy := &_BACnetConstructedDataReasonForDisable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetAccessCredentialDisableReasonTagged, BACnetAccessCredentialDisableReasonTagged](m.ReasonForDisable),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataReasonForDisableCopy
+}
+
 func (m *_BACnetConstructedDataReasonForDisable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

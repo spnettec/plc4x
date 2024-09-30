@@ -41,8 +41,11 @@ type AdsConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAdsConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsConstants()
+	// CreateBuilder creates a AdsConstantsBuilder
+	CreateAdsConstantsBuilder() AdsConstantsBuilder
 }
 
 // _AdsConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _AdsConstants struct {
 }
 
 var _ AdsConstants = (*_AdsConstants)(nil)
+
+// NewAdsConstants factory function for _AdsConstants
+func NewAdsConstants() *_AdsConstants {
+	return &_AdsConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsConstantsBuilder is a builder for AdsConstants
+type AdsConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AdsConstantsBuilder
+	// Build builds the AdsConstants or returns an error if something is wrong
+	Build() (AdsConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsConstants
+}
+
+// NewAdsConstantsBuilder() creates a AdsConstantsBuilder
+func NewAdsConstantsBuilder() AdsConstantsBuilder {
+	return &_AdsConstantsBuilder{_AdsConstants: new(_AdsConstants)}
+}
+
+type _AdsConstantsBuilder struct {
+	*_AdsConstants
+
+	err *utils.MultiError
+}
+
+var _ (AdsConstantsBuilder) = (*_AdsConstantsBuilder)(nil)
+
+func (b *_AdsConstantsBuilder) WithMandatoryFields() AdsConstantsBuilder {
+	return b
+}
+
+func (b *_AdsConstantsBuilder) Build() (AdsConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsConstants.deepCopy(), nil
+}
+
+func (b *_AdsConstantsBuilder) MustBuild() AdsConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AdsConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateAdsConstantsBuilder().(*_AdsConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsConstantsBuilder creates a AdsConstantsBuilder
+func (b *_AdsConstants) CreateAdsConstantsBuilder() AdsConstantsBuilder {
+	if b == nil {
+		return NewAdsConstantsBuilder()
+	}
+	return &_AdsConstantsBuilder{_AdsConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_AdsConstants) GetAdsTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsConstants factory function for _AdsConstants
-func NewAdsConstants() *_AdsConstants {
-	return &_AdsConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsConstants(structType any) AdsConstants {
@@ -113,7 +185,7 @@ func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AdsConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__adsConstants AdsConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_AdsConstants) IsAdsConstants() {}
 
+func (m *_AdsConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsConstants) deepCopy() *_AdsConstants {
+	if m == nil {
+		return nil
+	}
+	_AdsConstantsCopy := &_AdsConstants{}
+	return _AdsConstantsCopy
+}
+
 func (m *_AdsConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

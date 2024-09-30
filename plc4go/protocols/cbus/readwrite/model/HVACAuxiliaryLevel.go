@@ -38,6 +38,7 @@ type HVACAuxiliaryLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFanMode returns FanMode (property field)
 	GetFanMode() bool
 	// GetMode returns Mode (property field)
@@ -52,6 +53,8 @@ type HVACAuxiliaryLevel interface {
 	GetSpeedSettings() uint8
 	// IsHVACAuxiliaryLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACAuxiliaryLevel()
+	// CreateBuilder creates a HVACAuxiliaryLevelBuilder
+	CreateHVACAuxiliaryLevelBuilder() HVACAuxiliaryLevelBuilder
 }
 
 // _HVACAuxiliaryLevel is the data-structure of this message
@@ -63,6 +66,94 @@ type _HVACAuxiliaryLevel struct {
 }
 
 var _ HVACAuxiliaryLevel = (*_HVACAuxiliaryLevel)(nil)
+
+// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
+func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
+	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACAuxiliaryLevelBuilder is a builder for HVACAuxiliaryLevel
+type HVACAuxiliaryLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fanMode bool, mode uint8) HVACAuxiliaryLevelBuilder
+	// WithFanMode adds FanMode (property field)
+	WithFanMode(bool) HVACAuxiliaryLevelBuilder
+	// WithMode adds Mode (property field)
+	WithMode(uint8) HVACAuxiliaryLevelBuilder
+	// Build builds the HVACAuxiliaryLevel or returns an error if something is wrong
+	Build() (HVACAuxiliaryLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACAuxiliaryLevel
+}
+
+// NewHVACAuxiliaryLevelBuilder() creates a HVACAuxiliaryLevelBuilder
+func NewHVACAuxiliaryLevelBuilder() HVACAuxiliaryLevelBuilder {
+	return &_HVACAuxiliaryLevelBuilder{_HVACAuxiliaryLevel: new(_HVACAuxiliaryLevel)}
+}
+
+type _HVACAuxiliaryLevelBuilder struct {
+	*_HVACAuxiliaryLevel
+
+	err *utils.MultiError
+}
+
+var _ (HVACAuxiliaryLevelBuilder) = (*_HVACAuxiliaryLevelBuilder)(nil)
+
+func (b *_HVACAuxiliaryLevelBuilder) WithMandatoryFields(fanMode bool, mode uint8) HVACAuxiliaryLevelBuilder {
+	return b.WithFanMode(fanMode).WithMode(mode)
+}
+
+func (b *_HVACAuxiliaryLevelBuilder) WithFanMode(fanMode bool) HVACAuxiliaryLevelBuilder {
+	b.FanMode = fanMode
+	return b
+}
+
+func (b *_HVACAuxiliaryLevelBuilder) WithMode(mode uint8) HVACAuxiliaryLevelBuilder {
+	b.Mode = mode
+	return b
+}
+
+func (b *_HVACAuxiliaryLevelBuilder) Build() (HVACAuxiliaryLevel, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACAuxiliaryLevel.deepCopy(), nil
+}
+
+func (b *_HVACAuxiliaryLevelBuilder) MustBuild() HVACAuxiliaryLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACAuxiliaryLevelBuilder) DeepCopy() any {
+	_copy := b.CreateHVACAuxiliaryLevelBuilder().(*_HVACAuxiliaryLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACAuxiliaryLevelBuilder creates a HVACAuxiliaryLevelBuilder
+func (b *_HVACAuxiliaryLevel) CreateHVACAuxiliaryLevelBuilder() HVACAuxiliaryLevelBuilder {
+	if b == nil {
+		return NewHVACAuxiliaryLevelBuilder()
+	}
+	return &_HVACAuxiliaryLevelBuilder{_HVACAuxiliaryLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +205,6 @@ func (m *_HVACAuxiliaryLevel) GetSpeedSettings() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACAuxiliaryLevel factory function for _HVACAuxiliaryLevel
-func NewHVACAuxiliaryLevel(fanMode bool, mode uint8) *_HVACAuxiliaryLevel {
-	return &_HVACAuxiliaryLevel{FanMode: fanMode, Mode: mode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACAuxiliaryLevel(structType any) HVACAuxiliaryLevel {
@@ -177,7 +263,7 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACAuxiliaryLevel) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACAuxiliaryLevel HVACAuxiliaryLevel, err error) {
@@ -299,13 +385,33 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_HVACAuxiliaryLevel) IsHVACAuxiliaryLevel() {}
 
+func (m *_HVACAuxiliaryLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACAuxiliaryLevel) deepCopy() *_HVACAuxiliaryLevel {
+	if m == nil {
+		return nil
+	}
+	_HVACAuxiliaryLevelCopy := &_HVACAuxiliaryLevel{
+		m.FanMode,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACAuxiliaryLevelCopy
+}
+
 func (m *_HVACAuxiliaryLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type ErrorReportingSystemCategoryTypeInputUnits interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ErrorReportingSystemCategoryType
 	// GetCategoryForType returns CategoryForType (property field)
 	GetCategoryForType() ErrorReportingSystemCategoryTypeForInputUnits
 	// IsErrorReportingSystemCategoryTypeInputUnits is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryTypeInputUnits()
+	// CreateBuilder creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder
 }
 
 // _ErrorReportingSystemCategoryTypeInputUnits is the data-structure of this message
@@ -53,6 +56,107 @@ type _ErrorReportingSystemCategoryTypeInputUnits struct {
 
 var _ ErrorReportingSystemCategoryTypeInputUnits = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
 var _ ErrorReportingSystemCategoryTypeRequirements = (*_ErrorReportingSystemCategoryTypeInputUnits)(nil)
+
+// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
+func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
+	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
+		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
+		CategoryForType:                          categoryForType,
+	}
+	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingSystemCategoryTypeInputUnitsBuilder is a builder for ErrorReportingSystemCategoryTypeInputUnits
+type ErrorReportingSystemCategoryTypeInputUnitsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	// WithCategoryForType adds CategoryForType (property field)
+	WithCategoryForType(ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	// Build builds the ErrorReportingSystemCategoryTypeInputUnits or returns an error if something is wrong
+	Build() (ErrorReportingSystemCategoryTypeInputUnits, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingSystemCategoryTypeInputUnits
+}
+
+// NewErrorReportingSystemCategoryTypeInputUnitsBuilder() creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+func NewErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: new(_ErrorReportingSystemCategoryTypeInputUnits)}
+}
+
+type _ErrorReportingSystemCategoryTypeInputUnitsBuilder struct {
+	*_ErrorReportingSystemCategoryTypeInputUnits
+
+	parentBuilder *_ErrorReportingSystemCategoryTypeBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingSystemCategoryTypeInputUnitsBuilder) = (*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)(nil)
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) setParent(contract ErrorReportingSystemCategoryTypeContract) {
+	b.ErrorReportingSystemCategoryTypeContract = contract
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithMandatoryFields(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	return b.WithCategoryForType(categoryForType)
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) WithCategoryForType(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	b.CategoryForType = categoryForType
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Build() (ErrorReportingSystemCategoryTypeInputUnits, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingSystemCategoryTypeInputUnits.deepCopy(), nil
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) MustBuild() ErrorReportingSystemCategoryTypeInputUnits {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) Done() ErrorReportingSystemCategoryTypeBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error) {
+	return b.Build()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeInputUnitsBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeInputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorReportingSystemCategoryTypeInputUnitsBuilder creates a ErrorReportingSystemCategoryTypeInputUnitsBuilder
+func (b *_ErrorReportingSystemCategoryTypeInputUnits) CreateErrorReportingSystemCategoryTypeInputUnitsBuilder() ErrorReportingSystemCategoryTypeInputUnitsBuilder {
+	if b == nil {
+		return NewErrorReportingSystemCategoryTypeInputUnitsBuilder()
+	}
+	return &_ErrorReportingSystemCategoryTypeInputUnitsBuilder{_ErrorReportingSystemCategoryTypeInputUnits: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) GetCategoryForType() Error
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewErrorReportingSystemCategoryTypeInputUnits factory function for _ErrorReportingSystemCategoryTypeInputUnits
-func NewErrorReportingSystemCategoryTypeInputUnits(categoryForType ErrorReportingSystemCategoryTypeForInputUnits) *_ErrorReportingSystemCategoryTypeInputUnits {
-	_result := &_ErrorReportingSystemCategoryTypeInputUnits{
-		ErrorReportingSystemCategoryTypeContract: NewErrorReportingSystemCategoryType(),
-		CategoryForType:                          categoryForType,
-	}
-	_result.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryTypeInputUnits(structType any) ErrorReportingSystemCategoryTypeInputUnits {
@@ -181,13 +275,33 @@ func (m *_ErrorReportingSystemCategoryTypeInputUnits) SerializeWithWriteBuffer(c
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) IsErrorReportingSystemCategoryTypeInputUnits() {
 }
 
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryTypeInputUnits) deepCopy() *_ErrorReportingSystemCategoryTypeInputUnits {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeInputUnitsCopy := &_ErrorReportingSystemCategoryTypeInputUnits{
+		m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType).deepCopy(),
+		m.CategoryForType,
+	}
+	m.ErrorReportingSystemCategoryTypeContract.(*_ErrorReportingSystemCategoryType)._SubType = m
+	return _ErrorReportingSystemCategoryTypeInputUnitsCopy
+}
+
 func (m *_ErrorReportingSystemCategoryTypeInputUnits) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

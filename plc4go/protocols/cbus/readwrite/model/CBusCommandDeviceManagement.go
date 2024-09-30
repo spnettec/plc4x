@@ -41,6 +41,7 @@ type CBusCommandDeviceManagement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetParamNo returns ParamNo (property field)
 	GetParamNo() Parameter
@@ -48,6 +49,8 @@ type CBusCommandDeviceManagement interface {
 	GetParameterValue() byte
 	// IsCBusCommandDeviceManagement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommandDeviceManagement()
+	// CreateBuilder creates a CBusCommandDeviceManagementBuilder
+	CreateCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder
 }
 
 // _CBusCommandDeviceManagement is the data-structure of this message
@@ -59,6 +62,115 @@ type _CBusCommandDeviceManagement struct {
 
 var _ CBusCommandDeviceManagement = (*_CBusCommandDeviceManagement)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandDeviceManagement)(nil)
+
+// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
+func NewCBusCommandDeviceManagement(header CBusHeader, paramNo Parameter, parameterValue byte, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
+	_result := &_CBusCommandDeviceManagement{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		ParamNo:             paramNo,
+		ParameterValue:      parameterValue,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusCommandDeviceManagementBuilder is a builder for CBusCommandDeviceManagement
+type CBusCommandDeviceManagementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(paramNo Parameter, parameterValue byte) CBusCommandDeviceManagementBuilder
+	// WithParamNo adds ParamNo (property field)
+	WithParamNo(Parameter) CBusCommandDeviceManagementBuilder
+	// WithParameterValue adds ParameterValue (property field)
+	WithParameterValue(byte) CBusCommandDeviceManagementBuilder
+	// Build builds the CBusCommandDeviceManagement or returns an error if something is wrong
+	Build() (CBusCommandDeviceManagement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusCommandDeviceManagement
+}
+
+// NewCBusCommandDeviceManagementBuilder() creates a CBusCommandDeviceManagementBuilder
+func NewCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder {
+	return &_CBusCommandDeviceManagementBuilder{_CBusCommandDeviceManagement: new(_CBusCommandDeviceManagement)}
+}
+
+type _CBusCommandDeviceManagementBuilder struct {
+	*_CBusCommandDeviceManagement
+
+	parentBuilder *_CBusCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusCommandDeviceManagementBuilder) = (*_CBusCommandDeviceManagementBuilder)(nil)
+
+func (b *_CBusCommandDeviceManagementBuilder) setParent(contract CBusCommandContract) {
+	b.CBusCommandContract = contract
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) WithMandatoryFields(paramNo Parameter, parameterValue byte) CBusCommandDeviceManagementBuilder {
+	return b.WithParamNo(paramNo).WithParameterValue(parameterValue)
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) WithParamNo(paramNo Parameter) CBusCommandDeviceManagementBuilder {
+	b.ParamNo = paramNo
+	return b
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) WithParameterValue(parameterValue byte) CBusCommandDeviceManagementBuilder {
+	b.ParameterValue = parameterValue
+	return b
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) Build() (CBusCommandDeviceManagement, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusCommandDeviceManagement.deepCopy(), nil
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) MustBuild() CBusCommandDeviceManagement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusCommandDeviceManagementBuilder) Done() CBusCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) buildForCBusCommand() (CBusCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusCommandDeviceManagementBuilder) DeepCopy() any {
+	_copy := b.CreateCBusCommandDeviceManagementBuilder().(*_CBusCommandDeviceManagementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusCommandDeviceManagementBuilder creates a CBusCommandDeviceManagementBuilder
+func (b *_CBusCommandDeviceManagement) CreateCBusCommandDeviceManagementBuilder() CBusCommandDeviceManagementBuilder {
+	if b == nil {
+		return NewCBusCommandDeviceManagementBuilder()
+	}
+	return &_CBusCommandDeviceManagementBuilder{_CBusCommandDeviceManagement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -104,17 +216,6 @@ func (m *_CBusCommandDeviceManagement) GetDelimiter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandDeviceManagement factory function for _CBusCommandDeviceManagement
-func NewCBusCommandDeviceManagement(paramNo Parameter, parameterValue byte, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandDeviceManagement {
-	_result := &_CBusCommandDeviceManagement{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		ParamNo:             paramNo,
-		ParameterValue:      parameterValue,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandDeviceManagement(structType any) CBusCommandDeviceManagement {
@@ -226,13 +327,34 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_CBusCommandDeviceManagement) IsCBusCommandDeviceManagement() {}
 
+func (m *_CBusCommandDeviceManagement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandDeviceManagement) deepCopy() *_CBusCommandDeviceManagement {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandDeviceManagementCopy := &_CBusCommandDeviceManagement{
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
+		m.ParamNo,
+		m.ParameterValue,
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandDeviceManagementCopy
+}
+
 func (m *_CBusCommandDeviceManagement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -26,6 +26,7 @@ import (
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/bvll"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comm"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
@@ -35,45 +36,39 @@ type BIPSimple struct {
 	*BIPSAP
 	ClientContract
 	ServerContract
-
-	// pass through args
-	argSapID *int `ignore:"true"`
-	argCid   *int `ignore:"true"`
-	argSid   *int `ignore:"true"`
+	*debugging.DefaultRFormatter `ignore:"true"`
 
 	log zerolog.Logger
 }
 
-func NewBIPSimple(localLog zerolog.Logger, opts ...func(simple *BIPSimple)) (*BIPSimple, error) {
+func NewBIPSimple(localLog zerolog.Logger, options ...Option) (*BIPSimple, error) {
 	b := &BIPSimple{
-		log: localLog,
+		DefaultRFormatter: debugging.NewDefaultRFormatter(),
+		log:               localLog,
 	}
-	for _, opt := range opts {
-		opt(b)
-	}
-	if _debug != nil {
-		_debug("__init__ sapID=%r cid=%r sid=%r", b.argSapID, b.argCid, b.argSid)
-	}
-	localLog.Debug().
-		Interface("sapID", b.argSapID).
-		Interface("cid", b.argCid).
-		Interface("sid", b.argSid).
-		Msg("NewBIPSimple")
-	bipsap, err := NewBIPSAP(localLog, b, func(bipsap *BIPSAP) {
-		bipsap.argSapID = b.argSapID
-	})
+	ApplyAppliers(options, b)
+	optionsForParent := AddLeafTypeIfAbundant(options, b)
+	bipsap, err := NewBIPSAP(localLog, b, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating bisap")
 	}
 	b.BIPSAP = bipsap
-	b.ClientContract, err = NewClient(localLog, OptionalOption2(b.argCid, ToPtr[ClientRequirements](b), WithClientCID))
+	b.ClientContract, err = NewClient(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating client")
 	}
-	b.ServerContract, err = NewServer(localLog, OptionalOption2(b.argSid, ToPtr[ServerRequirements](b), WithServerSID))
+	b.ServerContract, err = NewServer(localLog, optionsForParent...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
+	if _debug != nil {
+		_debug("__init__ sapID=%r cid=%r sid=%r", b.GetServiceID(), b.GetClientID(), b.GetServerId())
+	}
+	localLog.Debug().
+		Interface("sapID", b.GetServerId()).
+		Interface("cid", b.GetClientID()).
+		Interface("sid", b.GetServiceID()).
+		Msg("NewBIPSimple")
 	return b, nil
 }
 

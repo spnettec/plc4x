@@ -39,6 +39,7 @@ type BACnetTagPayloadCharacterString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetEncoding returns Encoding (property field)
 	GetEncoding() BACnetCharacterEncoding
 	// GetValue returns Value (property field)
@@ -47,6 +48,8 @@ type BACnetTagPayloadCharacterString interface {
 	GetActualLengthInBit() uint16
 	// IsBACnetTagPayloadCharacterString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadCharacterString()
+	// CreateBuilder creates a BACnetTagPayloadCharacterStringBuilder
+	CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder
 }
 
 // _BACnetTagPayloadCharacterString is the data-structure of this message
@@ -59,6 +62,94 @@ type _BACnetTagPayloadCharacterString struct {
 }
 
 var _ BACnetTagPayloadCharacterString = (*_BACnetTagPayloadCharacterString)(nil)
+
+// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
+func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
+	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadCharacterStringBuilder is a builder for BACnetTagPayloadCharacterString
+type BACnetTagPayloadCharacterStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder
+	// WithEncoding adds Encoding (property field)
+	WithEncoding(BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder
+	// WithValue adds Value (property field)
+	WithValue(string) BACnetTagPayloadCharacterStringBuilder
+	// Build builds the BACnetTagPayloadCharacterString or returns an error if something is wrong
+	Build() (BACnetTagPayloadCharacterString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadCharacterString
+}
+
+// NewBACnetTagPayloadCharacterStringBuilder() creates a BACnetTagPayloadCharacterStringBuilder
+func NewBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
+	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: new(_BACnetTagPayloadCharacterString)}
+}
+
+type _BACnetTagPayloadCharacterStringBuilder struct {
+	*_BACnetTagPayloadCharacterString
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadCharacterStringBuilder) = (*_BACnetTagPayloadCharacterStringBuilder)(nil)
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithMandatoryFields(encoding BACnetCharacterEncoding, value string) BACnetTagPayloadCharacterStringBuilder {
+	return b.WithEncoding(encoding).WithValue(value)
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithEncoding(encoding BACnetCharacterEncoding) BACnetTagPayloadCharacterStringBuilder {
+	b.Encoding = encoding
+	return b
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) WithValue(value string) BACnetTagPayloadCharacterStringBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) Build() (BACnetTagPayloadCharacterString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadCharacterString.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) MustBuild() BACnetTagPayloadCharacterString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadCharacterStringBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadCharacterStringBuilder().(*_BACnetTagPayloadCharacterStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadCharacterStringBuilder creates a BACnetTagPayloadCharacterStringBuilder
+func (b *_BACnetTagPayloadCharacterString) CreateBACnetTagPayloadCharacterStringBuilder() BACnetTagPayloadCharacterStringBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadCharacterStringBuilder()
+	}
+	return &_BACnetTagPayloadCharacterStringBuilder{_BACnetTagPayloadCharacterString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,11 +183,6 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLengthInBit() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadCharacterString factory function for _BACnetTagPayloadCharacterString
-func NewBACnetTagPayloadCharacterString(encoding BACnetCharacterEncoding, value string, actualLength uint32) *_BACnetTagPayloadCharacterString {
-	return &_BACnetTagPayloadCharacterString{Encoding: encoding, Value: value, ActualLength: actualLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadCharacterString(structType any) BACnetTagPayloadCharacterString {
@@ -146,7 +232,7 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadCharacterString) parse(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (__bACnetTagPayloadCharacterString BACnetTagPayloadCharacterString, err error) {
@@ -232,13 +318,33 @@ func (m *_BACnetTagPayloadCharacterString) GetActualLength() uint32 {
 
 func (m *_BACnetTagPayloadCharacterString) IsBACnetTagPayloadCharacterString() {}
 
+func (m *_BACnetTagPayloadCharacterString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadCharacterString) deepCopy() *_BACnetTagPayloadCharacterString {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadCharacterStringCopy := &_BACnetTagPayloadCharacterString{
+		m.Encoding,
+		m.Value,
+		m.ActualLength,
+	}
+	return _BACnetTagPayloadCharacterStringCopy
+}
+
 func (m *_BACnetTagPayloadCharacterString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

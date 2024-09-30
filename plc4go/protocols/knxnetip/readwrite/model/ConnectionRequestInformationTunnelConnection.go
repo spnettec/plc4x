@@ -38,11 +38,14 @@ type ConnectionRequestInformationTunnelConnection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ConnectionRequestInformation
 	// GetKnxLayer returns KnxLayer (property field)
 	GetKnxLayer() KnxLayer
 	// IsConnectionRequestInformationTunnelConnection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformationTunnelConnection()
+	// CreateBuilder creates a ConnectionRequestInformationTunnelConnectionBuilder
+	CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder
 }
 
 // _ConnectionRequestInformationTunnelConnection is the data-structure of this message
@@ -55,6 +58,107 @@ type _ConnectionRequestInformationTunnelConnection struct {
 
 var _ ConnectionRequestInformationTunnelConnection = (*_ConnectionRequestInformationTunnelConnection)(nil)
 var _ ConnectionRequestInformationRequirements = (*_ConnectionRequestInformationTunnelConnection)(nil)
+
+// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
+func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
+	_result := &_ConnectionRequestInformationTunnelConnection{
+		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
+		KnxLayer:                             knxLayer,
+	}
+	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestInformationTunnelConnectionBuilder is a builder for ConnectionRequestInformationTunnelConnection
+type ConnectionRequestInformationTunnelConnectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder
+	// WithKnxLayer adds KnxLayer (property field)
+	WithKnxLayer(KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder
+	// Build builds the ConnectionRequestInformationTunnelConnection or returns an error if something is wrong
+	Build() (ConnectionRequestInformationTunnelConnection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequestInformationTunnelConnection
+}
+
+// NewConnectionRequestInformationTunnelConnectionBuilder() creates a ConnectionRequestInformationTunnelConnectionBuilder
+func NewConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
+	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: new(_ConnectionRequestInformationTunnelConnection)}
+}
+
+type _ConnectionRequestInformationTunnelConnectionBuilder struct {
+	*_ConnectionRequestInformationTunnelConnection
+
+	parentBuilder *_ConnectionRequestInformationBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestInformationTunnelConnectionBuilder) = (*_ConnectionRequestInformationTunnelConnectionBuilder)(nil)
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) setParent(contract ConnectionRequestInformationContract) {
+	b.ConnectionRequestInformationContract = contract
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) WithMandatoryFields(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	return b.WithKnxLayer(knxLayer)
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) WithKnxLayer(knxLayer KnxLayer) ConnectionRequestInformationTunnelConnectionBuilder {
+	b.KnxLayer = knxLayer
+	return b
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) Build() (ConnectionRequestInformationTunnelConnection, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectionRequestInformationTunnelConnection.deepCopy(), nil
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) MustBuild() ConnectionRequestInformationTunnelConnection {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) Done() ConnectionRequestInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) buildForConnectionRequestInformation() (ConnectionRequestInformation, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionRequestInformationTunnelConnectionBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectionRequestInformationTunnelConnectionBuilder creates a ConnectionRequestInformationTunnelConnectionBuilder
+func (b *_ConnectionRequestInformationTunnelConnection) CreateConnectionRequestInformationTunnelConnectionBuilder() ConnectionRequestInformationTunnelConnectionBuilder {
+	if b == nil {
+		return NewConnectionRequestInformationTunnelConnectionBuilder()
+	}
+	return &_ConnectionRequestInformationTunnelConnectionBuilder{_ConnectionRequestInformationTunnelConnection: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +191,6 @@ func (m *_ConnectionRequestInformationTunnelConnection) GetKnxLayer() KnxLayer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequestInformationTunnelConnection factory function for _ConnectionRequestInformationTunnelConnection
-func NewConnectionRequestInformationTunnelConnection(knxLayer KnxLayer) *_ConnectionRequestInformationTunnelConnection {
-	_result := &_ConnectionRequestInformationTunnelConnection{
-		ConnectionRequestInformationContract: NewConnectionRequestInformation(),
-		KnxLayer:                             knxLayer,
-	}
-	_result.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequestInformationTunnelConnection(structType any) ConnectionRequestInformationTunnelConnection {
@@ -196,13 +290,34 @@ func (m *_ConnectionRequestInformationTunnelConnection) SerializeWithWriteBuffer
 func (m *_ConnectionRequestInformationTunnelConnection) IsConnectionRequestInformationTunnelConnection() {
 }
 
+func (m *_ConnectionRequestInformationTunnelConnection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformationTunnelConnection) deepCopy() *_ConnectionRequestInformationTunnelConnection {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationTunnelConnectionCopy := &_ConnectionRequestInformationTunnelConnection{
+		m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation).deepCopy(),
+		m.KnxLayer,
+		m.reservedField0,
+	}
+	m.ConnectionRequestInformationContract.(*_ConnectionRequestInformation)._SubType = m
+	return _ConnectionRequestInformationTunnelConnectionCopy
+}
+
 func (m *_ConnectionRequestInformationTunnelConnection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

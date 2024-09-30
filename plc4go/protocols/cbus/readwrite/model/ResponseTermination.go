@@ -42,8 +42,11 @@ type ResponseTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsResponseTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsResponseTermination()
+	// CreateBuilder creates a ResponseTerminationBuilder
+	CreateResponseTerminationBuilder() ResponseTerminationBuilder
 }
 
 // _ResponseTermination is the data-structure of this message
@@ -51,6 +54,80 @@ type _ResponseTermination struct {
 }
 
 var _ ResponseTermination = (*_ResponseTermination)(nil)
+
+// NewResponseTermination factory function for _ResponseTermination
+func NewResponseTermination() *_ResponseTermination {
+	return &_ResponseTermination{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ResponseTerminationBuilder is a builder for ResponseTermination
+type ResponseTerminationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ResponseTerminationBuilder
+	// Build builds the ResponseTermination or returns an error if something is wrong
+	Build() (ResponseTermination, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ResponseTermination
+}
+
+// NewResponseTerminationBuilder() creates a ResponseTerminationBuilder
+func NewResponseTerminationBuilder() ResponseTerminationBuilder {
+	return &_ResponseTerminationBuilder{_ResponseTermination: new(_ResponseTermination)}
+}
+
+type _ResponseTerminationBuilder struct {
+	*_ResponseTermination
+
+	err *utils.MultiError
+}
+
+var _ (ResponseTerminationBuilder) = (*_ResponseTerminationBuilder)(nil)
+
+func (b *_ResponseTerminationBuilder) WithMandatoryFields() ResponseTerminationBuilder {
+	return b
+}
+
+func (b *_ResponseTerminationBuilder) Build() (ResponseTermination, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ResponseTermination.deepCopy(), nil
+}
+
+func (b *_ResponseTerminationBuilder) MustBuild() ResponseTermination {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ResponseTerminationBuilder) DeepCopy() any {
+	_copy := b.CreateResponseTerminationBuilder().(*_ResponseTerminationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateResponseTerminationBuilder creates a ResponseTerminationBuilder
+func (b *_ResponseTermination) CreateResponseTerminationBuilder() ResponseTerminationBuilder {
+	if b == nil {
+		return NewResponseTerminationBuilder()
+	}
+	return &_ResponseTerminationBuilder{_ResponseTermination: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,11 +146,6 @@ func (m *_ResponseTermination) GetLf() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewResponseTermination factory function for _ResponseTermination
-func NewResponseTermination() *_ResponseTermination {
-	return &_ResponseTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastResponseTermination(structType any) ResponseTermination {
@@ -121,7 +193,7 @@ func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ResponseTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__responseTermination ResponseTermination, err error) {
@@ -185,13 +257,29 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_ResponseTermination) IsResponseTermination() {}
 
+func (m *_ResponseTermination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ResponseTermination) deepCopy() *_ResponseTermination {
+	if m == nil {
+		return nil
+	}
+	_ResponseTerminationCopy := &_ResponseTermination{}
+	return _ResponseTerminationCopy
+}
+
 func (m *_ResponseTermination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

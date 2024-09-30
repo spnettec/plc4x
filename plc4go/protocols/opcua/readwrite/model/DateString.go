@@ -36,8 +36,11 @@ type DateString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDateString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDateString()
+	// CreateBuilder creates a DateStringBuilder
+	CreateDateStringBuilder() DateStringBuilder
 }
 
 // _DateString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ DateString = (*_DateString)(nil)
 func NewDateString() *_DateString {
 	return &_DateString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DateStringBuilder is a builder for DateString
+type DateStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DateStringBuilder
+	// Build builds the DateString or returns an error if something is wrong
+	Build() (DateString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DateString
+}
+
+// NewDateStringBuilder() creates a DateStringBuilder
+func NewDateStringBuilder() DateStringBuilder {
+	return &_DateStringBuilder{_DateString: new(_DateString)}
+}
+
+type _DateStringBuilder struct {
+	*_DateString
+
+	err *utils.MultiError
+}
+
+var _ (DateStringBuilder) = (*_DateStringBuilder)(nil)
+
+func (b *_DateStringBuilder) WithMandatoryFields() DateStringBuilder {
+	return b
+}
+
+func (b *_DateStringBuilder) Build() (DateString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DateString.deepCopy(), nil
+}
+
+func (b *_DateStringBuilder) MustBuild() DateString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DateStringBuilder) DeepCopy() any {
+	_copy := b.CreateDateStringBuilder().(*_DateStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDateStringBuilder creates a DateStringBuilder
+func (b *_DateString) CreateDateStringBuilder() DateStringBuilder {
+	if b == nil {
+		return NewDateStringBuilder()
+	}
+	return &_DateStringBuilder{_DateString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastDateString(structType any) DateString {
@@ -91,7 +163,7 @@ func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DateString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dateString DateString, err error) {
@@ -135,13 +207,29 @@ func (m *_DateString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_DateString) IsDateString() {}
 
+func (m *_DateString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DateString) deepCopy() *_DateString {
+	if m == nil {
+		return nil
+	}
+	_DateStringCopy := &_DateString{}
+	return _DateStringCopy
+}
+
 func (m *_DateString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

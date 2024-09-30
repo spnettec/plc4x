@@ -36,9 +36,12 @@ type MFuncPropStateReadReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsMFuncPropStateReadReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMFuncPropStateReadReq()
+	// CreateBuilder creates a MFuncPropStateReadReqBuilder
+	CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder
 }
 
 // _MFuncPropStateReadReq is the data-structure of this message
@@ -48,6 +51,99 @@ type _MFuncPropStateReadReq struct {
 
 var _ MFuncPropStateReadReq = (*_MFuncPropStateReadReq)(nil)
 var _ CEMIRequirements = (*_MFuncPropStateReadReq)(nil)
+
+// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
+func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
+	_result := &_MFuncPropStateReadReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MFuncPropStateReadReqBuilder is a builder for MFuncPropStateReadReq
+type MFuncPropStateReadReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() MFuncPropStateReadReqBuilder
+	// Build builds the MFuncPropStateReadReq or returns an error if something is wrong
+	Build() (MFuncPropStateReadReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MFuncPropStateReadReq
+}
+
+// NewMFuncPropStateReadReqBuilder() creates a MFuncPropStateReadReqBuilder
+func NewMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
+	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: new(_MFuncPropStateReadReq)}
+}
+
+type _MFuncPropStateReadReqBuilder struct {
+	*_MFuncPropStateReadReq
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MFuncPropStateReadReqBuilder) = (*_MFuncPropStateReadReqBuilder)(nil)
+
+func (b *_MFuncPropStateReadReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_MFuncPropStateReadReqBuilder) WithMandatoryFields() MFuncPropStateReadReqBuilder {
+	return b
+}
+
+func (b *_MFuncPropStateReadReqBuilder) Build() (MFuncPropStateReadReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MFuncPropStateReadReq.deepCopy(), nil
+}
+
+func (b *_MFuncPropStateReadReqBuilder) MustBuild() MFuncPropStateReadReq {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MFuncPropStateReadReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MFuncPropStateReadReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MFuncPropStateReadReqBuilder) DeepCopy() any {
+	_copy := b.CreateMFuncPropStateReadReqBuilder().(*_MFuncPropStateReadReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMFuncPropStateReadReqBuilder creates a MFuncPropStateReadReqBuilder
+func (b *_MFuncPropStateReadReq) CreateMFuncPropStateReadReqBuilder() MFuncPropStateReadReqBuilder {
+	if b == nil {
+		return NewMFuncPropStateReadReqBuilder()
+	}
+	return &_MFuncPropStateReadReqBuilder{_MFuncPropStateReadReq: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_MFuncPropStateReadReq) GetMessageCode() uint8 {
 
 func (m *_MFuncPropStateReadReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewMFuncPropStateReadReq factory function for _MFuncPropStateReadReq
-func NewMFuncPropStateReadReq(size uint16) *_MFuncPropStateReadReq {
-	_result := &_MFuncPropStateReadReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_MFuncPropStateReadReq) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_MFuncPropStateReadReq) IsMFuncPropStateReadReq() {}
 
+func (m *_MFuncPropStateReadReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MFuncPropStateReadReq) deepCopy() *_MFuncPropStateReadReq {
+	if m == nil {
+		return nil
+	}
+	_MFuncPropStateReadReqCopy := &_MFuncPropStateReadReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MFuncPropStateReadReqCopy
+}
+
 func (m *_MFuncPropStateReadReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

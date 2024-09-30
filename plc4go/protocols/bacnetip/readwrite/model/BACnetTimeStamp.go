@@ -40,8 +40,11 @@ type BACnetTimeStamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
+	// CreateBuilder creates a BACnetTimeStampBuilder
+	CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder
 }
 
 // BACnetTimeStampContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetTimeStampContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetTimeStamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimeStamp()
+	// CreateBuilder creates a BACnetTimeStampBuilder
+	CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder
 }
 
 // BACnetTimeStampRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,208 @@ type _BACnetTimeStamp struct {
 }
 
 var _ BACnetTimeStampContract = (*_BACnetTimeStamp)(nil)
+
+// NewBACnetTimeStamp factory function for _BACnetTimeStamp
+func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimeStamp must not be nil")
+	}
+	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimeStampBuilder is a builder for BACnetTimeStamp
+type BACnetTimeStampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetTimeStampBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimeStampBuilder
+	// AsBACnetTimeStampTime converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
+	AsBACnetTimeStampTime() interface {
+		BACnetTimeStampTimeBuilder
+		Done() BACnetTimeStampBuilder
+	}
+	// AsBACnetTimeStampSequence converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
+	AsBACnetTimeStampSequence() interface {
+		BACnetTimeStampSequenceBuilder
+		Done() BACnetTimeStampBuilder
+	}
+	// AsBACnetTimeStampDateTime converts this build to a subType of BACnetTimeStamp. It is always possible to return to current builder using Done()
+	AsBACnetTimeStampDateTime() interface {
+		BACnetTimeStampDateTimeBuilder
+		Done() BACnetTimeStampBuilder
+	}
+	// Build builds the BACnetTimeStamp or returns an error if something is wrong
+	PartialBuild() (BACnetTimeStampContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetTimeStampContract
+	// Build builds the BACnetTimeStamp or returns an error if something is wrong
+	Build() (BACnetTimeStamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimeStamp
+}
+
+// NewBACnetTimeStampBuilder() creates a BACnetTimeStampBuilder
+func NewBACnetTimeStampBuilder() BACnetTimeStampBuilder {
+	return &_BACnetTimeStampBuilder{_BACnetTimeStamp: new(_BACnetTimeStamp)}
+}
+
+type _BACnetTimeStampChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetTimeStampContract)
+	buildForBACnetTimeStamp() (BACnetTimeStamp, error)
+}
+
+type _BACnetTimeStampBuilder struct {
+	*_BACnetTimeStamp
+
+	childBuilder _BACnetTimeStampChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimeStampBuilder) = (*_BACnetTimeStampBuilder)(nil)
+
+func (b *_BACnetTimeStampBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetTimeStampBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetTimeStampBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetTimeStampBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimeStampBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimeStampBuilder) PartialBuild() (BACnetTimeStampContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimeStamp.deepCopy(), nil
+}
+
+func (b *_BACnetTimeStampBuilder) PartialMustBuild() BACnetTimeStampContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampTime() interface {
+	BACnetTimeStampTimeBuilder
+	Done() BACnetTimeStampBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimeStampTimeBuilder
+		Done() BACnetTimeStampBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimeStampTimeBuilder().(*_BACnetTimeStampTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampSequence() interface {
+	BACnetTimeStampSequenceBuilder
+	Done() BACnetTimeStampBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimeStampSequenceBuilder
+		Done() BACnetTimeStampBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimeStampSequenceBuilder().(*_BACnetTimeStampSequenceBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimeStampBuilder) AsBACnetTimeStampDateTime() interface {
+	BACnetTimeStampDateTimeBuilder
+	Done() BACnetTimeStampBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimeStampDateTimeBuilder
+		Done() BACnetTimeStampBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimeStampDateTimeBuilder().(*_BACnetTimeStampDateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimeStampBuilder) Build() (BACnetTimeStamp, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetTimeStamp()
+}
+
+func (b *_BACnetTimeStampBuilder) MustBuild() BACnetTimeStamp {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTimeStampBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimeStampBuilder().(*_BACnetTimeStampBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetTimeStampChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTimeStampBuilder creates a BACnetTimeStampBuilder
+func (b *_BACnetTimeStamp) CreateBACnetTimeStampBuilder() BACnetTimeStampBuilder {
+	if b == nil {
+		return NewBACnetTimeStampBuilder()
+	}
+	return &_BACnetTimeStampBuilder{_BACnetTimeStamp: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +306,6 @@ func (pm *_BACnetTimeStamp) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimeStamp factory function for _BACnetTimeStamp
-func NewBACnetTimeStamp(peekedTagHeader BACnetTagHeader) *_BACnetTimeStamp {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimeStamp must not be nil")
-	}
-	return &_BACnetTimeStamp{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimeStamp(structType any) BACnetTimeStamp {
@@ -146,7 +345,7 @@ func BACnetTimeStampParseWithBufferProducer[T BACnetTimeStamp]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +355,12 @@ func BACnetTimeStampParseWithBuffer[T BACnetTimeStamp](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetTimeStamp) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTimeStamp BACnetTimeStamp, err error) {
@@ -184,15 +388,15 @@ func (m *_BACnetTimeStamp) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetTimeStamp
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetTimeStampTime
-		if _child, err = (&_BACnetTimeStampTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampTime for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(1): // BACnetTimeStampSequence
-		if _child, err = (&_BACnetTimeStampSequence{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampSequence).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampSequence for type-switch of BACnetTimeStamp")
 		}
 	case peekedTagNumber == uint8(2): // BACnetTimeStampDateTime
-		if _child, err = (&_BACnetTimeStampDateTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetTimeStampDateTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimeStampDateTime for type-switch of BACnetTimeStamp")
 		}
 	default:
@@ -236,3 +440,18 @@ func (pm *_BACnetTimeStamp) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetTimeStamp) IsBACnetTimeStamp() {}
+
+func (m *_BACnetTimeStamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimeStamp) deepCopy() *_BACnetTimeStamp {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimeStampCopy := &_BACnetTimeStamp{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetTimeStampCopy
+}

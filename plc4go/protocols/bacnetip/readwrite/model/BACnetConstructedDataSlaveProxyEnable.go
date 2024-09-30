@@ -38,6 +38,7 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSlaveProxyEnable returns SlaveProxyEnable (property field)
 	GetSlaveProxyEnable() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataSlaveProxyEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataSlaveProxyEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSlaveProxyEnable()
+	// CreateBuilder creates a BACnetConstructedDataSlaveProxyEnableBuilder
+	CreateBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlaveProxyEnableBuilder
 }
 
 // _BACnetConstructedDataSlaveProxyEnable is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataSlaveProxyEnable struct {
 
 var _ BACnetConstructedDataSlaveProxyEnable = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSlaveProxyEnable)(nil)
+
+// NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
+func NewBACnetConstructedDataSlaveProxyEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, slaveProxyEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
+	if slaveProxyEnable == nil {
+		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataSlaveProxyEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		SlaveProxyEnable:              slaveProxyEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSlaveProxyEnableBuilder is a builder for BACnetConstructedDataSlaveProxyEnable
+type BACnetConstructedDataSlaveProxyEnableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder
+	// WithSlaveProxyEnable adds SlaveProxyEnable (property field)
+	WithSlaveProxyEnable(BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder
+	// WithSlaveProxyEnableBuilder adds SlaveProxyEnable (property field) which is build by the builder
+	WithSlaveProxyEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataSlaveProxyEnableBuilder
+	// Build builds the BACnetConstructedDataSlaveProxyEnable or returns an error if something is wrong
+	Build() (BACnetConstructedDataSlaveProxyEnable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSlaveProxyEnable
+}
+
+// NewBACnetConstructedDataSlaveProxyEnableBuilder() creates a BACnetConstructedDataSlaveProxyEnableBuilder
+func NewBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlaveProxyEnableBuilder {
+	return &_BACnetConstructedDataSlaveProxyEnableBuilder{_BACnetConstructedDataSlaveProxyEnable: new(_BACnetConstructedDataSlaveProxyEnable)}
+}
+
+type _BACnetConstructedDataSlaveProxyEnableBuilder struct {
+	*_BACnetConstructedDataSlaveProxyEnable
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSlaveProxyEnableBuilder) = (*_BACnetConstructedDataSlaveProxyEnableBuilder)(nil)
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithMandatoryFields(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
+	return b.WithSlaveProxyEnable(slaveProxyEnable)
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean) BACnetConstructedDataSlaveProxyEnableBuilder {
+	b.SlaveProxyEnable = slaveProxyEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) WithSlaveProxyEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataSlaveProxyEnableBuilder {
+	builder := builderSupplier(b.SlaveProxyEnable.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.SlaveProxyEnable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) Build() (BACnetConstructedDataSlaveProxyEnable, error) {
+	if b.SlaveProxyEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'slaveProxyEnable' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataSlaveProxyEnable.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) MustBuild() BACnetConstructedDataSlaveProxyEnable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSlaveProxyEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSlaveProxyEnableBuilder().(*_BACnetConstructedDataSlaveProxyEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataSlaveProxyEnableBuilder creates a BACnetConstructedDataSlaveProxyEnableBuilder
+func (b *_BACnetConstructedDataSlaveProxyEnable) CreateBACnetConstructedDataSlaveProxyEnableBuilder() BACnetConstructedDataSlaveProxyEnableBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataSlaveProxyEnableBuilder()
+	}
+	return &_BACnetConstructedDataSlaveProxyEnableBuilder{_BACnetConstructedDataSlaveProxyEnable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) GetActualValue() BACnetApplicat
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSlaveProxyEnable factory function for _BACnetConstructedDataSlaveProxyEnable
-func NewBACnetConstructedDataSlaveProxyEnable(slaveProxyEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSlaveProxyEnable {
-	if slaveProxyEnable == nil {
-		panic("slaveProxyEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataSlaveProxyEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataSlaveProxyEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		SlaveProxyEnable:              slaveProxyEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSlaveProxyEnable(structType any) BACnetConstructedDataSlaveProxyEnable {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataSlaveProxyEnable) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataSlaveProxyEnable) IsBACnetConstructedDataSlaveProxyEnable() {}
 
+func (m *_BACnetConstructedDataSlaveProxyEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSlaveProxyEnable) deepCopy() *_BACnetConstructedDataSlaveProxyEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSlaveProxyEnableCopy := &_BACnetConstructedDataSlaveProxyEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.SlaveProxyEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSlaveProxyEnableCopy
+}
+
 func (m *_BACnetConstructedDataSlaveProxyEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

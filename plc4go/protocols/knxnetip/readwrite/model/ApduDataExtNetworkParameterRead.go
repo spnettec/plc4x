@@ -36,9 +36,12 @@ type ApduDataExtNetworkParameterRead interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// IsApduDataExtNetworkParameterRead is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtNetworkParameterRead()
+	// CreateBuilder creates a ApduDataExtNetworkParameterReadBuilder
+	CreateApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder
 }
 
 // _ApduDataExtNetworkParameterRead is the data-structure of this message
@@ -48,6 +51,99 @@ type _ApduDataExtNetworkParameterRead struct {
 
 var _ ApduDataExtNetworkParameterRead = (*_ApduDataExtNetworkParameterRead)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtNetworkParameterRead)(nil)
+
+// NewApduDataExtNetworkParameterRead factory function for _ApduDataExtNetworkParameterRead
+func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParameterRead {
+	_result := &_ApduDataExtNetworkParameterRead{
+		ApduDataExtContract: NewApduDataExt(length),
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtNetworkParameterReadBuilder is a builder for ApduDataExtNetworkParameterRead
+type ApduDataExtNetworkParameterReadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduDataExtNetworkParameterReadBuilder
+	// Build builds the ApduDataExtNetworkParameterRead or returns an error if something is wrong
+	Build() (ApduDataExtNetworkParameterRead, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtNetworkParameterRead
+}
+
+// NewApduDataExtNetworkParameterReadBuilder() creates a ApduDataExtNetworkParameterReadBuilder
+func NewApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder {
+	return &_ApduDataExtNetworkParameterReadBuilder{_ApduDataExtNetworkParameterRead: new(_ApduDataExtNetworkParameterRead)}
+}
+
+type _ApduDataExtNetworkParameterReadBuilder struct {
+	*_ApduDataExtNetworkParameterRead
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtNetworkParameterReadBuilder) = (*_ApduDataExtNetworkParameterReadBuilder)(nil)
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) WithMandatoryFields() ApduDataExtNetworkParameterReadBuilder {
+	return b
+}
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) Build() (ApduDataExtNetworkParameterRead, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtNetworkParameterRead.deepCopy(), nil
+}
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) MustBuild() ApduDataExtNetworkParameterRead {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtNetworkParameterReadBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtNetworkParameterReadBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtNetworkParameterReadBuilder().(*_ApduDataExtNetworkParameterReadBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtNetworkParameterReadBuilder creates a ApduDataExtNetworkParameterReadBuilder
+func (b *_ApduDataExtNetworkParameterRead) CreateApduDataExtNetworkParameterReadBuilder() ApduDataExtNetworkParameterReadBuilder {
+	if b == nil {
+		return NewApduDataExtNetworkParameterReadBuilder()
+	}
+	return &_ApduDataExtNetworkParameterReadBuilder{_ApduDataExtNetworkParameterRead: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_ApduDataExtNetworkParameterRead) GetExtApciType() uint8 {
 
 func (m *_ApduDataExtNetworkParameterRead) GetParent() ApduDataExtContract {
 	return m.ApduDataExtContract
-}
-
-// NewApduDataExtNetworkParameterRead factory function for _ApduDataExtNetworkParameterRead
-func NewApduDataExtNetworkParameterRead(length uint8) *_ApduDataExtNetworkParameterRead {
-	_result := &_ApduDataExtNetworkParameterRead{
-		ApduDataExtContract: NewApduDataExt(length),
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_ApduDataExtNetworkParameterRead) SerializeWithWriteBuffer(ctx context.
 
 func (m *_ApduDataExtNetworkParameterRead) IsApduDataExtNetworkParameterRead() {}
 
+func (m *_ApduDataExtNetworkParameterRead) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtNetworkParameterRead) deepCopy() *_ApduDataExtNetworkParameterRead {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtNetworkParameterReadCopy := &_ApduDataExtNetworkParameterRead{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtNetworkParameterReadCopy
+}
+
 func (m *_ApduDataExtNetworkParameterRead) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

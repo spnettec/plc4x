@@ -38,6 +38,7 @@ type AdsDeviceNotificationRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetLength returns Length (property field)
 	GetLength() uint32
@@ -47,6 +48,8 @@ type AdsDeviceNotificationRequest interface {
 	GetAdsStampHeaders() []AdsStampHeader
 	// IsAdsDeviceNotificationRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDeviceNotificationRequest()
+	// CreateBuilder creates a AdsDeviceNotificationRequestBuilder
+	CreateAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder
 }
 
 // _AdsDeviceNotificationRequest is the data-structure of this message
@@ -59,6 +62,123 @@ type _AdsDeviceNotificationRequest struct {
 
 var _ AdsDeviceNotificationRequest = (*_AdsDeviceNotificationRequest)(nil)
 var _ AmsPacketRequirements = (*_AdsDeviceNotificationRequest)(nil)
+
+// NewAdsDeviceNotificationRequest factory function for _AdsDeviceNotificationRequest
+func NewAdsDeviceNotificationRequest(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) *_AdsDeviceNotificationRequest {
+	_result := &_AdsDeviceNotificationRequest{
+		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Length:            length,
+		Stamps:            stamps,
+		AdsStampHeaders:   adsStampHeaders,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDeviceNotificationRequestBuilder is a builder for AdsDeviceNotificationRequest
+type AdsDeviceNotificationRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) AdsDeviceNotificationRequestBuilder
+	// WithLength adds Length (property field)
+	WithLength(uint32) AdsDeviceNotificationRequestBuilder
+	// WithStamps adds Stamps (property field)
+	WithStamps(uint32) AdsDeviceNotificationRequestBuilder
+	// WithAdsStampHeaders adds AdsStampHeaders (property field)
+	WithAdsStampHeaders(...AdsStampHeader) AdsDeviceNotificationRequestBuilder
+	// Build builds the AdsDeviceNotificationRequest or returns an error if something is wrong
+	Build() (AdsDeviceNotificationRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDeviceNotificationRequest
+}
+
+// NewAdsDeviceNotificationRequestBuilder() creates a AdsDeviceNotificationRequestBuilder
+func NewAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder {
+	return &_AdsDeviceNotificationRequestBuilder{_AdsDeviceNotificationRequest: new(_AdsDeviceNotificationRequest)}
+}
+
+type _AdsDeviceNotificationRequestBuilder struct {
+	*_AdsDeviceNotificationRequest
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsDeviceNotificationRequestBuilder) = (*_AdsDeviceNotificationRequestBuilder)(nil)
+
+func (b *_AdsDeviceNotificationRequestBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) WithMandatoryFields(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader) AdsDeviceNotificationRequestBuilder {
+	return b.WithLength(length).WithStamps(stamps).WithAdsStampHeaders(adsStampHeaders...)
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) WithLength(length uint32) AdsDeviceNotificationRequestBuilder {
+	b.Length = length
+	return b
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) WithStamps(stamps uint32) AdsDeviceNotificationRequestBuilder {
+	b.Stamps = stamps
+	return b
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) WithAdsStampHeaders(adsStampHeaders ...AdsStampHeader) AdsDeviceNotificationRequestBuilder {
+	b.AdsStampHeaders = adsStampHeaders
+	return b
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) Build() (AdsDeviceNotificationRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDeviceNotificationRequest.deepCopy(), nil
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) MustBuild() AdsDeviceNotificationRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDeviceNotificationRequestBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsDeviceNotificationRequestBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDeviceNotificationRequestBuilder().(*_AdsDeviceNotificationRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDeviceNotificationRequestBuilder creates a AdsDeviceNotificationRequestBuilder
+func (b *_AdsDeviceNotificationRequest) CreateAdsDeviceNotificationRequestBuilder() AdsDeviceNotificationRequestBuilder {
+	if b == nil {
+		return NewAdsDeviceNotificationRequestBuilder()
+	}
+	return &_AdsDeviceNotificationRequestBuilder{_AdsDeviceNotificationRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,18 +223,6 @@ func (m *_AdsDeviceNotificationRequest) GetAdsStampHeaders() []AdsStampHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDeviceNotificationRequest factory function for _AdsDeviceNotificationRequest
-func NewAdsDeviceNotificationRequest(length uint32, stamps uint32, adsStampHeaders []AdsStampHeader, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsDeviceNotificationRequest {
-	_result := &_AdsDeviceNotificationRequest{
-		AmsPacketContract: NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Length:            length,
-		Stamps:            stamps,
-		AdsStampHeaders:   adsStampHeaders,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDeviceNotificationRequest(structType any) AdsDeviceNotificationRequest {
@@ -233,13 +341,35 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_AdsDeviceNotificationRequest) IsAdsDeviceNotificationRequest() {}
 
+func (m *_AdsDeviceNotificationRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDeviceNotificationRequest) deepCopy() *_AdsDeviceNotificationRequest {
+	if m == nil {
+		return nil
+	}
+	_AdsDeviceNotificationRequestCopy := &_AdsDeviceNotificationRequest{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Length,
+		m.Stamps,
+		utils.DeepCopySlice[AdsStampHeader, AdsStampHeader](m.AdsStampHeaders),
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsDeviceNotificationRequestCopy
+}
+
 func (m *_AdsDeviceNotificationRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

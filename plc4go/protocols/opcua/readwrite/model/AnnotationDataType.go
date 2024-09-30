@@ -38,6 +38,7 @@ type AnnotationDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetAnnotation returns Annotation (property field)
 	GetAnnotation() PascalString
@@ -47,6 +48,8 @@ type AnnotationDataType interface {
 	GetUri() PascalString
 	// IsAnnotationDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnnotationDataType()
+	// CreateBuilder creates a AnnotationDataTypeBuilder
+	CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder
 }
 
 // _AnnotationDataType is the data-structure of this message
@@ -59,6 +62,195 @@ type _AnnotationDataType struct {
 
 var _ AnnotationDataType = (*_AnnotationDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AnnotationDataType)(nil)
+
+// NewAnnotationDataType factory function for _AnnotationDataType
+func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri PascalString) *_AnnotationDataType {
+	if annotation == nil {
+		panic("annotation of type PascalString for AnnotationDataType must not be nil")
+	}
+	if discipline == nil {
+		panic("discipline of type PascalString for AnnotationDataType must not be nil")
+	}
+	if uri == nil {
+		panic("uri of type PascalString for AnnotationDataType must not be nil")
+	}
+	_result := &_AnnotationDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Annotation:                        annotation,
+		Discipline:                        discipline,
+		Uri:                               uri,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AnnotationDataTypeBuilder is a builder for AnnotationDataType
+type AnnotationDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder
+	// WithAnnotation adds Annotation (property field)
+	WithAnnotation(PascalString) AnnotationDataTypeBuilder
+	// WithAnnotationBuilder adds Annotation (property field) which is build by the builder
+	WithAnnotationBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// WithDiscipline adds Discipline (property field)
+	WithDiscipline(PascalString) AnnotationDataTypeBuilder
+	// WithDisciplineBuilder adds Discipline (property field) which is build by the builder
+	WithDisciplineBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// WithUri adds Uri (property field)
+	WithUri(PascalString) AnnotationDataTypeBuilder
+	// WithUriBuilder adds Uri (property field) which is build by the builder
+	WithUriBuilder(func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder
+	// Build builds the AnnotationDataType or returns an error if something is wrong
+	Build() (AnnotationDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AnnotationDataType
+}
+
+// NewAnnotationDataTypeBuilder() creates a AnnotationDataTypeBuilder
+func NewAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
+	return &_AnnotationDataTypeBuilder{_AnnotationDataType: new(_AnnotationDataType)}
+}
+
+type _AnnotationDataTypeBuilder struct {
+	*_AnnotationDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AnnotationDataTypeBuilder) = (*_AnnotationDataTypeBuilder)(nil)
+
+func (b *_AnnotationDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AnnotationDataTypeBuilder) WithMandatoryFields(annotation PascalString, discipline PascalString, uri PascalString) AnnotationDataTypeBuilder {
+	return b.WithAnnotation(annotation).WithDiscipline(discipline).WithUri(uri)
+}
+
+func (b *_AnnotationDataTypeBuilder) WithAnnotation(annotation PascalString) AnnotationDataTypeBuilder {
+	b.Annotation = annotation
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithAnnotationBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Annotation.CreatePascalStringBuilder())
+	var err error
+	b.Annotation, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithDiscipline(discipline PascalString) AnnotationDataTypeBuilder {
+	b.Discipline = discipline
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithDisciplineBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Discipline.CreatePascalStringBuilder())
+	var err error
+	b.Discipline, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithUri(uri PascalString) AnnotationDataTypeBuilder {
+	b.Uri = uri
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) WithUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AnnotationDataTypeBuilder {
+	builder := builderSupplier(b.Uri.CreatePascalStringBuilder())
+	var err error
+	b.Uri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AnnotationDataTypeBuilder) Build() (AnnotationDataType, error) {
+	if b.Annotation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'annotation' not set"))
+	}
+	if b.Discipline == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'discipline' not set"))
+	}
+	if b.Uri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'uri' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AnnotationDataType.deepCopy(), nil
+}
+
+func (b *_AnnotationDataTypeBuilder) MustBuild() AnnotationDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AnnotationDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AnnotationDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AnnotationDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAnnotationDataTypeBuilder().(*_AnnotationDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAnnotationDataTypeBuilder creates a AnnotationDataTypeBuilder
+func (b *_AnnotationDataType) CreateAnnotationDataTypeBuilder() AnnotationDataTypeBuilder {
+	if b == nil {
+		return NewAnnotationDataTypeBuilder()
+	}
+	return &_AnnotationDataTypeBuilder{_AnnotationDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,27 +291,6 @@ func (m *_AnnotationDataType) GetUri() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAnnotationDataType factory function for _AnnotationDataType
-func NewAnnotationDataType(annotation PascalString, discipline PascalString, uri PascalString) *_AnnotationDataType {
-	if annotation == nil {
-		panic("annotation of type PascalString for AnnotationDataType must not be nil")
-	}
-	if discipline == nil {
-		panic("discipline of type PascalString for AnnotationDataType must not be nil")
-	}
-	if uri == nil {
-		panic("uri of type PascalString for AnnotationDataType must not be nil")
-	}
-	_result := &_AnnotationDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Annotation:                        annotation,
-		Discipline:                        discipline,
-		Uri:                               uri,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAnnotationDataType(structType any) AnnotationDataType {
@@ -231,13 +402,35 @@ func (m *_AnnotationDataType) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_AnnotationDataType) IsAnnotationDataType() {}
 
+func (m *_AnnotationDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnnotationDataType) deepCopy() *_AnnotationDataType {
+	if m == nil {
+		return nil
+	}
+	_AnnotationDataTypeCopy := &_AnnotationDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Annotation.DeepCopy().(PascalString),
+		m.Discipline.DeepCopy().(PascalString),
+		m.Uri.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AnnotationDataTypeCopy
+}
+
 func (m *_AnnotationDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

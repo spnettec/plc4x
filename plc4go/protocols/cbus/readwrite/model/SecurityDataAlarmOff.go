@@ -36,9 +36,12 @@ type SecurityDataAlarmOff interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataAlarmOff is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataAlarmOff()
+	// CreateBuilder creates a SecurityDataAlarmOffBuilder
+	CreateSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder
 }
 
 // _SecurityDataAlarmOff is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataAlarmOff struct {
 
 var _ SecurityDataAlarmOff = (*_SecurityDataAlarmOff)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataAlarmOff)(nil)
+
+// NewSecurityDataAlarmOff factory function for _SecurityDataAlarmOff
+func NewSecurityDataAlarmOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOff {
+	_result := &_SecurityDataAlarmOff{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataAlarmOffBuilder is a builder for SecurityDataAlarmOff
+type SecurityDataAlarmOffBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataAlarmOffBuilder
+	// Build builds the SecurityDataAlarmOff or returns an error if something is wrong
+	Build() (SecurityDataAlarmOff, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataAlarmOff
+}
+
+// NewSecurityDataAlarmOffBuilder() creates a SecurityDataAlarmOffBuilder
+func NewSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder {
+	return &_SecurityDataAlarmOffBuilder{_SecurityDataAlarmOff: new(_SecurityDataAlarmOff)}
+}
+
+type _SecurityDataAlarmOffBuilder struct {
+	*_SecurityDataAlarmOff
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataAlarmOffBuilder) = (*_SecurityDataAlarmOffBuilder)(nil)
+
+func (b *_SecurityDataAlarmOffBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataAlarmOffBuilder) WithMandatoryFields() SecurityDataAlarmOffBuilder {
+	return b
+}
+
+func (b *_SecurityDataAlarmOffBuilder) Build() (SecurityDataAlarmOff, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataAlarmOff.deepCopy(), nil
+}
+
+func (b *_SecurityDataAlarmOffBuilder) MustBuild() SecurityDataAlarmOff {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataAlarmOffBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataAlarmOffBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataAlarmOffBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataAlarmOffBuilder().(*_SecurityDataAlarmOffBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataAlarmOffBuilder creates a SecurityDataAlarmOffBuilder
+func (b *_SecurityDataAlarmOff) CreateSecurityDataAlarmOffBuilder() SecurityDataAlarmOffBuilder {
+	if b == nil {
+		return NewSecurityDataAlarmOffBuilder()
+	}
+	return &_SecurityDataAlarmOffBuilder{_SecurityDataAlarmOff: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataAlarmOff)(nil)
 
 func (m *_SecurityDataAlarmOff) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataAlarmOff factory function for _SecurityDataAlarmOff
-func NewSecurityDataAlarmOff(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataAlarmOff {
-	_result := &_SecurityDataAlarmOff{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataAlarmOff) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_SecurityDataAlarmOff) IsSecurityDataAlarmOff() {}
 
+func (m *_SecurityDataAlarmOff) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataAlarmOff) deepCopy() *_SecurityDataAlarmOff {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataAlarmOffCopy := &_SecurityDataAlarmOff{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataAlarmOffCopy
+}
+
 func (m *_SecurityDataAlarmOff) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

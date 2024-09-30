@@ -38,6 +38,7 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinPresValue returns MinPresValue (property field)
 	GetMinPresValue() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataPositiveIntegerValueMinPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPositiveIntegerValueMinPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPositiveIntegerValueMinPresValue()
+	// CreateBuilder creates a BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
 }
 
 // _BACnetConstructedDataPositiveIntegerValueMinPresValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataPositiveIntegerValueMinPresValue struct {
 
 var _ BACnetConstructedDataPositiveIntegerValueMinPresValue = (*_BACnetConstructedDataPositiveIntegerValueMinPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPositiveIntegerValueMinPresValue)(nil)
+
+// NewBACnetConstructedDataPositiveIntegerValueMinPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMinPresValue
+func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	if minPresValue == nil {
+		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMinPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinPresValue:                  minPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder is a builder for BACnetConstructedDataPositiveIntegerValueMinPresValue
+type BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	// WithMinPresValue adds MinPresValue (property field)
+	WithMinPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	// WithMinPresValueBuilder adds MinPresValue (property field) which is build by the builder
+	WithMinPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+	// Build builds the BACnetConstructedDataPositiveIntegerValueMinPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataPositiveIntegerValueMinPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPositiveIntegerValueMinPresValue
+}
+
+// NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() creates a BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+func NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	return &_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMinPresValue: new(_BACnetConstructedDataPositiveIntegerValueMinPresValue)}
+}
+
+type _BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder struct {
+	*_BACnetConstructedDataPositiveIntegerValueMinPresValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) = (*_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMandatoryFields(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	return b.WithMinPresValue(minPresValue)
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	b.MinPresValue = minPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) WithMinPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	builder := builderSupplier(b.MinPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.MinPresValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Build() (BACnetConstructedDataPositiveIntegerValueMinPresValue, error) {
+	if b.MinPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'minPresValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataPositiveIntegerValueMinPresValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) MustBuild() BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder().(*_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder creates a BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder
+func (b *_BACnetConstructedDataPositiveIntegerValueMinPresValue) CreateBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder() BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataPositiveIntegerValueMinPresValueBuilder()
+	}
+	return &_BACnetConstructedDataPositiveIntegerValueMinPresValueBuilder{_BACnetConstructedDataPositiveIntegerValueMinPresValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) GetActualValue(
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPositiveIntegerValueMinPresValue factory function for _BACnetConstructedDataPositiveIntegerValueMinPresValue
-func NewBACnetConstructedDataPositiveIntegerValueMinPresValue(minPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
-	if minPresValue == nil {
-		panic("minPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPositiveIntegerValueMinPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinPresValue:                  minPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPositiveIntegerValueMinPresValue(structType any) BACnetConstructedDataPositiveIntegerValueMinPresValue {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) SerializeWithWr
 func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) IsBACnetConstructedDataPositiveIntegerValueMinPresValue() {
 }
 
+func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) deepCopy() *_BACnetConstructedDataPositiveIntegerValueMinPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPositiveIntegerValueMinPresValueCopy := &_BACnetConstructedDataPositiveIntegerValueMinPresValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MinPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPositiveIntegerValueMinPresValueCopy
+}
+
 func (m *_BACnetConstructedDataPositiveIntegerValueMinPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetAssignedLandingCallsLandingCallsList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetLandingCalls returns LandingCalls (property field)
@@ -46,6 +47,8 @@ type BACnetAssignedLandingCallsLandingCallsList interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetAssignedLandingCallsLandingCallsList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAssignedLandingCallsLandingCallsList()
+	// CreateBuilder creates a BACnetAssignedLandingCallsLandingCallsListBuilder
+	CreateBACnetAssignedLandingCallsLandingCallsListBuilder() BACnetAssignedLandingCallsLandingCallsListBuilder
 }
 
 // _BACnetAssignedLandingCallsLandingCallsList is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetAssignedLandingCallsLandingCallsList struct {
 }
 
 var _ BACnetAssignedLandingCallsLandingCallsList = (*_BACnetAssignedLandingCallsLandingCallsList)(nil)
+
+// NewBACnetAssignedLandingCallsLandingCallsList factory function for _BACnetAssignedLandingCallsLandingCallsList
+func NewBACnetAssignedLandingCallsLandingCallsList(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAssignedLandingCallsLandingCallsList {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
+	}
+	return &_BACnetAssignedLandingCallsLandingCallsList{OpeningTag: openingTag, LandingCalls: landingCalls, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAssignedLandingCallsLandingCallsListBuilder is a builder for BACnetAssignedLandingCallsLandingCallsList
+type BACnetAssignedLandingCallsLandingCallsListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// WithLandingCalls adds LandingCalls (property field)
+	WithLandingCalls(...BACnetAssignedLandingCallsLandingCallsListEntry) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder
+	// Build builds the BACnetAssignedLandingCallsLandingCallsList or returns an error if something is wrong
+	Build() (BACnetAssignedLandingCallsLandingCallsList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAssignedLandingCallsLandingCallsList
+}
+
+// NewBACnetAssignedLandingCallsLandingCallsListBuilder() creates a BACnetAssignedLandingCallsLandingCallsListBuilder
+func NewBACnetAssignedLandingCallsLandingCallsListBuilder() BACnetAssignedLandingCallsLandingCallsListBuilder {
+	return &_BACnetAssignedLandingCallsLandingCallsListBuilder{_BACnetAssignedLandingCallsLandingCallsList: new(_BACnetAssignedLandingCallsLandingCallsList)}
+}
+
+type _BACnetAssignedLandingCallsLandingCallsListBuilder struct {
+	*_BACnetAssignedLandingCallsLandingCallsList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAssignedLandingCallsLandingCallsListBuilder) = (*_BACnetAssignedLandingCallsLandingCallsListBuilder)(nil)
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	return b.WithOpeningTag(openingTag).WithLandingCalls(landingCalls...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithLandingCalls(landingCalls ...BACnetAssignedLandingCallsLandingCallsListEntry) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.LandingCalls = landingCalls
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetAssignedLandingCallsLandingCallsListBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) Build() (BACnetAssignedLandingCallsLandingCallsList, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAssignedLandingCallsLandingCallsList.deepCopy(), nil
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) MustBuild() BACnetAssignedLandingCallsLandingCallsList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAssignedLandingCallsLandingCallsListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAssignedLandingCallsLandingCallsListBuilder().(*_BACnetAssignedLandingCallsLandingCallsListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAssignedLandingCallsLandingCallsListBuilder creates a BACnetAssignedLandingCallsLandingCallsListBuilder
+func (b *_BACnetAssignedLandingCallsLandingCallsList) CreateBACnetAssignedLandingCallsLandingCallsListBuilder() BACnetAssignedLandingCallsLandingCallsListBuilder {
+	if b == nil {
+		return NewBACnetAssignedLandingCallsLandingCallsListBuilder()
+	}
+	return &_BACnetAssignedLandingCallsLandingCallsListBuilder{_BACnetAssignedLandingCallsLandingCallsList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) GetClosingTag() BACnetClos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAssignedLandingCallsLandingCallsList factory function for _BACnetAssignedLandingCallsLandingCallsList
-func NewBACnetAssignedLandingCallsLandingCallsList(openingTag BACnetOpeningTag, landingCalls []BACnetAssignedLandingCallsLandingCallsListEntry, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetAssignedLandingCallsLandingCallsList {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetAssignedLandingCallsLandingCallsList must not be nil")
-	}
-	return &_BACnetAssignedLandingCallsLandingCallsList{OpeningTag: openingTag, LandingCalls: landingCalls, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAssignedLandingCallsLandingCallsList(structType any) BACnetAssignedLandingCallsLandingCallsList {
@@ -146,7 +281,7 @@ func BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx context.Conte
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAssignedLandingCallsLandingCallsList) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetAssignedLandingCallsLandingCallsList BACnetAssignedLandingCallsLandingCallsList, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetAssignedLandingCallsLandingCallsList) GetTagNumber() uint8 {
 func (m *_BACnetAssignedLandingCallsLandingCallsList) IsBACnetAssignedLandingCallsLandingCallsList() {
 }
 
+func (m *_BACnetAssignedLandingCallsLandingCallsList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAssignedLandingCallsLandingCallsList) deepCopy() *_BACnetAssignedLandingCallsLandingCallsList {
+	if m == nil {
+		return nil
+	}
+	_BACnetAssignedLandingCallsLandingCallsListCopy := &_BACnetAssignedLandingCallsLandingCallsList{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetAssignedLandingCallsLandingCallsListEntry, BACnetAssignedLandingCallsLandingCallsListEntry](m.LandingCalls),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetAssignedLandingCallsLandingCallsListCopy
+}
+
 func (m *_BACnetAssignedLandingCallsLandingCallsList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

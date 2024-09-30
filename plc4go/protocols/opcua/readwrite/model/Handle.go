@@ -36,8 +36,11 @@ type Handle interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsHandle is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHandle()
+	// CreateBuilder creates a HandleBuilder
+	CreateHandleBuilder() HandleBuilder
 }
 
 // _Handle is the data-structure of this message
@@ -50,6 +53,75 @@ var _ Handle = (*_Handle)(nil)
 func NewHandle() *_Handle {
 	return &_Handle{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HandleBuilder is a builder for Handle
+type HandleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() HandleBuilder
+	// Build builds the Handle or returns an error if something is wrong
+	Build() (Handle, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Handle
+}
+
+// NewHandleBuilder() creates a HandleBuilder
+func NewHandleBuilder() HandleBuilder {
+	return &_HandleBuilder{_Handle: new(_Handle)}
+}
+
+type _HandleBuilder struct {
+	*_Handle
+
+	err *utils.MultiError
+}
+
+var _ (HandleBuilder) = (*_HandleBuilder)(nil)
+
+func (b *_HandleBuilder) WithMandatoryFields() HandleBuilder {
+	return b
+}
+
+func (b *_HandleBuilder) Build() (Handle, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Handle.deepCopy(), nil
+}
+
+func (b *_HandleBuilder) MustBuild() Handle {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HandleBuilder) DeepCopy() any {
+	_copy := b.CreateHandleBuilder().(*_HandleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHandleBuilder creates a HandleBuilder
+func (b *_Handle) CreateHandleBuilder() HandleBuilder {
+	if b == nil {
+		return NewHandleBuilder()
+	}
+	return &_HandleBuilder{_Handle: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastHandle(structType any) Handle {
@@ -91,7 +163,7 @@ func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ha
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Handle) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__handle Handle, err error) {
@@ -135,13 +207,29 @@ func (m *_Handle) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 
 func (m *_Handle) IsHandle() {}
 
+func (m *_Handle) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Handle) deepCopy() *_Handle {
+	if m == nil {
+		return nil
+	}
+	_HandleCopy := &_Handle{}
+	return _HandleCopy
+}
+
 func (m *_Handle) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

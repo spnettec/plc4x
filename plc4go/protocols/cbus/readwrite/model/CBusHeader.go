@@ -38,6 +38,7 @@ type CBusHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPriorityClass returns PriorityClass (property field)
 	GetPriorityClass() PriorityClass
 	// GetDp returns Dp (property field)
@@ -48,6 +49,8 @@ type CBusHeader interface {
 	GetDestinationAddressType() DestinationAddressType
 	// IsCBusHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusHeader()
+	// CreateBuilder creates a CBusHeaderBuilder
+	CreateCBusHeaderBuilder() CBusHeaderBuilder
 }
 
 // _CBusHeader is the data-structure of this message
@@ -59,6 +62,108 @@ type _CBusHeader struct {
 }
 
 var _ CBusHeader = (*_CBusHeader)(nil)
+
+// NewCBusHeader factory function for _CBusHeader
+func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
+	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusHeaderBuilder is a builder for CBusHeader
+type CBusHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) CBusHeaderBuilder
+	// WithPriorityClass adds PriorityClass (property field)
+	WithPriorityClass(PriorityClass) CBusHeaderBuilder
+	// WithDp adds Dp (property field)
+	WithDp(bool) CBusHeaderBuilder
+	// WithRc adds Rc (property field)
+	WithRc(uint8) CBusHeaderBuilder
+	// WithDestinationAddressType adds DestinationAddressType (property field)
+	WithDestinationAddressType(DestinationAddressType) CBusHeaderBuilder
+	// Build builds the CBusHeader or returns an error if something is wrong
+	Build() (CBusHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusHeader
+}
+
+// NewCBusHeaderBuilder() creates a CBusHeaderBuilder
+func NewCBusHeaderBuilder() CBusHeaderBuilder {
+	return &_CBusHeaderBuilder{_CBusHeader: new(_CBusHeader)}
+}
+
+type _CBusHeaderBuilder struct {
+	*_CBusHeader
+
+	err *utils.MultiError
+}
+
+var _ (CBusHeaderBuilder) = (*_CBusHeaderBuilder)(nil)
+
+func (b *_CBusHeaderBuilder) WithMandatoryFields(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) CBusHeaderBuilder {
+	return b.WithPriorityClass(priorityClass).WithDp(dp).WithRc(rc).WithDestinationAddressType(destinationAddressType)
+}
+
+func (b *_CBusHeaderBuilder) WithPriorityClass(priorityClass PriorityClass) CBusHeaderBuilder {
+	b.PriorityClass = priorityClass
+	return b
+}
+
+func (b *_CBusHeaderBuilder) WithDp(dp bool) CBusHeaderBuilder {
+	b.Dp = dp
+	return b
+}
+
+func (b *_CBusHeaderBuilder) WithRc(rc uint8) CBusHeaderBuilder {
+	b.Rc = rc
+	return b
+}
+
+func (b *_CBusHeaderBuilder) WithDestinationAddressType(destinationAddressType DestinationAddressType) CBusHeaderBuilder {
+	b.DestinationAddressType = destinationAddressType
+	return b
+}
+
+func (b *_CBusHeaderBuilder) Build() (CBusHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusHeader.deepCopy(), nil
+}
+
+func (b *_CBusHeaderBuilder) MustBuild() CBusHeader {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateCBusHeaderBuilder().(*_CBusHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusHeaderBuilder creates a CBusHeaderBuilder
+func (b *_CBusHeader) CreateCBusHeaderBuilder() CBusHeaderBuilder {
+	if b == nil {
+		return NewCBusHeaderBuilder()
+	}
+	return &_CBusHeaderBuilder{_CBusHeader: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,11 +190,6 @@ func (m *_CBusHeader) GetDestinationAddressType() DestinationAddressType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusHeader factory function for _CBusHeader
-func NewCBusHeader(priorityClass PriorityClass, dp bool, rc uint8, destinationAddressType DestinationAddressType) *_CBusHeader {
-	return &_CBusHeader{PriorityClass: priorityClass, Dp: dp, Rc: rc, DestinationAddressType: destinationAddressType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusHeader(structType any) CBusHeader {
@@ -143,7 +243,7 @@ func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CBusHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cBusHeader CBusHeader, err error) {
@@ -227,13 +327,34 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_CBusHeader) IsCBusHeader() {}
 
+func (m *_CBusHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusHeader) deepCopy() *_CBusHeader {
+	if m == nil {
+		return nil
+	}
+	_CBusHeaderCopy := &_CBusHeader{
+		m.PriorityClass,
+		m.Dp,
+		m.Rc,
+		m.DestinationAddressType,
+	}
+	return _CBusHeaderCopy
+}
+
 func (m *_CBusHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

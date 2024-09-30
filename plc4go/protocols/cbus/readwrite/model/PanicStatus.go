@@ -38,6 +38,7 @@ type PanicStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
 	// GetIsNoPanic returns IsNoPanic (virtual field)
@@ -48,6 +49,8 @@ type PanicStatus interface {
 	GetIsPanicCurrentlyActive() bool
 	// IsPanicStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPanicStatus()
+	// CreateBuilder creates a PanicStatusBuilder
+	CreatePanicStatusBuilder() PanicStatusBuilder
 }
 
 // _PanicStatus is the data-structure of this message
@@ -56,6 +59,87 @@ type _PanicStatus struct {
 }
 
 var _ PanicStatus = (*_PanicStatus)(nil)
+
+// NewPanicStatus factory function for _PanicStatus
+func NewPanicStatus(status uint8) *_PanicStatus {
+	return &_PanicStatus{Status: status}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PanicStatusBuilder is a builder for PanicStatus
+type PanicStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8) PanicStatusBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) PanicStatusBuilder
+	// Build builds the PanicStatus or returns an error if something is wrong
+	Build() (PanicStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PanicStatus
+}
+
+// NewPanicStatusBuilder() creates a PanicStatusBuilder
+func NewPanicStatusBuilder() PanicStatusBuilder {
+	return &_PanicStatusBuilder{_PanicStatus: new(_PanicStatus)}
+}
+
+type _PanicStatusBuilder struct {
+	*_PanicStatus
+
+	err *utils.MultiError
+}
+
+var _ (PanicStatusBuilder) = (*_PanicStatusBuilder)(nil)
+
+func (b *_PanicStatusBuilder) WithMandatoryFields(status uint8) PanicStatusBuilder {
+	return b.WithStatus(status)
+}
+
+func (b *_PanicStatusBuilder) WithStatus(status uint8) PanicStatusBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_PanicStatusBuilder) Build() (PanicStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PanicStatus.deepCopy(), nil
+}
+
+func (b *_PanicStatusBuilder) MustBuild() PanicStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_PanicStatusBuilder) DeepCopy() any {
+	_copy := b.CreatePanicStatusBuilder().(*_PanicStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePanicStatusBuilder creates a PanicStatusBuilder
+func (b *_PanicStatus) CreatePanicStatusBuilder() PanicStatusBuilder {
+	if b == nil {
+		return NewPanicStatusBuilder()
+	}
+	return &_PanicStatusBuilder{_PanicStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -97,11 +181,6 @@ func (m *_PanicStatus) GetIsPanicCurrentlyActive() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewPanicStatus factory function for _PanicStatus
-func NewPanicStatus(status uint8) *_PanicStatus {
-	return &_PanicStatus{Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastPanicStatus(structType any) PanicStatus {
@@ -152,7 +231,7 @@ func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_PanicStatus) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__panicStatus PanicStatus, err error) {
@@ -242,13 +321,31 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_PanicStatus) IsPanicStatus() {}
 
+func (m *_PanicStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PanicStatus) deepCopy() *_PanicStatus {
+	if m == nil {
+		return nil
+	}
+	_PanicStatusCopy := &_PanicStatus{
+		m.Status,
+	}
+	return _PanicStatusCopy
+}
+
 func (m *_PanicStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

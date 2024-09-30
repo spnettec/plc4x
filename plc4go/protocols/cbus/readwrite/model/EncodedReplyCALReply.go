@@ -38,11 +38,14 @@ type EncodedReplyCALReply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EncodedReply
 	// GetCalReply returns CalReply (property field)
 	GetCalReply() CALReply
 	// IsEncodedReplyCALReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEncodedReplyCALReply()
+	// CreateBuilder creates a EncodedReplyCALReplyBuilder
+	CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder
 }
 
 // _EncodedReplyCALReply is the data-structure of this message
@@ -53,6 +56,131 @@ type _EncodedReplyCALReply struct {
 
 var _ EncodedReplyCALReply = (*_EncodedReplyCALReply)(nil)
 var _ EncodedReplyRequirements = (*_EncodedReplyCALReply)(nil)
+
+// NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
+func NewEncodedReplyCALReply(peekedByte byte, calReply CALReply, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
+	if calReply == nil {
+		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
+	}
+	_result := &_EncodedReplyCALReply{
+		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
+		CalReply:             calReply,
+	}
+	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EncodedReplyCALReplyBuilder is a builder for EncodedReplyCALReply
+type EncodedReplyCALReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder
+	// WithCalReply adds CalReply (property field)
+	WithCalReply(CALReply) EncodedReplyCALReplyBuilder
+	// WithCalReplyBuilder adds CalReply (property field) which is build by the builder
+	WithCalReplyBuilder(func(CALReplyBuilder) CALReplyBuilder) EncodedReplyCALReplyBuilder
+	// Build builds the EncodedReplyCALReply or returns an error if something is wrong
+	Build() (EncodedReplyCALReply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EncodedReplyCALReply
+}
+
+// NewEncodedReplyCALReplyBuilder() creates a EncodedReplyCALReplyBuilder
+func NewEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
+	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: new(_EncodedReplyCALReply)}
+}
+
+type _EncodedReplyCALReplyBuilder struct {
+	*_EncodedReplyCALReply
+
+	parentBuilder *_EncodedReplyBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EncodedReplyCALReplyBuilder) = (*_EncodedReplyCALReplyBuilder)(nil)
+
+func (b *_EncodedReplyCALReplyBuilder) setParent(contract EncodedReplyContract) {
+	b.EncodedReplyContract = contract
+}
+
+func (b *_EncodedReplyCALReplyBuilder) WithMandatoryFields(calReply CALReply) EncodedReplyCALReplyBuilder {
+	return b.WithCalReply(calReply)
+}
+
+func (b *_EncodedReplyCALReplyBuilder) WithCalReply(calReply CALReply) EncodedReplyCALReplyBuilder {
+	b.CalReply = calReply
+	return b
+}
+
+func (b *_EncodedReplyCALReplyBuilder) WithCalReplyBuilder(builderSupplier func(CALReplyBuilder) CALReplyBuilder) EncodedReplyCALReplyBuilder {
+	builder := builderSupplier(b.CalReply.CreateCALReplyBuilder())
+	var err error
+	b.CalReply, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CALReplyBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EncodedReplyCALReplyBuilder) Build() (EncodedReplyCALReply, error) {
+	if b.CalReply == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calReply' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EncodedReplyCALReply.deepCopy(), nil
+}
+
+func (b *_EncodedReplyCALReplyBuilder) MustBuild() EncodedReplyCALReply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EncodedReplyCALReplyBuilder) Done() EncodedReplyBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EncodedReplyCALReplyBuilder) buildForEncodedReply() (EncodedReply, error) {
+	return b.Build()
+}
+
+func (b *_EncodedReplyCALReplyBuilder) DeepCopy() any {
+	_copy := b.CreateEncodedReplyCALReplyBuilder().(*_EncodedReplyCALReplyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEncodedReplyCALReplyBuilder creates a EncodedReplyCALReplyBuilder
+func (b *_EncodedReplyCALReply) CreateEncodedReplyCALReplyBuilder() EncodedReplyCALReplyBuilder {
+	if b == nil {
+		return NewEncodedReplyCALReplyBuilder()
+	}
+	return &_EncodedReplyCALReplyBuilder{_EncodedReplyCALReply: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_EncodedReplyCALReply) GetCalReply() CALReply {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEncodedReplyCALReply factory function for _EncodedReplyCALReply
-func NewEncodedReplyCALReply(calReply CALReply, peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_EncodedReplyCALReply {
-	if calReply == nil {
-		panic("calReply of type CALReply for EncodedReplyCALReply must not be nil")
-	}
-	_result := &_EncodedReplyCALReply{
-		EncodedReplyContract: NewEncodedReply(peekedByte, cBusOptions, requestContext),
-		CalReply:             calReply,
-	}
-	_result.EncodedReplyContract.(*_EncodedReply)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEncodedReplyCALReply(structType any) EncodedReplyCALReply {
@@ -179,13 +294,33 @@ func (m *_EncodedReplyCALReply) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_EncodedReplyCALReply) IsEncodedReplyCALReply() {}
 
+func (m *_EncodedReplyCALReply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EncodedReplyCALReply) deepCopy() *_EncodedReplyCALReply {
+	if m == nil {
+		return nil
+	}
+	_EncodedReplyCALReplyCopy := &_EncodedReplyCALReply{
+		m.EncodedReplyContract.(*_EncodedReply).deepCopy(),
+		m.CalReply.DeepCopy().(CALReply),
+	}
+	m.EncodedReplyContract.(*_EncodedReply)._SubType = m
+	return _EncodedReplyCALReplyCopy
+}
+
 func (m *_EncodedReplyCALReply) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type TransferSubscriptionsRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -49,6 +50,8 @@ type TransferSubscriptionsRequest interface {
 	GetSendInitialValues() bool
 	// IsTransferSubscriptionsRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTransferSubscriptionsRequest()
+	// CreateBuilder creates a TransferSubscriptionsRequestBuilder
+	CreateTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilder
 }
 
 // _TransferSubscriptionsRequest is the data-structure of this message
@@ -64,6 +67,155 @@ type _TransferSubscriptionsRequest struct {
 
 var _ TransferSubscriptionsRequest = (*_TransferSubscriptionsRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_TransferSubscriptionsRequest)(nil)
+
+// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
+func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
+	}
+	_result := &_TransferSubscriptionsRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfSubscriptionIds:               noOfSubscriptionIds,
+		SubscriptionIds:                   subscriptionIds,
+		SendInitialValues:                 sendInitialValues,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TransferSubscriptionsRequestBuilder is a builder for TransferSubscriptionsRequest
+type TransferSubscriptionsRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder
+	// WithNoOfSubscriptionIds adds NoOfSubscriptionIds (property field)
+	WithNoOfSubscriptionIds(int32) TransferSubscriptionsRequestBuilder
+	// WithSubscriptionIds adds SubscriptionIds (property field)
+	WithSubscriptionIds(...uint32) TransferSubscriptionsRequestBuilder
+	// WithSendInitialValues adds SendInitialValues (property field)
+	WithSendInitialValues(bool) TransferSubscriptionsRequestBuilder
+	// Build builds the TransferSubscriptionsRequest or returns an error if something is wrong
+	Build() (TransferSubscriptionsRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TransferSubscriptionsRequest
+}
+
+// NewTransferSubscriptionsRequestBuilder() creates a TransferSubscriptionsRequestBuilder
+func NewTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilder {
+	return &_TransferSubscriptionsRequestBuilder{_TransferSubscriptionsRequest: new(_TransferSubscriptionsRequest)}
+}
+
+type _TransferSubscriptionsRequestBuilder struct {
+	*_TransferSubscriptionsRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TransferSubscriptionsRequestBuilder) = (*_TransferSubscriptionsRequestBuilder)(nil)
+
+func (b *_TransferSubscriptionsRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) TransferSubscriptionsRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfSubscriptionIds(noOfSubscriptionIds).WithSubscriptionIds(subscriptionIds...).WithSendInitialValues(sendInitialValues)
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) TransferSubscriptionsRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) TransferSubscriptionsRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithNoOfSubscriptionIds(noOfSubscriptionIds int32) TransferSubscriptionsRequestBuilder {
+	b.NoOfSubscriptionIds = noOfSubscriptionIds
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithSubscriptionIds(subscriptionIds ...uint32) TransferSubscriptionsRequestBuilder {
+	b.SubscriptionIds = subscriptionIds
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) WithSendInitialValues(sendInitialValues bool) TransferSubscriptionsRequestBuilder {
+	b.SendInitialValues = sendInitialValues
+	return b
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) Build() (TransferSubscriptionsRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TransferSubscriptionsRequest.deepCopy(), nil
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) MustBuild() TransferSubscriptionsRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TransferSubscriptionsRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_TransferSubscriptionsRequestBuilder) DeepCopy() any {
+	_copy := b.CreateTransferSubscriptionsRequestBuilder().(*_TransferSubscriptionsRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTransferSubscriptionsRequestBuilder creates a TransferSubscriptionsRequestBuilder
+func (b *_TransferSubscriptionsRequest) CreateTransferSubscriptionsRequestBuilder() TransferSubscriptionsRequestBuilder {
+	if b == nil {
+		return NewTransferSubscriptionsRequestBuilder()
+	}
+	return &_TransferSubscriptionsRequestBuilder{_TransferSubscriptionsRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -108,22 +260,6 @@ func (m *_TransferSubscriptionsRequest) GetSendInitialValues() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransferSubscriptionsRequest factory function for _TransferSubscriptionsRequest
-func NewTransferSubscriptionsRequest(requestHeader ExtensionObjectDefinition, noOfSubscriptionIds int32, subscriptionIds []uint32, sendInitialValues bool) *_TransferSubscriptionsRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for TransferSubscriptionsRequest must not be nil")
-	}
-	_result := &_TransferSubscriptionsRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfSubscriptionIds:               noOfSubscriptionIds,
-		SubscriptionIds:                   subscriptionIds,
-		SendInitialValues:                 sendInitialValues,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransferSubscriptionsRequest(structType any) TransferSubscriptionsRequest {
@@ -263,13 +399,37 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_TransferSubscriptionsRequest) IsTransferSubscriptionsRequest() {}
 
+func (m *_TransferSubscriptionsRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransferSubscriptionsRequest) deepCopy() *_TransferSubscriptionsRequest {
+	if m == nil {
+		return nil
+	}
+	_TransferSubscriptionsRequestCopy := &_TransferSubscriptionsRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfSubscriptionIds,
+		utils.DeepCopySlice[uint32, uint32](m.SubscriptionIds),
+		m.SendInitialValues,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _TransferSubscriptionsRequestCopy
+}
+
 func (m *_TransferSubscriptionsRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

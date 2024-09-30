@@ -36,9 +36,12 @@ type BACnetConstructedDataBitstringValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataBitstringValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBitstringValueAll()
+	// CreateBuilder creates a BACnetConstructedDataBitstringValueAllBuilder
+	CreateBACnetConstructedDataBitstringValueAllBuilder() BACnetConstructedDataBitstringValueAllBuilder
 }
 
 // _BACnetConstructedDataBitstringValueAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataBitstringValueAll struct {
 
 var _ BACnetConstructedDataBitstringValueAll = (*_BACnetConstructedDataBitstringValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitstringValueAll)(nil)
+
+// NewBACnetConstructedDataBitstringValueAll factory function for _BACnetConstructedDataBitstringValueAll
+func NewBACnetConstructedDataBitstringValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitstringValueAll {
+	_result := &_BACnetConstructedDataBitstringValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBitstringValueAllBuilder is a builder for BACnetConstructedDataBitstringValueAll
+type BACnetConstructedDataBitstringValueAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataBitstringValueAllBuilder
+	// Build builds the BACnetConstructedDataBitstringValueAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataBitstringValueAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBitstringValueAll
+}
+
+// NewBACnetConstructedDataBitstringValueAllBuilder() creates a BACnetConstructedDataBitstringValueAllBuilder
+func NewBACnetConstructedDataBitstringValueAllBuilder() BACnetConstructedDataBitstringValueAllBuilder {
+	return &_BACnetConstructedDataBitstringValueAllBuilder{_BACnetConstructedDataBitstringValueAll: new(_BACnetConstructedDataBitstringValueAll)}
+}
+
+type _BACnetConstructedDataBitstringValueAllBuilder struct {
+	*_BACnetConstructedDataBitstringValueAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBitstringValueAllBuilder) = (*_BACnetConstructedDataBitstringValueAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) WithMandatoryFields() BACnetConstructedDataBitstringValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) Build() (BACnetConstructedDataBitstringValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBitstringValueAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) MustBuild() BACnetConstructedDataBitstringValueAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBitstringValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBitstringValueAllBuilder().(*_BACnetConstructedDataBitstringValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBitstringValueAllBuilder creates a BACnetConstructedDataBitstringValueAllBuilder
+func (b *_BACnetConstructedDataBitstringValueAll) CreateBACnetConstructedDataBitstringValueAllBuilder() BACnetConstructedDataBitstringValueAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBitstringValueAllBuilder()
+	}
+	return &_BACnetConstructedDataBitstringValueAllBuilder{_BACnetConstructedDataBitstringValueAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataBitstringValueAll) GetPropertyIdentifierArgument(
 
 func (m *_BACnetConstructedDataBitstringValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataBitstringValueAll factory function for _BACnetConstructedDataBitstringValueAll
-func NewBACnetConstructedDataBitstringValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitstringValueAll {
-	_result := &_BACnetConstructedDataBitstringValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataBitstringValueAll) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataBitstringValueAll) IsBACnetConstructedDataBitstringValueAll() {}
 
+func (m *_BACnetConstructedDataBitstringValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitstringValueAll) deepCopy() *_BACnetConstructedDataBitstringValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitstringValueAllCopy := &_BACnetConstructedDataBitstringValueAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitstringValueAllCopy
+}
+
 func (m *_BACnetConstructedDataBitstringValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

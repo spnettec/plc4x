@@ -36,9 +36,12 @@ type BACnetConstructedDataBinaryLightingOutputAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataBinaryLightingOutputAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBinaryLightingOutputAll()
+	// CreateBuilder creates a BACnetConstructedDataBinaryLightingOutputAllBuilder
+	CreateBACnetConstructedDataBinaryLightingOutputAllBuilder() BACnetConstructedDataBinaryLightingOutputAllBuilder
 }
 
 // _BACnetConstructedDataBinaryLightingOutputAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataBinaryLightingOutputAll struct {
 
 var _ BACnetConstructedDataBinaryLightingOutputAll = (*_BACnetConstructedDataBinaryLightingOutputAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBinaryLightingOutputAll)(nil)
+
+// NewBACnetConstructedDataBinaryLightingOutputAll factory function for _BACnetConstructedDataBinaryLightingOutputAll
+func NewBACnetConstructedDataBinaryLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputAll {
+	_result := &_BACnetConstructedDataBinaryLightingOutputAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBinaryLightingOutputAllBuilder is a builder for BACnetConstructedDataBinaryLightingOutputAll
+type BACnetConstructedDataBinaryLightingOutputAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataBinaryLightingOutputAllBuilder
+	// Build builds the BACnetConstructedDataBinaryLightingOutputAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataBinaryLightingOutputAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBinaryLightingOutputAll
+}
+
+// NewBACnetConstructedDataBinaryLightingOutputAllBuilder() creates a BACnetConstructedDataBinaryLightingOutputAllBuilder
+func NewBACnetConstructedDataBinaryLightingOutputAllBuilder() BACnetConstructedDataBinaryLightingOutputAllBuilder {
+	return &_BACnetConstructedDataBinaryLightingOutputAllBuilder{_BACnetConstructedDataBinaryLightingOutputAll: new(_BACnetConstructedDataBinaryLightingOutputAll)}
+}
+
+type _BACnetConstructedDataBinaryLightingOutputAllBuilder struct {
+	*_BACnetConstructedDataBinaryLightingOutputAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBinaryLightingOutputAllBuilder) = (*_BACnetConstructedDataBinaryLightingOutputAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) WithMandatoryFields() BACnetConstructedDataBinaryLightingOutputAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) Build() (BACnetConstructedDataBinaryLightingOutputAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBinaryLightingOutputAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) MustBuild() BACnetConstructedDataBinaryLightingOutputAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBinaryLightingOutputAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBinaryLightingOutputAllBuilder().(*_BACnetConstructedDataBinaryLightingOutputAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBinaryLightingOutputAllBuilder creates a BACnetConstructedDataBinaryLightingOutputAllBuilder
+func (b *_BACnetConstructedDataBinaryLightingOutputAll) CreateBACnetConstructedDataBinaryLightingOutputAllBuilder() BACnetConstructedDataBinaryLightingOutputAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBinaryLightingOutputAllBuilder()
+	}
+	return &_BACnetConstructedDataBinaryLightingOutputAllBuilder{_BACnetConstructedDataBinaryLightingOutputAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetPropertyIdentifierArg
 
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataBinaryLightingOutputAll factory function for _BACnetConstructedDataBinaryLightingOutputAll
-func NewBACnetConstructedDataBinaryLightingOutputAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBinaryLightingOutputAll {
-	_result := &_BACnetConstructedDataBinaryLightingOutputAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -157,13 +244,32 @@ func (m *_BACnetConstructedDataBinaryLightingOutputAll) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) IsBACnetConstructedDataBinaryLightingOutputAll() {
 }
 
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBinaryLightingOutputAll) deepCopy() *_BACnetConstructedDataBinaryLightingOutputAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBinaryLightingOutputAllCopy := &_BACnetConstructedDataBinaryLightingOutputAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBinaryLightingOutputAllCopy
+}
+
 func (m *_BACnetConstructedDataBinaryLightingOutputAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

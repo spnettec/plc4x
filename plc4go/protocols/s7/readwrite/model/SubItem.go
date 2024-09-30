@@ -38,6 +38,7 @@ type SubItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetBytesToRead returns BytesToRead (property field)
 	GetBytesToRead() uint8
 	// GetDbNumber returns DbNumber (property field)
@@ -46,6 +47,8 @@ type SubItem interface {
 	GetStartAddress() uint16
 	// IsSubItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSubItem()
+	// CreateBuilder creates a SubItemBuilder
+	CreateSubItemBuilder() SubItemBuilder
 }
 
 // _SubItem is the data-structure of this message
@@ -56,6 +59,101 @@ type _SubItem struct {
 }
 
 var _ SubItem = (*_SubItem)(nil)
+
+// NewSubItem factory function for _SubItem
+func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
+	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SubItemBuilder is a builder for SubItem
+type SubItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder
+	// WithBytesToRead adds BytesToRead (property field)
+	WithBytesToRead(uint8) SubItemBuilder
+	// WithDbNumber adds DbNumber (property field)
+	WithDbNumber(uint16) SubItemBuilder
+	// WithStartAddress adds StartAddress (property field)
+	WithStartAddress(uint16) SubItemBuilder
+	// Build builds the SubItem or returns an error if something is wrong
+	Build() (SubItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SubItem
+}
+
+// NewSubItemBuilder() creates a SubItemBuilder
+func NewSubItemBuilder() SubItemBuilder {
+	return &_SubItemBuilder{_SubItem: new(_SubItem)}
+}
+
+type _SubItemBuilder struct {
+	*_SubItem
+
+	err *utils.MultiError
+}
+
+var _ (SubItemBuilder) = (*_SubItemBuilder)(nil)
+
+func (b *_SubItemBuilder) WithMandatoryFields(bytesToRead uint8, dbNumber uint16, startAddress uint16) SubItemBuilder {
+	return b.WithBytesToRead(bytesToRead).WithDbNumber(dbNumber).WithStartAddress(startAddress)
+}
+
+func (b *_SubItemBuilder) WithBytesToRead(bytesToRead uint8) SubItemBuilder {
+	b.BytesToRead = bytesToRead
+	return b
+}
+
+func (b *_SubItemBuilder) WithDbNumber(dbNumber uint16) SubItemBuilder {
+	b.DbNumber = dbNumber
+	return b
+}
+
+func (b *_SubItemBuilder) WithStartAddress(startAddress uint16) SubItemBuilder {
+	b.StartAddress = startAddress
+	return b
+}
+
+func (b *_SubItemBuilder) Build() (SubItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SubItem.deepCopy(), nil
+}
+
+func (b *_SubItemBuilder) MustBuild() SubItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SubItemBuilder) DeepCopy() any {
+	_copy := b.CreateSubItemBuilder().(*_SubItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSubItemBuilder creates a SubItemBuilder
+func (b *_SubItem) CreateSubItemBuilder() SubItemBuilder {
+	if b == nil {
+		return NewSubItemBuilder()
+	}
+	return &_SubItemBuilder{_SubItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_SubItem) GetStartAddress() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSubItem factory function for _SubItem
-func NewSubItem(bytesToRead uint8, dbNumber uint16, startAddress uint16) *_SubItem {
-	return &_SubItem{BytesToRead: bytesToRead, DbNumber: dbNumber, StartAddress: startAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSubItem(structType any) SubItem {
@@ -133,7 +226,7 @@ func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SubItem) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__subItem SubItem, err error) {
@@ -207,13 +300,33 @@ func (m *_SubItem) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 func (m *_SubItem) IsSubItem() {}
 
+func (m *_SubItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SubItem) deepCopy() *_SubItem {
+	if m == nil {
+		return nil
+	}
+	_SubItemCopy := &_SubItem{
+		m.BytesToRead,
+		m.DbNumber,
+		m.StartAddress,
+	}
+	return _SubItemCopy
+}
+
 func (m *_SubItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type CALDataIdentify interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CALData
 	// GetAttribute returns Attribute (property field)
 	GetAttribute() Attribute
 	// IsCALDataIdentify is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCALDataIdentify()
+	// CreateBuilder creates a CALDataIdentifyBuilder
+	CreateCALDataIdentifyBuilder() CALDataIdentifyBuilder
 }
 
 // _CALDataIdentify is the data-structure of this message
@@ -53,6 +56,107 @@ type _CALDataIdentify struct {
 
 var _ CALDataIdentify = (*_CALDataIdentify)(nil)
 var _ CALDataRequirements = (*_CALDataIdentify)(nil)
+
+// NewCALDataIdentify factory function for _CALDataIdentify
+func NewCALDataIdentify(commandTypeContainer CALCommandTypeContainer, additionalData CALData, attribute Attribute, requestContext RequestContext) *_CALDataIdentify {
+	_result := &_CALDataIdentify{
+		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
+		Attribute:       attribute,
+	}
+	_result.CALDataContract.(*_CALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CALDataIdentifyBuilder is a builder for CALDataIdentify
+type CALDataIdentifyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(attribute Attribute) CALDataIdentifyBuilder
+	// WithAttribute adds Attribute (property field)
+	WithAttribute(Attribute) CALDataIdentifyBuilder
+	// Build builds the CALDataIdentify or returns an error if something is wrong
+	Build() (CALDataIdentify, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CALDataIdentify
+}
+
+// NewCALDataIdentifyBuilder() creates a CALDataIdentifyBuilder
+func NewCALDataIdentifyBuilder() CALDataIdentifyBuilder {
+	return &_CALDataIdentifyBuilder{_CALDataIdentify: new(_CALDataIdentify)}
+}
+
+type _CALDataIdentifyBuilder struct {
+	*_CALDataIdentify
+
+	parentBuilder *_CALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CALDataIdentifyBuilder) = (*_CALDataIdentifyBuilder)(nil)
+
+func (b *_CALDataIdentifyBuilder) setParent(contract CALDataContract) {
+	b.CALDataContract = contract
+}
+
+func (b *_CALDataIdentifyBuilder) WithMandatoryFields(attribute Attribute) CALDataIdentifyBuilder {
+	return b.WithAttribute(attribute)
+}
+
+func (b *_CALDataIdentifyBuilder) WithAttribute(attribute Attribute) CALDataIdentifyBuilder {
+	b.Attribute = attribute
+	return b
+}
+
+func (b *_CALDataIdentifyBuilder) Build() (CALDataIdentify, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CALDataIdentify.deepCopy(), nil
+}
+
+func (b *_CALDataIdentifyBuilder) MustBuild() CALDataIdentify {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CALDataIdentifyBuilder) Done() CALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CALDataIdentifyBuilder) buildForCALData() (CALData, error) {
+	return b.Build()
+}
+
+func (b *_CALDataIdentifyBuilder) DeepCopy() any {
+	_copy := b.CreateCALDataIdentifyBuilder().(*_CALDataIdentifyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCALDataIdentifyBuilder creates a CALDataIdentifyBuilder
+func (b *_CALDataIdentify) CreateCALDataIdentifyBuilder() CALDataIdentifyBuilder {
+	if b == nil {
+		return NewCALDataIdentifyBuilder()
+	}
+	return &_CALDataIdentifyBuilder{_CALDataIdentify: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_CALDataIdentify) GetAttribute() Attribute {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCALDataIdentify factory function for _CALDataIdentify
-func NewCALDataIdentify(attribute Attribute, commandTypeContainer CALCommandTypeContainer, additionalData CALData, requestContext RequestContext) *_CALDataIdentify {
-	_result := &_CALDataIdentify{
-		CALDataContract: NewCALData(commandTypeContainer, additionalData, requestContext),
-		Attribute:       attribute,
-	}
-	_result.CALDataContract.(*_CALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCALDataIdentify(structType any) CALDataIdentify {
@@ -176,13 +270,33 @@ func (m *_CALDataIdentify) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_CALDataIdentify) IsCALDataIdentify() {}
 
+func (m *_CALDataIdentify) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CALDataIdentify) deepCopy() *_CALDataIdentify {
+	if m == nil {
+		return nil
+	}
+	_CALDataIdentifyCopy := &_CALDataIdentify{
+		m.CALDataContract.(*_CALData).deepCopy(),
+		m.Attribute,
+	}
+	m.CALDataContract.(*_CALData)._SubType = m
+	return _CALDataIdentifyCopy
+}
+
 func (m *_CALDataIdentify) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

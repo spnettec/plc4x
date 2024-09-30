@@ -36,9 +36,12 @@ type EipListIdentityRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	EipPacket
 	// IsEipListIdentityRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEipListIdentityRequest()
+	// CreateBuilder creates a EipListIdentityRequestBuilder
+	CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder
 }
 
 // _EipListIdentityRequest is the data-structure of this message
@@ -48,6 +51,99 @@ type _EipListIdentityRequest struct {
 
 var _ EipListIdentityRequest = (*_EipListIdentityRequest)(nil)
 var _ EipPacketRequirements = (*_EipListIdentityRequest)(nil)
+
+// NewEipListIdentityRequest factory function for _EipListIdentityRequest
+func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityRequest {
+	_result := &_EipListIdentityRequest{
+		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
+	}
+	_result.EipPacketContract.(*_EipPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EipListIdentityRequestBuilder is a builder for EipListIdentityRequest
+type EipListIdentityRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() EipListIdentityRequestBuilder
+	// Build builds the EipListIdentityRequest or returns an error if something is wrong
+	Build() (EipListIdentityRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EipListIdentityRequest
+}
+
+// NewEipListIdentityRequestBuilder() creates a EipListIdentityRequestBuilder
+func NewEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
+	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: new(_EipListIdentityRequest)}
+}
+
+type _EipListIdentityRequestBuilder struct {
+	*_EipListIdentityRequest
+
+	parentBuilder *_EipPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EipListIdentityRequestBuilder) = (*_EipListIdentityRequestBuilder)(nil)
+
+func (b *_EipListIdentityRequestBuilder) setParent(contract EipPacketContract) {
+	b.EipPacketContract = contract
+}
+
+func (b *_EipListIdentityRequestBuilder) WithMandatoryFields() EipListIdentityRequestBuilder {
+	return b
+}
+
+func (b *_EipListIdentityRequestBuilder) Build() (EipListIdentityRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EipListIdentityRequest.deepCopy(), nil
+}
+
+func (b *_EipListIdentityRequestBuilder) MustBuild() EipListIdentityRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EipListIdentityRequestBuilder) Done() EipPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EipListIdentityRequestBuilder) buildForEipPacket() (EipPacket, error) {
+	return b.Build()
+}
+
+func (b *_EipListIdentityRequestBuilder) DeepCopy() any {
+	_copy := b.CreateEipListIdentityRequestBuilder().(*_EipListIdentityRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEipListIdentityRequestBuilder creates a EipListIdentityRequestBuilder
+func (b *_EipListIdentityRequest) CreateEipListIdentityRequestBuilder() EipListIdentityRequestBuilder {
+	if b == nil {
+		return NewEipListIdentityRequestBuilder()
+	}
+	return &_EipListIdentityRequestBuilder{_EipListIdentityRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +169,6 @@ func (m *_EipListIdentityRequest) GetPacketLength() uint16 {
 
 func (m *_EipListIdentityRequest) GetParent() EipPacketContract {
 	return m.EipPacketContract
-}
-
-// NewEipListIdentityRequest factory function for _EipListIdentityRequest
-func NewEipListIdentityRequest(sessionHandle uint32, status uint32, senderContext []byte, options uint32) *_EipListIdentityRequest {
-	_result := &_EipListIdentityRequest{
-		EipPacketContract: NewEipPacket(sessionHandle, status, senderContext, options),
-	}
-	_result.EipPacketContract.(*_EipPacket)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -155,13 +242,32 @@ func (m *_EipListIdentityRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_EipListIdentityRequest) IsEipListIdentityRequest() {}
 
+func (m *_EipListIdentityRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EipListIdentityRequest) deepCopy() *_EipListIdentityRequest {
+	if m == nil {
+		return nil
+	}
+	_EipListIdentityRequestCopy := &_EipListIdentityRequest{
+		m.EipPacketContract.(*_EipPacket).deepCopy(),
+	}
+	m.EipPacketContract.(*_EipPacket)._SubType = m
+	return _EipListIdentityRequestCopy
+}
+
 func (m *_EipListIdentityRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

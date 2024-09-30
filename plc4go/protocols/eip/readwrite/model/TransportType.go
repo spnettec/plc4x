@@ -38,6 +38,7 @@ type TransportType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDirection returns Direction (property field)
 	GetDirection() bool
 	// GetTrigger returns Trigger (property field)
@@ -46,6 +47,8 @@ type TransportType interface {
 	GetClassTransport() uint8
 	// IsTransportType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTransportType()
+	// CreateBuilder creates a TransportTypeBuilder
+	CreateTransportTypeBuilder() TransportTypeBuilder
 }
 
 // _TransportType is the data-structure of this message
@@ -56,6 +59,101 @@ type _TransportType struct {
 }
 
 var _ TransportType = (*_TransportType)(nil)
+
+// NewTransportType factory function for _TransportType
+func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_TransportType {
+	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TransportTypeBuilder is a builder for TransportType
+type TransportTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(direction bool, trigger uint8, classTransport uint8) TransportTypeBuilder
+	// WithDirection adds Direction (property field)
+	WithDirection(bool) TransportTypeBuilder
+	// WithTrigger adds Trigger (property field)
+	WithTrigger(uint8) TransportTypeBuilder
+	// WithClassTransport adds ClassTransport (property field)
+	WithClassTransport(uint8) TransportTypeBuilder
+	// Build builds the TransportType or returns an error if something is wrong
+	Build() (TransportType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TransportType
+}
+
+// NewTransportTypeBuilder() creates a TransportTypeBuilder
+func NewTransportTypeBuilder() TransportTypeBuilder {
+	return &_TransportTypeBuilder{_TransportType: new(_TransportType)}
+}
+
+type _TransportTypeBuilder struct {
+	*_TransportType
+
+	err *utils.MultiError
+}
+
+var _ (TransportTypeBuilder) = (*_TransportTypeBuilder)(nil)
+
+func (b *_TransportTypeBuilder) WithMandatoryFields(direction bool, trigger uint8, classTransport uint8) TransportTypeBuilder {
+	return b.WithDirection(direction).WithTrigger(trigger).WithClassTransport(classTransport)
+}
+
+func (b *_TransportTypeBuilder) WithDirection(direction bool) TransportTypeBuilder {
+	b.Direction = direction
+	return b
+}
+
+func (b *_TransportTypeBuilder) WithTrigger(trigger uint8) TransportTypeBuilder {
+	b.Trigger = trigger
+	return b
+}
+
+func (b *_TransportTypeBuilder) WithClassTransport(classTransport uint8) TransportTypeBuilder {
+	b.ClassTransport = classTransport
+	return b
+}
+
+func (b *_TransportTypeBuilder) Build() (TransportType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TransportType.deepCopy(), nil
+}
+
+func (b *_TransportTypeBuilder) MustBuild() TransportType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TransportTypeBuilder) DeepCopy() any {
+	_copy := b.CreateTransportTypeBuilder().(*_TransportTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTransportTypeBuilder creates a TransportTypeBuilder
+func (b *_TransportType) CreateTransportTypeBuilder() TransportTypeBuilder {
+	if b == nil {
+		return NewTransportTypeBuilder()
+	}
+	return &_TransportTypeBuilder{_TransportType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_TransportType) GetClassTransport() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTransportType factory function for _TransportType
-func NewTransportType(direction bool, trigger uint8, classTransport uint8) *_TransportType {
-	return &_TransportType{Direction: direction, Trigger: trigger, ClassTransport: classTransport}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTransportType(structType any) TransportType {
@@ -133,7 +226,7 @@ func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TransportType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__transportType TransportType, err error) {
@@ -207,13 +300,33 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_TransportType) IsTransportType() {}
 
+func (m *_TransportType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TransportType) deepCopy() *_TransportType {
+	if m == nil {
+		return nil
+	}
+	_TransportTypeCopy := &_TransportType{
+		m.Direction,
+		m.Trigger,
+		m.ClassTransport,
+	}
+	return _TransportTypeCopy
+}
+
 func (m *_TransportType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

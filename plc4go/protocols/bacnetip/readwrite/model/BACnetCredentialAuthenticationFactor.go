@@ -38,12 +38,15 @@ type BACnetCredentialAuthenticationFactor interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDisable returns Disable (property field)
 	GetDisable() BACnetAccessAuthenticationFactorDisableTagged
 	// GetAuthenticationFactor returns AuthenticationFactor (property field)
 	GetAuthenticationFactor() BACnetAuthenticationFactorEnclosed
 	// IsBACnetCredentialAuthenticationFactor is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCredentialAuthenticationFactor()
+	// CreateBuilder creates a BACnetCredentialAuthenticationFactorBuilder
+	CreateBACnetCredentialAuthenticationFactorBuilder() BACnetCredentialAuthenticationFactorBuilder
 }
 
 // _BACnetCredentialAuthenticationFactor is the data-structure of this message
@@ -53,6 +56,142 @@ type _BACnetCredentialAuthenticationFactor struct {
 }
 
 var _ BACnetCredentialAuthenticationFactor = (*_BACnetCredentialAuthenticationFactor)(nil)
+
+// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
+func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
+	if disable == nil {
+		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	if authenticationFactor == nil {
+		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
+	}
+	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCredentialAuthenticationFactorBuilder is a builder for BACnetCredentialAuthenticationFactor
+type BACnetCredentialAuthenticationFactorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) BACnetCredentialAuthenticationFactorBuilder
+	// WithDisable adds Disable (property field)
+	WithDisable(BACnetAccessAuthenticationFactorDisableTagged) BACnetCredentialAuthenticationFactorBuilder
+	// WithDisableBuilder adds Disable (property field) which is build by the builder
+	WithDisableBuilder(func(BACnetAccessAuthenticationFactorDisableTaggedBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder) BACnetCredentialAuthenticationFactorBuilder
+	// WithAuthenticationFactor adds AuthenticationFactor (property field)
+	WithAuthenticationFactor(BACnetAuthenticationFactorEnclosed) BACnetCredentialAuthenticationFactorBuilder
+	// WithAuthenticationFactorBuilder adds AuthenticationFactor (property field) which is build by the builder
+	WithAuthenticationFactorBuilder(func(BACnetAuthenticationFactorEnclosedBuilder) BACnetAuthenticationFactorEnclosedBuilder) BACnetCredentialAuthenticationFactorBuilder
+	// Build builds the BACnetCredentialAuthenticationFactor or returns an error if something is wrong
+	Build() (BACnetCredentialAuthenticationFactor, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCredentialAuthenticationFactor
+}
+
+// NewBACnetCredentialAuthenticationFactorBuilder() creates a BACnetCredentialAuthenticationFactorBuilder
+func NewBACnetCredentialAuthenticationFactorBuilder() BACnetCredentialAuthenticationFactorBuilder {
+	return &_BACnetCredentialAuthenticationFactorBuilder{_BACnetCredentialAuthenticationFactor: new(_BACnetCredentialAuthenticationFactor)}
+}
+
+type _BACnetCredentialAuthenticationFactorBuilder struct {
+	*_BACnetCredentialAuthenticationFactor
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCredentialAuthenticationFactorBuilder) = (*_BACnetCredentialAuthenticationFactorBuilder)(nil)
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) WithMandatoryFields(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) BACnetCredentialAuthenticationFactorBuilder {
+	return b.WithDisable(disable).WithAuthenticationFactor(authenticationFactor)
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) WithDisable(disable BACnetAccessAuthenticationFactorDisableTagged) BACnetCredentialAuthenticationFactorBuilder {
+	b.Disable = disable
+	return b
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) WithDisableBuilder(builderSupplier func(BACnetAccessAuthenticationFactorDisableTaggedBuilder) BACnetAccessAuthenticationFactorDisableTaggedBuilder) BACnetCredentialAuthenticationFactorBuilder {
+	builder := builderSupplier(b.Disable.CreateBACnetAccessAuthenticationFactorDisableTaggedBuilder())
+	var err error
+	b.Disable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessAuthenticationFactorDisableTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) WithAuthenticationFactor(authenticationFactor BACnetAuthenticationFactorEnclosed) BACnetCredentialAuthenticationFactorBuilder {
+	b.AuthenticationFactor = authenticationFactor
+	return b
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) WithAuthenticationFactorBuilder(builderSupplier func(BACnetAuthenticationFactorEnclosedBuilder) BACnetAuthenticationFactorEnclosedBuilder) BACnetCredentialAuthenticationFactorBuilder {
+	builder := builderSupplier(b.AuthenticationFactor.CreateBACnetAuthenticationFactorEnclosedBuilder())
+	var err error
+	b.AuthenticationFactor, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) Build() (BACnetCredentialAuthenticationFactor, error) {
+	if b.Disable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'disable' not set"))
+	}
+	if b.AuthenticationFactor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'authenticationFactor' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCredentialAuthenticationFactor.deepCopy(), nil
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) MustBuild() BACnetCredentialAuthenticationFactor {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetCredentialAuthenticationFactorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCredentialAuthenticationFactorBuilder().(*_BACnetCredentialAuthenticationFactorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetCredentialAuthenticationFactorBuilder creates a BACnetCredentialAuthenticationFactorBuilder
+func (b *_BACnetCredentialAuthenticationFactor) CreateBACnetCredentialAuthenticationFactorBuilder() BACnetCredentialAuthenticationFactorBuilder {
+	if b == nil {
+		return NewBACnetCredentialAuthenticationFactorBuilder()
+	}
+	return &_BACnetCredentialAuthenticationFactorBuilder{_BACnetCredentialAuthenticationFactor: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_BACnetCredentialAuthenticationFactor) GetAuthenticationFactor() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCredentialAuthenticationFactor factory function for _BACnetCredentialAuthenticationFactor
-func NewBACnetCredentialAuthenticationFactor(disable BACnetAccessAuthenticationFactorDisableTagged, authenticationFactor BACnetAuthenticationFactorEnclosed) *_BACnetCredentialAuthenticationFactor {
-	if disable == nil {
-		panic("disable of type BACnetAccessAuthenticationFactorDisableTagged for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	if authenticationFactor == nil {
-		panic("authenticationFactor of type BACnetAuthenticationFactorEnclosed for BACnetCredentialAuthenticationFactor must not be nil")
-	}
-	return &_BACnetCredentialAuthenticationFactor{Disable: disable, AuthenticationFactor: authenticationFactor}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCredentialAuthenticationFactor(structType any) BACnetCredentialAuthenticationFactor {
@@ -129,7 +257,7 @@ func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetCredentialAuthenticationFactor) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCredentialAuthenticationFactor BACnetCredentialAuthenticationFactor, err error) {
@@ -193,13 +321,32 @@ func (m *_BACnetCredentialAuthenticationFactor) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetCredentialAuthenticationFactor) IsBACnetCredentialAuthenticationFactor() {}
 
+func (m *_BACnetCredentialAuthenticationFactor) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCredentialAuthenticationFactor) deepCopy() *_BACnetCredentialAuthenticationFactor {
+	if m == nil {
+		return nil
+	}
+	_BACnetCredentialAuthenticationFactorCopy := &_BACnetCredentialAuthenticationFactor{
+		m.Disable.DeepCopy().(BACnetAccessAuthenticationFactorDisableTagged),
+		m.AuthenticationFactor.DeepCopy().(BACnetAuthenticationFactorEnclosed),
+	}
+	return _BACnetCredentialAuthenticationFactorCopy
+}
+
 func (m *_BACnetCredentialAuthenticationFactor) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

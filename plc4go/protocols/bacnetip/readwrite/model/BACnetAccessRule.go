@@ -38,6 +38,7 @@ type BACnetAccessRule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimeRangeSpecifier returns TimeRangeSpecifier (property field)
 	GetTimeRangeSpecifier() BACnetAccessRuleTimeRangeSpecifierTagged
 	// GetTimeRange returns TimeRange (property field)
@@ -50,6 +51,8 @@ type BACnetAccessRule interface {
 	GetEnable() BACnetContextTagBoolean
 	// IsBACnetAccessRule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessRule()
+	// CreateBuilder creates a BACnetAccessRuleBuilder
+	CreateBACnetAccessRuleBuilder() BACnetAccessRuleBuilder
 }
 
 // _BACnetAccessRule is the data-structure of this message
@@ -62,6 +65,217 @@ type _BACnetAccessRule struct {
 }
 
 var _ BACnetAccessRule = (*_BACnetAccessRule)(nil)
+
+// NewBACnetAccessRule factory function for _BACnetAccessRule
+func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
+	if timeRangeSpecifier == nil {
+		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if locationSpecifier == nil {
+		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
+	}
+	if enable == nil {
+		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
+	}
+	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessRuleBuilder is a builder for BACnetAccessRule
+type BACnetAccessRuleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, enable BACnetContextTagBoolean) BACnetAccessRuleBuilder
+	// WithTimeRangeSpecifier adds TimeRangeSpecifier (property field)
+	WithTimeRangeSpecifier(BACnetAccessRuleTimeRangeSpecifierTagged) BACnetAccessRuleBuilder
+	// WithTimeRangeSpecifierBuilder adds TimeRangeSpecifier (property field) which is build by the builder
+	WithTimeRangeSpecifierBuilder(func(BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleBuilder
+	// WithTimeRange adds TimeRange (property field)
+	WithOptionalTimeRange(BACnetDeviceObjectPropertyReferenceEnclosed) BACnetAccessRuleBuilder
+	// WithOptionalTimeRangeBuilder adds TimeRange (property field) which is build by the builder
+	WithOptionalTimeRangeBuilder(func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetAccessRuleBuilder
+	// WithLocationSpecifier adds LocationSpecifier (property field)
+	WithLocationSpecifier(BACnetAccessRuleLocationSpecifierTagged) BACnetAccessRuleBuilder
+	// WithLocationSpecifierBuilder adds LocationSpecifier (property field) which is build by the builder
+	WithLocationSpecifierBuilder(func(BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleBuilder
+	// WithLocation adds Location (property field)
+	WithOptionalLocation(BACnetDeviceObjectReferenceEnclosed) BACnetAccessRuleBuilder
+	// WithOptionalLocationBuilder adds Location (property field) which is build by the builder
+	WithOptionalLocationBuilder(func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAccessRuleBuilder
+	// WithEnable adds Enable (property field)
+	WithEnable(BACnetContextTagBoolean) BACnetAccessRuleBuilder
+	// WithEnableBuilder adds Enable (property field) which is build by the builder
+	WithEnableBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAccessRuleBuilder
+	// Build builds the BACnetAccessRule or returns an error if something is wrong
+	Build() (BACnetAccessRule, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessRule
+}
+
+// NewBACnetAccessRuleBuilder() creates a BACnetAccessRuleBuilder
+func NewBACnetAccessRuleBuilder() BACnetAccessRuleBuilder {
+	return &_BACnetAccessRuleBuilder{_BACnetAccessRule: new(_BACnetAccessRule)}
+}
+
+type _BACnetAccessRuleBuilder struct {
+	*_BACnetAccessRule
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessRuleBuilder) = (*_BACnetAccessRuleBuilder)(nil)
+
+func (b *_BACnetAccessRuleBuilder) WithMandatoryFields(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
+	return b.WithTimeRangeSpecifier(timeRangeSpecifier).WithLocationSpecifier(locationSpecifier).WithEnable(enable)
+}
+
+func (b *_BACnetAccessRuleBuilder) WithTimeRangeSpecifier(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged) BACnetAccessRuleBuilder {
+	b.TimeRangeSpecifier = timeRangeSpecifier
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithTimeRangeSpecifierBuilder(builderSupplier func(BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleTimeRangeSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.TimeRangeSpecifier.CreateBACnetAccessRuleTimeRangeSpecifierTaggedBuilder())
+	var err error
+	b.TimeRangeSpecifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessRuleTimeRangeSpecifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithOptionalTimeRange(timeRange BACnetDeviceObjectPropertyReferenceEnclosed) BACnetAccessRuleBuilder {
+	b.TimeRange = timeRange
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithOptionalTimeRangeBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.TimeRange.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	b.TimeRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithLocationSpecifier(locationSpecifier BACnetAccessRuleLocationSpecifierTagged) BACnetAccessRuleBuilder {
+	b.LocationSpecifier = locationSpecifier
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithLocationSpecifierBuilder(builderSupplier func(BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.LocationSpecifier.CreateBACnetAccessRuleLocationSpecifierTaggedBuilder())
+	var err error
+	b.LocationSpecifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAccessRuleLocationSpecifierTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithOptionalLocation(location BACnetDeviceObjectReferenceEnclosed) BACnetAccessRuleBuilder {
+	b.Location = location
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithOptionalLocationBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.Location.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+	var err error
+	b.Location, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithEnable(enable BACnetContextTagBoolean) BACnetAccessRuleBuilder {
+	b.Enable = enable
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) WithEnableBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetAccessRuleBuilder {
+	builder := builderSupplier(b.Enable.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.Enable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleBuilder) Build() (BACnetAccessRule, error) {
+	if b.TimeRangeSpecifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeRangeSpecifier' not set"))
+	}
+	if b.LocationSpecifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'locationSpecifier' not set"))
+	}
+	if b.Enable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'enable' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessRule.deepCopy(), nil
+}
+
+func (b *_BACnetAccessRuleBuilder) MustBuild() BACnetAccessRule {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessRuleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessRuleBuilder().(*_BACnetAccessRuleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessRuleBuilder creates a BACnetAccessRuleBuilder
+func (b *_BACnetAccessRule) CreateBACnetAccessRuleBuilder() BACnetAccessRuleBuilder {
+	if b == nil {
+		return NewBACnetAccessRuleBuilder()
+	}
+	return &_BACnetAccessRuleBuilder{_BACnetAccessRule: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +306,6 @@ func (m *_BACnetAccessRule) GetEnable() BACnetContextTagBoolean {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRule factory function for _BACnetAccessRule
-func NewBACnetAccessRule(timeRangeSpecifier BACnetAccessRuleTimeRangeSpecifierTagged, timeRange BACnetDeviceObjectPropertyReferenceEnclosed, locationSpecifier BACnetAccessRuleLocationSpecifierTagged, location BACnetDeviceObjectReferenceEnclosed, enable BACnetContextTagBoolean) *_BACnetAccessRule {
-	if timeRangeSpecifier == nil {
-		panic("timeRangeSpecifier of type BACnetAccessRuleTimeRangeSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if locationSpecifier == nil {
-		panic("locationSpecifier of type BACnetAccessRuleLocationSpecifierTagged for BACnetAccessRule must not be nil")
-	}
-	if enable == nil {
-		panic("enable of type BACnetContextTagBoolean for BACnetAccessRule must not be nil")
-	}
-	return &_BACnetAccessRule{TimeRangeSpecifier: timeRangeSpecifier, TimeRange: timeRange, LocationSpecifier: locationSpecifier, Location: location, Enable: enable}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRule(structType any) BACnetAccessRule {
@@ -166,7 +366,7 @@ func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessRule) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAccessRule BACnetAccessRule, err error) {
@@ -268,13 +468,35 @@ func (m *_BACnetAccessRule) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_BACnetAccessRule) IsBACnetAccessRule() {}
 
+func (m *_BACnetAccessRule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRule) deepCopy() *_BACnetAccessRule {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleCopy := &_BACnetAccessRule{
+		m.TimeRangeSpecifier.DeepCopy().(BACnetAccessRuleTimeRangeSpecifierTagged),
+		m.TimeRange.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.LocationSpecifier.DeepCopy().(BACnetAccessRuleLocationSpecifierTagged),
+		m.Location.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+		m.Enable.DeepCopy().(BACnetContextTagBoolean),
+	}
+	return _BACnetAccessRuleCopy
+}
+
 func (m *_BACnetAccessRule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type DeleteSubscriptionsResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type DeleteSubscriptionsResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsDeleteSubscriptionsResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeleteSubscriptionsResponse()
+	// CreateBuilder creates a DeleteSubscriptionsResponseBuilder
+	CreateDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder
 }
 
 // _DeleteSubscriptionsResponse is the data-structure of this message
@@ -65,6 +68,163 @@ type _DeleteSubscriptionsResponse struct {
 
 var _ DeleteSubscriptionsResponse = (*_DeleteSubscriptionsResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DeleteSubscriptionsResponse)(nil)
+
+// NewDeleteSubscriptionsResponse factory function for _DeleteSubscriptionsResponse
+func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteSubscriptionsResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for DeleteSubscriptionsResponse must not be nil")
+	}
+	_result := &_DeleteSubscriptionsResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeleteSubscriptionsResponseBuilder is a builder for DeleteSubscriptionsResponse
+type DeleteSubscriptionsResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) DeleteSubscriptionsResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) DeleteSubscriptionsResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) DeleteSubscriptionsResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) DeleteSubscriptionsResponseBuilder
+	// Build builds the DeleteSubscriptionsResponse or returns an error if something is wrong
+	Build() (DeleteSubscriptionsResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeleteSubscriptionsResponse
+}
+
+// NewDeleteSubscriptionsResponseBuilder() creates a DeleteSubscriptionsResponseBuilder
+func NewDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder {
+	return &_DeleteSubscriptionsResponseBuilder{_DeleteSubscriptionsResponse: new(_DeleteSubscriptionsResponse)}
+}
+
+type _DeleteSubscriptionsResponseBuilder struct {
+	*_DeleteSubscriptionsResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DeleteSubscriptionsResponseBuilder) = (*_DeleteSubscriptionsResponseBuilder)(nil)
+
+func (b *_DeleteSubscriptionsResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) DeleteSubscriptionsResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) DeleteSubscriptionsResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithNoOfResults(noOfResults int32) DeleteSubscriptionsResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithResults(results ...StatusCode) DeleteSubscriptionsResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) DeleteSubscriptionsResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) DeleteSubscriptionsResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) Build() (DeleteSubscriptionsResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeleteSubscriptionsResponse.deepCopy(), nil
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) MustBuild() DeleteSubscriptionsResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DeleteSubscriptionsResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DeleteSubscriptionsResponseBuilder) DeepCopy() any {
+	_copy := b.CreateDeleteSubscriptionsResponseBuilder().(*_DeleteSubscriptionsResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeleteSubscriptionsResponseBuilder creates a DeleteSubscriptionsResponseBuilder
+func (b *_DeleteSubscriptionsResponse) CreateDeleteSubscriptionsResponseBuilder() DeleteSubscriptionsResponseBuilder {
+	if b == nil {
+		return NewDeleteSubscriptionsResponseBuilder()
+	}
+	return &_DeleteSubscriptionsResponseBuilder{_DeleteSubscriptionsResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_DeleteSubscriptionsResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeleteSubscriptionsResponse factory function for _DeleteSubscriptionsResponse
-func NewDeleteSubscriptionsResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_DeleteSubscriptionsResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for DeleteSubscriptionsResponse must not be nil")
-	}
-	_result := &_DeleteSubscriptionsResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeleteSubscriptionsResponse(structType any) DeleteSubscriptionsResponse {
@@ -281,13 +424,37 @@ func (m *_DeleteSubscriptionsResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_DeleteSubscriptionsResponse) IsDeleteSubscriptionsResponse() {}
 
+func (m *_DeleteSubscriptionsResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeleteSubscriptionsResponse) deepCopy() *_DeleteSubscriptionsResponse {
+	if m == nil {
+		return nil
+	}
+	_DeleteSubscriptionsResponseCopy := &_DeleteSubscriptionsResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DeleteSubscriptionsResponseCopy
+}
+
 func (m *_DeleteSubscriptionsResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

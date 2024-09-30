@@ -41,8 +41,11 @@ type BacnetConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBacnetConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBacnetConstants()
+	// CreateBuilder creates a BacnetConstantsBuilder
+	CreateBacnetConstantsBuilder() BacnetConstantsBuilder
 }
 
 // _BacnetConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _BacnetConstants struct {
 }
 
 var _ BacnetConstants = (*_BacnetConstants)(nil)
+
+// NewBacnetConstants factory function for _BacnetConstants
+func NewBacnetConstants() *_BacnetConstants {
+	return &_BacnetConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BacnetConstantsBuilder is a builder for BacnetConstants
+type BacnetConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BacnetConstantsBuilder
+	// Build builds the BacnetConstants or returns an error if something is wrong
+	Build() (BacnetConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BacnetConstants
+}
+
+// NewBacnetConstantsBuilder() creates a BacnetConstantsBuilder
+func NewBacnetConstantsBuilder() BacnetConstantsBuilder {
+	return &_BacnetConstantsBuilder{_BacnetConstants: new(_BacnetConstants)}
+}
+
+type _BacnetConstantsBuilder struct {
+	*_BacnetConstants
+
+	err *utils.MultiError
+}
+
+var _ (BacnetConstantsBuilder) = (*_BacnetConstantsBuilder)(nil)
+
+func (b *_BacnetConstantsBuilder) WithMandatoryFields() BacnetConstantsBuilder {
+	return b
+}
+
+func (b *_BacnetConstantsBuilder) Build() (BacnetConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BacnetConstants.deepCopy(), nil
+}
+
+func (b *_BacnetConstantsBuilder) MustBuild() BacnetConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BacnetConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateBacnetConstantsBuilder().(*_BacnetConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBacnetConstantsBuilder creates a BacnetConstantsBuilder
+func (b *_BacnetConstants) CreateBacnetConstantsBuilder() BacnetConstantsBuilder {
+	if b == nil {
+		return NewBacnetConstantsBuilder()
+	}
+	return &_BacnetConstantsBuilder{_BacnetConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_BacnetConstants) GetBacnetUdpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBacnetConstants factory function for _BacnetConstants
-func NewBacnetConstants() *_BacnetConstants {
-	return &_BacnetConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBacnetConstants(structType any) BacnetConstants {
@@ -113,7 +185,7 @@ func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BacnetConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bacnetConstants BacnetConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_BacnetConstants) IsBacnetConstants() {}
 
+func (m *_BacnetConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BacnetConstants) deepCopy() *_BacnetConstants {
+	if m == nil {
+		return nil
+	}
+	_BacnetConstantsCopy := &_BacnetConstants{}
+	return _BacnetConstantsCopy
+}
+
 func (m *_BacnetConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

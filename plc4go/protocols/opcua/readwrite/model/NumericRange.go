@@ -36,8 +36,11 @@ type NumericRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsNumericRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNumericRange()
+	// CreateBuilder creates a NumericRangeBuilder
+	CreateNumericRangeBuilder() NumericRangeBuilder
 }
 
 // _NumericRange is the data-structure of this message
@@ -50,6 +53,75 @@ var _ NumericRange = (*_NumericRange)(nil)
 func NewNumericRange() *_NumericRange {
 	return &_NumericRange{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NumericRangeBuilder is a builder for NumericRange
+type NumericRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NumericRangeBuilder
+	// Build builds the NumericRange or returns an error if something is wrong
+	Build() (NumericRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NumericRange
+}
+
+// NewNumericRangeBuilder() creates a NumericRangeBuilder
+func NewNumericRangeBuilder() NumericRangeBuilder {
+	return &_NumericRangeBuilder{_NumericRange: new(_NumericRange)}
+}
+
+type _NumericRangeBuilder struct {
+	*_NumericRange
+
+	err *utils.MultiError
+}
+
+var _ (NumericRangeBuilder) = (*_NumericRangeBuilder)(nil)
+
+func (b *_NumericRangeBuilder) WithMandatoryFields() NumericRangeBuilder {
+	return b
+}
+
+func (b *_NumericRangeBuilder) Build() (NumericRange, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NumericRange.deepCopy(), nil
+}
+
+func (b *_NumericRangeBuilder) MustBuild() NumericRange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NumericRangeBuilder) DeepCopy() any {
+	_copy := b.CreateNumericRangeBuilder().(*_NumericRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNumericRangeBuilder creates a NumericRangeBuilder
+func (b *_NumericRange) CreateNumericRangeBuilder() NumericRangeBuilder {
+	if b == nil {
+		return NewNumericRangeBuilder()
+	}
+	return &_NumericRangeBuilder{_NumericRange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastNumericRange(structType any) NumericRange {
@@ -91,7 +163,7 @@ func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NumericRange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__numericRange NumericRange, err error) {
@@ -135,13 +207,29 @@ func (m *_NumericRange) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_NumericRange) IsNumericRange() {}
 
+func (m *_NumericRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NumericRange) deepCopy() *_NumericRange {
+	if m == nil {
+		return nil
+	}
+	_NumericRangeCopy := &_NumericRange{}
+	return _NumericRangeCopy
+}
+
 func (m *_NumericRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

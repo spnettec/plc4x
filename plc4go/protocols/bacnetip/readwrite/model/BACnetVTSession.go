@@ -38,6 +38,7 @@ type BACnetVTSession interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLocalVtSessionId returns LocalVtSessionId (property field)
 	GetLocalVtSessionId() BACnetApplicationTagUnsignedInteger
 	// GetRemoveVtSessionId returns RemoveVtSessionId (property field)
@@ -46,6 +47,8 @@ type BACnetVTSession interface {
 	GetRemoteVtAddress() BACnetAddress
 	// IsBACnetVTSession is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetVTSession()
+	// CreateBuilder creates a BACnetVTSessionBuilder
+	CreateBACnetVTSessionBuilder() BACnetVTSessionBuilder
 }
 
 // _BACnetVTSession is the data-structure of this message
@@ -56,6 +59,173 @@ type _BACnetVTSession struct {
 }
 
 var _ BACnetVTSession = (*_BACnetVTSession)(nil)
+
+// NewBACnetVTSession factory function for _BACnetVTSession
+func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
+	if localVtSessionId == nil {
+		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if removeVtSessionId == nil {
+		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
+	}
+	if remoteVtAddress == nil {
+		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
+	}
+	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetVTSessionBuilder is a builder for BACnetVTSession
+type BACnetVTSessionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) BACnetVTSessionBuilder
+	// WithLocalVtSessionId adds LocalVtSessionId (property field)
+	WithLocalVtSessionId(BACnetApplicationTagUnsignedInteger) BACnetVTSessionBuilder
+	// WithLocalVtSessionIdBuilder adds LocalVtSessionId (property field) which is build by the builder
+	WithLocalVtSessionIdBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetVTSessionBuilder
+	// WithRemoveVtSessionId adds RemoveVtSessionId (property field)
+	WithRemoveVtSessionId(BACnetApplicationTagUnsignedInteger) BACnetVTSessionBuilder
+	// WithRemoveVtSessionIdBuilder adds RemoveVtSessionId (property field) which is build by the builder
+	WithRemoveVtSessionIdBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetVTSessionBuilder
+	// WithRemoteVtAddress adds RemoteVtAddress (property field)
+	WithRemoteVtAddress(BACnetAddress) BACnetVTSessionBuilder
+	// WithRemoteVtAddressBuilder adds RemoteVtAddress (property field) which is build by the builder
+	WithRemoteVtAddressBuilder(func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetVTSessionBuilder
+	// Build builds the BACnetVTSession or returns an error if something is wrong
+	Build() (BACnetVTSession, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetVTSession
+}
+
+// NewBACnetVTSessionBuilder() creates a BACnetVTSessionBuilder
+func NewBACnetVTSessionBuilder() BACnetVTSessionBuilder {
+	return &_BACnetVTSessionBuilder{_BACnetVTSession: new(_BACnetVTSession)}
+}
+
+type _BACnetVTSessionBuilder struct {
+	*_BACnetVTSession
+
+	err *utils.MultiError
+}
+
+var _ (BACnetVTSessionBuilder) = (*_BACnetVTSessionBuilder)(nil)
+
+func (b *_BACnetVTSessionBuilder) WithMandatoryFields(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) BACnetVTSessionBuilder {
+	return b.WithLocalVtSessionId(localVtSessionId).WithRemoveVtSessionId(removeVtSessionId).WithRemoteVtAddress(remoteVtAddress)
+}
+
+func (b *_BACnetVTSessionBuilder) WithLocalVtSessionId(localVtSessionId BACnetApplicationTagUnsignedInteger) BACnetVTSessionBuilder {
+	b.LocalVtSessionId = localVtSessionId
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) WithLocalVtSessionIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetVTSessionBuilder {
+	builder := builderSupplier(b.LocalVtSessionId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.LocalVtSessionId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) WithRemoveVtSessionId(removeVtSessionId BACnetApplicationTagUnsignedInteger) BACnetVTSessionBuilder {
+	b.RemoveVtSessionId = removeVtSessionId
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) WithRemoveVtSessionIdBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetVTSessionBuilder {
+	builder := builderSupplier(b.RemoveVtSessionId.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.RemoveVtSessionId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) WithRemoteVtAddress(remoteVtAddress BACnetAddress) BACnetVTSessionBuilder {
+	b.RemoteVtAddress = remoteVtAddress
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) WithRemoteVtAddressBuilder(builderSupplier func(BACnetAddressBuilder) BACnetAddressBuilder) BACnetVTSessionBuilder {
+	builder := builderSupplier(b.RemoteVtAddress.CreateBACnetAddressBuilder())
+	var err error
+	b.RemoteVtAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetVTSessionBuilder) Build() (BACnetVTSession, error) {
+	if b.LocalVtSessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'localVtSessionId' not set"))
+	}
+	if b.RemoveVtSessionId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'removeVtSessionId' not set"))
+	}
+	if b.RemoteVtAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'remoteVtAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetVTSession.deepCopy(), nil
+}
+
+func (b *_BACnetVTSessionBuilder) MustBuild() BACnetVTSession {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetVTSessionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetVTSessionBuilder().(*_BACnetVTSessionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetVTSessionBuilder creates a BACnetVTSessionBuilder
+func (b *_BACnetVTSession) CreateBACnetVTSessionBuilder() BACnetVTSessionBuilder {
+	if b == nil {
+		return NewBACnetVTSessionBuilder()
+	}
+	return &_BACnetVTSessionBuilder{_BACnetVTSession: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,20 +248,6 @@ func (m *_BACnetVTSession) GetRemoteVtAddress() BACnetAddress {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetVTSession factory function for _BACnetVTSession
-func NewBACnetVTSession(localVtSessionId BACnetApplicationTagUnsignedInteger, removeVtSessionId BACnetApplicationTagUnsignedInteger, remoteVtAddress BACnetAddress) *_BACnetVTSession {
-	if localVtSessionId == nil {
-		panic("localVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if removeVtSessionId == nil {
-		panic("removeVtSessionId of type BACnetApplicationTagUnsignedInteger for BACnetVTSession must not be nil")
-	}
-	if remoteVtAddress == nil {
-		panic("remoteVtAddress of type BACnetAddress for BACnetVTSession must not be nil")
-	}
-	return &_BACnetVTSession{LocalVtSessionId: localVtSessionId, RemoveVtSessionId: removeVtSessionId, RemoteVtAddress: remoteVtAddress}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetVTSession(structType any) BACnetVTSession {
@@ -142,7 +298,7 @@ func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetVTSession) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetVTSession BACnetVTSession, err error) {
@@ -216,13 +372,33 @@ func (m *_BACnetVTSession) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_BACnetVTSession) IsBACnetVTSession() {}
 
+func (m *_BACnetVTSession) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetVTSession) deepCopy() *_BACnetVTSession {
+	if m == nil {
+		return nil
+	}
+	_BACnetVTSessionCopy := &_BACnetVTSession{
+		m.LocalVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoveVtSessionId.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.RemoteVtAddress.DeepCopy().(BACnetAddress),
+	}
+	return _BACnetVTSessionCopy
+}
+
 func (m *_BACnetVTSession) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

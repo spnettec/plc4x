@@ -38,6 +38,7 @@ type BACnetConstructedDataCarDoorText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataCarDoorText interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataCarDoorText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarDoorText()
+	// CreateBuilder creates a BACnetConstructedDataCarDoorTextBuilder
+	CreateBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder
 }
 
 // _BACnetConstructedDataCarDoorText is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataCarDoorText struct {
 
 var _ BACnetConstructedDataCarDoorText = (*_BACnetConstructedDataCarDoorText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarDoorText)(nil)
+
+// NewBACnetConstructedDataCarDoorText factory function for _BACnetConstructedDataCarDoorText
+func NewBACnetConstructedDataCarDoorText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorText []BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorText {
+	_result := &_BACnetConstructedDataCarDoorText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		CarDoorText:                   carDoorText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarDoorTextBuilder is a builder for BACnetConstructedDataCarDoorText
+type BACnetConstructedDataCarDoorTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carDoorText []BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorTextBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorTextBuilder
+	// WithCarDoorText adds CarDoorText (property field)
+	WithCarDoorText(...BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder
+	// Build builds the BACnetConstructedDataCarDoorText or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarDoorText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarDoorText
+}
+
+// NewBACnetConstructedDataCarDoorTextBuilder() creates a BACnetConstructedDataCarDoorTextBuilder
+func NewBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder {
+	return &_BACnetConstructedDataCarDoorTextBuilder{_BACnetConstructedDataCarDoorText: new(_BACnetConstructedDataCarDoorText)}
+}
+
+type _BACnetConstructedDataCarDoorTextBuilder struct {
+	*_BACnetConstructedDataCarDoorText
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarDoorTextBuilder) = (*_BACnetConstructedDataCarDoorTextBuilder)(nil)
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) WithMandatoryFields(carDoorText []BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder {
+	return b.WithCarDoorText(carDoorText...)
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarDoorTextBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarDoorTextBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) WithCarDoorText(carDoorText ...BACnetApplicationTagCharacterString) BACnetConstructedDataCarDoorTextBuilder {
+	b.CarDoorText = carDoorText
+	return b
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) Build() (BACnetConstructedDataCarDoorText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCarDoorText.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) MustBuild() BACnetConstructedDataCarDoorText {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarDoorTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarDoorTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarDoorTextBuilder().(*_BACnetConstructedDataCarDoorTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCarDoorTextBuilder creates a BACnetConstructedDataCarDoorTextBuilder
+func (b *_BACnetConstructedDataCarDoorText) CreateBACnetConstructedDataCarDoorTextBuilder() BACnetConstructedDataCarDoorTextBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCarDoorTextBuilder()
+	}
+	return &_BACnetConstructedDataCarDoorTextBuilder{_BACnetConstructedDataCarDoorText: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataCarDoorText) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarDoorText factory function for _BACnetConstructedDataCarDoorText
-func NewBACnetConstructedDataCarDoorText(numberOfDataElements BACnetApplicationTagUnsignedInteger, carDoorText []BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarDoorText {
-	_result := &_BACnetConstructedDataCarDoorText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		CarDoorText:                   carDoorText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarDoorText(structType any) BACnetConstructedDataCarDoorText {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataCarDoorText) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataCarDoorText) IsBACnetConstructedDataCarDoorText() {}
 
+func (m *_BACnetConstructedDataCarDoorText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarDoorText) deepCopy() *_BACnetConstructedDataCarDoorText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarDoorTextCopy := &_BACnetConstructedDataCarDoorText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagCharacterString, BACnetApplicationTagCharacterString](m.CarDoorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarDoorTextCopy
+}
+
 func (m *_BACnetConstructedDataCarDoorText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

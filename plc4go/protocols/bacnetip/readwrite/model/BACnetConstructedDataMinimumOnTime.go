@@ -38,6 +38,7 @@ type BACnetConstructedDataMinimumOnTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMinimumOnTime returns MinimumOnTime (property field)
 	GetMinimumOnTime() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataMinimumOnTime interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMinimumOnTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMinimumOnTime()
+	// CreateBuilder creates a BACnetConstructedDataMinimumOnTimeBuilder
+	CreateBACnetConstructedDataMinimumOnTimeBuilder() BACnetConstructedDataMinimumOnTimeBuilder
 }
 
 // _BACnetConstructedDataMinimumOnTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataMinimumOnTime struct {
 
 var _ BACnetConstructedDataMinimumOnTime = (*_BACnetConstructedDataMinimumOnTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMinimumOnTime)(nil)
+
+// NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
+func NewBACnetConstructedDataMinimumOnTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, minimumOnTime BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
+	if minimumOnTime == nil {
+		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataMinimumOnTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MinimumOnTime:                 minimumOnTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMinimumOnTimeBuilder is a builder for BACnetConstructedDataMinimumOnTime
+type BACnetConstructedDataMinimumOnTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minimumOnTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder
+	// WithMinimumOnTime adds MinimumOnTime (property field)
+	WithMinimumOnTime(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder
+	// WithMinimumOnTimeBuilder adds MinimumOnTime (property field) which is build by the builder
+	WithMinimumOnTimeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMinimumOnTimeBuilder
+	// Build builds the BACnetConstructedDataMinimumOnTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataMinimumOnTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMinimumOnTime
+}
+
+// NewBACnetConstructedDataMinimumOnTimeBuilder() creates a BACnetConstructedDataMinimumOnTimeBuilder
+func NewBACnetConstructedDataMinimumOnTimeBuilder() BACnetConstructedDataMinimumOnTimeBuilder {
+	return &_BACnetConstructedDataMinimumOnTimeBuilder{_BACnetConstructedDataMinimumOnTime: new(_BACnetConstructedDataMinimumOnTime)}
+}
+
+type _BACnetConstructedDataMinimumOnTimeBuilder struct {
+	*_BACnetConstructedDataMinimumOnTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMinimumOnTimeBuilder) = (*_BACnetConstructedDataMinimumOnTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) WithMandatoryFields(minimumOnTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder {
+	return b.WithMinimumOnTime(minimumOnTime)
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) WithMinimumOnTime(minimumOnTime BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMinimumOnTimeBuilder {
+	b.MinimumOnTime = minimumOnTime
+	return b
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) WithMinimumOnTimeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMinimumOnTimeBuilder {
+	builder := builderSupplier(b.MinimumOnTime.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.MinimumOnTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) Build() (BACnetConstructedDataMinimumOnTime, error) {
+	if b.MinimumOnTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'minimumOnTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMinimumOnTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) MustBuild() BACnetConstructedDataMinimumOnTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMinimumOnTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMinimumOnTimeBuilder().(*_BACnetConstructedDataMinimumOnTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMinimumOnTimeBuilder creates a BACnetConstructedDataMinimumOnTimeBuilder
+func (b *_BACnetConstructedDataMinimumOnTime) CreateBACnetConstructedDataMinimumOnTimeBuilder() BACnetConstructedDataMinimumOnTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMinimumOnTimeBuilder()
+	}
+	return &_BACnetConstructedDataMinimumOnTimeBuilder{_BACnetConstructedDataMinimumOnTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataMinimumOnTime) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMinimumOnTime factory function for _BACnetConstructedDataMinimumOnTime
-func NewBACnetConstructedDataMinimumOnTime(minimumOnTime BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMinimumOnTime {
-	if minimumOnTime == nil {
-		panic("minimumOnTime of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMinimumOnTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataMinimumOnTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MinimumOnTime:                 minimumOnTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMinimumOnTime(structType any) BACnetConstructedDataMinimumOnTime {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataMinimumOnTime) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataMinimumOnTime) IsBACnetConstructedDataMinimumOnTime() {}
 
+func (m *_BACnetConstructedDataMinimumOnTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMinimumOnTime) deepCopy() *_BACnetConstructedDataMinimumOnTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMinimumOnTimeCopy := &_BACnetConstructedDataMinimumOnTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MinimumOnTime.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMinimumOnTimeCopy
+}
+
 func (m *_BACnetConstructedDataMinimumOnTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -36,8 +36,11 @@ type UriString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsUriString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUriString()
+	// CreateBuilder creates a UriStringBuilder
+	CreateUriStringBuilder() UriStringBuilder
 }
 
 // _UriString is the data-structure of this message
@@ -50,6 +53,75 @@ var _ UriString = (*_UriString)(nil)
 func NewUriString() *_UriString {
 	return &_UriString{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UriStringBuilder is a builder for UriString
+type UriStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() UriStringBuilder
+	// Build builds the UriString or returns an error if something is wrong
+	Build() (UriString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UriString
+}
+
+// NewUriStringBuilder() creates a UriStringBuilder
+func NewUriStringBuilder() UriStringBuilder {
+	return &_UriStringBuilder{_UriString: new(_UriString)}
+}
+
+type _UriStringBuilder struct {
+	*_UriString
+
+	err *utils.MultiError
+}
+
+var _ (UriStringBuilder) = (*_UriStringBuilder)(nil)
+
+func (b *_UriStringBuilder) WithMandatoryFields() UriStringBuilder {
+	return b
+}
+
+func (b *_UriStringBuilder) Build() (UriString, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UriString.deepCopy(), nil
+}
+
+func (b *_UriStringBuilder) MustBuild() UriString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_UriStringBuilder) DeepCopy() any {
+	_copy := b.CreateUriStringBuilder().(*_UriStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUriStringBuilder creates a UriStringBuilder
+func (b *_UriString) CreateUriStringBuilder() UriStringBuilder {
+	if b == nil {
+		return NewUriStringBuilder()
+	}
+	return &_UriStringBuilder{_UriString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastUriString(structType any) UriString {
@@ -91,7 +163,7 @@ func UriStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_UriString) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__uriString UriString, err error) {
@@ -135,13 +207,29 @@ func (m *_UriString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_UriString) IsUriString() {}
 
+func (m *_UriString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UriString) deepCopy() *_UriString {
+	if m == nil {
+		return nil
+	}
+	_UriStringCopy := &_UriString{}
+	return _UriStringCopy
+}
+
 func (m *_UriString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

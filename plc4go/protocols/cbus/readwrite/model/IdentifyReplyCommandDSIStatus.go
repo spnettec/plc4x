@@ -38,6 +38,7 @@ type IdentifyReplyCommandDSIStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetChannelStatus1 returns ChannelStatus1 (property field)
 	GetChannelStatus1() ChannelStatus
@@ -61,6 +62,8 @@ type IdentifyReplyCommandDSIStatus interface {
 	GetDimmingUCRevisionNumber() byte
 	// IsIdentifyReplyCommandDSIStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandDSIStatus()
+	// CreateBuilder creates a IdentifyReplyCommandDSIStatusBuilder
+	CreateIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuilder
 }
 
 // _IdentifyReplyCommandDSIStatus is the data-structure of this message
@@ -80,6 +83,179 @@ type _IdentifyReplyCommandDSIStatus struct {
 
 var _ IdentifyReplyCommandDSIStatus = (*_IdentifyReplyCommandDSIStatus)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandDSIStatus)(nil)
+
+// NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
+func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
+	_result := &_IdentifyReplyCommandDSIStatus{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		ChannelStatus1:               channelStatus1,
+		ChannelStatus2:               channelStatus2,
+		ChannelStatus3:               channelStatus3,
+		ChannelStatus4:               channelStatus4,
+		ChannelStatus5:               channelStatus5,
+		ChannelStatus6:               channelStatus6,
+		ChannelStatus7:               channelStatus7,
+		ChannelStatus8:               channelStatus8,
+		UnitStatus:                   unitStatus,
+		DimmingUCRevisionNumber:      dimmingUCRevisionNumber,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandDSIStatusBuilder is a builder for IdentifyReplyCommandDSIStatus
+type IdentifyReplyCommandDSIStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus1 adds ChannelStatus1 (property field)
+	WithChannelStatus1(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus2 adds ChannelStatus2 (property field)
+	WithChannelStatus2(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus3 adds ChannelStatus3 (property field)
+	WithChannelStatus3(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus4 adds ChannelStatus4 (property field)
+	WithChannelStatus4(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus5 adds ChannelStatus5 (property field)
+	WithChannelStatus5(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus6 adds ChannelStatus6 (property field)
+	WithChannelStatus6(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus7 adds ChannelStatus7 (property field)
+	WithChannelStatus7(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithChannelStatus8 adds ChannelStatus8 (property field)
+	WithChannelStatus8(ChannelStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithUnitStatus adds UnitStatus (property field)
+	WithUnitStatus(UnitStatus) IdentifyReplyCommandDSIStatusBuilder
+	// WithDimmingUCRevisionNumber adds DimmingUCRevisionNumber (property field)
+	WithDimmingUCRevisionNumber(byte) IdentifyReplyCommandDSIStatusBuilder
+	// Build builds the IdentifyReplyCommandDSIStatus or returns an error if something is wrong
+	Build() (IdentifyReplyCommandDSIStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandDSIStatus
+}
+
+// NewIdentifyReplyCommandDSIStatusBuilder() creates a IdentifyReplyCommandDSIStatusBuilder
+func NewIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuilder {
+	return &_IdentifyReplyCommandDSIStatusBuilder{_IdentifyReplyCommandDSIStatus: new(_IdentifyReplyCommandDSIStatus)}
+}
+
+type _IdentifyReplyCommandDSIStatusBuilder struct {
+	*_IdentifyReplyCommandDSIStatus
+
+	parentBuilder *_IdentifyReplyCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandDSIStatusBuilder) = (*_IdentifyReplyCommandDSIStatusBuilder)(nil)
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithMandatoryFields(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
+	return b.WithChannelStatus1(channelStatus1).WithChannelStatus2(channelStatus2).WithChannelStatus3(channelStatus3).WithChannelStatus4(channelStatus4).WithChannelStatus5(channelStatus5).WithChannelStatus6(channelStatus6).WithChannelStatus7(channelStatus7).WithChannelStatus8(channelStatus8).WithUnitStatus(unitStatus).WithDimmingUCRevisionNumber(dimmingUCRevisionNumber)
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus1(channelStatus1 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus1 = channelStatus1
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus2(channelStatus2 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus2 = channelStatus2
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus3(channelStatus3 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus3 = channelStatus3
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus4(channelStatus4 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus4 = channelStatus4
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus5(channelStatus5 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus5 = channelStatus5
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus6(channelStatus6 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus6 = channelStatus6
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus7(channelStatus7 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus7 = channelStatus7
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithChannelStatus8(channelStatus8 ChannelStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.ChannelStatus8 = channelStatus8
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithUnitStatus(unitStatus UnitStatus) IdentifyReplyCommandDSIStatusBuilder {
+	b.UnitStatus = unitStatus
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) WithDimmingUCRevisionNumber(dimmingUCRevisionNumber byte) IdentifyReplyCommandDSIStatusBuilder {
+	b.DimmingUCRevisionNumber = dimmingUCRevisionNumber
+	return b
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) Build() (IdentifyReplyCommandDSIStatus, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IdentifyReplyCommandDSIStatus.deepCopy(), nil
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) MustBuild() IdentifyReplyCommandDSIStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandDSIStatusBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandDSIStatusBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandDSIStatusBuilder().(*_IdentifyReplyCommandDSIStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIdentifyReplyCommandDSIStatusBuilder creates a IdentifyReplyCommandDSIStatusBuilder
+func (b *_IdentifyReplyCommandDSIStatus) CreateIdentifyReplyCommandDSIStatusBuilder() IdentifyReplyCommandDSIStatusBuilder {
+	if b == nil {
+		return NewIdentifyReplyCommandDSIStatusBuilder()
+	}
+	return &_IdentifyReplyCommandDSIStatusBuilder{_IdentifyReplyCommandDSIStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -148,25 +324,6 @@ func (m *_IdentifyReplyCommandDSIStatus) GetDimmingUCRevisionNumber() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandDSIStatus factory function for _IdentifyReplyCommandDSIStatus
-func NewIdentifyReplyCommandDSIStatus(channelStatus1 ChannelStatus, channelStatus2 ChannelStatus, channelStatus3 ChannelStatus, channelStatus4 ChannelStatus, channelStatus5 ChannelStatus, channelStatus6 ChannelStatus, channelStatus7 ChannelStatus, channelStatus8 ChannelStatus, unitStatus UnitStatus, dimmingUCRevisionNumber byte, numBytes uint8) *_IdentifyReplyCommandDSIStatus {
-	_result := &_IdentifyReplyCommandDSIStatus{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		ChannelStatus1:               channelStatus1,
-		ChannelStatus2:               channelStatus2,
-		ChannelStatus3:               channelStatus3,
-		ChannelStatus4:               channelStatus4,
-		ChannelStatus5:               channelStatus5,
-		ChannelStatus6:               channelStatus6,
-		ChannelStatus7:               channelStatus7,
-		ChannelStatus8:               channelStatus8,
-		UnitStatus:                   unitStatus,
-		DimmingUCRevisionNumber:      dimmingUCRevisionNumber,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandDSIStatus(structType any) IdentifyReplyCommandDSIStatus {
@@ -369,13 +526,42 @@ func (m *_IdentifyReplyCommandDSIStatus) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_IdentifyReplyCommandDSIStatus) IsIdentifyReplyCommandDSIStatus() {}
 
+func (m *_IdentifyReplyCommandDSIStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandDSIStatus) deepCopy() *_IdentifyReplyCommandDSIStatus {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandDSIStatusCopy := &_IdentifyReplyCommandDSIStatus{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		m.ChannelStatus1,
+		m.ChannelStatus2,
+		m.ChannelStatus3,
+		m.ChannelStatus4,
+		m.ChannelStatus5,
+		m.ChannelStatus6,
+		m.ChannelStatus7,
+		m.ChannelStatus8,
+		m.UnitStatus,
+		m.DimmingUCRevisionNumber,
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandDSIStatusCopy
+}
+
 func (m *_IdentifyReplyCommandDSIStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

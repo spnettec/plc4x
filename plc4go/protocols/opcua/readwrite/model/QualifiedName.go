@@ -38,12 +38,15 @@ type QualifiedName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetName returns Name (property field)
 	GetName() PascalString
 	// IsQualifiedName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsQualifiedName()
+	// CreateBuilder creates a QualifiedNameBuilder
+	CreateQualifiedNameBuilder() QualifiedNameBuilder
 }
 
 // _QualifiedName is the data-structure of this message
@@ -53,6 +56,118 @@ type _QualifiedName struct {
 }
 
 var _ QualifiedName = (*_QualifiedName)(nil)
+
+// NewQualifiedName factory function for _QualifiedName
+func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
+	if name == nil {
+		panic("name of type PascalString for QualifiedName must not be nil")
+	}
+	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// QualifiedNameBuilder is a builder for QualifiedName
+type QualifiedNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) QualifiedNameBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) QualifiedNameBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder
+	// Build builds the QualifiedName or returns an error if something is wrong
+	Build() (QualifiedName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() QualifiedName
+}
+
+// NewQualifiedNameBuilder() creates a QualifiedNameBuilder
+func NewQualifiedNameBuilder() QualifiedNameBuilder {
+	return &_QualifiedNameBuilder{_QualifiedName: new(_QualifiedName)}
+}
+
+type _QualifiedNameBuilder struct {
+	*_QualifiedName
+
+	err *utils.MultiError
+}
+
+var _ (QualifiedNameBuilder) = (*_QualifiedNameBuilder)(nil)
+
+func (b *_QualifiedNameBuilder) WithMandatoryFields(namespaceIndex uint16, name PascalString) QualifiedNameBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithName(name)
+}
+
+func (b *_QualifiedNameBuilder) WithNamespaceIndex(namespaceIndex uint16) QualifiedNameBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_QualifiedNameBuilder) WithName(name PascalString) QualifiedNameBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_QualifiedNameBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) QualifiedNameBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_QualifiedNameBuilder) Build() (QualifiedName, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._QualifiedName.deepCopy(), nil
+}
+
+func (b *_QualifiedNameBuilder) MustBuild() QualifiedName {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_QualifiedNameBuilder) DeepCopy() any {
+	_copy := b.CreateQualifiedNameBuilder().(*_QualifiedNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateQualifiedNameBuilder creates a QualifiedNameBuilder
+func (b *_QualifiedName) CreateQualifiedNameBuilder() QualifiedNameBuilder {
+	if b == nil {
+		return NewQualifiedNameBuilder()
+	}
+	return &_QualifiedNameBuilder{_QualifiedName: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +186,6 @@ func (m *_QualifiedName) GetName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewQualifiedName factory function for _QualifiedName
-func NewQualifiedName(namespaceIndex uint16, name PascalString) *_QualifiedName {
-	if name == nil {
-		panic("name of type PascalString for QualifiedName must not be nil")
-	}
-	return &_QualifiedName{NamespaceIndex: namespaceIndex, Name: name}
-}
 
 // Deprecated: use the interface for direct cast
 func CastQualifiedName(structType any) QualifiedName {
@@ -126,7 +233,7 @@ func QualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_QualifiedName) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__qualifiedName QualifiedName, err error) {
@@ -190,13 +297,32 @@ func (m *_QualifiedName) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_QualifiedName) IsQualifiedName() {}
 
+func (m *_QualifiedName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_QualifiedName) deepCopy() *_QualifiedName {
+	if m == nil {
+		return nil
+	}
+	_QualifiedNameCopy := &_QualifiedName{
+		m.NamespaceIndex,
+		m.Name.DeepCopy().(PascalString),
+	}
+	return _QualifiedNameCopy
+}
+
 func (m *_QualifiedName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

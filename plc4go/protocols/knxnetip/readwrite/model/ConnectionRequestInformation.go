@@ -40,14 +40,19 @@ type ConnectionRequestInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformation()
+	// CreateBuilder creates a ConnectionRequestInformationBuilder
+	CreateConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder
 }
 
 // ConnectionRequestInformationContract provides a set of functions which can be overwritten by a sub struct
 type ConnectionRequestInformationContract interface {
 	// IsConnectionRequestInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequestInformation()
+	// CreateBuilder creates a ConnectionRequestInformationBuilder
+	CreateConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder
 }
 
 // ConnectionRequestInformationRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,151 @@ var _ ConnectionRequestInformationContract = (*_ConnectionRequestInformation)(ni
 func NewConnectionRequestInformation() *_ConnectionRequestInformation {
 	return &_ConnectionRequestInformation{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestInformationBuilder is a builder for ConnectionRequestInformation
+type ConnectionRequestInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ConnectionRequestInformationBuilder
+	// AsConnectionRequestInformationDeviceManagement converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
+	AsConnectionRequestInformationDeviceManagement() interface {
+		ConnectionRequestInformationDeviceManagementBuilder
+		Done() ConnectionRequestInformationBuilder
+	}
+	// AsConnectionRequestInformationTunnelConnection converts this build to a subType of ConnectionRequestInformation. It is always possible to return to current builder using Done()
+	AsConnectionRequestInformationTunnelConnection() interface {
+		ConnectionRequestInformationTunnelConnectionBuilder
+		Done() ConnectionRequestInformationBuilder
+	}
+	// Build builds the ConnectionRequestInformation or returns an error if something is wrong
+	PartialBuild() (ConnectionRequestInformationContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ConnectionRequestInformationContract
+	// Build builds the ConnectionRequestInformation or returns an error if something is wrong
+	Build() (ConnectionRequestInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequestInformation
+}
+
+// NewConnectionRequestInformationBuilder() creates a ConnectionRequestInformationBuilder
+func NewConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder {
+	return &_ConnectionRequestInformationBuilder{_ConnectionRequestInformation: new(_ConnectionRequestInformation)}
+}
+
+type _ConnectionRequestInformationChildBuilder interface {
+	utils.Copyable
+	setParent(ConnectionRequestInformationContract)
+	buildForConnectionRequestInformation() (ConnectionRequestInformation, error)
+}
+
+type _ConnectionRequestInformationBuilder struct {
+	*_ConnectionRequestInformation
+
+	childBuilder _ConnectionRequestInformationChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestInformationBuilder) = (*_ConnectionRequestInformationBuilder)(nil)
+
+func (b *_ConnectionRequestInformationBuilder) WithMandatoryFields() ConnectionRequestInformationBuilder {
+	return b
+}
+
+func (b *_ConnectionRequestInformationBuilder) PartialBuild() (ConnectionRequestInformationContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectionRequestInformation.deepCopy(), nil
+}
+
+func (b *_ConnectionRequestInformationBuilder) PartialMustBuild() ConnectionRequestInformationContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationDeviceManagement() interface {
+	ConnectionRequestInformationDeviceManagementBuilder
+	Done() ConnectionRequestInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionRequestInformationDeviceManagementBuilder
+		Done() ConnectionRequestInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionRequestInformationDeviceManagementBuilder().(*_ConnectionRequestInformationDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionRequestInformationBuilder) AsConnectionRequestInformationTunnelConnection() interface {
+	ConnectionRequestInformationTunnelConnectionBuilder
+	Done() ConnectionRequestInformationBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionRequestInformationTunnelConnectionBuilder
+		Done() ConnectionRequestInformationBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionRequestInformationTunnelConnectionBuilder().(*_ConnectionRequestInformationTunnelConnectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionRequestInformationBuilder) Build() (ConnectionRequestInformation, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForConnectionRequestInformation()
+}
+
+func (b *_ConnectionRequestInformationBuilder) MustBuild() ConnectionRequestInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionRequestInformationBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestInformationBuilder().(*_ConnectionRequestInformationBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ConnectionRequestInformationChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectionRequestInformationBuilder creates a ConnectionRequestInformationBuilder
+func (b *_ConnectionRequestInformation) CreateConnectionRequestInformationBuilder() ConnectionRequestInformationBuilder {
+	if b == nil {
+		return NewConnectionRequestInformationBuilder()
+	}
+	return &_ConnectionRequestInformationBuilder{_ConnectionRequestInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequestInformation(structType any) ConnectionRequestInformation {
@@ -111,7 +261,7 @@ func ConnectionRequestInformationParseWithBufferProducer[T ConnectionRequestInfo
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -121,7 +271,12 @@ func ConnectionRequestInformationParseWithBuffer[T ConnectionRequestInformation]
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ConnectionRequestInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__connectionRequestInformation ConnectionRequestInformation, err error) {
@@ -148,11 +303,11 @@ func (m *_ConnectionRequestInformation) parse(ctx context.Context, readBuffer ut
 	var _child ConnectionRequestInformation
 	switch {
 	case connectionType == 0x03: // ConnectionRequestInformationDeviceManagement
-		if _child, err = (&_ConnectionRequestInformationDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationDeviceManagement for type-switch of ConnectionRequestInformation")
 		}
 	case connectionType == 0x04: // ConnectionRequestInformationTunnelConnection
-		if _child, err = (&_ConnectionRequestInformationTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionRequestInformationTunnelConnection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionRequestInformationTunnelConnection for type-switch of ConnectionRequestInformation")
 		}
 	default:
@@ -198,3 +353,17 @@ func (pm *_ConnectionRequestInformation) serializeParent(ctx context.Context, wr
 }
 
 func (m *_ConnectionRequestInformation) IsConnectionRequestInformation() {}
+
+func (m *_ConnectionRequestInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequestInformation) deepCopy() *_ConnectionRequestInformation {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestInformationCopy := &_ConnectionRequestInformation{
+		nil, // will be set by child
+	}
+	return _ConnectionRequestInformationCopy
+}

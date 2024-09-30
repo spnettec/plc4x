@@ -38,11 +38,14 @@ type BACnetPropertyStatesReasonForHalt interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetReasonForHalt returns ReasonForHalt (property field)
 	GetReasonForHalt() BACnetProgramErrorTagged
 	// IsBACnetPropertyStatesReasonForHalt is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesReasonForHalt()
+	// CreateBuilder creates a BACnetPropertyStatesReasonForHaltBuilder
+	CreateBACnetPropertyStatesReasonForHaltBuilder() BACnetPropertyStatesReasonForHaltBuilder
 }
 
 // _BACnetPropertyStatesReasonForHalt is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesReasonForHalt struct {
 
 var _ BACnetPropertyStatesReasonForHalt = (*_BACnetPropertyStatesReasonForHalt)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesReasonForHalt)(nil)
+
+// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
+func NewBACnetPropertyStatesReasonForHalt(peekedTagHeader BACnetTagHeader, reasonForHalt BACnetProgramErrorTagged) *_BACnetPropertyStatesReasonForHalt {
+	if reasonForHalt == nil {
+		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
+	}
+	_result := &_BACnetPropertyStatesReasonForHalt{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		ReasonForHalt:                reasonForHalt,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesReasonForHaltBuilder is a builder for BACnetPropertyStatesReasonForHalt
+type BACnetPropertyStatesReasonForHaltBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(reasonForHalt BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder
+	// WithReasonForHalt adds ReasonForHalt (property field)
+	WithReasonForHalt(BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder
+	// WithReasonForHaltBuilder adds ReasonForHalt (property field) which is build by the builder
+	WithReasonForHaltBuilder(func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetPropertyStatesReasonForHaltBuilder
+	// Build builds the BACnetPropertyStatesReasonForHalt or returns an error if something is wrong
+	Build() (BACnetPropertyStatesReasonForHalt, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesReasonForHalt
+}
+
+// NewBACnetPropertyStatesReasonForHaltBuilder() creates a BACnetPropertyStatesReasonForHaltBuilder
+func NewBACnetPropertyStatesReasonForHaltBuilder() BACnetPropertyStatesReasonForHaltBuilder {
+	return &_BACnetPropertyStatesReasonForHaltBuilder{_BACnetPropertyStatesReasonForHalt: new(_BACnetPropertyStatesReasonForHalt)}
+}
+
+type _BACnetPropertyStatesReasonForHaltBuilder struct {
+	*_BACnetPropertyStatesReasonForHalt
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesReasonForHaltBuilder) = (*_BACnetPropertyStatesReasonForHaltBuilder)(nil)
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) WithMandatoryFields(reasonForHalt BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder {
+	return b.WithReasonForHalt(reasonForHalt)
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) WithReasonForHalt(reasonForHalt BACnetProgramErrorTagged) BACnetPropertyStatesReasonForHaltBuilder {
+	b.ReasonForHalt = reasonForHalt
+	return b
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) WithReasonForHaltBuilder(builderSupplier func(BACnetProgramErrorTaggedBuilder) BACnetProgramErrorTaggedBuilder) BACnetPropertyStatesReasonForHaltBuilder {
+	builder := builderSupplier(b.ReasonForHalt.CreateBACnetProgramErrorTaggedBuilder())
+	var err error
+	b.ReasonForHalt, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetProgramErrorTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) Build() (BACnetPropertyStatesReasonForHalt, error) {
+	if b.ReasonForHalt == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'reasonForHalt' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesReasonForHalt.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) MustBuild() BACnetPropertyStatesReasonForHalt {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesReasonForHaltBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesReasonForHaltBuilder().(*_BACnetPropertyStatesReasonForHaltBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesReasonForHaltBuilder creates a BACnetPropertyStatesReasonForHaltBuilder
+func (b *_BACnetPropertyStatesReasonForHalt) CreateBACnetPropertyStatesReasonForHaltBuilder() BACnetPropertyStatesReasonForHaltBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesReasonForHaltBuilder()
+	}
+	return &_BACnetPropertyStatesReasonForHaltBuilder{_BACnetPropertyStatesReasonForHalt: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesReasonForHalt) GetReasonForHalt() BACnetProgramErr
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesReasonForHalt factory function for _BACnetPropertyStatesReasonForHalt
-func NewBACnetPropertyStatesReasonForHalt(reasonForHalt BACnetProgramErrorTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesReasonForHalt {
-	if reasonForHalt == nil {
-		panic("reasonForHalt of type BACnetProgramErrorTagged for BACnetPropertyStatesReasonForHalt must not be nil")
-	}
-	_result := &_BACnetPropertyStatesReasonForHalt{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		ReasonForHalt:                reasonForHalt,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesReasonForHalt(structType any) BACnetPropertyStatesReasonForHalt {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesReasonForHalt) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetPropertyStatesReasonForHalt) IsBACnetPropertyStatesReasonForHalt() {}
 
+func (m *_BACnetPropertyStatesReasonForHalt) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesReasonForHalt) deepCopy() *_BACnetPropertyStatesReasonForHalt {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesReasonForHaltCopy := &_BACnetPropertyStatesReasonForHalt{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.ReasonForHalt.DeepCopy().(BACnetProgramErrorTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesReasonForHaltCopy
+}
+
 func (m *_BACnetPropertyStatesReasonForHalt) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

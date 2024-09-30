@@ -38,6 +38,7 @@ type MonitoredItemCreateRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetItemToMonitor returns ItemToMonitor (property field)
 	GetItemToMonitor() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type MonitoredItemCreateRequest interface {
 	GetRequestedParameters() ExtensionObjectDefinition
 	// IsMonitoredItemCreateRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredItemCreateRequest()
+	// CreateBuilder creates a MonitoredItemCreateRequestBuilder
+	CreateMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder
 }
 
 // _MonitoredItemCreateRequest is the data-structure of this message
@@ -59,6 +62,171 @@ type _MonitoredItemCreateRequest struct {
 
 var _ MonitoredItemCreateRequest = (*_MonitoredItemCreateRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_MonitoredItemCreateRequest)(nil)
+
+// NewMonitoredItemCreateRequest factory function for _MonitoredItemCreateRequest
+func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) *_MonitoredItemCreateRequest {
+	if itemToMonitor == nil {
+		panic("itemToMonitor of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+	}
+	if requestedParameters == nil {
+		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
+	}
+	_result := &_MonitoredItemCreateRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ItemToMonitor:                     itemToMonitor,
+		MonitoringMode:                    monitoringMode,
+		RequestedParameters:               requestedParameters,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredItemCreateRequestBuilder is a builder for MonitoredItemCreateRequest
+type MonitoredItemCreateRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	// WithItemToMonitor adds ItemToMonitor (property field)
+	WithItemToMonitor(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	// WithItemToMonitorBuilder adds ItemToMonitor (property field) which is build by the builder
+	WithItemToMonitorBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
+	// WithMonitoringMode adds MonitoringMode (property field)
+	WithMonitoringMode(MonitoringMode) MonitoredItemCreateRequestBuilder
+	// WithRequestedParameters adds RequestedParameters (property field)
+	WithRequestedParameters(ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder
+	// WithRequestedParametersBuilder adds RequestedParameters (property field) which is build by the builder
+	WithRequestedParametersBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder
+	// Build builds the MonitoredItemCreateRequest or returns an error if something is wrong
+	Build() (MonitoredItemCreateRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredItemCreateRequest
+}
+
+// NewMonitoredItemCreateRequestBuilder() creates a MonitoredItemCreateRequestBuilder
+func NewMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder {
+	return &_MonitoredItemCreateRequestBuilder{_MonitoredItemCreateRequest: new(_MonitoredItemCreateRequest)}
+}
+
+type _MonitoredItemCreateRequestBuilder struct {
+	*_MonitoredItemCreateRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredItemCreateRequestBuilder) = (*_MonitoredItemCreateRequestBuilder)(nil)
+
+func (b *_MonitoredItemCreateRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithMandatoryFields(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	return b.WithItemToMonitor(itemToMonitor).WithMonitoringMode(monitoringMode).WithRequestedParameters(requestedParameters)
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitor(itemToMonitor ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	b.ItemToMonitor = itemToMonitor
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithItemToMonitorBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.ItemToMonitor.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ItemToMonitor, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithMonitoringMode(monitoringMode MonitoringMode) MonitoredItemCreateRequestBuilder {
+	b.MonitoringMode = monitoringMode
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParameters(requestedParameters ExtensionObjectDefinition) MonitoredItemCreateRequestBuilder {
+	b.RequestedParameters = requestedParameters
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) WithRequestedParametersBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) MonitoredItemCreateRequestBuilder {
+	builder := builderSupplier(b.RequestedParameters.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestedParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) Build() (MonitoredItemCreateRequest, error) {
+	if b.ItemToMonitor == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'itemToMonitor' not set"))
+	}
+	if b.RequestedParameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestedParameters' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredItemCreateRequest.deepCopy(), nil
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) MustBuild() MonitoredItemCreateRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredItemCreateRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredItemCreateRequestBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredItemCreateRequestBuilder().(*_MonitoredItemCreateRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredItemCreateRequestBuilder creates a MonitoredItemCreateRequestBuilder
+func (b *_MonitoredItemCreateRequest) CreateMonitoredItemCreateRequestBuilder() MonitoredItemCreateRequestBuilder {
+	if b == nil {
+		return NewMonitoredItemCreateRequestBuilder()
+	}
+	return &_MonitoredItemCreateRequestBuilder{_MonitoredItemCreateRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +267,6 @@ func (m *_MonitoredItemCreateRequest) GetRequestedParameters() ExtensionObjectDe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredItemCreateRequest factory function for _MonitoredItemCreateRequest
-func NewMonitoredItemCreateRequest(itemToMonitor ExtensionObjectDefinition, monitoringMode MonitoringMode, requestedParameters ExtensionObjectDefinition) *_MonitoredItemCreateRequest {
-	if itemToMonitor == nil {
-		panic("itemToMonitor of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
-	}
-	if requestedParameters == nil {
-		panic("requestedParameters of type ExtensionObjectDefinition for MonitoredItemCreateRequest must not be nil")
-	}
-	_result := &_MonitoredItemCreateRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ItemToMonitor:                     itemToMonitor,
-		MonitoringMode:                    monitoringMode,
-		RequestedParameters:               requestedParameters,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredItemCreateRequest(structType any) MonitoredItemCreateRequest {
@@ -228,13 +378,35 @@ func (m *_MonitoredItemCreateRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_MonitoredItemCreateRequest) IsMonitoredItemCreateRequest() {}
 
+func (m *_MonitoredItemCreateRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredItemCreateRequest) deepCopy() *_MonitoredItemCreateRequest {
+	if m == nil {
+		return nil
+	}
+	_MonitoredItemCreateRequestCopy := &_MonitoredItemCreateRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ItemToMonitor.DeepCopy().(ExtensionObjectDefinition),
+		m.MonitoringMode,
+		m.RequestedParameters.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _MonitoredItemCreateRequestCopy
+}
+
 func (m *_MonitoredItemCreateRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

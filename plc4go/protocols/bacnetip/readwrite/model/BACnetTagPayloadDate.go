@@ -38,6 +38,7 @@ type BACnetTagPayloadDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYearMinus1900 returns YearMinus1900 (property field)
 	GetYearMinus1900() uint8
 	// GetMonth returns Month (property field)
@@ -70,6 +71,8 @@ type BACnetTagPayloadDate interface {
 	GetDayOfWeekIsWildcard() bool
 	// IsBACnetTagPayloadDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadDate()
+	// CreateBuilder creates a BACnetTagPayloadDateBuilder
+	CreateBACnetTagPayloadDateBuilder() BACnetTagPayloadDateBuilder
 }
 
 // _BACnetTagPayloadDate is the data-structure of this message
@@ -81,6 +84,108 @@ type _BACnetTagPayloadDate struct {
 }
 
 var _ BACnetTagPayloadDate = (*_BACnetTagPayloadDate)(nil)
+
+// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
+func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
+	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadDateBuilder is a builder for BACnetTagPayloadDate
+type BACnetTagPayloadDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) BACnetTagPayloadDateBuilder
+	// WithYearMinus1900 adds YearMinus1900 (property field)
+	WithYearMinus1900(uint8) BACnetTagPayloadDateBuilder
+	// WithMonth adds Month (property field)
+	WithMonth(uint8) BACnetTagPayloadDateBuilder
+	// WithDayOfMonth adds DayOfMonth (property field)
+	WithDayOfMonth(uint8) BACnetTagPayloadDateBuilder
+	// WithDayOfWeek adds DayOfWeek (property field)
+	WithDayOfWeek(uint8) BACnetTagPayloadDateBuilder
+	// Build builds the BACnetTagPayloadDate or returns an error if something is wrong
+	Build() (BACnetTagPayloadDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadDate
+}
+
+// NewBACnetTagPayloadDateBuilder() creates a BACnetTagPayloadDateBuilder
+func NewBACnetTagPayloadDateBuilder() BACnetTagPayloadDateBuilder {
+	return &_BACnetTagPayloadDateBuilder{_BACnetTagPayloadDate: new(_BACnetTagPayloadDate)}
+}
+
+type _BACnetTagPayloadDateBuilder struct {
+	*_BACnetTagPayloadDate
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadDateBuilder) = (*_BACnetTagPayloadDateBuilder)(nil)
+
+func (b *_BACnetTagPayloadDateBuilder) WithMandatoryFields(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) BACnetTagPayloadDateBuilder {
+	return b.WithYearMinus1900(yearMinus1900).WithMonth(month).WithDayOfMonth(dayOfMonth).WithDayOfWeek(dayOfWeek)
+}
+
+func (b *_BACnetTagPayloadDateBuilder) WithYearMinus1900(yearMinus1900 uint8) BACnetTagPayloadDateBuilder {
+	b.YearMinus1900 = yearMinus1900
+	return b
+}
+
+func (b *_BACnetTagPayloadDateBuilder) WithMonth(month uint8) BACnetTagPayloadDateBuilder {
+	b.Month = month
+	return b
+}
+
+func (b *_BACnetTagPayloadDateBuilder) WithDayOfMonth(dayOfMonth uint8) BACnetTagPayloadDateBuilder {
+	b.DayOfMonth = dayOfMonth
+	return b
+}
+
+func (b *_BACnetTagPayloadDateBuilder) WithDayOfWeek(dayOfWeek uint8) BACnetTagPayloadDateBuilder {
+	b.DayOfWeek = dayOfWeek
+	return b
+}
+
+func (b *_BACnetTagPayloadDateBuilder) Build() (BACnetTagPayloadDate, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadDate.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadDateBuilder) MustBuild() BACnetTagPayloadDate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadDateBuilder().(*_BACnetTagPayloadDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadDateBuilder creates a BACnetTagPayloadDateBuilder
+func (b *_BACnetTagPayloadDate) CreateBACnetTagPayloadDateBuilder() BACnetTagPayloadDateBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadDateBuilder()
+	}
+	return &_BACnetTagPayloadDateBuilder{_BACnetTagPayloadDate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -183,11 +288,6 @@ func (m *_BACnetTagPayloadDate) GetDayOfWeekIsWildcard() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetTagPayloadDate factory function for _BACnetTagPayloadDate
-func NewBACnetTagPayloadDate(yearMinus1900 uint8, month uint8, dayOfMonth uint8, dayOfWeek uint8) *_BACnetTagPayloadDate {
-	return &_BACnetTagPayloadDate{YearMinus1900: yearMinus1900, Month: month, DayOfMonth: dayOfMonth, DayOfWeek: dayOfWeek}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadDate(structType any) BACnetTagPayloadDate {
 	if casted, ok := structType.(BACnetTagPayloadDate); ok {
@@ -262,7 +362,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadDate) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadDate BACnetTagPayloadDate, err error) {
@@ -478,13 +578,34 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetTagPayloadDate) IsBACnetTagPayloadDate() {}
 
+func (m *_BACnetTagPayloadDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadDate) deepCopy() *_BACnetTagPayloadDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadDateCopy := &_BACnetTagPayloadDate{
+		m.YearMinus1900,
+		m.Month,
+		m.DayOfMonth,
+		m.DayOfWeek,
+	}
+	return _BACnetTagPayloadDateCopy
+}
+
 func (m *_BACnetTagPayloadDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -40,8 +40,11 @@ type Reply interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
+	// CreateBuilder creates a ReplyBuilder
+	CreateReplyBuilder() ReplyBuilder
 }
 
 // ReplyContract provides a set of functions which can be overwritten by a sub struct
@@ -54,6 +57,8 @@ type ReplyContract interface {
 	GetRequestContext() RequestContext
 	// IsReply is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReply()
+	// CreateBuilder creates a ReplyBuilder
+	CreateReplyBuilder() ReplyBuilder
 }
 
 // ReplyRequirements provides a set of functions which need to be implemented by a sub struct
@@ -76,6 +81,184 @@ type _Reply struct {
 
 var _ ReplyContract = (*_Reply)(nil)
 
+// NewReply factory function for _Reply
+func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
+	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReplyBuilder is a builder for Reply
+type ReplyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedByte byte) ReplyBuilder
+	// WithPeekedByte adds PeekedByte (property field)
+	WithPeekedByte(byte) ReplyBuilder
+	// AsPowerUpReply converts this build to a subType of Reply. It is always possible to return to current builder using Done()
+	AsPowerUpReply() interface {
+		PowerUpReplyBuilder
+		Done() ReplyBuilder
+	}
+	// AsParameterChangeReply converts this build to a subType of Reply. It is always possible to return to current builder using Done()
+	AsParameterChangeReply() interface {
+		ParameterChangeReplyBuilder
+		Done() ReplyBuilder
+	}
+	// AsReplyEncodedReply converts this build to a subType of Reply. It is always possible to return to current builder using Done()
+	AsReplyEncodedReply() interface {
+		ReplyEncodedReplyBuilder
+		Done() ReplyBuilder
+	}
+	// Build builds the Reply or returns an error if something is wrong
+	PartialBuild() (ReplyContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ReplyContract
+	// Build builds the Reply or returns an error if something is wrong
+	Build() (Reply, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Reply
+}
+
+// NewReplyBuilder() creates a ReplyBuilder
+func NewReplyBuilder() ReplyBuilder {
+	return &_ReplyBuilder{_Reply: new(_Reply)}
+}
+
+type _ReplyChildBuilder interface {
+	utils.Copyable
+	setParent(ReplyContract)
+	buildForReply() (Reply, error)
+}
+
+type _ReplyBuilder struct {
+	*_Reply
+
+	childBuilder _ReplyChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReplyBuilder) = (*_ReplyBuilder)(nil)
+
+func (b *_ReplyBuilder) WithMandatoryFields(peekedByte byte) ReplyBuilder {
+	return b.WithPeekedByte(peekedByte)
+}
+
+func (b *_ReplyBuilder) WithPeekedByte(peekedByte byte) ReplyBuilder {
+	b.PeekedByte = peekedByte
+	return b
+}
+
+func (b *_ReplyBuilder) PartialBuild() (ReplyContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Reply.deepCopy(), nil
+}
+
+func (b *_ReplyBuilder) PartialMustBuild() ReplyContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ReplyBuilder) AsPowerUpReply() interface {
+	PowerUpReplyBuilder
+	Done() ReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		PowerUpReplyBuilder
+		Done() ReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewPowerUpReplyBuilder().(*_PowerUpReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyBuilder) AsParameterChangeReply() interface {
+	ParameterChangeReplyBuilder
+	Done() ReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ParameterChangeReplyBuilder
+		Done() ReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewParameterChangeReplyBuilder().(*_ParameterChangeReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyBuilder) AsReplyEncodedReply() interface {
+	ReplyEncodedReplyBuilder
+	Done() ReplyBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ReplyEncodedReplyBuilder
+		Done() ReplyBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewReplyEncodedReplyBuilder().(*_ReplyEncodedReplyBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ReplyBuilder) Build() (Reply, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForReply()
+}
+
+func (b *_ReplyBuilder) MustBuild() Reply {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ReplyBuilder) DeepCopy() any {
+	_copy := b.CreateReplyBuilder().(*_ReplyBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ReplyChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReplyBuilder creates a ReplyBuilder
+func (b *_Reply) CreateReplyBuilder() ReplyBuilder {
+	if b == nil {
+		return NewReplyBuilder()
+	}
+	return &_ReplyBuilder{_Reply: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -89,11 +272,6 @@ func (m *_Reply) GetPeekedByte() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReply factory function for _Reply
-func NewReply(peekedByte byte, cBusOptions CBusOptions, requestContext RequestContext) *_Reply {
-	return &_Reply{PeekedByte: peekedByte, CBusOptions: cBusOptions, RequestContext: requestContext}
-}
 
 // Deprecated: use the interface for direct cast
 func CastReply(structType any) Reply {
@@ -131,7 +309,7 @@ func ReplyParseWithBufferProducer[T Reply](cBusOptions CBusOptions, requestConte
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -141,7 +319,12 @@ func ReplyParseWithBuffer[T Reply](ctx context.Context, readBuffer utils.ReadBuf
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (__reply Reply, err error) {
@@ -163,15 +346,15 @@ func (m *_Reply) parse(ctx context.Context, readBuffer utils.ReadBuffer, cBusOpt
 	var _child Reply
 	switch {
 	case peekedByte == 0x2B: // PowerUpReply
-		if _child, err = (&_PowerUpReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_PowerUpReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type PowerUpReply for type-switch of Reply")
 		}
 	case peekedByte == 0x3D: // ParameterChangeReply
-		if _child, err = (&_ParameterChangeReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ParameterChangeReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ParameterChangeReply for type-switch of Reply")
 		}
 	case 0 == 0: // ReplyEncodedReply
-		if _child, err = (&_ReplyEncodedReply{}).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
+		if _child, err = new(_ReplyEncodedReply).parse(ctx, readBuffer, m, cBusOptions, requestContext); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ReplyEncodedReply for type-switch of Reply")
 		}
 	default:
@@ -222,3 +405,20 @@ func (m *_Reply) GetRequestContext() RequestContext {
 ////
 
 func (m *_Reply) IsReply() {}
+
+func (m *_Reply) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Reply) deepCopy() *_Reply {
+	if m == nil {
+		return nil
+	}
+	_ReplyCopy := &_Reply{
+		nil, // will be set by child
+		m.PeekedByte,
+		m.CBusOptions,
+		m.RequestContext,
+	}
+	return _ReplyCopy
+}

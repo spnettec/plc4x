@@ -36,9 +36,12 @@ type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest()
+	// CreateBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
+	CreateS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
 }
 
 // _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest is the data-structure of this message
@@ -48,6 +51,99 @@ type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest struct {
 
 var _ S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)(nil)
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
+func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
+	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder is a builder for S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
+type S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
+	// Build builds the S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest or returns an error if something is wrong
+	Build() (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
+}
+
+// NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder() creates a S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
+func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder {
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest: new(_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest)}
+}
+
+type _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder struct {
+	*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) = (*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder)(nil)
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) WithMandatoryFields() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder {
+	return b
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) Build() (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest.deepCopy(), nil
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) MustBuild() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder().(*_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder creates a S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder
+func (b *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) CreateS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder() S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder {
+	if b == nil {
+		return NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder()
+	}
+	return &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestBuilder{_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,15 +169,6 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetCpuSubfunctio
 
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) GetParent() S7PayloadUserDataItemContract {
 	return m.S7PayloadUserDataItemContract
-}
-
-// NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest factory function for _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest
-func NewS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
-	_result := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) SerializeWithWri
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) IsS7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest() {
 }
 
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) deepCopy() *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestCopy := &_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestCopy
+}
+
 func (m *_S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

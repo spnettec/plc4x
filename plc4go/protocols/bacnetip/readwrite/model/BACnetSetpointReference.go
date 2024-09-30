@@ -38,10 +38,13 @@ type BACnetSetpointReference interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSetPointReference returns SetPointReference (property field)
 	GetSetPointReference() BACnetObjectPropertyReferenceEnclosed
 	// IsBACnetSetpointReference is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSetpointReference()
+	// CreateBuilder creates a BACnetSetpointReferenceBuilder
+	CreateBACnetSetpointReferenceBuilder() BACnetSetpointReferenceBuilder
 }
 
 // _BACnetSetpointReference is the data-structure of this message
@@ -50,6 +53,102 @@ type _BACnetSetpointReference struct {
 }
 
 var _ BACnetSetpointReference = (*_BACnetSetpointReference)(nil)
+
+// NewBACnetSetpointReference factory function for _BACnetSetpointReference
+func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
+	return &_BACnetSetpointReference{SetPointReference: setPointReference}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSetpointReferenceBuilder is a builder for BACnetSetpointReference
+type BACnetSetpointReferenceBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetSetpointReferenceBuilder
+	// WithSetPointReference adds SetPointReference (property field)
+	WithOptionalSetPointReference(BACnetObjectPropertyReferenceEnclosed) BACnetSetpointReferenceBuilder
+	// WithOptionalSetPointReferenceBuilder adds SetPointReference (property field) which is build by the builder
+	WithOptionalSetPointReferenceBuilder(func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetSetpointReferenceBuilder
+	// Build builds the BACnetSetpointReference or returns an error if something is wrong
+	Build() (BACnetSetpointReference, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSetpointReference
+}
+
+// NewBACnetSetpointReferenceBuilder() creates a BACnetSetpointReferenceBuilder
+func NewBACnetSetpointReferenceBuilder() BACnetSetpointReferenceBuilder {
+	return &_BACnetSetpointReferenceBuilder{_BACnetSetpointReference: new(_BACnetSetpointReference)}
+}
+
+type _BACnetSetpointReferenceBuilder struct {
+	*_BACnetSetpointReference
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSetpointReferenceBuilder) = (*_BACnetSetpointReferenceBuilder)(nil)
+
+func (b *_BACnetSetpointReferenceBuilder) WithMandatoryFields() BACnetSetpointReferenceBuilder {
+	return b
+}
+
+func (b *_BACnetSetpointReferenceBuilder) WithOptionalSetPointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) BACnetSetpointReferenceBuilder {
+	b.SetPointReference = setPointReference
+	return b
+}
+
+func (b *_BACnetSetpointReferenceBuilder) WithOptionalSetPointReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetSetpointReferenceBuilder {
+	builder := builderSupplier(b.SetPointReference.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	b.SetPointReference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSetpointReferenceBuilder) Build() (BACnetSetpointReference, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSetpointReference.deepCopy(), nil
+}
+
+func (b *_BACnetSetpointReferenceBuilder) MustBuild() BACnetSetpointReference {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSetpointReferenceBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSetpointReferenceBuilder().(*_BACnetSetpointReferenceBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSetpointReferenceBuilder creates a BACnetSetpointReferenceBuilder
+func (b *_BACnetSetpointReference) CreateBACnetSetpointReferenceBuilder() BACnetSetpointReferenceBuilder {
+	if b == nil {
+		return NewBACnetSetpointReferenceBuilder()
+	}
+	return &_BACnetSetpointReferenceBuilder{_BACnetSetpointReference: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +163,6 @@ func (m *_BACnetSetpointReference) GetSetPointReference() BACnetObjectPropertyRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSetpointReference factory function for _BACnetSetpointReference
-func NewBACnetSetpointReference(setPointReference BACnetObjectPropertyReferenceEnclosed) *_BACnetSetpointReference {
-	return &_BACnetSetpointReference{SetPointReference: setPointReference}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSetpointReference(structType any) BACnetSetpointReference {
@@ -115,7 +209,7 @@ func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSetpointReference) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetSetpointReference BACnetSetpointReference, err error) {
@@ -173,13 +267,31 @@ func (m *_BACnetSetpointReference) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetSetpointReference) IsBACnetSetpointReference() {}
 
+func (m *_BACnetSetpointReference) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSetpointReference) deepCopy() *_BACnetSetpointReference {
+	if m == nil {
+		return nil
+	}
+	_BACnetSetpointReferenceCopy := &_BACnetSetpointReference{
+		m.SetPointReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+	}
+	return _BACnetSetpointReferenceCopy
+}
+
 func (m *_BACnetSetpointReference) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

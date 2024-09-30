@@ -40,8 +40,11 @@ type BACnetPriorityValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
+	// CreateBuilder creates a BACnetPriorityValueBuilder
+	CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder
 }
 
 // BACnetPriorityValueContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type BACnetPriorityValueContract interface {
 	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetPriorityValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPriorityValue()
+	// CreateBuilder creates a BACnetPriorityValueBuilder
+	CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder
 }
 
 // BACnetPriorityValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +83,460 @@ type _BACnetPriorityValue struct {
 }
 
 var _ BACnetPriorityValueContract = (*_BACnetPriorityValue)(nil)
+
+// NewBACnetPriorityValue factory function for _BACnetPriorityValue
+func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetPriorityValue must not be nil")
+	}
+	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPriorityValueBuilder is a builder for BACnetPriorityValue
+type BACnetPriorityValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetPriorityValueBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder
+	// AsBACnetPriorityValueNull converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueNull() interface {
+		BACnetPriorityValueNullBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueReal converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueReal() interface {
+		BACnetPriorityValueRealBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueEnumerated converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueEnumerated() interface {
+		BACnetPriorityValueEnumeratedBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueUnsigned converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueUnsigned() interface {
+		BACnetPriorityValueUnsignedBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueBoolean converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueBoolean() interface {
+		BACnetPriorityValueBooleanBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueInteger converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueInteger() interface {
+		BACnetPriorityValueIntegerBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueDouble converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueDouble() interface {
+		BACnetPriorityValueDoubleBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueTime converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueTime() interface {
+		BACnetPriorityValueTimeBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueCharacterString converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueCharacterString() interface {
+		BACnetPriorityValueCharacterStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueOctetString converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueOctetString() interface {
+		BACnetPriorityValueOctetStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueBitString converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueBitString() interface {
+		BACnetPriorityValueBitStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueDate converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueDate() interface {
+		BACnetPriorityValueDateBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueObjectidentifier converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueObjectidentifier() interface {
+		BACnetPriorityValueObjectidentifierBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueConstructedValue converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueConstructedValue() interface {
+		BACnetPriorityValueConstructedValueBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// AsBACnetPriorityValueDateTime converts this build to a subType of BACnetPriorityValue. It is always possible to return to current builder using Done()
+	AsBACnetPriorityValueDateTime() interface {
+		BACnetPriorityValueDateTimeBuilder
+		Done() BACnetPriorityValueBuilder
+	}
+	// Build builds the BACnetPriorityValue or returns an error if something is wrong
+	PartialBuild() (BACnetPriorityValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetPriorityValueContract
+	// Build builds the BACnetPriorityValue or returns an error if something is wrong
+	Build() (BACnetPriorityValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPriorityValue
+}
+
+// NewBACnetPriorityValueBuilder() creates a BACnetPriorityValueBuilder
+func NewBACnetPriorityValueBuilder() BACnetPriorityValueBuilder {
+	return &_BACnetPriorityValueBuilder{_BACnetPriorityValue: new(_BACnetPriorityValue)}
+}
+
+type _BACnetPriorityValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetPriorityValueContract)
+	buildForBACnetPriorityValue() (BACnetPriorityValue, error)
+}
+
+type _BACnetPriorityValueBuilder struct {
+	*_BACnetPriorityValue
+
+	childBuilder _BACnetPriorityValueChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPriorityValueBuilder) = (*_BACnetPriorityValueBuilder)(nil)
+
+func (b *_BACnetPriorityValueBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetPriorityValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetPriorityValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetPriorityValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetPriorityValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPriorityValueBuilder) PartialBuild() (BACnetPriorityValueContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPriorityValue.deepCopy(), nil
+}
+
+func (b *_BACnetPriorityValueBuilder) PartialMustBuild() BACnetPriorityValueContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueNull() interface {
+	BACnetPriorityValueNullBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueNullBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueNullBuilder().(*_BACnetPriorityValueNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueReal() interface {
+	BACnetPriorityValueRealBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueRealBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueRealBuilder().(*_BACnetPriorityValueRealBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueEnumerated() interface {
+	BACnetPriorityValueEnumeratedBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueEnumeratedBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueEnumeratedBuilder().(*_BACnetPriorityValueEnumeratedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueUnsigned() interface {
+	BACnetPriorityValueUnsignedBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueUnsignedBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueUnsignedBuilder().(*_BACnetPriorityValueUnsignedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueBoolean() interface {
+	BACnetPriorityValueBooleanBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueBooleanBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueBooleanBuilder().(*_BACnetPriorityValueBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueInteger() interface {
+	BACnetPriorityValueIntegerBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueIntegerBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueIntegerBuilder().(*_BACnetPriorityValueIntegerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueDouble() interface {
+	BACnetPriorityValueDoubleBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueDoubleBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueDoubleBuilder().(*_BACnetPriorityValueDoubleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueTime() interface {
+	BACnetPriorityValueTimeBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueTimeBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueTimeBuilder().(*_BACnetPriorityValueTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueCharacterString() interface {
+	BACnetPriorityValueCharacterStringBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueCharacterStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueCharacterStringBuilder().(*_BACnetPriorityValueCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueOctetString() interface {
+	BACnetPriorityValueOctetStringBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueOctetStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueOctetStringBuilder().(*_BACnetPriorityValueOctetStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueBitString() interface {
+	BACnetPriorityValueBitStringBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueBitStringBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueBitStringBuilder().(*_BACnetPriorityValueBitStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueDate() interface {
+	BACnetPriorityValueDateBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueDateBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueDateBuilder().(*_BACnetPriorityValueDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueObjectidentifier() interface {
+	BACnetPriorityValueObjectidentifierBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueObjectidentifierBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueObjectidentifierBuilder().(*_BACnetPriorityValueObjectidentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueConstructedValue() interface {
+	BACnetPriorityValueConstructedValueBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueConstructedValueBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueConstructedValueBuilder().(*_BACnetPriorityValueConstructedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) AsBACnetPriorityValueDateTime() interface {
+	BACnetPriorityValueDateTimeBuilder
+	Done() BACnetPriorityValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetPriorityValueDateTimeBuilder
+		Done() BACnetPriorityValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetPriorityValueDateTimeBuilder().(*_BACnetPriorityValueDateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetPriorityValueBuilder) Build() (BACnetPriorityValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetPriorityValue()
+}
+
+func (b *_BACnetPriorityValueBuilder) MustBuild() BACnetPriorityValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetPriorityValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPriorityValueBuilder().(*_BACnetPriorityValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetPriorityValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPriorityValueBuilder creates a BACnetPriorityValueBuilder
+func (b *_BACnetPriorityValue) CreateBACnetPriorityValueBuilder() BACnetPriorityValueBuilder {
+	if b == nil {
+		return NewBACnetPriorityValueBuilder()
+	}
+	return &_BACnetPriorityValueBuilder{_BACnetPriorityValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,14 +574,6 @@ func (pm *_BACnetPriorityValue) GetPeekedIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPriorityValue factory function for _BACnetPriorityValue
-func NewBACnetPriorityValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetPriorityValue {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetPriorityValue must not be nil")
-	}
-	return &_BACnetPriorityValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPriorityValue(structType any) BACnetPriorityValue {
@@ -164,7 +615,7 @@ func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTyp
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -174,7 +625,12 @@ func BACnetPriorityValueParseWithBuffer[T BACnetPriorityValue](ctx context.Conte
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetPriorityValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetPriorityValue BACnetPriorityValue, err error) {
@@ -213,63 +669,63 @@ func (m *_BACnetPriorityValue) parse(ctx context.Context, readBuffer utils.ReadB
 	var _child BACnetPriorityValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetPriorityValueNull
-		if _child, err = (&_BACnetPriorityValueNull{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueNull).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueNull for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetPriorityValueReal
-		if _child, err = (&_BACnetPriorityValueReal{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueReal).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueReal for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetPriorityValueEnumerated
-		if _child, err = (&_BACnetPriorityValueEnumerated{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueEnumerated).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueEnumerated for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetPriorityValueUnsigned
-		if _child, err = (&_BACnetPriorityValueUnsigned{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueUnsigned).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueUnsigned for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetPriorityValueBoolean
-		if _child, err = (&_BACnetPriorityValueBoolean{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueBoolean).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueBoolean for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetPriorityValueInteger
-		if _child, err = (&_BACnetPriorityValueInteger{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueInteger).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueInteger for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetPriorityValueDouble
-		if _child, err = (&_BACnetPriorityValueDouble{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueDouble).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDouble for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetPriorityValueTime
-		if _child, err = (&_BACnetPriorityValueTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueTime).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueTime for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetPriorityValueCharacterString
-		if _child, err = (&_BACnetPriorityValueCharacterString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueCharacterString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueCharacterString for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetPriorityValueOctetString
-		if _child, err = (&_BACnetPriorityValueOctetString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueOctetString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueOctetString for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetPriorityValueBitString
-		if _child, err = (&_BACnetPriorityValueBitString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueBitString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueBitString for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetPriorityValueDate
-		if _child, err = (&_BACnetPriorityValueDate{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueDate).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDate for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetPriorityValueObjectidentifier
-		if _child, err = (&_BACnetPriorityValueObjectidentifier{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueObjectidentifier).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueObjectidentifier for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetPriorityValueConstructedValue
-		if _child, err = (&_BACnetPriorityValueConstructedValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueConstructedValue).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueConstructedValue for type-switch of BACnetPriorityValue")
 		}
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetPriorityValueDateTime
-		if _child, err = (&_BACnetPriorityValueDateTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetPriorityValueDateTime).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetPriorityValueDateTime for type-switch of BACnetPriorityValue")
 		}
 	default:
@@ -329,3 +785,19 @@ func (m *_BACnetPriorityValue) GetObjectTypeArgument() BACnetObjectType {
 ////
 
 func (m *_BACnetPriorityValue) IsBACnetPriorityValue() {}
+
+func (m *_BACnetPriorityValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPriorityValue) deepCopy() *_BACnetPriorityValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetPriorityValueCopy := &_BACnetPriorityValue{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetPriorityValueCopy
+}

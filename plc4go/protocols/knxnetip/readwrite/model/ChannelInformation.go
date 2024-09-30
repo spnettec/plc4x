@@ -38,12 +38,15 @@ type ChannelInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNumChannels returns NumChannels (property field)
 	GetNumChannels() uint8
 	// GetChannelCode returns ChannelCode (property field)
 	GetChannelCode() uint16
 	// IsChannelInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsChannelInformation()
+	// CreateBuilder creates a ChannelInformationBuilder
+	CreateChannelInformationBuilder() ChannelInformationBuilder
 }
 
 // _ChannelInformation is the data-structure of this message
@@ -53,6 +56,94 @@ type _ChannelInformation struct {
 }
 
 var _ ChannelInformation = (*_ChannelInformation)(nil)
+
+// NewChannelInformation factory function for _ChannelInformation
+func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
+	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ChannelInformationBuilder is a builder for ChannelInformation
+type ChannelInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder
+	// WithNumChannels adds NumChannels (property field)
+	WithNumChannels(uint8) ChannelInformationBuilder
+	// WithChannelCode adds ChannelCode (property field)
+	WithChannelCode(uint16) ChannelInformationBuilder
+	// Build builds the ChannelInformation or returns an error if something is wrong
+	Build() (ChannelInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ChannelInformation
+}
+
+// NewChannelInformationBuilder() creates a ChannelInformationBuilder
+func NewChannelInformationBuilder() ChannelInformationBuilder {
+	return &_ChannelInformationBuilder{_ChannelInformation: new(_ChannelInformation)}
+}
+
+type _ChannelInformationBuilder struct {
+	*_ChannelInformation
+
+	err *utils.MultiError
+}
+
+var _ (ChannelInformationBuilder) = (*_ChannelInformationBuilder)(nil)
+
+func (b *_ChannelInformationBuilder) WithMandatoryFields(numChannels uint8, channelCode uint16) ChannelInformationBuilder {
+	return b.WithNumChannels(numChannels).WithChannelCode(channelCode)
+}
+
+func (b *_ChannelInformationBuilder) WithNumChannels(numChannels uint8) ChannelInformationBuilder {
+	b.NumChannels = numChannels
+	return b
+}
+
+func (b *_ChannelInformationBuilder) WithChannelCode(channelCode uint16) ChannelInformationBuilder {
+	b.ChannelCode = channelCode
+	return b
+}
+
+func (b *_ChannelInformationBuilder) Build() (ChannelInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ChannelInformation.deepCopy(), nil
+}
+
+func (b *_ChannelInformationBuilder) MustBuild() ChannelInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ChannelInformationBuilder) DeepCopy() any {
+	_copy := b.CreateChannelInformationBuilder().(*_ChannelInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateChannelInformationBuilder creates a ChannelInformationBuilder
+func (b *_ChannelInformation) CreateChannelInformationBuilder() ChannelInformationBuilder {
+	if b == nil {
+		return NewChannelInformationBuilder()
+	}
+	return &_ChannelInformationBuilder{_ChannelInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_ChannelInformation) GetChannelCode() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChannelInformation factory function for _ChannelInformation
-func NewChannelInformation(numChannels uint8, channelCode uint16) *_ChannelInformation {
-	return &_ChannelInformation{NumChannels: numChannels, ChannelCode: channelCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastChannelInformation(structType any) ChannelInformation {
@@ -123,7 +209,7 @@ func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ChannelInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__channelInformation ChannelInformation, err error) {
@@ -187,13 +273,32 @@ func (m *_ChannelInformation) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_ChannelInformation) IsChannelInformation() {}
 
+func (m *_ChannelInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChannelInformation) deepCopy() *_ChannelInformation {
+	if m == nil {
+		return nil
+	}
+	_ChannelInformationCopy := &_ChannelInformation{
+		m.NumChannels,
+		m.ChannelCode,
+	}
+	return _ChannelInformationCopy
+}
+
 func (m *_ChannelInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

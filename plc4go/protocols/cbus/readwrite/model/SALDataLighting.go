@@ -38,11 +38,14 @@ type SALDataLighting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetLightingData returns LightingData (property field)
 	GetLightingData() LightingData
 	// IsSALDataLighting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataLighting()
+	// CreateBuilder creates a SALDataLightingBuilder
+	CreateSALDataLightingBuilder() SALDataLightingBuilder
 }
 
 // _SALDataLighting is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataLighting struct {
 
 var _ SALDataLighting = (*_SALDataLighting)(nil)
 var _ SALDataRequirements = (*_SALDataLighting)(nil)
+
+// NewSALDataLighting factory function for _SALDataLighting
+func NewSALDataLighting(salData SALData, lightingData LightingData) *_SALDataLighting {
+	if lightingData == nil {
+		panic("lightingData of type LightingData for SALDataLighting must not be nil")
+	}
+	_result := &_SALDataLighting{
+		SALDataContract: NewSALData(salData),
+		LightingData:    lightingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataLightingBuilder is a builder for SALDataLighting
+type SALDataLightingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder
+	// WithLightingData adds LightingData (property field)
+	WithLightingData(LightingData) SALDataLightingBuilder
+	// WithLightingDataBuilder adds LightingData (property field) which is build by the builder
+	WithLightingDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataLightingBuilder
+	// Build builds the SALDataLighting or returns an error if something is wrong
+	Build() (SALDataLighting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataLighting
+}
+
+// NewSALDataLightingBuilder() creates a SALDataLightingBuilder
+func NewSALDataLightingBuilder() SALDataLightingBuilder {
+	return &_SALDataLightingBuilder{_SALDataLighting: new(_SALDataLighting)}
+}
+
+type _SALDataLightingBuilder struct {
+	*_SALDataLighting
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataLightingBuilder) = (*_SALDataLightingBuilder)(nil)
+
+func (b *_SALDataLightingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataLightingBuilder) WithMandatoryFields(lightingData LightingData) SALDataLightingBuilder {
+	return b.WithLightingData(lightingData)
+}
+
+func (b *_SALDataLightingBuilder) WithLightingData(lightingData LightingData) SALDataLightingBuilder {
+	b.LightingData = lightingData
+	return b
+}
+
+func (b *_SALDataLightingBuilder) WithLightingDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataLightingBuilder {
+	builder := builderSupplier(b.LightingData.CreateLightingDataBuilder())
+	var err error
+	b.LightingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataLightingBuilder) Build() (SALDataLighting, error) {
+	if b.LightingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lightingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataLighting.deepCopy(), nil
+}
+
+func (b *_SALDataLightingBuilder) MustBuild() SALDataLighting {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataLightingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataLightingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataLightingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataLightingBuilder().(*_SALDataLightingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataLightingBuilder creates a SALDataLightingBuilder
+func (b *_SALDataLighting) CreateSALDataLightingBuilder() SALDataLightingBuilder {
+	if b == nil {
+		return NewSALDataLightingBuilder()
+	}
+	return &_SALDataLightingBuilder{_SALDataLighting: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataLighting) GetLightingData() LightingData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataLighting factory function for _SALDataLighting
-func NewSALDataLighting(lightingData LightingData, salData SALData) *_SALDataLighting {
-	if lightingData == nil {
-		panic("lightingData of type LightingData for SALDataLighting must not be nil")
-	}
-	_result := &_SALDataLighting{
-		SALDataContract: NewSALData(salData),
-		LightingData:    lightingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataLighting(structType any) SALDataLighting {
@@ -183,13 +298,33 @@ func (m *_SALDataLighting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_SALDataLighting) IsSALDataLighting() {}
 
+func (m *_SALDataLighting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataLighting) deepCopy() *_SALDataLighting {
+	if m == nil {
+		return nil
+	}
+	_SALDataLightingCopy := &_SALDataLighting{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.LightingData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataLightingCopy
+}
+
 func (m *_SALDataLighting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

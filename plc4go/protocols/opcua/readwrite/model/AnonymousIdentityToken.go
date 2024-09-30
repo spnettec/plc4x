@@ -36,9 +36,12 @@ type AnonymousIdentityToken interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	UserIdentityTokenDefinition
 	// IsAnonymousIdentityToken is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAnonymousIdentityToken()
+	// CreateBuilder creates a AnonymousIdentityTokenBuilder
+	CreateAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder
 }
 
 // _AnonymousIdentityToken is the data-structure of this message
@@ -48,6 +51,99 @@ type _AnonymousIdentityToken struct {
 
 var _ AnonymousIdentityToken = (*_AnonymousIdentityToken)(nil)
 var _ UserIdentityTokenDefinitionRequirements = (*_AnonymousIdentityToken)(nil)
+
+// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
+func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
+	_result := &_AnonymousIdentityToken{
+		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
+	}
+	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AnonymousIdentityTokenBuilder is a builder for AnonymousIdentityToken
+type AnonymousIdentityTokenBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AnonymousIdentityTokenBuilder
+	// Build builds the AnonymousIdentityToken or returns an error if something is wrong
+	Build() (AnonymousIdentityToken, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AnonymousIdentityToken
+}
+
+// NewAnonymousIdentityTokenBuilder() creates a AnonymousIdentityTokenBuilder
+func NewAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
+	return &_AnonymousIdentityTokenBuilder{_AnonymousIdentityToken: new(_AnonymousIdentityToken)}
+}
+
+type _AnonymousIdentityTokenBuilder struct {
+	*_AnonymousIdentityToken
+
+	parentBuilder *_UserIdentityTokenDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AnonymousIdentityTokenBuilder) = (*_AnonymousIdentityTokenBuilder)(nil)
+
+func (b *_AnonymousIdentityTokenBuilder) setParent(contract UserIdentityTokenDefinitionContract) {
+	b.UserIdentityTokenDefinitionContract = contract
+}
+
+func (b *_AnonymousIdentityTokenBuilder) WithMandatoryFields() AnonymousIdentityTokenBuilder {
+	return b
+}
+
+func (b *_AnonymousIdentityTokenBuilder) Build() (AnonymousIdentityToken, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AnonymousIdentityToken.deepCopy(), nil
+}
+
+func (b *_AnonymousIdentityTokenBuilder) MustBuild() AnonymousIdentityToken {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AnonymousIdentityTokenBuilder) Done() UserIdentityTokenDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AnonymousIdentityTokenBuilder) buildForUserIdentityTokenDefinition() (UserIdentityTokenDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AnonymousIdentityTokenBuilder) DeepCopy() any {
+	_copy := b.CreateAnonymousIdentityTokenBuilder().(*_AnonymousIdentityTokenBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAnonymousIdentityTokenBuilder creates a AnonymousIdentityTokenBuilder
+func (b *_AnonymousIdentityToken) CreateAnonymousIdentityTokenBuilder() AnonymousIdentityTokenBuilder {
+	if b == nil {
+		return NewAnonymousIdentityTokenBuilder()
+	}
+	return &_AnonymousIdentityTokenBuilder{_AnonymousIdentityToken: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_AnonymousIdentityToken) GetIdentifier() string {
 
 func (m *_AnonymousIdentityToken) GetParent() UserIdentityTokenDefinitionContract {
 	return m.UserIdentityTokenDefinitionContract
-}
-
-// NewAnonymousIdentityToken factory function for _AnonymousIdentityToken
-func NewAnonymousIdentityToken() *_AnonymousIdentityToken {
-	_result := &_AnonymousIdentityToken{
-		UserIdentityTokenDefinitionContract: NewUserIdentityTokenDefinition(),
-	}
-	_result.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_AnonymousIdentityToken) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_AnonymousIdentityToken) IsAnonymousIdentityToken() {}
 
+func (m *_AnonymousIdentityToken) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AnonymousIdentityToken) deepCopy() *_AnonymousIdentityToken {
+	if m == nil {
+		return nil
+	}
+	_AnonymousIdentityTokenCopy := &_AnonymousIdentityToken{
+		m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition).deepCopy(),
+	}
+	m.UserIdentityTokenDefinitionContract.(*_UserIdentityTokenDefinition)._SubType = m
+	return _AnonymousIdentityTokenCopy
+}
+
 func (m *_AnonymousIdentityToken) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataActiveText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetActiveText returns ActiveText (property field)
 	GetActiveText() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataActiveText interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataActiveText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataActiveText()
+	// CreateBuilder creates a BACnetConstructedDataActiveTextBuilder
+	CreateBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveTextBuilder
 }
 
 // _BACnetConstructedDataActiveText is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataActiveText struct {
 
 var _ BACnetConstructedDataActiveText = (*_BACnetConstructedDataActiveText)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataActiveText)(nil)
+
+// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
+func NewBACnetConstructedDataActiveText(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, activeText BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
+	if activeText == nil {
+		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
+	}
+	_result := &_BACnetConstructedDataActiveText{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ActiveText:                    activeText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataActiveTextBuilder is a builder for BACnetConstructedDataActiveText
+type BACnetConstructedDataActiveTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder
+	// WithActiveText adds ActiveText (property field)
+	WithActiveText(BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder
+	// WithActiveTextBuilder adds ActiveText (property field) which is build by the builder
+	WithActiveTextBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataActiveTextBuilder
+	// Build builds the BACnetConstructedDataActiveText or returns an error if something is wrong
+	Build() (BACnetConstructedDataActiveText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataActiveText
+}
+
+// NewBACnetConstructedDataActiveTextBuilder() creates a BACnetConstructedDataActiveTextBuilder
+func NewBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveTextBuilder {
+	return &_BACnetConstructedDataActiveTextBuilder{_BACnetConstructedDataActiveText: new(_BACnetConstructedDataActiveText)}
+}
+
+type _BACnetConstructedDataActiveTextBuilder struct {
+	*_BACnetConstructedDataActiveText
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataActiveTextBuilder) = (*_BACnetConstructedDataActiveTextBuilder)(nil)
+
+func (b *_BACnetConstructedDataActiveTextBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) WithMandatoryFields(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
+	return b.WithActiveText(activeText)
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) WithActiveText(activeText BACnetApplicationTagCharacterString) BACnetConstructedDataActiveTextBuilder {
+	b.ActiveText = activeText
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) WithActiveTextBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataActiveTextBuilder {
+	builder := builderSupplier(b.ActiveText.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.ActiveText, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) Build() (BACnetConstructedDataActiveText, error) {
+	if b.ActiveText == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'activeText' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataActiveText.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) MustBuild() BACnetConstructedDataActiveText {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataActiveTextBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataActiveTextBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataActiveTextBuilder().(*_BACnetConstructedDataActiveTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataActiveTextBuilder creates a BACnetConstructedDataActiveTextBuilder
+func (b *_BACnetConstructedDataActiveText) CreateBACnetConstructedDataActiveTextBuilder() BACnetConstructedDataActiveTextBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataActiveTextBuilder()
+	}
+	return &_BACnetConstructedDataActiveTextBuilder{_BACnetConstructedDataActiveText: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataActiveText) GetActualValue() BACnetApplicationTag
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataActiveText factory function for _BACnetConstructedDataActiveText
-func NewBACnetConstructedDataActiveText(activeText BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataActiveText {
-	if activeText == nil {
-		panic("activeText of type BACnetApplicationTagCharacterString for BACnetConstructedDataActiveText must not be nil")
-	}
-	_result := &_BACnetConstructedDataActiveText{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ActiveText:                    activeText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataActiveText(structType any) BACnetConstructedDataActiveText {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataActiveText) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataActiveText) IsBACnetConstructedDataActiveText() {}
 
+func (m *_BACnetConstructedDataActiveText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataActiveText) deepCopy() *_BACnetConstructedDataActiveText {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataActiveTextCopy := &_BACnetConstructedDataActiveText{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ActiveText.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataActiveTextCopy
+}
+
 func (m *_BACnetConstructedDataActiveText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

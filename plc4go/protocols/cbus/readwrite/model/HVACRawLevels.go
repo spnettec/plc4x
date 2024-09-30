@@ -38,12 +38,15 @@ type HVACRawLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRawValue returns RawValue (property field)
 	GetRawValue() int16
 	// GetValueInPercent returns ValueInPercent (virtual field)
 	GetValueInPercent() float32
 	// IsHVACRawLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACRawLevels()
+	// CreateBuilder creates a HVACRawLevelsBuilder
+	CreateHVACRawLevelsBuilder() HVACRawLevelsBuilder
 }
 
 // _HVACRawLevels is the data-structure of this message
@@ -52,6 +55,87 @@ type _HVACRawLevels struct {
 }
 
 var _ HVACRawLevels = (*_HVACRawLevels)(nil)
+
+// NewHVACRawLevels factory function for _HVACRawLevels
+func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
+	return &_HVACRawLevels{RawValue: rawValue}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACRawLevelsBuilder is a builder for HVACRawLevels
+type HVACRawLevelsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(rawValue int16) HVACRawLevelsBuilder
+	// WithRawValue adds RawValue (property field)
+	WithRawValue(int16) HVACRawLevelsBuilder
+	// Build builds the HVACRawLevels or returns an error if something is wrong
+	Build() (HVACRawLevels, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACRawLevels
+}
+
+// NewHVACRawLevelsBuilder() creates a HVACRawLevelsBuilder
+func NewHVACRawLevelsBuilder() HVACRawLevelsBuilder {
+	return &_HVACRawLevelsBuilder{_HVACRawLevels: new(_HVACRawLevels)}
+}
+
+type _HVACRawLevelsBuilder struct {
+	*_HVACRawLevels
+
+	err *utils.MultiError
+}
+
+var _ (HVACRawLevelsBuilder) = (*_HVACRawLevelsBuilder)(nil)
+
+func (b *_HVACRawLevelsBuilder) WithMandatoryFields(rawValue int16) HVACRawLevelsBuilder {
+	return b.WithRawValue(rawValue)
+}
+
+func (b *_HVACRawLevelsBuilder) WithRawValue(rawValue int16) HVACRawLevelsBuilder {
+	b.RawValue = rawValue
+	return b
+}
+
+func (b *_HVACRawLevelsBuilder) Build() (HVACRawLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACRawLevels.deepCopy(), nil
+}
+
+func (b *_HVACRawLevelsBuilder) MustBuild() HVACRawLevels {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACRawLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACRawLevelsBuilder().(*_HVACRawLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACRawLevelsBuilder creates a HVACRawLevelsBuilder
+func (b *_HVACRawLevels) CreateHVACRawLevelsBuilder() HVACRawLevelsBuilder {
+	if b == nil {
+		return NewHVACRawLevelsBuilder()
+	}
+	return &_HVACRawLevelsBuilder{_HVACRawLevels: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,11 +165,6 @@ func (m *_HVACRawLevels) GetValueInPercent() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHVACRawLevels factory function for _HVACRawLevels
-func NewHVACRawLevels(rawValue int16) *_HVACRawLevels {
-	return &_HVACRawLevels{RawValue: rawValue}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHVACRawLevels(structType any) HVACRawLevels {
@@ -132,7 +211,7 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACRawLevels) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACRawLevels HVACRawLevels, err error) {
@@ -198,13 +277,31 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_HVACRawLevels) IsHVACRawLevels() {}
 
+func (m *_HVACRawLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACRawLevels) deepCopy() *_HVACRawLevels {
+	if m == nil {
+		return nil
+	}
+	_HVACRawLevelsCopy := &_HVACRawLevels{
+		m.RawValue,
+	}
+	return _HVACRawLevelsCopy
+}
+
 func (m *_HVACRawLevels) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

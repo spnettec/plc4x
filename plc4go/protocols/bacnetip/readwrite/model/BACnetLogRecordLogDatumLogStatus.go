@@ -38,11 +38,14 @@ type BACnetLogRecordLogDatumLogStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetLogStatus returns LogStatus (property field)
 	GetLogStatus() BACnetLogStatusTagged
 	// IsBACnetLogRecordLogDatumLogStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumLogStatus()
+	// CreateBuilder creates a BACnetLogRecordLogDatumLogStatusBuilder
+	CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder
 }
 
 // _BACnetLogRecordLogDatumLogStatus is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogRecordLogDatumLogStatus struct {
 
 var _ BACnetLogRecordLogDatumLogStatus = (*_BACnetLogRecordLogDatumLogStatus)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumLogStatus)(nil)
+
+// NewBACnetLogRecordLogDatumLogStatus factory function for _BACnetLogRecordLogDatumLogStatus
+func NewBACnetLogRecordLogDatumLogStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, logStatus BACnetLogStatusTagged, tagNumber uint8) *_BACnetLogRecordLogDatumLogStatus {
+	if logStatus == nil {
+		panic("logStatus of type BACnetLogStatusTagged for BACnetLogRecordLogDatumLogStatus must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumLogStatus{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		LogStatus:                       logStatus,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumLogStatusBuilder is a builder for BACnetLogRecordLogDatumLogStatus
+type BACnetLogRecordLogDatumLogStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder
+	// WithLogStatus adds LogStatus (property field)
+	WithLogStatus(BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder
+	// WithLogStatusBuilder adds LogStatus (property field) which is build by the builder
+	WithLogStatusBuilder(func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder
+	// Build builds the BACnetLogRecordLogDatumLogStatus or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumLogStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumLogStatus
+}
+
+// NewBACnetLogRecordLogDatumLogStatusBuilder() creates a BACnetLogRecordLogDatumLogStatusBuilder
+func NewBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
+	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: new(_BACnetLogRecordLogDatumLogStatus)}
+}
+
+type _BACnetLogRecordLogDatumLogStatusBuilder struct {
+	*_BACnetLogRecordLogDatumLogStatus
+
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumLogStatusBuilder) = (*_BACnetLogRecordLogDatumLogStatusBuilder)(nil)
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithMandatoryFields(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	return b.WithLogStatus(logStatus)
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatus(logStatus BACnetLogStatusTagged) BACnetLogRecordLogDatumLogStatusBuilder {
+	b.LogStatus = logStatus
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) WithLogStatusBuilder(builderSupplier func(BACnetLogStatusTaggedBuilder) BACnetLogStatusTaggedBuilder) BACnetLogRecordLogDatumLogStatusBuilder {
+	builder := builderSupplier(b.LogStatus.CreateBACnetLogStatusTaggedBuilder())
+	var err error
+	b.LogStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLogStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) Build() (BACnetLogRecordLogDatumLogStatus, error) {
+	if b.LogStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'logStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumLogStatus.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) MustBuild() BACnetLogRecordLogDatumLogStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumLogStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumLogStatusBuilder().(*_BACnetLogRecordLogDatumLogStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogRecordLogDatumLogStatusBuilder creates a BACnetLogRecordLogDatumLogStatusBuilder
+func (b *_BACnetLogRecordLogDatumLogStatus) CreateBACnetLogRecordLogDatumLogStatusBuilder() BACnetLogRecordLogDatumLogStatusBuilder {
+	if b == nil {
+		return NewBACnetLogRecordLogDatumLogStatusBuilder()
+	}
+	return &_BACnetLogRecordLogDatumLogStatusBuilder{_BACnetLogRecordLogDatumLogStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogRecordLogDatumLogStatus) GetLogStatus() BACnetLogStatusTagged
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumLogStatus factory function for _BACnetLogRecordLogDatumLogStatus
-func NewBACnetLogRecordLogDatumLogStatus(logStatus BACnetLogStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumLogStatus {
-	if logStatus == nil {
-		panic("logStatus of type BACnetLogStatusTagged for BACnetLogRecordLogDatumLogStatus must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumLogStatus{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		LogStatus:                       logStatus,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumLogStatus(structType any) BACnetLogRecordLogDatumLogStatus {
@@ -179,13 +294,33 @@ func (m *_BACnetLogRecordLogDatumLogStatus) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetLogRecordLogDatumLogStatus) IsBACnetLogRecordLogDatumLogStatus() {}
 
+func (m *_BACnetLogRecordLogDatumLogStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumLogStatus) deepCopy() *_BACnetLogRecordLogDatumLogStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumLogStatusCopy := &_BACnetLogRecordLogDatumLogStatus{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.LogStatus.DeepCopy().(BACnetLogStatusTagged),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumLogStatusCopy
+}
+
 func (m *_BACnetLogRecordLogDatumLogStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -41,8 +41,11 @@ type CBusConstants interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusConstants is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusConstants()
+	// CreateBuilder creates a CBusConstantsBuilder
+	CreateCBusConstantsBuilder() CBusConstantsBuilder
 }
 
 // _CBusConstants is the data-structure of this message
@@ -50,6 +53,80 @@ type _CBusConstants struct {
 }
 
 var _ CBusConstants = (*_CBusConstants)(nil)
+
+// NewCBusConstants factory function for _CBusConstants
+func NewCBusConstants() *_CBusConstants {
+	return &_CBusConstants{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusConstantsBuilder is a builder for CBusConstants
+type CBusConstantsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CBusConstantsBuilder
+	// Build builds the CBusConstants or returns an error if something is wrong
+	Build() (CBusConstants, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusConstants
+}
+
+// NewCBusConstantsBuilder() creates a CBusConstantsBuilder
+func NewCBusConstantsBuilder() CBusConstantsBuilder {
+	return &_CBusConstantsBuilder{_CBusConstants: new(_CBusConstants)}
+}
+
+type _CBusConstantsBuilder struct {
+	*_CBusConstants
+
+	err *utils.MultiError
+}
+
+var _ (CBusConstantsBuilder) = (*_CBusConstantsBuilder)(nil)
+
+func (b *_CBusConstantsBuilder) WithMandatoryFields() CBusConstantsBuilder {
+	return b
+}
+
+func (b *_CBusConstantsBuilder) Build() (CBusConstants, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusConstants.deepCopy(), nil
+}
+
+func (b *_CBusConstantsBuilder) MustBuild() CBusConstants {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusConstantsBuilder) DeepCopy() any {
+	_copy := b.CreateCBusConstantsBuilder().(*_CBusConstantsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusConstantsBuilder creates a CBusConstantsBuilder
+func (b *_CBusConstants) CreateCBusConstantsBuilder() CBusConstantsBuilder {
+	if b == nil {
+		return NewCBusConstantsBuilder()
+	}
+	return &_CBusConstantsBuilder{_CBusConstants: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_CBusConstants) GetCbusTcpDefaultPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusConstants factory function for _CBusConstants
-func NewCBusConstants() *_CBusConstants {
-	return &_CBusConstants{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusConstants(structType any) CBusConstants {
@@ -113,7 +185,7 @@ func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CBusConstants) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cBusConstants CBusConstants, err error) {
@@ -167,13 +239,29 @@ func (m *_CBusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_CBusConstants) IsCBusConstants() {}
 
+func (m *_CBusConstants) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusConstants) deepCopy() *_CBusConstants {
+	if m == nil {
+		return nil
+	}
+	_CBusConstantsCopy := &_CBusConstants{}
+	return _CBusConstantsCopy
+}
+
 func (m *_CBusConstants) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

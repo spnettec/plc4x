@@ -38,9 +38,12 @@ type NullAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// IsNullAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNullAddressItem()
+	// CreateBuilder creates a NullAddressItemBuilder
+	CreateNullAddressItemBuilder() NullAddressItemBuilder
 }
 
 // _NullAddressItem is the data-structure of this message
@@ -52,6 +55,99 @@ type _NullAddressItem struct {
 
 var _ NullAddressItem = (*_NullAddressItem)(nil)
 var _ TypeIdRequirements = (*_NullAddressItem)(nil)
+
+// NewNullAddressItem factory function for _NullAddressItem
+func NewNullAddressItem() *_NullAddressItem {
+	_result := &_NullAddressItem{
+		TypeIdContract: NewTypeId(),
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NullAddressItemBuilder is a builder for NullAddressItem
+type NullAddressItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() NullAddressItemBuilder
+	// Build builds the NullAddressItem or returns an error if something is wrong
+	Build() (NullAddressItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NullAddressItem
+}
+
+// NewNullAddressItemBuilder() creates a NullAddressItemBuilder
+func NewNullAddressItemBuilder() NullAddressItemBuilder {
+	return &_NullAddressItemBuilder{_NullAddressItem: new(_NullAddressItem)}
+}
+
+type _NullAddressItemBuilder struct {
+	*_NullAddressItem
+
+	parentBuilder *_TypeIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NullAddressItemBuilder) = (*_NullAddressItemBuilder)(nil)
+
+func (b *_NullAddressItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
+}
+
+func (b *_NullAddressItemBuilder) WithMandatoryFields() NullAddressItemBuilder {
+	return b
+}
+
+func (b *_NullAddressItemBuilder) Build() (NullAddressItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NullAddressItem.deepCopy(), nil
+}
+
+func (b *_NullAddressItemBuilder) MustBuild() NullAddressItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NullAddressItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NullAddressItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_NullAddressItemBuilder) DeepCopy() any {
+	_copy := b.CreateNullAddressItemBuilder().(*_NullAddressItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNullAddressItemBuilder creates a NullAddressItemBuilder
+func (b *_NullAddressItem) CreateNullAddressItemBuilder() NullAddressItemBuilder {
+	if b == nil {
+		return NewNullAddressItemBuilder()
+	}
+	return &_NullAddressItemBuilder{_NullAddressItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_NullAddressItem) GetId() uint16 {
 
 func (m *_NullAddressItem) GetParent() TypeIdContract {
 	return m.TypeIdContract
-}
-
-// NewNullAddressItem factory function for _NullAddressItem
-func NewNullAddressItem() *_NullAddressItem {
-	_result := &_NullAddressItem{
-		TypeIdContract: NewTypeId(),
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -164,13 +251,33 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_NullAddressItem) IsNullAddressItem() {}
 
+func (m *_NullAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NullAddressItem) deepCopy() *_NullAddressItem {
+	if m == nil {
+		return nil
+	}
+	_NullAddressItemCopy := &_NullAddressItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _NullAddressItemCopy
+}
+
 func (m *_NullAddressItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

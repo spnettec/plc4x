@@ -38,6 +38,7 @@ type EnumValueType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetValue returns Value (property field)
 	GetValue() int64
@@ -47,6 +48,8 @@ type EnumValueType interface {
 	GetDescription() LocalizedText
 	// IsEnumValueType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsEnumValueType()
+	// CreateBuilder creates a EnumValueTypeBuilder
+	CreateEnumValueTypeBuilder() EnumValueTypeBuilder
 }
 
 // _EnumValueType is the data-structure of this message
@@ -59,6 +62,171 @@ type _EnumValueType struct {
 
 var _ EnumValueType = (*_EnumValueType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_EnumValueType)(nil)
+
+// NewEnumValueType factory function for _EnumValueType
+func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
+	if displayName == nil {
+		panic("displayName of type LocalizedText for EnumValueType must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for EnumValueType must not be nil")
+	}
+	_result := &_EnumValueType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Value:                             value,
+		DisplayName:                       displayName,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// EnumValueTypeBuilder is a builder for EnumValueType
+type EnumValueTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText) EnumValueTypeBuilder
+	// WithValue adds Value (property field)
+	WithValue(int64) EnumValueTypeBuilder
+	// WithDisplayName adds DisplayName (property field)
+	WithDisplayName(LocalizedText) EnumValueTypeBuilder
+	// WithDisplayNameBuilder adds DisplayName (property field) which is build by the builder
+	WithDisplayNameBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) EnumValueTypeBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder
+	// Build builds the EnumValueType or returns an error if something is wrong
+	Build() (EnumValueType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() EnumValueType
+}
+
+// NewEnumValueTypeBuilder() creates a EnumValueTypeBuilder
+func NewEnumValueTypeBuilder() EnumValueTypeBuilder {
+	return &_EnumValueTypeBuilder{_EnumValueType: new(_EnumValueType)}
+}
+
+type _EnumValueTypeBuilder struct {
+	*_EnumValueType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (EnumValueTypeBuilder) = (*_EnumValueTypeBuilder)(nil)
+
+func (b *_EnumValueTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_EnumValueTypeBuilder) WithMandatoryFields(value int64, displayName LocalizedText, description LocalizedText) EnumValueTypeBuilder {
+	return b.WithValue(value).WithDisplayName(displayName).WithDescription(description)
+}
+
+func (b *_EnumValueTypeBuilder) WithValue(value int64) EnumValueTypeBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) WithDisplayName(displayName LocalizedText) EnumValueTypeBuilder {
+	b.DisplayName = displayName
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) WithDisplayNameBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
+	builder := builderSupplier(b.DisplayName.CreateLocalizedTextBuilder())
+	var err error
+	b.DisplayName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) WithDescription(description LocalizedText) EnumValueTypeBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) EnumValueTypeBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_EnumValueTypeBuilder) Build() (EnumValueType, error) {
+	if b.DisplayName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'displayName' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._EnumValueType.deepCopy(), nil
+}
+
+func (b *_EnumValueTypeBuilder) MustBuild() EnumValueType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_EnumValueTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_EnumValueTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_EnumValueTypeBuilder) DeepCopy() any {
+	_copy := b.CreateEnumValueTypeBuilder().(*_EnumValueTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateEnumValueTypeBuilder creates a EnumValueTypeBuilder
+func (b *_EnumValueType) CreateEnumValueTypeBuilder() EnumValueTypeBuilder {
+	if b == nil {
+		return NewEnumValueTypeBuilder()
+	}
+	return &_EnumValueTypeBuilder{_EnumValueType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,24 +267,6 @@ func (m *_EnumValueType) GetDescription() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewEnumValueType factory function for _EnumValueType
-func NewEnumValueType(value int64, displayName LocalizedText, description LocalizedText) *_EnumValueType {
-	if displayName == nil {
-		panic("displayName of type LocalizedText for EnumValueType must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for EnumValueType must not be nil")
-	}
-	_result := &_EnumValueType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Value:                             value,
-		DisplayName:                       displayName,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastEnumValueType(structType any) EnumValueType {
@@ -228,13 +378,35 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_EnumValueType) IsEnumValueType() {}
 
+func (m *_EnumValueType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_EnumValueType) deepCopy() *_EnumValueType {
+	if m == nil {
+		return nil
+	}
+	_EnumValueTypeCopy := &_EnumValueType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Value,
+		m.DisplayName.DeepCopy().(LocalizedText),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _EnumValueTypeCopy
+}
+
 func (m *_EnumValueType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

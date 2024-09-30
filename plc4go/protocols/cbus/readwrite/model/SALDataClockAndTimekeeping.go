@@ -38,11 +38,14 @@ type SALDataClockAndTimekeeping interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetClockAndTimekeepingData returns ClockAndTimekeepingData (property field)
 	GetClockAndTimekeepingData() ClockAndTimekeepingData
 	// IsSALDataClockAndTimekeeping is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataClockAndTimekeeping()
+	// CreateBuilder creates a SALDataClockAndTimekeepingBuilder
+	CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder
 }
 
 // _SALDataClockAndTimekeeping is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataClockAndTimekeeping struct {
 
 var _ SALDataClockAndTimekeeping = (*_SALDataClockAndTimekeeping)(nil)
 var _ SALDataRequirements = (*_SALDataClockAndTimekeeping)(nil)
+
+// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
+func NewSALDataClockAndTimekeeping(salData SALData, clockAndTimekeepingData ClockAndTimekeepingData) *_SALDataClockAndTimekeeping {
+	if clockAndTimekeepingData == nil {
+		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
+	}
+	_result := &_SALDataClockAndTimekeeping{
+		SALDataContract:         NewSALData(salData),
+		ClockAndTimekeepingData: clockAndTimekeepingData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataClockAndTimekeepingBuilder is a builder for SALDataClockAndTimekeeping
+type SALDataClockAndTimekeepingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
+	// WithClockAndTimekeepingData adds ClockAndTimekeepingData (property field)
+	WithClockAndTimekeepingData(ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder
+	// WithClockAndTimekeepingDataBuilder adds ClockAndTimekeepingData (property field) which is build by the builder
+	WithClockAndTimekeepingDataBuilder(func(ClockAndTimekeepingDataBuilder) ClockAndTimekeepingDataBuilder) SALDataClockAndTimekeepingBuilder
+	// Build builds the SALDataClockAndTimekeeping or returns an error if something is wrong
+	Build() (SALDataClockAndTimekeeping, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataClockAndTimekeeping
+}
+
+// NewSALDataClockAndTimekeepingBuilder() creates a SALDataClockAndTimekeepingBuilder
+func NewSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
+	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: new(_SALDataClockAndTimekeeping)}
+}
+
+type _SALDataClockAndTimekeepingBuilder struct {
+	*_SALDataClockAndTimekeeping
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataClockAndTimekeepingBuilder) = (*_SALDataClockAndTimekeepingBuilder)(nil)
+
+func (b *_SALDataClockAndTimekeepingBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) WithMandatoryFields(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	return b.WithClockAndTimekeepingData(clockAndTimekeepingData)
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingData(clockAndTimekeepingData ClockAndTimekeepingData) SALDataClockAndTimekeepingBuilder {
+	b.ClockAndTimekeepingData = clockAndTimekeepingData
+	return b
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) WithClockAndTimekeepingDataBuilder(builderSupplier func(ClockAndTimekeepingDataBuilder) ClockAndTimekeepingDataBuilder) SALDataClockAndTimekeepingBuilder {
+	builder := builderSupplier(b.ClockAndTimekeepingData.CreateClockAndTimekeepingDataBuilder())
+	var err error
+	b.ClockAndTimekeepingData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ClockAndTimekeepingDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) Build() (SALDataClockAndTimekeeping, error) {
+	if b.ClockAndTimekeepingData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'clockAndTimekeepingData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataClockAndTimekeeping.deepCopy(), nil
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) MustBuild() SALDataClockAndTimekeeping {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataClockAndTimekeepingBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataClockAndTimekeepingBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataClockAndTimekeepingBuilder().(*_SALDataClockAndTimekeepingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataClockAndTimekeepingBuilder creates a SALDataClockAndTimekeepingBuilder
+func (b *_SALDataClockAndTimekeeping) CreateSALDataClockAndTimekeepingBuilder() SALDataClockAndTimekeepingBuilder {
+	if b == nil {
+		return NewSALDataClockAndTimekeepingBuilder()
+	}
+	return &_SALDataClockAndTimekeepingBuilder{_SALDataClockAndTimekeeping: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataClockAndTimekeeping) GetClockAndTimekeepingData() ClockAndTimek
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataClockAndTimekeeping factory function for _SALDataClockAndTimekeeping
-func NewSALDataClockAndTimekeeping(clockAndTimekeepingData ClockAndTimekeepingData, salData SALData) *_SALDataClockAndTimekeeping {
-	if clockAndTimekeepingData == nil {
-		panic("clockAndTimekeepingData of type ClockAndTimekeepingData for SALDataClockAndTimekeeping must not be nil")
-	}
-	_result := &_SALDataClockAndTimekeeping{
-		SALDataContract:         NewSALData(salData),
-		ClockAndTimekeepingData: clockAndTimekeepingData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataClockAndTimekeeping(structType any) SALDataClockAndTimekeeping {
@@ -183,13 +298,33 @@ func (m *_SALDataClockAndTimekeeping) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_SALDataClockAndTimekeeping) IsSALDataClockAndTimekeeping() {}
 
+func (m *_SALDataClockAndTimekeeping) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataClockAndTimekeeping) deepCopy() *_SALDataClockAndTimekeeping {
+	if m == nil {
+		return nil
+	}
+	_SALDataClockAndTimekeepingCopy := &_SALDataClockAndTimekeeping{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.ClockAndTimekeepingData.DeepCopy().(ClockAndTimekeepingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataClockAndTimekeepingCopy
+}
+
 func (m *_SALDataClockAndTimekeeping) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetTagPayloadObjectIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetObjectType returns ObjectType (property field)
 	GetObjectType() BACnetObjectType
 	// GetProprietaryValue returns ProprietaryValue (property field)
@@ -48,6 +49,8 @@ type BACnetTagPayloadObjectIdentifier interface {
 	GetIsProprietary() bool
 	// IsBACnetTagPayloadObjectIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadObjectIdentifier()
+	// CreateBuilder creates a BACnetTagPayloadObjectIdentifierBuilder
+	CreateBACnetTagPayloadObjectIdentifierBuilder() BACnetTagPayloadObjectIdentifierBuilder
 }
 
 // _BACnetTagPayloadObjectIdentifier is the data-structure of this message
@@ -58,6 +61,101 @@ type _BACnetTagPayloadObjectIdentifier struct {
 }
 
 var _ BACnetTagPayloadObjectIdentifier = (*_BACnetTagPayloadObjectIdentifier)(nil)
+
+// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
+func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
+	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadObjectIdentifierBuilder is a builder for BACnetTagPayloadObjectIdentifier
+type BACnetTagPayloadObjectIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder
+	// WithObjectType adds ObjectType (property field)
+	WithObjectType(BACnetObjectType) BACnetTagPayloadObjectIdentifierBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint16) BACnetTagPayloadObjectIdentifierBuilder
+	// WithInstanceNumber adds InstanceNumber (property field)
+	WithInstanceNumber(uint32) BACnetTagPayloadObjectIdentifierBuilder
+	// Build builds the BACnetTagPayloadObjectIdentifier or returns an error if something is wrong
+	Build() (BACnetTagPayloadObjectIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadObjectIdentifier
+}
+
+// NewBACnetTagPayloadObjectIdentifierBuilder() creates a BACnetTagPayloadObjectIdentifierBuilder
+func NewBACnetTagPayloadObjectIdentifierBuilder() BACnetTagPayloadObjectIdentifierBuilder {
+	return &_BACnetTagPayloadObjectIdentifierBuilder{_BACnetTagPayloadObjectIdentifier: new(_BACnetTagPayloadObjectIdentifier)}
+}
+
+type _BACnetTagPayloadObjectIdentifierBuilder struct {
+	*_BACnetTagPayloadObjectIdentifier
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadObjectIdentifierBuilder) = (*_BACnetTagPayloadObjectIdentifierBuilder)(nil)
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithMandatoryFields(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
+	return b.WithObjectType(objectType).WithProprietaryValue(proprietaryValue).WithInstanceNumber(instanceNumber)
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithObjectType(objectType BACnetObjectType) BACnetTagPayloadObjectIdentifierBuilder {
+	b.ObjectType = objectType
+	return b
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithProprietaryValue(proprietaryValue uint16) BACnetTagPayloadObjectIdentifierBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) WithInstanceNumber(instanceNumber uint32) BACnetTagPayloadObjectIdentifierBuilder {
+	b.InstanceNumber = instanceNumber
+	return b
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) Build() (BACnetTagPayloadObjectIdentifier, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadObjectIdentifier.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) MustBuild() BACnetTagPayloadObjectIdentifier {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadObjectIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadObjectIdentifierBuilder().(*_BACnetTagPayloadObjectIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadObjectIdentifierBuilder creates a BACnetTagPayloadObjectIdentifierBuilder
+func (b *_BACnetTagPayloadObjectIdentifier) CreateBACnetTagPayloadObjectIdentifierBuilder() BACnetTagPayloadObjectIdentifierBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadObjectIdentifierBuilder()
+	}
+	return &_BACnetTagPayloadObjectIdentifierBuilder{_BACnetTagPayloadObjectIdentifier: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,11 +193,6 @@ func (m *_BACnetTagPayloadObjectIdentifier) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTagPayloadObjectIdentifier factory function for _BACnetTagPayloadObjectIdentifier
-func NewBACnetTagPayloadObjectIdentifier(objectType BACnetObjectType, proprietaryValue uint16, instanceNumber uint32) *_BACnetTagPayloadObjectIdentifier {
-	return &_BACnetTagPayloadObjectIdentifier{ObjectType: objectType, ProprietaryValue: proprietaryValue, InstanceNumber: instanceNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadObjectIdentifier(structType any) BACnetTagPayloadObjectIdentifier {
@@ -152,7 +245,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadObjectIdentifier) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadObjectIdentifier BACnetTagPayloadObjectIdentifier, err error) {
@@ -240,13 +333,33 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetTagPayloadObjectIdentifier) IsBACnetTagPayloadObjectIdentifier() {}
 
+func (m *_BACnetTagPayloadObjectIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadObjectIdentifier) deepCopy() *_BACnetTagPayloadObjectIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadObjectIdentifierCopy := &_BACnetTagPayloadObjectIdentifier{
+		m.ObjectType,
+		m.ProprietaryValue,
+		m.InstanceNumber,
+	}
+	return _BACnetTagPayloadObjectIdentifierCopy
+}
+
 func (m *_BACnetTagPayloadObjectIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

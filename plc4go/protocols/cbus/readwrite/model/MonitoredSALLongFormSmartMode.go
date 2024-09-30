@@ -38,6 +38,7 @@ type MonitoredSALLongFormSmartMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MonitoredSAL
 	// GetTerminatingByte returns TerminatingByte (property field)
 	GetTerminatingByte() uint32
@@ -57,6 +58,8 @@ type MonitoredSALLongFormSmartMode interface {
 	GetIsUnitAddress() bool
 	// IsMonitoredSALLongFormSmartMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMonitoredSALLongFormSmartMode()
+	// CreateBuilder creates a MonitoredSALLongFormSmartModeBuilder
+	CreateMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuilder
 }
 
 // _MonitoredSALLongFormSmartMode is the data-structure of this message
@@ -75,6 +78,215 @@ type _MonitoredSALLongFormSmartMode struct {
 
 var _ MonitoredSALLongFormSmartMode = (*_MonitoredSALLongFormSmartMode)(nil)
 var _ MonitoredSALRequirements = (*_MonitoredSALLongFormSmartMode)(nil)
+
+// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
+func NewMonitoredSALLongFormSmartMode(salType byte, terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
+	_result := &_MonitoredSALLongFormSmartMode{
+		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
+		TerminatingByte:      terminatingByte,
+		UnitAddress:          unitAddress,
+		BridgeAddress:        bridgeAddress,
+		Application:          application,
+		ReservedByte:         reservedByte,
+		ReplyNetwork:         replyNetwork,
+		SalData:              salData,
+	}
+	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MonitoredSALLongFormSmartModeBuilder is a builder for MonitoredSALLongFormSmartMode
+type MonitoredSALLongFormSmartModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(terminatingByte uint32, application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder
+	// WithTerminatingByte adds TerminatingByte (property field)
+	WithTerminatingByte(uint32) MonitoredSALLongFormSmartModeBuilder
+	// WithUnitAddress adds UnitAddress (property field)
+	WithOptionalUnitAddress(UnitAddress) MonitoredSALLongFormSmartModeBuilder
+	// WithOptionalUnitAddressBuilder adds UnitAddress (property field) which is build by the builder
+	WithOptionalUnitAddressBuilder(func(UnitAddressBuilder) UnitAddressBuilder) MonitoredSALLongFormSmartModeBuilder
+	// WithBridgeAddress adds BridgeAddress (property field)
+	WithOptionalBridgeAddress(BridgeAddress) MonitoredSALLongFormSmartModeBuilder
+	// WithOptionalBridgeAddressBuilder adds BridgeAddress (property field) which is build by the builder
+	WithOptionalBridgeAddressBuilder(func(BridgeAddressBuilder) BridgeAddressBuilder) MonitoredSALLongFormSmartModeBuilder
+	// WithApplication adds Application (property field)
+	WithApplication(ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder
+	// WithReservedByte adds ReservedByte (property field)
+	WithOptionalReservedByte(byte) MonitoredSALLongFormSmartModeBuilder
+	// WithReplyNetwork adds ReplyNetwork (property field)
+	WithOptionalReplyNetwork(ReplyNetwork) MonitoredSALLongFormSmartModeBuilder
+	// WithOptionalReplyNetworkBuilder adds ReplyNetwork (property field) which is build by the builder
+	WithOptionalReplyNetworkBuilder(func(ReplyNetworkBuilder) ReplyNetworkBuilder) MonitoredSALLongFormSmartModeBuilder
+	// WithSalData adds SalData (property field)
+	WithOptionalSalData(SALData) MonitoredSALLongFormSmartModeBuilder
+	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
+	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) MonitoredSALLongFormSmartModeBuilder
+	// Build builds the MonitoredSALLongFormSmartMode or returns an error if something is wrong
+	Build() (MonitoredSALLongFormSmartMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MonitoredSALLongFormSmartMode
+}
+
+// NewMonitoredSALLongFormSmartModeBuilder() creates a MonitoredSALLongFormSmartModeBuilder
+func NewMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuilder {
+	return &_MonitoredSALLongFormSmartModeBuilder{_MonitoredSALLongFormSmartMode: new(_MonitoredSALLongFormSmartMode)}
+}
+
+type _MonitoredSALLongFormSmartModeBuilder struct {
+	*_MonitoredSALLongFormSmartMode
+
+	parentBuilder *_MonitoredSALBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MonitoredSALLongFormSmartModeBuilder) = (*_MonitoredSALLongFormSmartModeBuilder)(nil)
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) setParent(contract MonitoredSALContract) {
+	b.MonitoredSALContract = contract
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithMandatoryFields(terminatingByte uint32, application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
+	return b.WithTerminatingByte(terminatingByte).WithApplication(application)
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithTerminatingByte(terminatingByte uint32) MonitoredSALLongFormSmartModeBuilder {
+	b.TerminatingByte = terminatingByte
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddress(unitAddress UnitAddress) MonitoredSALLongFormSmartModeBuilder {
+	b.UnitAddress = unitAddress
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalUnitAddressBuilder(builderSupplier func(UnitAddressBuilder) UnitAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.UnitAddress.CreateUnitAddressBuilder())
+	var err error
+	b.UnitAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "UnitAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddress(bridgeAddress BridgeAddress) MonitoredSALLongFormSmartModeBuilder {
+	b.BridgeAddress = bridgeAddress
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalBridgeAddressBuilder(builderSupplier func(BridgeAddressBuilder) BridgeAddressBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.BridgeAddress.CreateBridgeAddressBuilder())
+	var err error
+	b.BridgeAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BridgeAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithApplication(application ApplicationIdContainer) MonitoredSALLongFormSmartModeBuilder {
+	b.Application = application
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReservedByte(reservedByte byte) MonitoredSALLongFormSmartModeBuilder {
+	b.ReservedByte = &reservedByte
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetwork(replyNetwork ReplyNetwork) MonitoredSALLongFormSmartModeBuilder {
+	b.ReplyNetwork = replyNetwork
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalReplyNetworkBuilder(builderSupplier func(ReplyNetworkBuilder) ReplyNetworkBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.ReplyNetwork.CreateReplyNetworkBuilder())
+	var err error
+	b.ReplyNetwork, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ReplyNetworkBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalData(salData SALData) MonitoredSALLongFormSmartModeBuilder {
+	b.SalData = salData
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) MonitoredSALLongFormSmartModeBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) Build() (MonitoredSALLongFormSmartMode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MonitoredSALLongFormSmartMode.deepCopy(), nil
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) MustBuild() MonitoredSALLongFormSmartMode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MonitoredSALLongFormSmartModeBuilder) Done() MonitoredSALBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) buildForMonitoredSAL() (MonitoredSAL, error) {
+	return b.Build()
+}
+
+func (b *_MonitoredSALLongFormSmartModeBuilder) DeepCopy() any {
+	_copy := b.CreateMonitoredSALLongFormSmartModeBuilder().(*_MonitoredSALLongFormSmartModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMonitoredSALLongFormSmartModeBuilder creates a MonitoredSALLongFormSmartModeBuilder
+func (b *_MonitoredSALLongFormSmartMode) CreateMonitoredSALLongFormSmartModeBuilder() MonitoredSALLongFormSmartModeBuilder {
+	if b == nil {
+		return NewMonitoredSALLongFormSmartModeBuilder()
+	}
+	return &_MonitoredSALLongFormSmartModeBuilder{_MonitoredSALLongFormSmartMode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -152,22 +364,6 @@ func (m *_MonitoredSALLongFormSmartMode) GetIsUnitAddress() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMonitoredSALLongFormSmartMode factory function for _MonitoredSALLongFormSmartMode
-func NewMonitoredSALLongFormSmartMode(terminatingByte uint32, unitAddress UnitAddress, bridgeAddress BridgeAddress, application ApplicationIdContainer, reservedByte *byte, replyNetwork ReplyNetwork, salData SALData, salType byte, cBusOptions CBusOptions) *_MonitoredSALLongFormSmartMode {
-	_result := &_MonitoredSALLongFormSmartMode{
-		MonitoredSALContract: NewMonitoredSAL(salType, cBusOptions),
-		TerminatingByte:      terminatingByte,
-		UnitAddress:          unitAddress,
-		BridgeAddress:        bridgeAddress,
-		Application:          application,
-		ReservedByte:         reservedByte,
-		ReplyNetwork:         replyNetwork,
-		SalData:              salData,
-	}
-	_result.MonitoredSALContract.(*_MonitoredSAL)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMonitoredSALLongFormSmartMode(structType any) MonitoredSALLongFormSmartMode {
@@ -383,13 +579,40 @@ func (m *_MonitoredSALLongFormSmartMode) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_MonitoredSALLongFormSmartMode) IsMonitoredSALLongFormSmartMode() {}
 
+func (m *_MonitoredSALLongFormSmartMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MonitoredSALLongFormSmartMode) deepCopy() *_MonitoredSALLongFormSmartMode {
+	if m == nil {
+		return nil
+	}
+	_MonitoredSALLongFormSmartModeCopy := &_MonitoredSALLongFormSmartMode{
+		m.MonitoredSALContract.(*_MonitoredSAL).deepCopy(),
+		m.TerminatingByte,
+		m.UnitAddress.DeepCopy().(UnitAddress),
+		m.BridgeAddress.DeepCopy().(BridgeAddress),
+		m.Application,
+		utils.CopyPtr[byte](m.ReservedByte),
+		m.ReplyNetwork.DeepCopy().(ReplyNetwork),
+		m.SalData.DeepCopy().(SALData),
+		m.reservedField0,
+	}
+	m.MonitoredSALContract.(*_MonitoredSAL)._SubType = m
+	return _MonitoredSALLongFormSmartModeCopy
+}
+
 func (m *_MonitoredSALLongFormSmartMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

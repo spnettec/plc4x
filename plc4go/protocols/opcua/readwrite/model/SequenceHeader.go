@@ -38,12 +38,15 @@ type SequenceHeader interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetSequenceNumber returns SequenceNumber (property field)
 	GetSequenceNumber() int32
 	// GetRequestId returns RequestId (property field)
 	GetRequestId() int32
 	// IsSequenceHeader is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSequenceHeader()
+	// CreateBuilder creates a SequenceHeaderBuilder
+	CreateSequenceHeaderBuilder() SequenceHeaderBuilder
 }
 
 // _SequenceHeader is the data-structure of this message
@@ -53,6 +56,94 @@ type _SequenceHeader struct {
 }
 
 var _ SequenceHeader = (*_SequenceHeader)(nil)
+
+// NewSequenceHeader factory function for _SequenceHeader
+func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
+	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SequenceHeaderBuilder is a builder for SequenceHeader
+type SequenceHeaderBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sequenceNumber int32, requestId int32) SequenceHeaderBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(int32) SequenceHeaderBuilder
+	// WithRequestId adds RequestId (property field)
+	WithRequestId(int32) SequenceHeaderBuilder
+	// Build builds the SequenceHeader or returns an error if something is wrong
+	Build() (SequenceHeader, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SequenceHeader
+}
+
+// NewSequenceHeaderBuilder() creates a SequenceHeaderBuilder
+func NewSequenceHeaderBuilder() SequenceHeaderBuilder {
+	return &_SequenceHeaderBuilder{_SequenceHeader: new(_SequenceHeader)}
+}
+
+type _SequenceHeaderBuilder struct {
+	*_SequenceHeader
+
+	err *utils.MultiError
+}
+
+var _ (SequenceHeaderBuilder) = (*_SequenceHeaderBuilder)(nil)
+
+func (b *_SequenceHeaderBuilder) WithMandatoryFields(sequenceNumber int32, requestId int32) SequenceHeaderBuilder {
+	return b.WithSequenceNumber(sequenceNumber).WithRequestId(requestId)
+}
+
+func (b *_SequenceHeaderBuilder) WithSequenceNumber(sequenceNumber int32) SequenceHeaderBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_SequenceHeaderBuilder) WithRequestId(requestId int32) SequenceHeaderBuilder {
+	b.RequestId = requestId
+	return b
+}
+
+func (b *_SequenceHeaderBuilder) Build() (SequenceHeader, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SequenceHeader.deepCopy(), nil
+}
+
+func (b *_SequenceHeaderBuilder) MustBuild() SequenceHeader {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SequenceHeaderBuilder) DeepCopy() any {
+	_copy := b.CreateSequenceHeaderBuilder().(*_SequenceHeaderBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSequenceHeaderBuilder creates a SequenceHeaderBuilder
+func (b *_SequenceHeader) CreateSequenceHeaderBuilder() SequenceHeaderBuilder {
+	if b == nil {
+		return NewSequenceHeaderBuilder()
+	}
+	return &_SequenceHeaderBuilder{_SequenceHeader: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,11 +162,6 @@ func (m *_SequenceHeader) GetRequestId() int32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSequenceHeader factory function for _SequenceHeader
-func NewSequenceHeader(sequenceNumber int32, requestId int32) *_SequenceHeader {
-	return &_SequenceHeader{SequenceNumber: sequenceNumber, RequestId: requestId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSequenceHeader(structType any) SequenceHeader {
@@ -123,7 +209,7 @@ func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SequenceHeader) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__sequenceHeader SequenceHeader, err error) {
@@ -187,13 +273,32 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_SequenceHeader) IsSequenceHeader() {}
 
+func (m *_SequenceHeader) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SequenceHeader) deepCopy() *_SequenceHeader {
+	if m == nil {
+		return nil
+	}
+	_SequenceHeaderCopy := &_SequenceHeader{
+		m.SequenceNumber,
+		m.RequestId,
+	}
+	return _SequenceHeaderCopy
+}
+
 func (m *_SequenceHeader) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

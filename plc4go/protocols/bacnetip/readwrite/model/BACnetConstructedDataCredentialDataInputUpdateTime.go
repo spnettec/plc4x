@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialDataInputUpdateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUpdateTime returns UpdateTime (property field)
 	GetUpdateTime() BACnetTimeStamp
@@ -45,6 +46,8 @@ type BACnetConstructedDataCredentialDataInputUpdateTime interface {
 	GetActualValue() BACnetTimeStamp
 	// IsBACnetConstructedDataCredentialDataInputUpdateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialDataInputUpdateTime()
+	// CreateBuilder creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
 }
 
 // _BACnetConstructedDataCredentialDataInputUpdateTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCredentialDataInputUpdateTime struct {
 
 var _ BACnetConstructedDataCredentialDataInputUpdateTime = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialDataInputUpdateTime)(nil)
+
+// NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
+func NewBACnetConstructedDataCredentialDataInputUpdateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, updateTime BACnetTimeStamp, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
+	if updateTime == nil {
+		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UpdateTime:                    updateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialDataInputUpdateTimeBuilder is a builder for BACnetConstructedDataCredentialDataInputUpdateTime
+type BACnetConstructedDataCredentialDataInputUpdateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// WithUpdateTime adds UpdateTime (property field)
+	WithUpdateTime(BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// WithUpdateTimeBuilder adds UpdateTime (property field) which is build by the builder
+	WithUpdateTimeBuilder(func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+	// Build builds the BACnetConstructedDataCredentialDataInputUpdateTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime
+}
+
+// NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+func NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: new(_BACnetConstructedDataCredentialDataInputUpdateTime)}
+}
+
+type _BACnetConstructedDataCredentialDataInputUpdateTimeBuilder struct {
+	*_BACnetConstructedDataCredentialDataInputUpdateTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) = (*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithMandatoryFields(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	return b.WithUpdateTime(updateTime)
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTime(updateTime BACnetTimeStamp) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	b.UpdateTime = updateTime
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) WithUpdateTimeBuilder(builderSupplier func(BACnetTimeStampBuilder) BACnetTimeStampBuilder) BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	builder := builderSupplier(b.UpdateTime.CreateBACnetTimeStampBuilder())
+	var err error
+	b.UpdateTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTimeStampBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Build() (BACnetConstructedDataCredentialDataInputUpdateTime, error) {
+	if b.UpdateTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'updateTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentialDataInputUpdateTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) MustBuild() BACnetConstructedDataCredentialDataInputUpdateTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder().(*_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder creates a BACnetConstructedDataCredentialDataInputUpdateTimeBuilder
+func (b *_BACnetConstructedDataCredentialDataInputUpdateTime) CreateBACnetConstructedDataCredentialDataInputUpdateTimeBuilder() BACnetConstructedDataCredentialDataInputUpdateTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCredentialDataInputUpdateTimeBuilder()
+	}
+	return &_BACnetConstructedDataCredentialDataInputUpdateTimeBuilder{_BACnetConstructedDataCredentialDataInputUpdateTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) GetActualValue() B
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialDataInputUpdateTime factory function for _BACnetConstructedDataCredentialDataInputUpdateTime
-func NewBACnetConstructedDataCredentialDataInputUpdateTime(updateTime BACnetTimeStamp, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialDataInputUpdateTime {
-	if updateTime == nil {
-		panic("updateTime of type BACnetTimeStamp for BACnetConstructedDataCredentialDataInputUpdateTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialDataInputUpdateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UpdateTime:                    updateTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialDataInputUpdateTime(structType any) BACnetConstructedDataCredentialDataInputUpdateTime {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) SerializeWithWrite
 func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) IsBACnetConstructedDataCredentialDataInputUpdateTime() {
 }
 
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) deepCopy() *_BACnetConstructedDataCredentialDataInputUpdateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialDataInputUpdateTimeCopy := &_BACnetConstructedDataCredentialDataInputUpdateTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UpdateTime.DeepCopy().(BACnetTimeStamp),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialDataInputUpdateTimeCopy
+}
+
 func (m *_BACnetConstructedDataCredentialDataInputUpdateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

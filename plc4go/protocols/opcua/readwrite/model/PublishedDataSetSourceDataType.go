@@ -36,9 +36,12 @@ type PublishedDataSetSourceDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// IsPublishedDataSetSourceDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsPublishedDataSetSourceDataType()
+	// CreateBuilder creates a PublishedDataSetSourceDataTypeBuilder
+	CreatePublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBuilder
 }
 
 // _PublishedDataSetSourceDataType is the data-structure of this message
@@ -48,6 +51,99 @@ type _PublishedDataSetSourceDataType struct {
 
 var _ PublishedDataSetSourceDataType = (*_PublishedDataSetSourceDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_PublishedDataSetSourceDataType)(nil)
+
+// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
+func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
+	_result := &_PublishedDataSetSourceDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// PublishedDataSetSourceDataTypeBuilder is a builder for PublishedDataSetSourceDataType
+type PublishedDataSetSourceDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() PublishedDataSetSourceDataTypeBuilder
+	// Build builds the PublishedDataSetSourceDataType or returns an error if something is wrong
+	Build() (PublishedDataSetSourceDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() PublishedDataSetSourceDataType
+}
+
+// NewPublishedDataSetSourceDataTypeBuilder() creates a PublishedDataSetSourceDataTypeBuilder
+func NewPublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBuilder {
+	return &_PublishedDataSetSourceDataTypeBuilder{_PublishedDataSetSourceDataType: new(_PublishedDataSetSourceDataType)}
+}
+
+type _PublishedDataSetSourceDataTypeBuilder struct {
+	*_PublishedDataSetSourceDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (PublishedDataSetSourceDataTypeBuilder) = (*_PublishedDataSetSourceDataTypeBuilder)(nil)
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) WithMandatoryFields() PublishedDataSetSourceDataTypeBuilder {
+	return b
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) Build() (PublishedDataSetSourceDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._PublishedDataSetSourceDataType.deepCopy(), nil
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) MustBuild() PublishedDataSetSourceDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_PublishedDataSetSourceDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_PublishedDataSetSourceDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreatePublishedDataSetSourceDataTypeBuilder().(*_PublishedDataSetSourceDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreatePublishedDataSetSourceDataTypeBuilder creates a PublishedDataSetSourceDataTypeBuilder
+func (b *_PublishedDataSetSourceDataType) CreatePublishedDataSetSourceDataTypeBuilder() PublishedDataSetSourceDataTypeBuilder {
+	if b == nil {
+		return NewPublishedDataSetSourceDataTypeBuilder()
+	}
+	return &_PublishedDataSetSourceDataTypeBuilder{_PublishedDataSetSourceDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_PublishedDataSetSourceDataType) GetIdentifier() string {
 
 func (m *_PublishedDataSetSourceDataType) GetParent() ExtensionObjectDefinitionContract {
 	return m.ExtensionObjectDefinitionContract
-}
-
-// NewPublishedDataSetSourceDataType factory function for _PublishedDataSetSourceDataType
-func NewPublishedDataSetSourceDataType() *_PublishedDataSetSourceDataType {
-	_result := &_PublishedDataSetSourceDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_PublishedDataSetSourceDataType) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_PublishedDataSetSourceDataType) IsPublishedDataSetSourceDataType() {}
 
+func (m *_PublishedDataSetSourceDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_PublishedDataSetSourceDataType) deepCopy() *_PublishedDataSetSourceDataType {
+	if m == nil {
+		return nil
+	}
+	_PublishedDataSetSourceDataTypeCopy := &_PublishedDataSetSourceDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _PublishedDataSetSourceDataTypeCopy
+}
+
 func (m *_PublishedDataSetSourceDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

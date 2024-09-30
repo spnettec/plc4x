@@ -38,6 +38,7 @@ type BACnetConstructedDataWeeklySchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataWeeklySchedule interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataWeeklySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWeeklySchedule()
+	// CreateBuilder creates a BACnetConstructedDataWeeklyScheduleBuilder
+	CreateBACnetConstructedDataWeeklyScheduleBuilder() BACnetConstructedDataWeeklyScheduleBuilder
 }
 
 // _BACnetConstructedDataWeeklySchedule is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataWeeklySchedule struct {
 
 var _ BACnetConstructedDataWeeklySchedule = (*_BACnetConstructedDataWeeklySchedule)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWeeklySchedule)(nil)
+
+// NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
+func NewBACnetConstructedDataWeeklySchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
+	_result := &_BACnetConstructedDataWeeklySchedule{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		WeeklySchedule:                weeklySchedule,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataWeeklyScheduleBuilder is a builder for BACnetConstructedDataWeeklySchedule
+type BACnetConstructedDataWeeklyScheduleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(weeklySchedule []BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWeeklyScheduleBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWeeklyScheduleBuilder
+	// WithWeeklySchedule adds WeeklySchedule (property field)
+	WithWeeklySchedule(...BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder
+	// Build builds the BACnetConstructedDataWeeklySchedule or returns an error if something is wrong
+	Build() (BACnetConstructedDataWeeklySchedule, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataWeeklySchedule
+}
+
+// NewBACnetConstructedDataWeeklyScheduleBuilder() creates a BACnetConstructedDataWeeklyScheduleBuilder
+func NewBACnetConstructedDataWeeklyScheduleBuilder() BACnetConstructedDataWeeklyScheduleBuilder {
+	return &_BACnetConstructedDataWeeklyScheduleBuilder{_BACnetConstructedDataWeeklySchedule: new(_BACnetConstructedDataWeeklySchedule)}
+}
+
+type _BACnetConstructedDataWeeklyScheduleBuilder struct {
+	*_BACnetConstructedDataWeeklySchedule
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataWeeklyScheduleBuilder) = (*_BACnetConstructedDataWeeklyScheduleBuilder)(nil)
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) WithMandatoryFields(weeklySchedule []BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder {
+	return b.WithWeeklySchedule(weeklySchedule...)
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWeeklyScheduleBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWeeklyScheduleBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) WithWeeklySchedule(weeklySchedule ...BACnetDailySchedule) BACnetConstructedDataWeeklyScheduleBuilder {
+	b.WeeklySchedule = weeklySchedule
+	return b
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) Build() (BACnetConstructedDataWeeklySchedule, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataWeeklySchedule.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) MustBuild() BACnetConstructedDataWeeklySchedule {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataWeeklyScheduleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataWeeklyScheduleBuilder().(*_BACnetConstructedDataWeeklyScheduleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataWeeklyScheduleBuilder creates a BACnetConstructedDataWeeklyScheduleBuilder
+func (b *_BACnetConstructedDataWeeklySchedule) CreateBACnetConstructedDataWeeklyScheduleBuilder() BACnetConstructedDataWeeklyScheduleBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataWeeklyScheduleBuilder()
+	}
+	return &_BACnetConstructedDataWeeklyScheduleBuilder{_BACnetConstructedDataWeeklySchedule: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataWeeklySchedule) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWeeklySchedule factory function for _BACnetConstructedDataWeeklySchedule
-func NewBACnetConstructedDataWeeklySchedule(numberOfDataElements BACnetApplicationTagUnsignedInteger, weeklySchedule []BACnetDailySchedule, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWeeklySchedule {
-	_result := &_BACnetConstructedDataWeeklySchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		WeeklySchedule:                weeklySchedule,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWeeklySchedule(structType any) BACnetConstructedDataWeeklySchedule {
@@ -253,13 +369,34 @@ func (m *_BACnetConstructedDataWeeklySchedule) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataWeeklySchedule) IsBACnetConstructedDataWeeklySchedule() {}
 
+func (m *_BACnetConstructedDataWeeklySchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWeeklySchedule) deepCopy() *_BACnetConstructedDataWeeklySchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWeeklyScheduleCopy := &_BACnetConstructedDataWeeklySchedule{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetDailySchedule, BACnetDailySchedule](m.WeeklySchedule),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWeeklyScheduleCopy
+}
+
 func (m *_BACnetConstructedDataWeeklySchedule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

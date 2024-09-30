@@ -38,6 +38,7 @@ type BACnetConstructedDataRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataRelinquishDefault interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataRelinquishDefaultBuilder
+	CreateBACnetConstructedDataRelinquishDefaultBuilder() BACnetConstructedDataRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataRelinquishDefault is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataRelinquishDefault struct {
 
 var _ BACnetConstructedDataRelinquishDefault = (*_BACnetConstructedDataRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataRelinquishDefault factory function for _BACnetConstructedDataRelinquishDefault
+func NewBACnetConstructedDataRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataRelinquishDefaultBuilder is a builder for BACnetConstructedDataRelinquishDefault
+type BACnetConstructedDataRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataRelinquishDefault
+}
+
+// NewBACnetConstructedDataRelinquishDefaultBuilder() creates a BACnetConstructedDataRelinquishDefaultBuilder
+func NewBACnetConstructedDataRelinquishDefaultBuilder() BACnetConstructedDataRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataRelinquishDefaultBuilder{_BACnetConstructedDataRelinquishDefault: new(_BACnetConstructedDataRelinquishDefault)}
+}
+
+type _BACnetConstructedDataRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataRelinquishDefault
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataRelinquishDefaultBuilder) = (*_BACnetConstructedDataRelinquishDefaultBuilder)(nil)
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger) BACnetConstructedDataRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) Build() (BACnetConstructedDataRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataRelinquishDefault.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataRelinquishDefault {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataRelinquishDefaultBuilder().(*_BACnetConstructedDataRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataRelinquishDefaultBuilder creates a BACnetConstructedDataRelinquishDefaultBuilder
+func (b *_BACnetConstructedDataRelinquishDefault) CreateBACnetConstructedDataRelinquishDefaultBuilder() BACnetConstructedDataRelinquishDefaultBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataRelinquishDefaultBuilder{_BACnetConstructedDataRelinquishDefault: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataRelinquishDefault) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataRelinquishDefault factory function for _BACnetConstructedDataRelinquishDefault
-func NewBACnetConstructedDataRelinquishDefault(relinquishDefault BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataRelinquishDefault(structType any) BACnetConstructedDataRelinquishDefault {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataRelinquishDefault) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataRelinquishDefault) IsBACnetConstructedDataRelinquishDefault() {}
 
+func (m *_BACnetConstructedDataRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataRelinquishDefault) deepCopy() *_BACnetConstructedDataRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataRelinquishDefaultCopy := &_BACnetConstructedDataRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataRelinquishDefaultCopy
+}
+
 func (m *_BACnetConstructedDataRelinquishDefault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

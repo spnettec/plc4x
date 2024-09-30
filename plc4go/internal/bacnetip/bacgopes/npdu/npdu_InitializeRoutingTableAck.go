@@ -20,8 +20,6 @@
 package npdu
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
@@ -37,27 +35,35 @@ type InitializeRoutingTableAck struct {
 	irtaTable []*RoutingTableEntry
 }
 
-func NewInitializeRoutingTableAck(opts ...func(*InitializeRoutingTableAck)) (*InitializeRoutingTableAck, error) {
+func NewInitializeRoutingTableAck(args Args, kwArgs KWArgs, options ...Option) (*InitializeRoutingTableAck, error) {
 	i := &InitializeRoutingTableAck{
 		messageType: 0x07,
 	}
-	for _, opt := range opts {
-		opt(i)
-	}
-	npdu, err := NewNPDU(model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping()), nil)
+	ApplyAppliers(options, i)
+	options = AddLeafTypeIfAbundant(options, i)
+	options = AddNLMIfAbundant(options, model.NewNLMInitializeRoutingTableAck(i.produceNLMInitializeRoutingTableAckPortMapping()))
+	npdu, err := NewNPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating NPDU")
 	}
 	i._NPDU = npdu.(*_NPDU)
+	i.AddDebugContents(i, "irtaTable++")
 
 	i.npduNetMessage = &i.messageType
 	return i, nil
 }
 
-func WithInitializeRoutingTableAckIrtaTable(irtaTable ...*RoutingTableEntry) func(*InitializeRoutingTableAck) {
-	return func(r *InitializeRoutingTableAck) {
-		r.irtaTable = irtaTable
+// TODO: check if this is rather a KWArgs
+func WithInitializeRoutingTableAckIrtaTable(irtaTable ...*RoutingTableEntry) GenericApplier[*InitializeRoutingTableAck] {
+	return WrapGenericApplier(func(r *InitializeRoutingTableAck) { r.irtaTable = irtaTable })
+}
+
+func (i *InitializeRoutingTableAck) GetDebugAttr(attr string) any {
+	switch attr {
+	case "irtaTable":
+		return i.irtaTable
 	}
+	return nil
 }
 
 func (i *InitializeRoutingTableAck) GetIrtaTable() []*RoutingTableEntry {
@@ -130,8 +136,4 @@ func (i *InitializeRoutingTableAck) Decode(npdu Arg) error {
 		i.SetPduData(npdu.GetPduData())
 	}
 	return nil
-}
-
-func (i *InitializeRoutingTableAck) String() string {
-	return fmt.Sprintf("InitializeRoutingTableAck{%s, irtaTable: %v}", i._NPDU, i.irtaTable)
 }

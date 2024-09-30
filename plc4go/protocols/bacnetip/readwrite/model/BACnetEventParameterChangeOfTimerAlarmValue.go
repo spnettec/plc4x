@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetAlarmValues returns AlarmValues (property field)
@@ -46,6 +47,8 @@ type BACnetEventParameterChangeOfTimerAlarmValue interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventParameterChangeOfTimerAlarmValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfTimerAlarmValue()
+	// CreateBuilder creates a BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	CreateBACnetEventParameterChangeOfTimerAlarmValueBuilder() BACnetEventParameterChangeOfTimerAlarmValueBuilder
 }
 
 // _BACnetEventParameterChangeOfTimerAlarmValue is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetEventParameterChangeOfTimerAlarmValue struct {
 }
 
 var _ BACnetEventParameterChangeOfTimerAlarmValue = (*_BACnetEventParameterChangeOfTimerAlarmValue)(nil)
+
+// NewBACnetEventParameterChangeOfTimerAlarmValue factory function for _BACnetEventParameterChangeOfTimerAlarmValue
+func NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfTimerAlarmValue {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfTimerAlarmValue{OpeningTag: openingTag, AlarmValues: alarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterChangeOfTimerAlarmValueBuilder is a builder for BACnetEventParameterChangeOfTimerAlarmValue
+type BACnetEventParameterChangeOfTimerAlarmValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetTimerStateTagged) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder
+	// Build builds the BACnetEventParameterChangeOfTimerAlarmValue or returns an error if something is wrong
+	Build() (BACnetEventParameterChangeOfTimerAlarmValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterChangeOfTimerAlarmValue
+}
+
+// NewBACnetEventParameterChangeOfTimerAlarmValueBuilder() creates a BACnetEventParameterChangeOfTimerAlarmValueBuilder
+func NewBACnetEventParameterChangeOfTimerAlarmValueBuilder() BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	return &_BACnetEventParameterChangeOfTimerAlarmValueBuilder{_BACnetEventParameterChangeOfTimerAlarmValue: new(_BACnetEventParameterChangeOfTimerAlarmValue)}
+}
+
+type _BACnetEventParameterChangeOfTimerAlarmValueBuilder struct {
+	*_BACnetEventParameterChangeOfTimerAlarmValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterChangeOfTimerAlarmValueBuilder) = (*_BACnetEventParameterChangeOfTimerAlarmValueBuilder)(nil)
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	return b.WithOpeningTag(openingTag).WithAlarmValues(alarmValues...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithAlarmValues(alarmValues ...BACnetTimerStateTagged) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) Build() (BACnetEventParameterChangeOfTimerAlarmValue, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterChangeOfTimerAlarmValue.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) MustBuild() BACnetEventParameterChangeOfTimerAlarmValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterChangeOfTimerAlarmValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfTimerAlarmValueBuilder().(*_BACnetEventParameterChangeOfTimerAlarmValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventParameterChangeOfTimerAlarmValueBuilder creates a BACnetEventParameterChangeOfTimerAlarmValueBuilder
+func (b *_BACnetEventParameterChangeOfTimerAlarmValue) CreateBACnetEventParameterChangeOfTimerAlarmValueBuilder() BACnetEventParameterChangeOfTimerAlarmValueBuilder {
+	if b == nil {
+		return NewBACnetEventParameterChangeOfTimerAlarmValueBuilder()
+	}
+	return &_BACnetEventParameterChangeOfTimerAlarmValueBuilder{_BACnetEventParameterChangeOfTimerAlarmValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetClosingTag() BACnetClo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfTimerAlarmValue factory function for _BACnetEventParameterChangeOfTimerAlarmValue
-func NewBACnetEventParameterChangeOfTimerAlarmValue(openingTag BACnetOpeningTag, alarmValues []BACnetTimerStateTagged, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfTimerAlarmValue {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfTimerAlarmValue must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfTimerAlarmValue{OpeningTag: openingTag, AlarmValues: alarmValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfTimerAlarmValue(structType any) BACnetEventParameterChangeOfTimerAlarmValue {
@@ -146,7 +281,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Cont
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfTimerAlarmValue BACnetEventParameterChangeOfTimerAlarmValue, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetEventParameterChangeOfTimerAlarmValue) GetTagNumber() uint8 {
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) IsBACnetEventParameterChangeOfTimerAlarmValue() {
 }
 
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfTimerAlarmValue) deepCopy() *_BACnetEventParameterChangeOfTimerAlarmValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfTimerAlarmValueCopy := &_BACnetEventParameterChangeOfTimerAlarmValue{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimerStateTagged, BACnetTimerStateTagged](m.AlarmValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfTimerAlarmValueCopy
+}
+
 func (m *_BACnetEventParameterChangeOfTimerAlarmValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

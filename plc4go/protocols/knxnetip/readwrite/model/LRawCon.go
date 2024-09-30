@@ -36,9 +36,12 @@ type LRawCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLRawCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLRawCon()
+	// CreateBuilder creates a LRawConBuilder
+	CreateLRawConBuilder() LRawConBuilder
 }
 
 // _LRawCon is the data-structure of this message
@@ -48,6 +51,99 @@ type _LRawCon struct {
 
 var _ LRawCon = (*_LRawCon)(nil)
 var _ CEMIRequirements = (*_LRawCon)(nil)
+
+// NewLRawCon factory function for _LRawCon
+func NewLRawCon(size uint16) *_LRawCon {
+	_result := &_LRawCon{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LRawConBuilder is a builder for LRawCon
+type LRawConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LRawConBuilder
+	// Build builds the LRawCon or returns an error if something is wrong
+	Build() (LRawCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LRawCon
+}
+
+// NewLRawConBuilder() creates a LRawConBuilder
+func NewLRawConBuilder() LRawConBuilder {
+	return &_LRawConBuilder{_LRawCon: new(_LRawCon)}
+}
+
+type _LRawConBuilder struct {
+	*_LRawCon
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LRawConBuilder) = (*_LRawConBuilder)(nil)
+
+func (b *_LRawConBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_LRawConBuilder) WithMandatoryFields() LRawConBuilder {
+	return b
+}
+
+func (b *_LRawConBuilder) Build() (LRawCon, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LRawCon.deepCopy(), nil
+}
+
+func (b *_LRawConBuilder) MustBuild() LRawCon {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LRawConBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LRawConBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LRawConBuilder) DeepCopy() any {
+	_copy := b.CreateLRawConBuilder().(*_LRawConBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLRawConBuilder creates a LRawConBuilder
+func (b *_LRawCon) CreateLRawConBuilder() LRawConBuilder {
+	if b == nil {
+		return NewLRawConBuilder()
+	}
+	return &_LRawConBuilder{_LRawCon: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_LRawCon) GetMessageCode() uint8 {
 
 func (m *_LRawCon) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLRawCon factory function for _LRawCon
-func NewLRawCon(size uint16) *_LRawCon {
-	_result := &_LRawCon{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_LRawCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 func (m *_LRawCon) IsLRawCon() {}
 
+func (m *_LRawCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LRawCon) deepCopy() *_LRawCon {
+	if m == nil {
+		return nil
+	}
+	_LRawConCopy := &_LRawCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LRawConCopy
+}
+
 func (m *_LRawCon) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

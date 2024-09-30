@@ -38,8 +38,11 @@ type S7Payload interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Payload()
+	// CreateBuilder creates a S7PayloadBuilder
+	CreateS7PayloadBuilder() S7PayloadBuilder
 }
 
 // S7PayloadContract provides a set of functions which can be overwritten by a sub struct
@@ -48,6 +51,8 @@ type S7PayloadContract interface {
 	GetParameter() S7Parameter
 	// IsS7Payload is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Payload()
+	// CreateBuilder creates a S7PayloadBuilder
+	CreateS7PayloadBuilder() S7PayloadBuilder
 }
 
 // S7PayloadRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +79,193 @@ var _ S7PayloadContract = (*_S7Payload)(nil)
 func NewS7Payload(parameter S7Parameter) *_S7Payload {
 	return &_S7Payload{Parameter: parameter}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadBuilder is a builder for S7Payload
+type S7PayloadBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7PayloadBuilder
+	// AsS7PayloadReadVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
+	AsS7PayloadReadVarResponse() interface {
+		S7PayloadReadVarResponseBuilder
+		Done() S7PayloadBuilder
+	}
+	// AsS7PayloadWriteVarRequest converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
+	AsS7PayloadWriteVarRequest() interface {
+		S7PayloadWriteVarRequestBuilder
+		Done() S7PayloadBuilder
+	}
+	// AsS7PayloadWriteVarResponse converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
+	AsS7PayloadWriteVarResponse() interface {
+		S7PayloadWriteVarResponseBuilder
+		Done() S7PayloadBuilder
+	}
+	// AsS7PayloadUserData converts this build to a subType of S7Payload. It is always possible to return to current builder using Done()
+	AsS7PayloadUserData() interface {
+		S7PayloadUserDataBuilder
+		Done() S7PayloadBuilder
+	}
+	// Build builds the S7Payload or returns an error if something is wrong
+	PartialBuild() (S7PayloadContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() S7PayloadContract
+	// Build builds the S7Payload or returns an error if something is wrong
+	Build() (S7Payload, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7Payload
+}
+
+// NewS7PayloadBuilder() creates a S7PayloadBuilder
+func NewS7PayloadBuilder() S7PayloadBuilder {
+	return &_S7PayloadBuilder{_S7Payload: new(_S7Payload)}
+}
+
+type _S7PayloadChildBuilder interface {
+	utils.Copyable
+	setParent(S7PayloadContract)
+	buildForS7Payload() (S7Payload, error)
+}
+
+type _S7PayloadBuilder struct {
+	*_S7Payload
+
+	childBuilder _S7PayloadChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadBuilder) = (*_S7PayloadBuilder)(nil)
+
+func (b *_S7PayloadBuilder) WithMandatoryFields() S7PayloadBuilder {
+	return b
+}
+
+func (b *_S7PayloadBuilder) PartialBuild() (S7PayloadContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7Payload.deepCopy(), nil
+}
+
+func (b *_S7PayloadBuilder) PartialMustBuild() S7PayloadContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7PayloadBuilder) AsS7PayloadReadVarResponse() interface {
+	S7PayloadReadVarResponseBuilder
+	Done() S7PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7PayloadReadVarResponseBuilder
+		Done() S7PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7PayloadReadVarResponseBuilder().(*_S7PayloadReadVarResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadBuilder) AsS7PayloadWriteVarRequest() interface {
+	S7PayloadWriteVarRequestBuilder
+	Done() S7PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7PayloadWriteVarRequestBuilder
+		Done() S7PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7PayloadWriteVarRequestBuilder().(*_S7PayloadWriteVarRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadBuilder) AsS7PayloadWriteVarResponse() interface {
+	S7PayloadWriteVarResponseBuilder
+	Done() S7PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7PayloadWriteVarResponseBuilder
+		Done() S7PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7PayloadWriteVarResponseBuilder().(*_S7PayloadWriteVarResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadBuilder) AsS7PayloadUserData() interface {
+	S7PayloadUserDataBuilder
+	Done() S7PayloadBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7PayloadUserDataBuilder
+		Done() S7PayloadBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7PayloadUserDataBuilder().(*_S7PayloadUserDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7PayloadBuilder) Build() (S7Payload, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7Payload()
+}
+
+func (b *_S7PayloadBuilder) MustBuild() S7Payload {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7PayloadBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadBuilder().(*_S7PayloadBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7PayloadChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadBuilder creates a S7PayloadBuilder
+func (b *_S7Payload) CreateS7PayloadBuilder() S7PayloadBuilder {
+	if b == nil {
+		return NewS7PayloadBuilder()
+	}
+	return &_S7PayloadBuilder{_S7Payload: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastS7Payload(structType any) S7Payload {
@@ -111,7 +303,7 @@ func S7PayloadParseWithBufferProducer[T S7Payload](messageType uint8, parameter 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -121,7 +313,12 @@ func S7PayloadParseWithBuffer[T S7Payload](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (__s7Payload S7Payload, err error) {
@@ -137,19 +334,19 @@ func (m *_S7Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, mes
 	var _child S7Payload
 	switch {
 	case CastS7Parameter(parameter).GetParameterType() == 0x04 && messageType == 0x03: // S7PayloadReadVarResponse
-		if _child, err = (&_S7PayloadReadVarResponse{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadReadVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadReadVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x01: // S7PayloadWriteVarRequest
-		if _child, err = (&_S7PayloadWriteVarRequest{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarRequest).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarRequest for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x05 && messageType == 0x03: // S7PayloadWriteVarResponse
-		if _child, err = (&_S7PayloadWriteVarResponse{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadWriteVarResponse).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadWriteVarResponse for type-switch of S7Payload")
 		}
 	case CastS7Parameter(parameter).GetParameterType() == 0x00 && messageType == 0x07: // S7PayloadUserData
-		if _child, err = (&_S7PayloadUserData{}).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
+		if _child, err = new(_S7PayloadUserData).parse(ctx, readBuffer, m, messageType, parameter); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7PayloadUserData for type-switch of S7Payload")
 		}
 	default:
@@ -197,3 +394,18 @@ func (m *_S7Payload) GetParameter() S7Parameter {
 ////
 
 func (m *_S7Payload) IsS7Payload() {}
+
+func (m *_S7Payload) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Payload) deepCopy() *_S7Payload {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadCopy := &_S7Payload{
+		nil, // will be set by child
+		m.Parameter,
+	}
+	return _S7PayloadCopy
+}

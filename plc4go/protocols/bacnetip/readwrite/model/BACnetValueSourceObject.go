@@ -38,11 +38,14 @@ type BACnetValueSourceObject interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetObject returns Object (property field)
 	GetObject() BACnetDeviceObjectReferenceEnclosed
 	// IsBACnetValueSourceObject is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSourceObject()
+	// CreateBuilder creates a BACnetValueSourceObjectBuilder
+	CreateBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder
 }
 
 // _BACnetValueSourceObject is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetValueSourceObject struct {
 
 var _ BACnetValueSourceObject = (*_BACnetValueSourceObject)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceObject)(nil)
+
+// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
+func NewBACnetValueSourceObject(peekedTagHeader BACnetTagHeader, object BACnetDeviceObjectReferenceEnclosed) *_BACnetValueSourceObject {
+	if object == nil {
+		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
+	}
+	_result := &_BACnetValueSourceObject{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Object:                    object,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetValueSourceObjectBuilder is a builder for BACnetValueSourceObject
+type BACnetValueSourceObjectBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder
+	// WithObject adds Object (property field)
+	WithObject(BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder
+	// WithObjectBuilder adds Object (property field) which is build by the builder
+	WithObjectBuilder(func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetValueSourceObjectBuilder
+	// Build builds the BACnetValueSourceObject or returns an error if something is wrong
+	Build() (BACnetValueSourceObject, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetValueSourceObject
+}
+
+// NewBACnetValueSourceObjectBuilder() creates a BACnetValueSourceObjectBuilder
+func NewBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder {
+	return &_BACnetValueSourceObjectBuilder{_BACnetValueSourceObject: new(_BACnetValueSourceObject)}
+}
+
+type _BACnetValueSourceObjectBuilder struct {
+	*_BACnetValueSourceObject
+
+	parentBuilder *_BACnetValueSourceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetValueSourceObjectBuilder) = (*_BACnetValueSourceObjectBuilder)(nil)
+
+func (b *_BACnetValueSourceObjectBuilder) setParent(contract BACnetValueSourceContract) {
+	b.BACnetValueSourceContract = contract
+}
+
+func (b *_BACnetValueSourceObjectBuilder) WithMandatoryFields(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
+	return b.WithObject(object)
+}
+
+func (b *_BACnetValueSourceObjectBuilder) WithObject(object BACnetDeviceObjectReferenceEnclosed) BACnetValueSourceObjectBuilder {
+	b.Object = object
+	return b
+}
+
+func (b *_BACnetValueSourceObjectBuilder) WithObjectBuilder(builderSupplier func(BACnetDeviceObjectReferenceEnclosedBuilder) BACnetDeviceObjectReferenceEnclosedBuilder) BACnetValueSourceObjectBuilder {
+	builder := builderSupplier(b.Object.CreateBACnetDeviceObjectReferenceEnclosedBuilder())
+	var err error
+	b.Object, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetValueSourceObjectBuilder) Build() (BACnetValueSourceObject, error) {
+	if b.Object == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'object' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetValueSourceObject.deepCopy(), nil
+}
+
+func (b *_BACnetValueSourceObjectBuilder) MustBuild() BACnetValueSourceObject {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetValueSourceObjectBuilder) Done() BACnetValueSourceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetValueSourceObjectBuilder) buildForBACnetValueSource() (BACnetValueSource, error) {
+	return b.Build()
+}
+
+func (b *_BACnetValueSourceObjectBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetValueSourceObjectBuilder().(*_BACnetValueSourceObjectBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetValueSourceObjectBuilder creates a BACnetValueSourceObjectBuilder
+func (b *_BACnetValueSourceObject) CreateBACnetValueSourceObjectBuilder() BACnetValueSourceObjectBuilder {
+	if b == nil {
+		return NewBACnetValueSourceObjectBuilder()
+	}
+	return &_BACnetValueSourceObjectBuilder{_BACnetValueSourceObject: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetValueSourceObject) GetObject() BACnetDeviceObjectReferenceEnclos
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceObject factory function for _BACnetValueSourceObject
-func NewBACnetValueSourceObject(object BACnetDeviceObjectReferenceEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceObject {
-	if object == nil {
-		panic("object of type BACnetDeviceObjectReferenceEnclosed for BACnetValueSourceObject must not be nil")
-	}
-	_result := &_BACnetValueSourceObject{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Object:                    object,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceObject(structType any) BACnetValueSourceObject {
@@ -179,13 +294,33 @@ func (m *_BACnetValueSourceObject) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_BACnetValueSourceObject) IsBACnetValueSourceObject() {}
 
+func (m *_BACnetValueSourceObject) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceObject) deepCopy() *_BACnetValueSourceObject {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceObjectCopy := &_BACnetValueSourceObject{
+		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
+		m.Object.DeepCopy().(BACnetDeviceObjectReferenceEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceObjectCopy
+}
+
 func (m *_BACnetValueSourceObject) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

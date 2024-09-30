@@ -38,6 +38,7 @@ type BACnetConstructedDataMaximumValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaximumValue returns MaximumValue (property field)
 	GetMaximumValue() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataMaximumValue interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataMaximumValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaximumValue()
+	// CreateBuilder creates a BACnetConstructedDataMaximumValueBuilder
+	CreateBACnetConstructedDataMaximumValueBuilder() BACnetConstructedDataMaximumValueBuilder
 }
 
 // _BACnetConstructedDataMaximumValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataMaximumValue struct {
 
 var _ BACnetConstructedDataMaximumValue = (*_BACnetConstructedDataMaximumValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaximumValue)(nil)
+
+// NewBACnetConstructedDataMaximumValue factory function for _BACnetConstructedDataMaximumValue
+func NewBACnetConstructedDataMaximumValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maximumValue BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValue {
+	if maximumValue == nil {
+		panic("maximumValue of type BACnetApplicationTagReal for BACnetConstructedDataMaximumValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaximumValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaximumValue:                  maximumValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaximumValueBuilder is a builder for BACnetConstructedDataMaximumValue
+type BACnetConstructedDataMaximumValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maximumValue BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder
+	// WithMaximumValue adds MaximumValue (property field)
+	WithMaximumValue(BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder
+	// WithMaximumValueBuilder adds MaximumValue (property field) which is build by the builder
+	WithMaximumValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumValueBuilder
+	// Build builds the BACnetConstructedDataMaximumValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaximumValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaximumValue
+}
+
+// NewBACnetConstructedDataMaximumValueBuilder() creates a BACnetConstructedDataMaximumValueBuilder
+func NewBACnetConstructedDataMaximumValueBuilder() BACnetConstructedDataMaximumValueBuilder {
+	return &_BACnetConstructedDataMaximumValueBuilder{_BACnetConstructedDataMaximumValue: new(_BACnetConstructedDataMaximumValue)}
+}
+
+type _BACnetConstructedDataMaximumValueBuilder struct {
+	*_BACnetConstructedDataMaximumValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaximumValueBuilder) = (*_BACnetConstructedDataMaximumValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) WithMandatoryFields(maximumValue BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder {
+	return b.WithMaximumValue(maximumValue)
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) WithMaximumValue(maximumValue BACnetApplicationTagReal) BACnetConstructedDataMaximumValueBuilder {
+	b.MaximumValue = maximumValue
+	return b
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) WithMaximumValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataMaximumValueBuilder {
+	builder := builderSupplier(b.MaximumValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.MaximumValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) Build() (BACnetConstructedDataMaximumValue, error) {
+	if b.MaximumValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maximumValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMaximumValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) MustBuild() BACnetConstructedDataMaximumValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaximumValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaximumValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaximumValueBuilder().(*_BACnetConstructedDataMaximumValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMaximumValueBuilder creates a BACnetConstructedDataMaximumValueBuilder
+func (b *_BACnetConstructedDataMaximumValue) CreateBACnetConstructedDataMaximumValueBuilder() BACnetConstructedDataMaximumValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMaximumValueBuilder()
+	}
+	return &_BACnetConstructedDataMaximumValueBuilder{_BACnetConstructedDataMaximumValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataMaximumValue) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaximumValue factory function for _BACnetConstructedDataMaximumValue
-func NewBACnetConstructedDataMaximumValue(maximumValue BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaximumValue {
-	if maximumValue == nil {
-		panic("maximumValue of type BACnetApplicationTagReal for BACnetConstructedDataMaximumValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaximumValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaximumValue:                  maximumValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaximumValue(structType any) BACnetConstructedDataMaximumValue {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataMaximumValue) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetConstructedDataMaximumValue) IsBACnetConstructedDataMaximumValue() {}
 
+func (m *_BACnetConstructedDataMaximumValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaximumValue) deepCopy() *_BACnetConstructedDataMaximumValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaximumValueCopy := &_BACnetConstructedDataMaximumValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaximumValue.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaximumValueCopy
+}
+
 func (m *_BACnetConstructedDataMaximumValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

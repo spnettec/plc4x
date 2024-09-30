@@ -38,6 +38,7 @@ type BACnetConstructedDataEscalatorMode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetEscalatorMode returns EscalatorMode (property field)
 	GetEscalatorMode() BACnetEscalatorModeTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataEscalatorMode interface {
 	GetActualValue() BACnetEscalatorModeTagged
 	// IsBACnetConstructedDataEscalatorMode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEscalatorMode()
+	// CreateBuilder creates a BACnetConstructedDataEscalatorModeBuilder
+	CreateBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalatorModeBuilder
 }
 
 // _BACnetConstructedDataEscalatorMode is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataEscalatorMode struct {
 
 var _ BACnetConstructedDataEscalatorMode = (*_BACnetConstructedDataEscalatorMode)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEscalatorMode)(nil)
+
+// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
+func NewBACnetConstructedDataEscalatorMode(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, escalatorMode BACnetEscalatorModeTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
+	if escalatorMode == nil {
+		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
+	}
+	_result := &_BACnetConstructedDataEscalatorMode{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		EscalatorMode:                 escalatorMode,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEscalatorModeBuilder is a builder for BACnetConstructedDataEscalatorMode
+type BACnetConstructedDataEscalatorModeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder
+	// WithEscalatorMode adds EscalatorMode (property field)
+	WithEscalatorMode(BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder
+	// WithEscalatorModeBuilder adds EscalatorMode (property field) which is build by the builder
+	WithEscalatorModeBuilder(func(BACnetEscalatorModeTaggedBuilder) BACnetEscalatorModeTaggedBuilder) BACnetConstructedDataEscalatorModeBuilder
+	// Build builds the BACnetConstructedDataEscalatorMode or returns an error if something is wrong
+	Build() (BACnetConstructedDataEscalatorMode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEscalatorMode
+}
+
+// NewBACnetConstructedDataEscalatorModeBuilder() creates a BACnetConstructedDataEscalatorModeBuilder
+func NewBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalatorModeBuilder {
+	return &_BACnetConstructedDataEscalatorModeBuilder{_BACnetConstructedDataEscalatorMode: new(_BACnetConstructedDataEscalatorMode)}
+}
+
+type _BACnetConstructedDataEscalatorModeBuilder struct {
+	*_BACnetConstructedDataEscalatorMode
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEscalatorModeBuilder) = (*_BACnetConstructedDataEscalatorModeBuilder)(nil)
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithMandatoryFields(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
+	return b.WithEscalatorMode(escalatorMode)
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorMode(escalatorMode BACnetEscalatorModeTagged) BACnetConstructedDataEscalatorModeBuilder {
+	b.EscalatorMode = escalatorMode
+	return b
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) WithEscalatorModeBuilder(builderSupplier func(BACnetEscalatorModeTaggedBuilder) BACnetEscalatorModeTaggedBuilder) BACnetConstructedDataEscalatorModeBuilder {
+	builder := builderSupplier(b.EscalatorMode.CreateBACnetEscalatorModeTaggedBuilder())
+	var err error
+	b.EscalatorMode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEscalatorModeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) Build() (BACnetConstructedDataEscalatorMode, error) {
+	if b.EscalatorMode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'escalatorMode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEscalatorMode.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) MustBuild() BACnetConstructedDataEscalatorMode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEscalatorModeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEscalatorModeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEscalatorModeBuilder().(*_BACnetConstructedDataEscalatorModeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEscalatorModeBuilder creates a BACnetConstructedDataEscalatorModeBuilder
+func (b *_BACnetConstructedDataEscalatorMode) CreateBACnetConstructedDataEscalatorModeBuilder() BACnetConstructedDataEscalatorModeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEscalatorModeBuilder()
+	}
+	return &_BACnetConstructedDataEscalatorModeBuilder{_BACnetConstructedDataEscalatorMode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataEscalatorMode) GetActualValue() BACnetEscalatorMo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEscalatorMode factory function for _BACnetConstructedDataEscalatorMode
-func NewBACnetConstructedDataEscalatorMode(escalatorMode BACnetEscalatorModeTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEscalatorMode {
-	if escalatorMode == nil {
-		panic("escalatorMode of type BACnetEscalatorModeTagged for BACnetConstructedDataEscalatorMode must not be nil")
-	}
-	_result := &_BACnetConstructedDataEscalatorMode{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		EscalatorMode:                 escalatorMode,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEscalatorMode(structType any) BACnetConstructedDataEscalatorMode {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataEscalatorMode) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataEscalatorMode) IsBACnetConstructedDataEscalatorMode() {}
 
+func (m *_BACnetConstructedDataEscalatorMode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEscalatorMode) deepCopy() *_BACnetConstructedDataEscalatorMode {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEscalatorModeCopy := &_BACnetConstructedDataEscalatorMode{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.EscalatorMode.DeepCopy().(BACnetEscalatorModeTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEscalatorModeCopy
+}
+
 func (m *_BACnetConstructedDataEscalatorMode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

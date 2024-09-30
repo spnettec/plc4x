@@ -38,6 +38,7 @@ type BACnetAuthenticationFactorFormat interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFormatType returns FormatType (property field)
 	GetFormatType() BACnetAuthenticationFactorTypeTagged
 	// GetVendorId returns VendorId (property field)
@@ -46,6 +47,8 @@ type BACnetAuthenticationFactorFormat interface {
 	GetVendorFormat() BACnetContextTagUnsignedInteger
 	// IsBACnetAuthenticationFactorFormat is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthenticationFactorFormat()
+	// CreateBuilder creates a BACnetAuthenticationFactorFormatBuilder
+	CreateBACnetAuthenticationFactorFormatBuilder() BACnetAuthenticationFactorFormatBuilder
 }
 
 // _BACnetAuthenticationFactorFormat is the data-structure of this message
@@ -56,6 +59,155 @@ type _BACnetAuthenticationFactorFormat struct {
 }
 
 var _ BACnetAuthenticationFactorFormat = (*_BACnetAuthenticationFactorFormat)(nil)
+
+// NewBACnetAuthenticationFactorFormat factory function for _BACnetAuthenticationFactorFormat
+func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTypeTagged, vendorId BACnetVendorIdTagged, vendorFormat BACnetContextTagUnsignedInteger) *_BACnetAuthenticationFactorFormat {
+	if formatType == nil {
+		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactorFormat must not be nil")
+	}
+	return &_BACnetAuthenticationFactorFormat{FormatType: formatType, VendorId: vendorId, VendorFormat: vendorFormat}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthenticationFactorFormatBuilder is a builder for BACnetAuthenticationFactorFormat
+type BACnetAuthenticationFactorFormatBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorFormatBuilder
+	// WithFormatType adds FormatType (property field)
+	WithFormatType(BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorFormatBuilder
+	// WithFormatTypeBuilder adds FormatType (property field) which is build by the builder
+	WithFormatTypeBuilder(func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorFormatBuilder
+	// WithVendorId adds VendorId (property field)
+	WithOptionalVendorId(BACnetVendorIdTagged) BACnetAuthenticationFactorFormatBuilder
+	// WithOptionalVendorIdBuilder adds VendorId (property field) which is build by the builder
+	WithOptionalVendorIdBuilder(func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetAuthenticationFactorFormatBuilder
+	// WithVendorFormat adds VendorFormat (property field)
+	WithOptionalVendorFormat(BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorFormatBuilder
+	// WithOptionalVendorFormatBuilder adds VendorFormat (property field) which is build by the builder
+	WithOptionalVendorFormatBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorFormatBuilder
+	// Build builds the BACnetAuthenticationFactorFormat or returns an error if something is wrong
+	Build() (BACnetAuthenticationFactorFormat, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthenticationFactorFormat
+}
+
+// NewBACnetAuthenticationFactorFormatBuilder() creates a BACnetAuthenticationFactorFormatBuilder
+func NewBACnetAuthenticationFactorFormatBuilder() BACnetAuthenticationFactorFormatBuilder {
+	return &_BACnetAuthenticationFactorFormatBuilder{_BACnetAuthenticationFactorFormat: new(_BACnetAuthenticationFactorFormat)}
+}
+
+type _BACnetAuthenticationFactorFormatBuilder struct {
+	*_BACnetAuthenticationFactorFormat
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthenticationFactorFormatBuilder) = (*_BACnetAuthenticationFactorFormatBuilder)(nil)
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithMandatoryFields(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorFormatBuilder {
+	return b.WithFormatType(formatType)
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithFormatType(formatType BACnetAuthenticationFactorTypeTagged) BACnetAuthenticationFactorFormatBuilder {
+	b.FormatType = formatType
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithFormatTypeBuilder(builderSupplier func(BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorTypeTaggedBuilder) BACnetAuthenticationFactorFormatBuilder {
+	builder := builderSupplier(b.FormatType.CreateBACnetAuthenticationFactorTypeTaggedBuilder())
+	var err error
+	b.FormatType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAuthenticationFactorTypeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithOptionalVendorId(vendorId BACnetVendorIdTagged) BACnetAuthenticationFactorFormatBuilder {
+	b.VendorId = vendorId
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithOptionalVendorIdBuilder(builderSupplier func(BACnetVendorIdTaggedBuilder) BACnetVendorIdTaggedBuilder) BACnetAuthenticationFactorFormatBuilder {
+	builder := builderSupplier(b.VendorId.CreateBACnetVendorIdTaggedBuilder())
+	var err error
+	b.VendorId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetVendorIdTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithOptionalVendorFormat(vendorFormat BACnetContextTagUnsignedInteger) BACnetAuthenticationFactorFormatBuilder {
+	b.VendorFormat = vendorFormat
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) WithOptionalVendorFormatBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetAuthenticationFactorFormatBuilder {
+	builder := builderSupplier(b.VendorFormat.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.VendorFormat, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) Build() (BACnetAuthenticationFactorFormat, error) {
+	if b.FormatType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'formatType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAuthenticationFactorFormat.deepCopy(), nil
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) MustBuild() BACnetAuthenticationFactorFormat {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAuthenticationFactorFormatBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthenticationFactorFormatBuilder().(*_BACnetAuthenticationFactorFormatBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAuthenticationFactorFormatBuilder creates a BACnetAuthenticationFactorFormatBuilder
+func (b *_BACnetAuthenticationFactorFormat) CreateBACnetAuthenticationFactorFormatBuilder() BACnetAuthenticationFactorFormatBuilder {
+	if b == nil {
+		return NewBACnetAuthenticationFactorFormatBuilder()
+	}
+	return &_BACnetAuthenticationFactorFormatBuilder{_BACnetAuthenticationFactorFormat: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +230,6 @@ func (m *_BACnetAuthenticationFactorFormat) GetVendorFormat() BACnetContextTagUn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthenticationFactorFormat factory function for _BACnetAuthenticationFactorFormat
-func NewBACnetAuthenticationFactorFormat(formatType BACnetAuthenticationFactorTypeTagged, vendorId BACnetVendorIdTagged, vendorFormat BACnetContextTagUnsignedInteger) *_BACnetAuthenticationFactorFormat {
-	if formatType == nil {
-		panic("formatType of type BACnetAuthenticationFactorTypeTagged for BACnetAuthenticationFactorFormat must not be nil")
-	}
-	return &_BACnetAuthenticationFactorFormat{FormatType: formatType, VendorId: vendorId, VendorFormat: vendorFormat}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthenticationFactorFormat(structType any) BACnetAuthenticationFactorFormat {
@@ -140,7 +284,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthenticationFactorFormat) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetAuthenticationFactorFormat BACnetAuthenticationFactorFormat, err error) {
@@ -222,13 +366,33 @@ func (m *_BACnetAuthenticationFactorFormat) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetAuthenticationFactorFormat) IsBACnetAuthenticationFactorFormat() {}
 
+func (m *_BACnetAuthenticationFactorFormat) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthenticationFactorFormat) deepCopy() *_BACnetAuthenticationFactorFormat {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthenticationFactorFormatCopy := &_BACnetAuthenticationFactorFormat{
+		m.FormatType.DeepCopy().(BACnetAuthenticationFactorTypeTagged),
+		m.VendorId.DeepCopy().(BACnetVendorIdTagged),
+		m.VendorFormat.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	return _BACnetAuthenticationFactorFormatCopy
+}
+
 func (m *_BACnetAuthenticationFactorFormat) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

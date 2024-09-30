@@ -38,6 +38,7 @@ type DoubleComplexNumberType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetReal returns Real (property field)
 	GetReal() float64
@@ -45,6 +46,8 @@ type DoubleComplexNumberType interface {
 	GetImaginary() float64
 	// IsDoubleComplexNumberType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDoubleComplexNumberType()
+	// CreateBuilder creates a DoubleComplexNumberTypeBuilder
+	CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder
 }
 
 // _DoubleComplexNumberType is the data-structure of this message
@@ -56,6 +59,115 @@ type _DoubleComplexNumberType struct {
 
 var _ DoubleComplexNumberType = (*_DoubleComplexNumberType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_DoubleComplexNumberType)(nil)
+
+// NewDoubleComplexNumberType factory function for _DoubleComplexNumberType
+func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplexNumberType {
+	_result := &_DoubleComplexNumberType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Real:                              real,
+		Imaginary:                         imaginary,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DoubleComplexNumberTypeBuilder is a builder for DoubleComplexNumberType
+type DoubleComplexNumberTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder
+	// WithReal adds Real (property field)
+	WithReal(float64) DoubleComplexNumberTypeBuilder
+	// WithImaginary adds Imaginary (property field)
+	WithImaginary(float64) DoubleComplexNumberTypeBuilder
+	// Build builds the DoubleComplexNumberType or returns an error if something is wrong
+	Build() (DoubleComplexNumberType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DoubleComplexNumberType
+}
+
+// NewDoubleComplexNumberTypeBuilder() creates a DoubleComplexNumberTypeBuilder
+func NewDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
+	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: new(_DoubleComplexNumberType)}
+}
+
+type _DoubleComplexNumberTypeBuilder struct {
+	*_DoubleComplexNumberType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DoubleComplexNumberTypeBuilder) = (*_DoubleComplexNumberTypeBuilder)(nil)
+
+func (b *_DoubleComplexNumberTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) WithMandatoryFields(real float64, imaginary float64) DoubleComplexNumberTypeBuilder {
+	return b.WithReal(real).WithImaginary(imaginary)
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) WithReal(real float64) DoubleComplexNumberTypeBuilder {
+	b.Real = real
+	return b
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) WithImaginary(imaginary float64) DoubleComplexNumberTypeBuilder {
+	b.Imaginary = imaginary
+	return b
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) Build() (DoubleComplexNumberType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DoubleComplexNumberType.deepCopy(), nil
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) MustBuild() DoubleComplexNumberType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_DoubleComplexNumberTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_DoubleComplexNumberTypeBuilder) DeepCopy() any {
+	_copy := b.CreateDoubleComplexNumberTypeBuilder().(*_DoubleComplexNumberTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDoubleComplexNumberTypeBuilder creates a DoubleComplexNumberTypeBuilder
+func (b *_DoubleComplexNumberType) CreateDoubleComplexNumberTypeBuilder() DoubleComplexNumberTypeBuilder {
+	if b == nil {
+		return NewDoubleComplexNumberTypeBuilder()
+	}
+	return &_DoubleComplexNumberTypeBuilder{_DoubleComplexNumberType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_DoubleComplexNumberType) GetImaginary() float64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDoubleComplexNumberType factory function for _DoubleComplexNumberType
-func NewDoubleComplexNumberType(real float64, imaginary float64) *_DoubleComplexNumberType {
-	_result := &_DoubleComplexNumberType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Real:                              real,
-		Imaginary:                         imaginary,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastDoubleComplexNumberType(structType any) DoubleComplexNumberType {
@@ -201,13 +302,34 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_DoubleComplexNumberType) IsDoubleComplexNumberType() {}
 
+func (m *_DoubleComplexNumberType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DoubleComplexNumberType) deepCopy() *_DoubleComplexNumberType {
+	if m == nil {
+		return nil
+	}
+	_DoubleComplexNumberTypeCopy := &_DoubleComplexNumberType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Real,
+		m.Imaginary,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _DoubleComplexNumberTypeCopy
+}
+
 func (m *_DoubleComplexNumberType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

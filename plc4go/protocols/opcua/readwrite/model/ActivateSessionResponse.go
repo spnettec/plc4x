@@ -38,6 +38,7 @@ type ActivateSessionResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -53,6 +54,8 @@ type ActivateSessionResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsActivateSessionResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsActivateSessionResponse()
+	// CreateBuilder creates a ActivateSessionResponseBuilder
+	CreateActivateSessionResponseBuilder() ActivateSessionResponseBuilder
 }
 
 // _ActivateSessionResponse is the data-structure of this message
@@ -68,6 +71,195 @@ type _ActivateSessionResponse struct {
 
 var _ ActivateSessionResponse = (*_ActivateSessionResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ActivateSessionResponse)(nil)
+
+// NewActivateSessionResponse factory function for _ActivateSessionResponse
+func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
+	}
+	if serverNonce == nil {
+		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
+	}
+	_result := &_ActivateSessionResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		ServerNonce:                       serverNonce,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ActivateSessionResponseBuilder is a builder for ActivateSessionResponse
+type ActivateSessionResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ActivateSessionResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) ActivateSessionResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionResponseBuilder
+	// WithServerNonce adds ServerNonce (property field)
+	WithServerNonce(PascalByteString) ActivateSessionResponseBuilder
+	// WithServerNonceBuilder adds ServerNonce (property field) which is build by the builder
+	WithServerNonceBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) ActivateSessionResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) ActivateSessionResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) ActivateSessionResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) ActivateSessionResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) ActivateSessionResponseBuilder
+	// Build builds the ActivateSessionResponse or returns an error if something is wrong
+	Build() (ActivateSessionResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ActivateSessionResponse
+}
+
+// NewActivateSessionResponseBuilder() creates a ActivateSessionResponseBuilder
+func NewActivateSessionResponseBuilder() ActivateSessionResponseBuilder {
+	return &_ActivateSessionResponseBuilder{_ActivateSessionResponse: new(_ActivateSessionResponse)}
+}
+
+type _ActivateSessionResponseBuilder struct {
+	*_ActivateSessionResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ActivateSessionResponseBuilder) = (*_ActivateSessionResponseBuilder)(nil)
+
+func (b *_ActivateSessionResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ActivateSessionResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) ActivateSessionResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithServerNonce(serverNonce).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_ActivateSessionResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) ActivateSessionResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) ActivateSessionResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithServerNonce(serverNonce PascalByteString) ActivateSessionResponseBuilder {
+	b.ServerNonce = serverNonce
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithServerNonceBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) ActivateSessionResponseBuilder {
+	builder := builderSupplier(b.ServerNonce.CreatePascalByteStringBuilder())
+	var err error
+	b.ServerNonce, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithNoOfResults(noOfResults int32) ActivateSessionResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithResults(results ...StatusCode) ActivateSessionResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) ActivateSessionResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) ActivateSessionResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_ActivateSessionResponseBuilder) Build() (ActivateSessionResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.ServerNonce == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverNonce' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ActivateSessionResponse.deepCopy(), nil
+}
+
+func (b *_ActivateSessionResponseBuilder) MustBuild() ActivateSessionResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ActivateSessionResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ActivateSessionResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ActivateSessionResponseBuilder) DeepCopy() any {
+	_copy := b.CreateActivateSessionResponseBuilder().(*_ActivateSessionResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateActivateSessionResponseBuilder creates a ActivateSessionResponseBuilder
+func (b *_ActivateSessionResponse) CreateActivateSessionResponseBuilder() ActivateSessionResponseBuilder {
+	if b == nil {
+		return NewActivateSessionResponseBuilder()
+	}
+	return &_ActivateSessionResponseBuilder{_ActivateSessionResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,27 +312,6 @@ func (m *_ActivateSessionResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewActivateSessionResponse factory function for _ActivateSessionResponse
-func NewActivateSessionResponse(responseHeader ExtensionObjectDefinition, serverNonce PascalByteString, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_ActivateSessionResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for ActivateSessionResponse must not be nil")
-	}
-	if serverNonce == nil {
-		panic("serverNonce of type PascalByteString for ActivateSessionResponse must not be nil")
-	}
-	_result := &_ActivateSessionResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		ServerNonce:                       serverNonce,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastActivateSessionResponse(structType any) ActivateSessionResponse {
@@ -305,13 +476,38 @@ func (m *_ActivateSessionResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_ActivateSessionResponse) IsActivateSessionResponse() {}
 
+func (m *_ActivateSessionResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ActivateSessionResponse) deepCopy() *_ActivateSessionResponse {
+	if m == nil {
+		return nil
+	}
+	_ActivateSessionResponseCopy := &_ActivateSessionResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.ServerNonce.DeepCopy().(PascalByteString),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ActivateSessionResponseCopy
+}
+
 func (m *_ActivateSessionResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

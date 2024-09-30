@@ -38,6 +38,7 @@ type MPropReadCon interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// GetInterfaceObjectType returns InterfaceObjectType (property field)
 	GetInterfaceObjectType() uint16
@@ -53,6 +54,8 @@ type MPropReadCon interface {
 	GetData() uint16
 	// IsMPropReadCon is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMPropReadCon()
+	// CreateBuilder creates a MPropReadConBuilder
+	CreateMPropReadConBuilder() MPropReadConBuilder
 }
 
 // _MPropReadCon is the data-structure of this message
@@ -68,6 +71,147 @@ type _MPropReadCon struct {
 
 var _ MPropReadCon = (*_MPropReadCon)(nil)
 var _ CEMIRequirements = (*_MPropReadCon)(nil)
+
+// NewMPropReadCon factory function for _MPropReadCon
+func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *_MPropReadCon {
+	_result := &_MPropReadCon{
+		CEMIContract:        NewCEMI(size),
+		InterfaceObjectType: interfaceObjectType,
+		ObjectInstance:      objectInstance,
+		PropertyId:          propertyId,
+		NumberOfElements:    numberOfElements,
+		StartIndex:          startIndex,
+		Data:                data,
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MPropReadConBuilder is a builder for MPropReadCon
+type MPropReadConBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder
+	// WithInterfaceObjectType adds InterfaceObjectType (property field)
+	WithInterfaceObjectType(uint16) MPropReadConBuilder
+	// WithObjectInstance adds ObjectInstance (property field)
+	WithObjectInstance(uint8) MPropReadConBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) MPropReadConBuilder
+	// WithNumberOfElements adds NumberOfElements (property field)
+	WithNumberOfElements(uint8) MPropReadConBuilder
+	// WithStartIndex adds StartIndex (property field)
+	WithStartIndex(uint16) MPropReadConBuilder
+	// WithData adds Data (property field)
+	WithData(uint16) MPropReadConBuilder
+	// Build builds the MPropReadCon or returns an error if something is wrong
+	Build() (MPropReadCon, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MPropReadCon
+}
+
+// NewMPropReadConBuilder() creates a MPropReadConBuilder
+func NewMPropReadConBuilder() MPropReadConBuilder {
+	return &_MPropReadConBuilder{_MPropReadCon: new(_MPropReadCon)}
+}
+
+type _MPropReadConBuilder struct {
+	*_MPropReadCon
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MPropReadConBuilder) = (*_MPropReadConBuilder)(nil)
+
+func (b *_MPropReadConBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_MPropReadConBuilder) WithMandatoryFields(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16) MPropReadConBuilder {
+	return b.WithInterfaceObjectType(interfaceObjectType).WithObjectInstance(objectInstance).WithPropertyId(propertyId).WithNumberOfElements(numberOfElements).WithStartIndex(startIndex).WithData(data)
+}
+
+func (b *_MPropReadConBuilder) WithInterfaceObjectType(interfaceObjectType uint16) MPropReadConBuilder {
+	b.InterfaceObjectType = interfaceObjectType
+	return b
+}
+
+func (b *_MPropReadConBuilder) WithObjectInstance(objectInstance uint8) MPropReadConBuilder {
+	b.ObjectInstance = objectInstance
+	return b
+}
+
+func (b *_MPropReadConBuilder) WithPropertyId(propertyId uint8) MPropReadConBuilder {
+	b.PropertyId = propertyId
+	return b
+}
+
+func (b *_MPropReadConBuilder) WithNumberOfElements(numberOfElements uint8) MPropReadConBuilder {
+	b.NumberOfElements = numberOfElements
+	return b
+}
+
+func (b *_MPropReadConBuilder) WithStartIndex(startIndex uint16) MPropReadConBuilder {
+	b.StartIndex = startIndex
+	return b
+}
+
+func (b *_MPropReadConBuilder) WithData(data uint16) MPropReadConBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_MPropReadConBuilder) Build() (MPropReadCon, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MPropReadCon.deepCopy(), nil
+}
+
+func (b *_MPropReadConBuilder) MustBuild() MPropReadCon {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MPropReadConBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MPropReadConBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_MPropReadConBuilder) DeepCopy() any {
+	_copy := b.CreateMPropReadConBuilder().(*_MPropReadConBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMPropReadConBuilder creates a MPropReadConBuilder
+func (b *_MPropReadCon) CreateMPropReadConBuilder() MPropReadConBuilder {
+	if b == nil {
+		return NewMPropReadConBuilder()
+	}
+	return &_MPropReadConBuilder{_MPropReadCon: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,21 +264,6 @@ func (m *_MPropReadCon) GetData() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMPropReadCon factory function for _MPropReadCon
-func NewMPropReadCon(interfaceObjectType uint16, objectInstance uint8, propertyId uint8, numberOfElements uint8, startIndex uint16, data uint16, size uint16) *_MPropReadCon {
-	_result := &_MPropReadCon{
-		CEMIContract:        NewCEMI(size),
-		InterfaceObjectType: interfaceObjectType,
-		ObjectInstance:      objectInstance,
-		PropertyId:          propertyId,
-		NumberOfElements:    numberOfElements,
-		StartIndex:          startIndex,
-		Data:                data,
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMPropReadCon(structType any) MPropReadCon {
@@ -285,13 +414,38 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_MPropReadCon) IsMPropReadCon() {}
 
+func (m *_MPropReadCon) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MPropReadCon) deepCopy() *_MPropReadCon {
+	if m == nil {
+		return nil
+	}
+	_MPropReadConCopy := &_MPropReadCon{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+		m.InterfaceObjectType,
+		m.ObjectInstance,
+		m.PropertyId,
+		m.NumberOfElements,
+		m.StartIndex,
+		m.Data,
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _MPropReadConCopy
+}
+
 func (m *_MPropReadCon) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

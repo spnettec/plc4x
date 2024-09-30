@@ -38,6 +38,7 @@ type AddReferencesItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetSourceNodeId returns SourceNodeId (property field)
 	GetSourceNodeId() NodeId
@@ -53,6 +54,8 @@ type AddReferencesItem interface {
 	GetTargetNodeClass() NodeClass
 	// IsAddReferencesItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAddReferencesItem()
+	// CreateBuilder creates a AddReferencesItemBuilder
+	CreateAddReferencesItemBuilder() AddReferencesItemBuilder
 }
 
 // _AddReferencesItem is the data-structure of this message
@@ -70,6 +73,243 @@ type _AddReferencesItem struct {
 
 var _ AddReferencesItem = (*_AddReferencesItem)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_AddReferencesItem)(nil)
+
+// NewAddReferencesItem factory function for _AddReferencesItem
+func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
+	if sourceNodeId == nil {
+		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if referenceTypeId == nil {
+		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
+	}
+	if targetServerUri == nil {
+		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
+	}
+	if targetNodeId == nil {
+		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
+	}
+	_result := &_AddReferencesItem{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		SourceNodeId:                      sourceNodeId,
+		ReferenceTypeId:                   referenceTypeId,
+		IsForward:                         isForward,
+		TargetServerUri:                   targetServerUri,
+		TargetNodeId:                      targetNodeId,
+		TargetNodeClass:                   targetNodeClass,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AddReferencesItemBuilder is a builder for AddReferencesItem
+type AddReferencesItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) AddReferencesItemBuilder
+	// WithSourceNodeId adds SourceNodeId (property field)
+	WithSourceNodeId(NodeId) AddReferencesItemBuilder
+	// WithSourceNodeIdBuilder adds SourceNodeId (property field) which is build by the builder
+	WithSourceNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder
+	// WithReferenceTypeId adds ReferenceTypeId (property field)
+	WithReferenceTypeId(NodeId) AddReferencesItemBuilder
+	// WithReferenceTypeIdBuilder adds ReferenceTypeId (property field) which is build by the builder
+	WithReferenceTypeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder
+	// WithIsForward adds IsForward (property field)
+	WithIsForward(bool) AddReferencesItemBuilder
+	// WithTargetServerUri adds TargetServerUri (property field)
+	WithTargetServerUri(PascalString) AddReferencesItemBuilder
+	// WithTargetServerUriBuilder adds TargetServerUri (property field) which is build by the builder
+	WithTargetServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) AddReferencesItemBuilder
+	// WithTargetNodeId adds TargetNodeId (property field)
+	WithTargetNodeId(ExpandedNodeId) AddReferencesItemBuilder
+	// WithTargetNodeIdBuilder adds TargetNodeId (property field) which is build by the builder
+	WithTargetNodeIdBuilder(func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddReferencesItemBuilder
+	// WithTargetNodeClass adds TargetNodeClass (property field)
+	WithTargetNodeClass(NodeClass) AddReferencesItemBuilder
+	// Build builds the AddReferencesItem or returns an error if something is wrong
+	Build() (AddReferencesItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AddReferencesItem
+}
+
+// NewAddReferencesItemBuilder() creates a AddReferencesItemBuilder
+func NewAddReferencesItemBuilder() AddReferencesItemBuilder {
+	return &_AddReferencesItemBuilder{_AddReferencesItem: new(_AddReferencesItem)}
+}
+
+type _AddReferencesItemBuilder struct {
+	*_AddReferencesItem
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AddReferencesItemBuilder) = (*_AddReferencesItemBuilder)(nil)
+
+func (b *_AddReferencesItemBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_AddReferencesItemBuilder) WithMandatoryFields(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) AddReferencesItemBuilder {
+	return b.WithSourceNodeId(sourceNodeId).WithReferenceTypeId(referenceTypeId).WithIsForward(isForward).WithTargetServerUri(targetServerUri).WithTargetNodeId(targetNodeId).WithTargetNodeClass(targetNodeClass)
+}
+
+func (b *_AddReferencesItemBuilder) WithSourceNodeId(sourceNodeId NodeId) AddReferencesItemBuilder {
+	b.SourceNodeId = sourceNodeId
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithSourceNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.SourceNodeId.CreateNodeIdBuilder())
+	var err error
+	b.SourceNodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithReferenceTypeId(referenceTypeId NodeId) AddReferencesItemBuilder {
+	b.ReferenceTypeId = referenceTypeId
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithReferenceTypeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.ReferenceTypeId.CreateNodeIdBuilder())
+	var err error
+	b.ReferenceTypeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithIsForward(isForward bool) AddReferencesItemBuilder {
+	b.IsForward = isForward
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithTargetServerUri(targetServerUri PascalString) AddReferencesItemBuilder {
+	b.TargetServerUri = targetServerUri
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithTargetServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.TargetServerUri.CreatePascalStringBuilder())
+	var err error
+	b.TargetServerUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithTargetNodeId(targetNodeId ExpandedNodeId) AddReferencesItemBuilder {
+	b.TargetNodeId = targetNodeId
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithTargetNodeIdBuilder(builderSupplier func(ExpandedNodeIdBuilder) ExpandedNodeIdBuilder) AddReferencesItemBuilder {
+	builder := builderSupplier(b.TargetNodeId.CreateExpandedNodeIdBuilder())
+	var err error
+	b.TargetNodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExpandedNodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) WithTargetNodeClass(targetNodeClass NodeClass) AddReferencesItemBuilder {
+	b.TargetNodeClass = targetNodeClass
+	return b
+}
+
+func (b *_AddReferencesItemBuilder) Build() (AddReferencesItem, error) {
+	if b.SourceNodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'sourceNodeId' not set"))
+	}
+	if b.ReferenceTypeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'referenceTypeId' not set"))
+	}
+	if b.TargetServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'targetServerUri' not set"))
+	}
+	if b.TargetNodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'targetNodeId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AddReferencesItem.deepCopy(), nil
+}
+
+func (b *_AddReferencesItemBuilder) MustBuild() AddReferencesItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AddReferencesItemBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AddReferencesItemBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_AddReferencesItemBuilder) DeepCopy() any {
+	_copy := b.CreateAddReferencesItemBuilder().(*_AddReferencesItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAddReferencesItemBuilder creates a AddReferencesItemBuilder
+func (b *_AddReferencesItem) CreateAddReferencesItemBuilder() AddReferencesItemBuilder {
+	if b == nil {
+		return NewAddReferencesItemBuilder()
+	}
+	return &_AddReferencesItemBuilder{_AddReferencesItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,33 +362,6 @@ func (m *_AddReferencesItem) GetTargetNodeClass() NodeClass {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAddReferencesItem factory function for _AddReferencesItem
-func NewAddReferencesItem(sourceNodeId NodeId, referenceTypeId NodeId, isForward bool, targetServerUri PascalString, targetNodeId ExpandedNodeId, targetNodeClass NodeClass) *_AddReferencesItem {
-	if sourceNodeId == nil {
-		panic("sourceNodeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if referenceTypeId == nil {
-		panic("referenceTypeId of type NodeId for AddReferencesItem must not be nil")
-	}
-	if targetServerUri == nil {
-		panic("targetServerUri of type PascalString for AddReferencesItem must not be nil")
-	}
-	if targetNodeId == nil {
-		panic("targetNodeId of type ExpandedNodeId for AddReferencesItem must not be nil")
-	}
-	_result := &_AddReferencesItem{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		SourceNodeId:                      sourceNodeId,
-		ReferenceTypeId:                   referenceTypeId,
-		IsForward:                         isForward,
-		TargetServerUri:                   targetServerUri,
-		TargetNodeId:                      targetNodeId,
-		TargetNodeClass:                   targetNodeClass,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAddReferencesItem(structType any) AddReferencesItem {
@@ -312,13 +525,39 @@ func (m *_AddReferencesItem) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_AddReferencesItem) IsAddReferencesItem() {}
 
+func (m *_AddReferencesItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AddReferencesItem) deepCopy() *_AddReferencesItem {
+	if m == nil {
+		return nil
+	}
+	_AddReferencesItemCopy := &_AddReferencesItem{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.SourceNodeId.DeepCopy().(NodeId),
+		m.ReferenceTypeId.DeepCopy().(NodeId),
+		m.IsForward,
+		m.TargetServerUri.DeepCopy().(PascalString),
+		m.TargetNodeId.DeepCopy().(ExpandedNodeId),
+		m.TargetNodeClass,
+		m.reservedField0,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _AddReferencesItemCopy
+}
+
 func (m *_AddReferencesItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

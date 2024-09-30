@@ -38,6 +38,7 @@ type CIPAttributes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetClassId returns ClassId (property field)
 	GetClassId() []uint16
 	// GetNumberAvailable returns NumberAvailable (property field)
@@ -48,6 +49,8 @@ type CIPAttributes interface {
 	GetData() []byte
 	// IsCIPAttributes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPAttributes()
+	// CreateBuilder creates a CIPAttributesBuilder
+	CreateCIPAttributesBuilder() CIPAttributesBuilder
 }
 
 // _CIPAttributes is the data-structure of this message
@@ -62,6 +65,108 @@ type _CIPAttributes struct {
 }
 
 var _ CIPAttributes = (*_CIPAttributes)(nil)
+
+// NewCIPAttributes factory function for _CIPAttributes
+func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
+	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPAttributesBuilder is a builder for CIPAttributes
+type CIPAttributesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(classId []uint16, data []byte) CIPAttributesBuilder
+	// WithClassId adds ClassId (property field)
+	WithClassId(...uint16) CIPAttributesBuilder
+	// WithNumberAvailable adds NumberAvailable (property field)
+	WithOptionalNumberAvailable(uint16) CIPAttributesBuilder
+	// WithNumberActive adds NumberActive (property field)
+	WithOptionalNumberActive(uint16) CIPAttributesBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) CIPAttributesBuilder
+	// Build builds the CIPAttributes or returns an error if something is wrong
+	Build() (CIPAttributes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPAttributes
+}
+
+// NewCIPAttributesBuilder() creates a CIPAttributesBuilder
+func NewCIPAttributesBuilder() CIPAttributesBuilder {
+	return &_CIPAttributesBuilder{_CIPAttributes: new(_CIPAttributes)}
+}
+
+type _CIPAttributesBuilder struct {
+	*_CIPAttributes
+
+	err *utils.MultiError
+}
+
+var _ (CIPAttributesBuilder) = (*_CIPAttributesBuilder)(nil)
+
+func (b *_CIPAttributesBuilder) WithMandatoryFields(classId []uint16, data []byte) CIPAttributesBuilder {
+	return b.WithClassId(classId...).WithData(data...)
+}
+
+func (b *_CIPAttributesBuilder) WithClassId(classId ...uint16) CIPAttributesBuilder {
+	b.ClassId = classId
+	return b
+}
+
+func (b *_CIPAttributesBuilder) WithOptionalNumberAvailable(numberAvailable uint16) CIPAttributesBuilder {
+	b.NumberAvailable = &numberAvailable
+	return b
+}
+
+func (b *_CIPAttributesBuilder) WithOptionalNumberActive(numberActive uint16) CIPAttributesBuilder {
+	b.NumberActive = &numberActive
+	return b
+}
+
+func (b *_CIPAttributesBuilder) WithData(data ...byte) CIPAttributesBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CIPAttributesBuilder) Build() (CIPAttributes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPAttributes.deepCopy(), nil
+}
+
+func (b *_CIPAttributesBuilder) MustBuild() CIPAttributes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CIPAttributesBuilder) DeepCopy() any {
+	_copy := b.CreateCIPAttributesBuilder().(*_CIPAttributesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCIPAttributesBuilder creates a CIPAttributesBuilder
+func (b *_CIPAttributes) CreateCIPAttributesBuilder() CIPAttributesBuilder {
+	if b == nil {
+		return NewCIPAttributesBuilder()
+	}
+	return &_CIPAttributesBuilder{_CIPAttributes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,11 +193,6 @@ func (m *_CIPAttributes) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPAttributes factory function for _CIPAttributes
-func NewCIPAttributes(classId []uint16, numberAvailable *uint16, numberActive *uint16, data []byte, packetLength uint16) *_CIPAttributes {
-	return &_CIPAttributes{ClassId: classId, NumberAvailable: numberAvailable, NumberActive: numberActive, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPAttributes(structType any) CIPAttributes {
@@ -157,7 +257,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CIPAttributes) parse(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (__cIPAttributes CIPAttributes, err error) {
@@ -265,13 +365,35 @@ func (m *_CIPAttributes) GetPacketLength() uint16 {
 
 func (m *_CIPAttributes) IsCIPAttributes() {}
 
+func (m *_CIPAttributes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPAttributes) deepCopy() *_CIPAttributes {
+	if m == nil {
+		return nil
+	}
+	_CIPAttributesCopy := &_CIPAttributes{
+		utils.DeepCopySlice[uint16, uint16](m.ClassId),
+		utils.CopyPtr[uint16](m.NumberAvailable),
+		utils.CopyPtr[uint16](m.NumberActive),
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPAttributesCopy
+}
+
 func (m *_CIPAttributes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

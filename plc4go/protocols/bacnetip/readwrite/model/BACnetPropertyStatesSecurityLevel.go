@@ -38,11 +38,14 @@ type BACnetPropertyStatesSecurityLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetSecurityLevel returns SecurityLevel (property field)
 	GetSecurityLevel() BACnetSecurityLevelTagged
 	// IsBACnetPropertyStatesSecurityLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesSecurityLevel()
+	// CreateBuilder creates a BACnetPropertyStatesSecurityLevelBuilder
+	CreateBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder
 }
 
 // _BACnetPropertyStatesSecurityLevel is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesSecurityLevel struct {
 
 var _ BACnetPropertyStatesSecurityLevel = (*_BACnetPropertyStatesSecurityLevel)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesSecurityLevel)(nil)
+
+// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
+func NewBACnetPropertyStatesSecurityLevel(peekedTagHeader BACnetTagHeader, securityLevel BACnetSecurityLevelTagged) *_BACnetPropertyStatesSecurityLevel {
+	if securityLevel == nil {
+		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
+	}
+	_result := &_BACnetPropertyStatesSecurityLevel{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		SecurityLevel:                securityLevel,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesSecurityLevelBuilder is a builder for BACnetPropertyStatesSecurityLevel
+type BACnetPropertyStatesSecurityLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder
+	// WithSecurityLevel adds SecurityLevel (property field)
+	WithSecurityLevel(BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder
+	// WithSecurityLevelBuilder adds SecurityLevel (property field) which is build by the builder
+	WithSecurityLevelBuilder(func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetPropertyStatesSecurityLevelBuilder
+	// Build builds the BACnetPropertyStatesSecurityLevel or returns an error if something is wrong
+	Build() (BACnetPropertyStatesSecurityLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesSecurityLevel
+}
+
+// NewBACnetPropertyStatesSecurityLevelBuilder() creates a BACnetPropertyStatesSecurityLevelBuilder
+func NewBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder {
+	return &_BACnetPropertyStatesSecurityLevelBuilder{_BACnetPropertyStatesSecurityLevel: new(_BACnetPropertyStatesSecurityLevel)}
+}
+
+type _BACnetPropertyStatesSecurityLevelBuilder struct {
+	*_BACnetPropertyStatesSecurityLevel
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesSecurityLevelBuilder) = (*_BACnetPropertyStatesSecurityLevelBuilder)(nil)
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) WithMandatoryFields(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder {
+	return b.WithSecurityLevel(securityLevel)
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) WithSecurityLevel(securityLevel BACnetSecurityLevelTagged) BACnetPropertyStatesSecurityLevelBuilder {
+	b.SecurityLevel = securityLevel
+	return b
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) WithSecurityLevelBuilder(builderSupplier func(BACnetSecurityLevelTaggedBuilder) BACnetSecurityLevelTaggedBuilder) BACnetPropertyStatesSecurityLevelBuilder {
+	builder := builderSupplier(b.SecurityLevel.CreateBACnetSecurityLevelTaggedBuilder())
+	var err error
+	b.SecurityLevel, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetSecurityLevelTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) Build() (BACnetPropertyStatesSecurityLevel, error) {
+	if b.SecurityLevel == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityLevel' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesSecurityLevel.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) MustBuild() BACnetPropertyStatesSecurityLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesSecurityLevelBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesSecurityLevelBuilder().(*_BACnetPropertyStatesSecurityLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesSecurityLevelBuilder creates a BACnetPropertyStatesSecurityLevelBuilder
+func (b *_BACnetPropertyStatesSecurityLevel) CreateBACnetPropertyStatesSecurityLevelBuilder() BACnetPropertyStatesSecurityLevelBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesSecurityLevelBuilder()
+	}
+	return &_BACnetPropertyStatesSecurityLevelBuilder{_BACnetPropertyStatesSecurityLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesSecurityLevel) GetSecurityLevel() BACnetSecurityLe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesSecurityLevel factory function for _BACnetPropertyStatesSecurityLevel
-func NewBACnetPropertyStatesSecurityLevel(securityLevel BACnetSecurityLevelTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesSecurityLevel {
-	if securityLevel == nil {
-		panic("securityLevel of type BACnetSecurityLevelTagged for BACnetPropertyStatesSecurityLevel must not be nil")
-	}
-	_result := &_BACnetPropertyStatesSecurityLevel{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		SecurityLevel:                securityLevel,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesSecurityLevel(structType any) BACnetPropertyStatesSecurityLevel {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesSecurityLevel) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetPropertyStatesSecurityLevel) IsBACnetPropertyStatesSecurityLevel() {}
 
+func (m *_BACnetPropertyStatesSecurityLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesSecurityLevel) deepCopy() *_BACnetPropertyStatesSecurityLevel {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesSecurityLevelCopy := &_BACnetPropertyStatesSecurityLevel{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.SecurityLevel.DeepCopy().(BACnetSecurityLevelTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesSecurityLevelCopy
+}
+
 func (m *_BACnetPropertyStatesSecurityLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

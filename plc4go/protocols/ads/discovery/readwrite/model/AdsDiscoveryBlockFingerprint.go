@@ -38,11 +38,14 @@ type AdsDiscoveryBlockFingerprint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsAdsDiscoveryBlockFingerprint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockFingerprint()
+	// CreateBuilder creates a AdsDiscoveryBlockFingerprintBuilder
+	CreateAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilder
 }
 
 // _AdsDiscoveryBlockFingerprint is the data-structure of this message
@@ -53,6 +56,107 @@ type _AdsDiscoveryBlockFingerprint struct {
 
 var _ AdsDiscoveryBlockFingerprint = (*_AdsDiscoveryBlockFingerprint)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockFingerprint)(nil)
+
+// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
+func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
+	_result := &_AdsDiscoveryBlockFingerprint{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Data:                      data,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockFingerprintBuilder is a builder for AdsDiscoveryBlockFingerprint
+type AdsDiscoveryBlockFingerprintBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) AdsDiscoveryBlockFingerprintBuilder
+	// Build builds the AdsDiscoveryBlockFingerprint or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockFingerprint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockFingerprint
+}
+
+// NewAdsDiscoveryBlockFingerprintBuilder() creates a AdsDiscoveryBlockFingerprintBuilder
+func NewAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilder {
+	return &_AdsDiscoveryBlockFingerprintBuilder{_AdsDiscoveryBlockFingerprint: new(_AdsDiscoveryBlockFingerprint)}
+}
+
+type _AdsDiscoveryBlockFingerprintBuilder struct {
+	*_AdsDiscoveryBlockFingerprint
+
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockFingerprintBuilder) = (*_AdsDiscoveryBlockFingerprintBuilder)(nil)
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) WithMandatoryFields(data []byte) AdsDiscoveryBlockFingerprintBuilder {
+	return b.WithData(data...)
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) WithData(data ...byte) AdsDiscoveryBlockFingerprintBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) Build() (AdsDiscoveryBlockFingerprint, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDiscoveryBlockFingerprint.deepCopy(), nil
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) MustBuild() AdsDiscoveryBlockFingerprint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockFingerprintBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockFingerprintBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockFingerprintBuilder().(*_AdsDiscoveryBlockFingerprintBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDiscoveryBlockFingerprintBuilder creates a AdsDiscoveryBlockFingerprintBuilder
+func (b *_AdsDiscoveryBlockFingerprint) CreateAdsDiscoveryBlockFingerprintBuilder() AdsDiscoveryBlockFingerprintBuilder {
+	if b == nil {
+		return NewAdsDiscoveryBlockFingerprintBuilder()
+	}
+	return &_AdsDiscoveryBlockFingerprintBuilder{_AdsDiscoveryBlockFingerprint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_AdsDiscoveryBlockFingerprint) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockFingerprint factory function for _AdsDiscoveryBlockFingerprint
-func NewAdsDiscoveryBlockFingerprint(data []byte) *_AdsDiscoveryBlockFingerprint {
-	_result := &_AdsDiscoveryBlockFingerprint{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Data:                      data,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockFingerprint(structType any) AdsDiscoveryBlockFingerprint {
@@ -195,13 +289,33 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_AdsDiscoveryBlockFingerprint) IsAdsDiscoveryBlockFingerprint() {}
 
+func (m *_AdsDiscoveryBlockFingerprint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockFingerprint) deepCopy() *_AdsDiscoveryBlockFingerprint {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockFingerprintCopy := &_AdsDiscoveryBlockFingerprint{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockFingerprintCopy
+}
+
 func (m *_AdsDiscoveryBlockFingerprint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

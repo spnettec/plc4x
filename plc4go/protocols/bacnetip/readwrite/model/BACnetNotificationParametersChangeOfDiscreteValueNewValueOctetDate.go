@@ -38,11 +38,14 @@ type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate interfac
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParametersChangeOfDiscreteValueNewValue
 	// GetDateValue returns DateValue (property field)
 	GetDateValue() BACnetApplicationTagDate
 	// IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate()
+	// CreateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+	CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
 }
 
 // _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate struct 
 
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate)(nil)
 var _ BACnetNotificationParametersChangeOfDiscreteValueNewValueRequirements = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate)(nil)
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateValue BACnetApplicationTagDate, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
+	if dateValue == nil {
+		panic("dateValue of type BACnetApplicationTagDate for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate must not be nil")
+	}
+	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
+		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
+		DateValue: dateValue,
+	}
+	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder is a builder for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+type BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+	// WithDateValue adds DateValue (property field)
+	WithDateValue(BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+	// WithDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+	// Build builds the BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate or returns an error if something is wrong
+	Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+}
+
+// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate: new(_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate)}
+}
+
+type _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder struct {
+	*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
+
+	parentBuilder *_BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) = (*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder)(nil)
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) setParent(contract BACnetNotificationParametersChangeOfDiscreteValueNewValueContract) {
+	b.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract = contract
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithMandatoryFields(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	return b.WithDateValue(dateValue)
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValue(dateValue BACnetApplicationTagDate) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) WithDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	b.DateValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) Build() (BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate, error) {
+	if b.DateValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) MustBuild() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) Done() BACnetNotificationParametersChangeOfDiscreteValueNewValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) buildForBACnetNotificationParametersChangeOfDiscreteValueNewValue() (BACnetNotificationParametersChangeOfDiscreteValueNewValue, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder().(*_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder creates a BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder
+func (b *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) CreateBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder() BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder()
+	}
+	return &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateBuilder{_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) Ge
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate factory function for _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate
-func NewBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(dateValue BACnetApplicationTagDate, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
-	if dateValue == nil {
-		panic("dateValue of type BACnetApplicationTagDate for BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate must not be nil")
-	}
-	_result := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
-		BACnetNotificationParametersChangeOfDiscreteValueNewValueContract: NewBACnetNotificationParametersChangeOfDiscreteValueNewValue(openingTag, peekedTagHeader, closingTag, tagNumber),
-		DateValue: dateValue,
-	}
-	_result.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate(structType any) BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
@@ -180,13 +295,33 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) Se
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) IsBACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate() {
 }
 
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) deepCopy() *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateCopy := &_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate{
+		m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue).deepCopy(),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+	}
+	m.BACnetNotificationParametersChangeOfDiscreteValueNewValueContract.(*_BACnetNotificationParametersChangeOfDiscreteValueNewValue)._SubType = m
+	return _BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDateCopy
+}
+
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

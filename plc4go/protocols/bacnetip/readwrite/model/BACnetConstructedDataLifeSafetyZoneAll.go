@@ -36,9 +36,12 @@ type BACnetConstructedDataLifeSafetyZoneAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLifeSafetyZoneAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLifeSafetyZoneAll()
+	// CreateBuilder creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+	CreateBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder
 }
 
 // _BACnetConstructedDataLifeSafetyZoneAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataLifeSafetyZoneAll struct {
 
 var _ BACnetConstructedDataLifeSafetyZoneAll = (*_BACnetConstructedDataLifeSafetyZoneAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLifeSafetyZoneAll)(nil)
+
+// NewBACnetConstructedDataLifeSafetyZoneAll factory function for _BACnetConstructedDataLifeSafetyZoneAll
+func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneAll {
+	_result := &_BACnetConstructedDataLifeSafetyZoneAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLifeSafetyZoneAllBuilder is a builder for BACnetConstructedDataLifeSafetyZoneAll
+type BACnetConstructedDataLifeSafetyZoneAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataLifeSafetyZoneAllBuilder
+	// Build builds the BACnetConstructedDataLifeSafetyZoneAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataLifeSafetyZoneAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLifeSafetyZoneAll
+}
+
+// NewBACnetConstructedDataLifeSafetyZoneAllBuilder() creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+func NewBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	return &_BACnetConstructedDataLifeSafetyZoneAllBuilder{_BACnetConstructedDataLifeSafetyZoneAll: new(_BACnetConstructedDataLifeSafetyZoneAll)}
+}
+
+type _BACnetConstructedDataLifeSafetyZoneAllBuilder struct {
+	*_BACnetConstructedDataLifeSafetyZoneAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLifeSafetyZoneAllBuilder) = (*_BACnetConstructedDataLifeSafetyZoneAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) WithMandatoryFields() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) Build() (BACnetConstructedDataLifeSafetyZoneAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLifeSafetyZoneAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) MustBuild() BACnetConstructedDataLifeSafetyZoneAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLifeSafetyZoneAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLifeSafetyZoneAllBuilder().(*_BACnetConstructedDataLifeSafetyZoneAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLifeSafetyZoneAllBuilder creates a BACnetConstructedDataLifeSafetyZoneAllBuilder
+func (b *_BACnetConstructedDataLifeSafetyZoneAll) CreateBACnetConstructedDataLifeSafetyZoneAllBuilder() BACnetConstructedDataLifeSafetyZoneAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLifeSafetyZoneAllBuilder()
+	}
+	return &_BACnetConstructedDataLifeSafetyZoneAllBuilder{_BACnetConstructedDataLifeSafetyZoneAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetPropertyIdentifierArgument(
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataLifeSafetyZoneAll factory function for _BACnetConstructedDataLifeSafetyZoneAll
-func NewBACnetConstructedDataLifeSafetyZoneAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLifeSafetyZoneAll {
-	_result := &_BACnetConstructedDataLifeSafetyZoneAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataLifeSafetyZoneAll) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) IsBACnetConstructedDataLifeSafetyZoneAll() {}
 
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLifeSafetyZoneAll) deepCopy() *_BACnetConstructedDataLifeSafetyZoneAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLifeSafetyZoneAllCopy := &_BACnetConstructedDataLifeSafetyZoneAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLifeSafetyZoneAllCopy
+}
+
 func (m *_BACnetConstructedDataLifeSafetyZoneAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

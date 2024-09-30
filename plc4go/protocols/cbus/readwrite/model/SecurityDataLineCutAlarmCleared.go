@@ -36,9 +36,12 @@ type SecurityDataLineCutAlarmCleared interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataLineCutAlarmCleared is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataLineCutAlarmCleared()
+	// CreateBuilder creates a SecurityDataLineCutAlarmClearedBuilder
+	CreateSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder
 }
 
 // _SecurityDataLineCutAlarmCleared is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataLineCutAlarmCleared struct {
 
 var _ SecurityDataLineCutAlarmCleared = (*_SecurityDataLineCutAlarmCleared)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
+
+// NewSecurityDataLineCutAlarmCleared factory function for _SecurityDataLineCutAlarmCleared
+func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmCleared {
+	_result := &_SecurityDataLineCutAlarmCleared{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataLineCutAlarmClearedBuilder is a builder for SecurityDataLineCutAlarmCleared
+type SecurityDataLineCutAlarmClearedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataLineCutAlarmClearedBuilder
+	// Build builds the SecurityDataLineCutAlarmCleared or returns an error if something is wrong
+	Build() (SecurityDataLineCutAlarmCleared, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataLineCutAlarmCleared
+}
+
+// NewSecurityDataLineCutAlarmClearedBuilder() creates a SecurityDataLineCutAlarmClearedBuilder
+func NewSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder {
+	return &_SecurityDataLineCutAlarmClearedBuilder{_SecurityDataLineCutAlarmCleared: new(_SecurityDataLineCutAlarmCleared)}
+}
+
+type _SecurityDataLineCutAlarmClearedBuilder struct {
+	*_SecurityDataLineCutAlarmCleared
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataLineCutAlarmClearedBuilder) = (*_SecurityDataLineCutAlarmClearedBuilder)(nil)
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) WithMandatoryFields() SecurityDataLineCutAlarmClearedBuilder {
+	return b
+}
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) Build() (SecurityDataLineCutAlarmCleared, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataLineCutAlarmCleared.deepCopy(), nil
+}
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) MustBuild() SecurityDataLineCutAlarmCleared {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataLineCutAlarmClearedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataLineCutAlarmClearedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataLineCutAlarmClearedBuilder().(*_SecurityDataLineCutAlarmClearedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataLineCutAlarmClearedBuilder creates a SecurityDataLineCutAlarmClearedBuilder
+func (b *_SecurityDataLineCutAlarmCleared) CreateSecurityDataLineCutAlarmClearedBuilder() SecurityDataLineCutAlarmClearedBuilder {
+	if b == nil {
+		return NewSecurityDataLineCutAlarmClearedBuilder()
+	}
+	return &_SecurityDataLineCutAlarmClearedBuilder{_SecurityDataLineCutAlarmCleared: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataLineCutAlarmCleared)(nil)
 
 func (m *_SecurityDataLineCutAlarmCleared) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataLineCutAlarmCleared factory function for _SecurityDataLineCutAlarmCleared
-func NewSecurityDataLineCutAlarmCleared(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataLineCutAlarmCleared {
-	_result := &_SecurityDataLineCutAlarmCleared{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataLineCutAlarmCleared) SerializeWithWriteBuffer(ctx context.
 
 func (m *_SecurityDataLineCutAlarmCleared) IsSecurityDataLineCutAlarmCleared() {}
 
+func (m *_SecurityDataLineCutAlarmCleared) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataLineCutAlarmCleared) deepCopy() *_SecurityDataLineCutAlarmCleared {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataLineCutAlarmClearedCopy := &_SecurityDataLineCutAlarmCleared{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataLineCutAlarmClearedCopy
+}
+
 func (m *_SecurityDataLineCutAlarmCleared) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

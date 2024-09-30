@@ -45,14 +45,19 @@ type DF1Symbol interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
+	// CreateBuilder creates a DF1SymbolBuilder
+	CreateDF1SymbolBuilder() DF1SymbolBuilder
 }
 
 // DF1SymbolContract provides a set of functions which can be overwritten by a sub struct
 type DF1SymbolContract interface {
 	// IsDF1Symbol is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1Symbol()
+	// CreateBuilder creates a DF1SymbolBuilder
+	CreateDF1SymbolBuilder() DF1SymbolBuilder
 }
 
 // DF1SymbolRequirements provides a set of functions which need to be implemented by a sub struct
@@ -70,6 +75,177 @@ type _DF1Symbol struct {
 
 var _ DF1SymbolContract = (*_DF1Symbol)(nil)
 
+// NewDF1Symbol factory function for _DF1Symbol
+func NewDF1Symbol() *_DF1Symbol {
+	return &_DF1Symbol{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1SymbolBuilder is a builder for DF1Symbol
+type DF1SymbolBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() DF1SymbolBuilder
+	// AsDF1SymbolMessageFrame converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrame() interface {
+		DF1SymbolMessageFrameBuilder
+		Done() DF1SymbolBuilder
+	}
+	// AsDF1SymbolMessageFrameACK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrameACK() interface {
+		DF1SymbolMessageFrameACKBuilder
+		Done() DF1SymbolBuilder
+	}
+	// AsDF1SymbolMessageFrameNAK converts this build to a subType of DF1Symbol. It is always possible to return to current builder using Done()
+	AsDF1SymbolMessageFrameNAK() interface {
+		DF1SymbolMessageFrameNAKBuilder
+		Done() DF1SymbolBuilder
+	}
+	// Build builds the DF1Symbol or returns an error if something is wrong
+	PartialBuild() (DF1SymbolContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() DF1SymbolContract
+	// Build builds the DF1Symbol or returns an error if something is wrong
+	Build() (DF1Symbol, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1Symbol
+}
+
+// NewDF1SymbolBuilder() creates a DF1SymbolBuilder
+func NewDF1SymbolBuilder() DF1SymbolBuilder {
+	return &_DF1SymbolBuilder{_DF1Symbol: new(_DF1Symbol)}
+}
+
+type _DF1SymbolChildBuilder interface {
+	utils.Copyable
+	setParent(DF1SymbolContract)
+	buildForDF1Symbol() (DF1Symbol, error)
+}
+
+type _DF1SymbolBuilder struct {
+	*_DF1Symbol
+
+	childBuilder _DF1SymbolChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1SymbolBuilder) = (*_DF1SymbolBuilder)(nil)
+
+func (b *_DF1SymbolBuilder) WithMandatoryFields() DF1SymbolBuilder {
+	return b
+}
+
+func (b *_DF1SymbolBuilder) PartialBuild() (DF1SymbolContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1Symbol.deepCopy(), nil
+}
+
+func (b *_DF1SymbolBuilder) PartialMustBuild() DF1SymbolContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrame() interface {
+	DF1SymbolMessageFrameBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameBuilder().(*_DF1SymbolMessageFrameBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameACK() interface {
+	DF1SymbolMessageFrameACKBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameACKBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameACKBuilder().(*_DF1SymbolMessageFrameACKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) AsDF1SymbolMessageFrameNAK() interface {
+	DF1SymbolMessageFrameNAKBuilder
+	Done() DF1SymbolBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1SymbolMessageFrameNAKBuilder
+		Done() DF1SymbolBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1SymbolMessageFrameNAKBuilder().(*_DF1SymbolMessageFrameNAKBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1SymbolBuilder) Build() (DF1Symbol, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1Symbol()
+}
+
+func (b *_DF1SymbolBuilder) MustBuild() DF1Symbol {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1SymbolBuilder) DeepCopy() any {
+	_copy := b.CreateDF1SymbolBuilder().(*_DF1SymbolBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1SymbolChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1SymbolBuilder creates a DF1SymbolBuilder
+func (b *_DF1Symbol) CreateDF1SymbolBuilder() DF1SymbolBuilder {
+	if b == nil {
+		return NewDF1SymbolBuilder()
+	}
+	return &_DF1SymbolBuilder{_DF1Symbol: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for const fields.
@@ -83,11 +259,6 @@ func (m *_DF1Symbol) GetMessageStart() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1Symbol factory function for _DF1Symbol
-func NewDF1Symbol() *_DF1Symbol {
-	return &_DF1Symbol{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1Symbol(structType any) DF1Symbol {
@@ -130,7 +301,7 @@ func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -140,7 +311,12 @@ func DF1SymbolParseWithBuffer[T DF1Symbol](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dF1Symbol DF1Symbol, err error) {
@@ -167,15 +343,15 @@ func (m *_DF1Symbol) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child DF1Symbol
 	switch {
 	case symbolType == 0x02: // DF1SymbolMessageFrame
-		if _child, err = (&_DF1SymbolMessageFrame{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrame).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrame for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x06: // DF1SymbolMessageFrameACK
-		if _child, err = (&_DF1SymbolMessageFrameACK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameACK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameACK for type-switch of DF1Symbol")
 		}
 	case symbolType == 0x15: // DF1SymbolMessageFrameNAK
-		if _child, err = (&_DF1SymbolMessageFrameNAK{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_DF1SymbolMessageFrameNAK).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1SymbolMessageFrameNAK for type-switch of DF1Symbol")
 		}
 	default:
@@ -221,3 +397,17 @@ func (pm *_DF1Symbol) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_DF1Symbol) IsDF1Symbol() {}
+
+func (m *_DF1Symbol) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1Symbol) deepCopy() *_DF1Symbol {
+	if m == nil {
+		return nil
+	}
+	_DF1SymbolCopy := &_DF1Symbol{
+		nil, // will be set by child
+	}
+	return _DF1SymbolCopy
+}

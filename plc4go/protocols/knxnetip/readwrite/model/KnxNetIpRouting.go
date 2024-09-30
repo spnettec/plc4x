@@ -38,11 +38,14 @@ type KnxNetIpRouting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
 	// IsKnxNetIpRouting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpRouting()
+	// CreateBuilder creates a KnxNetIpRoutingBuilder
+	CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder
 }
 
 // _KnxNetIpRouting is the data-structure of this message
@@ -53,6 +56,107 @@ type _KnxNetIpRouting struct {
 
 var _ KnxNetIpRouting = (*_KnxNetIpRouting)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpRouting)(nil)
+
+// NewKnxNetIpRouting factory function for _KnxNetIpRouting
+func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
+	_result := &_KnxNetIpRouting{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpRoutingBuilder is a builder for KnxNetIpRouting
+type KnxNetIpRoutingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetIpRoutingBuilder
+	// Build builds the KnxNetIpRouting or returns an error if something is wrong
+	Build() (KnxNetIpRouting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpRouting
+}
+
+// NewKnxNetIpRoutingBuilder() creates a KnxNetIpRoutingBuilder
+func NewKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
+	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: new(_KnxNetIpRouting)}
+}
+
+type _KnxNetIpRoutingBuilder struct {
+	*_KnxNetIpRouting
+
+	parentBuilder *_ServiceIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpRoutingBuilder) = (*_KnxNetIpRoutingBuilder)(nil)
+
+func (b *_KnxNetIpRoutingBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
+}
+
+func (b *_KnxNetIpRoutingBuilder) WithMandatoryFields(version uint8) KnxNetIpRoutingBuilder {
+	return b.WithVersion(version)
+}
+
+func (b *_KnxNetIpRoutingBuilder) WithVersion(version uint8) KnxNetIpRoutingBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpRoutingBuilder) Build() (KnxNetIpRouting, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KnxNetIpRouting.deepCopy(), nil
+}
+
+func (b *_KnxNetIpRoutingBuilder) MustBuild() KnxNetIpRouting {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpRoutingBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpRoutingBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpRoutingBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpRoutingBuilder().(*_KnxNetIpRoutingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateKnxNetIpRoutingBuilder creates a KnxNetIpRoutingBuilder
+func (b *_KnxNetIpRouting) CreateKnxNetIpRoutingBuilder() KnxNetIpRoutingBuilder {
+	if b == nil {
+		return NewKnxNetIpRoutingBuilder()
+	}
+	return &_KnxNetIpRoutingBuilder{_KnxNetIpRouting: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_KnxNetIpRouting) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpRouting factory function for _KnxNetIpRouting
-func NewKnxNetIpRouting(version uint8) *_KnxNetIpRouting {
-	_result := &_KnxNetIpRouting{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpRouting(structType any) KnxNetIpRouting {
@@ -180,13 +274,33 @@ func (m *_KnxNetIpRouting) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_KnxNetIpRouting) IsKnxNetIpRouting() {}
 
+func (m *_KnxNetIpRouting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpRouting) deepCopy() *_KnxNetIpRouting {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpRoutingCopy := &_KnxNetIpRouting{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpRoutingCopy
+}
+
 func (m *_KnxNetIpRouting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

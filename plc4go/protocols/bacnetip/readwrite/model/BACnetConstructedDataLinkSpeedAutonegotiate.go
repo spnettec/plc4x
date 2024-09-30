@@ -38,6 +38,7 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLinkSpeedAutonegotiate returns LinkSpeedAutonegotiate (property field)
 	GetLinkSpeedAutonegotiate() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataLinkSpeedAutonegotiate interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataLinkSpeedAutonegotiate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLinkSpeedAutonegotiate()
+	// CreateBuilder creates a BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	CreateBACnetConstructedDataLinkSpeedAutonegotiateBuilder() BACnetConstructedDataLinkSpeedAutonegotiateBuilder
 }
 
 // _BACnetConstructedDataLinkSpeedAutonegotiate is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLinkSpeedAutonegotiate struct {
 
 var _ BACnetConstructedDataLinkSpeedAutonegotiate = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLinkSpeedAutonegotiate)(nil)
+
+// NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for _BACnetConstructedDataLinkSpeedAutonegotiate
+func NewBACnetConstructedDataLinkSpeedAutonegotiate(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, linkSpeedAutonegotiate BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
+	if linkSpeedAutonegotiate == nil {
+		panic("linkSpeedAutonegotiate of type BACnetApplicationTagBoolean for BACnetConstructedDataLinkSpeedAutonegotiate must not be nil")
+	}
+	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LinkSpeedAutonegotiate:        linkSpeedAutonegotiate,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLinkSpeedAutonegotiateBuilder is a builder for BACnetConstructedDataLinkSpeedAutonegotiate
+type BACnetConstructedDataLinkSpeedAutonegotiateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(linkSpeedAutonegotiate BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	// WithLinkSpeedAutonegotiate adds LinkSpeedAutonegotiate (property field)
+	WithLinkSpeedAutonegotiate(BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	// WithLinkSpeedAutonegotiateBuilder adds LinkSpeedAutonegotiate (property field) which is build by the builder
+	WithLinkSpeedAutonegotiateBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+	// Build builds the BACnetConstructedDataLinkSpeedAutonegotiate or returns an error if something is wrong
+	Build() (BACnetConstructedDataLinkSpeedAutonegotiate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLinkSpeedAutonegotiate
+}
+
+// NewBACnetConstructedDataLinkSpeedAutonegotiateBuilder() creates a BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+func NewBACnetConstructedDataLinkSpeedAutonegotiateBuilder() BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
+	return &_BACnetConstructedDataLinkSpeedAutonegotiateBuilder{_BACnetConstructedDataLinkSpeedAutonegotiate: new(_BACnetConstructedDataLinkSpeedAutonegotiate)}
+}
+
+type _BACnetConstructedDataLinkSpeedAutonegotiateBuilder struct {
+	*_BACnetConstructedDataLinkSpeedAutonegotiate
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLinkSpeedAutonegotiateBuilder) = (*_BACnetConstructedDataLinkSpeedAutonegotiateBuilder)(nil)
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) WithMandatoryFields(linkSpeedAutonegotiate BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
+	return b.WithLinkSpeedAutonegotiate(linkSpeedAutonegotiate)
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) WithLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACnetApplicationTagBoolean) BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
+	b.LinkSpeedAutonegotiate = linkSpeedAutonegotiate
+	return b
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) WithLinkSpeedAutonegotiateBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
+	builder := builderSupplier(b.LinkSpeedAutonegotiate.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.LinkSpeedAutonegotiate, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) Build() (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+	if b.LinkSpeedAutonegotiate == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'linkSpeedAutonegotiate' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLinkSpeedAutonegotiate.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) MustBuild() BACnetConstructedDataLinkSpeedAutonegotiate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLinkSpeedAutonegotiateBuilder().(*_BACnetConstructedDataLinkSpeedAutonegotiateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLinkSpeedAutonegotiateBuilder creates a BACnetConstructedDataLinkSpeedAutonegotiateBuilder
+func (b *_BACnetConstructedDataLinkSpeedAutonegotiate) CreateBACnetConstructedDataLinkSpeedAutonegotiateBuilder() BACnetConstructedDataLinkSpeedAutonegotiateBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLinkSpeedAutonegotiateBuilder()
+	}
+	return &_BACnetConstructedDataLinkSpeedAutonegotiateBuilder{_BACnetConstructedDataLinkSpeedAutonegotiate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) GetActualValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLinkSpeedAutonegotiate factory function for _BACnetConstructedDataLinkSpeedAutonegotiate
-func NewBACnetConstructedDataLinkSpeedAutonegotiate(linkSpeedAutonegotiate BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLinkSpeedAutonegotiate {
-	if linkSpeedAutonegotiate == nil {
-		panic("linkSpeedAutonegotiate of type BACnetApplicationTagBoolean for BACnetConstructedDataLinkSpeedAutonegotiate must not be nil")
-	}
-	_result := &_BACnetConstructedDataLinkSpeedAutonegotiate{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LinkSpeedAutonegotiate:        linkSpeedAutonegotiate,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLinkSpeedAutonegotiate(structType any) BACnetConstructedDataLinkSpeedAutonegotiate {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) SerializeWithWriteBuffer(
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) IsBACnetConstructedDataLinkSpeedAutonegotiate() {
 }
 
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) deepCopy() *_BACnetConstructedDataLinkSpeedAutonegotiate {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLinkSpeedAutonegotiateCopy := &_BACnetConstructedDataLinkSpeedAutonegotiate{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LinkSpeedAutonegotiate.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLinkSpeedAutonegotiateCopy
+}
+
 func (m *_BACnetConstructedDataLinkSpeedAutonegotiate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -42,8 +42,11 @@ type ParameterChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsParameterChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterChange()
+	// CreateBuilder creates a ParameterChangeBuilder
+	CreateParameterChangeBuilder() ParameterChangeBuilder
 }
 
 // _ParameterChange is the data-structure of this message
@@ -51,6 +54,80 @@ type _ParameterChange struct {
 }
 
 var _ ParameterChange = (*_ParameterChange)(nil)
+
+// NewParameterChange factory function for _ParameterChange
+func NewParameterChange() *_ParameterChange {
+	return &_ParameterChange{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterChangeBuilder is a builder for ParameterChange
+type ParameterChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ParameterChangeBuilder
+	// Build builds the ParameterChange or returns an error if something is wrong
+	Build() (ParameterChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterChange
+}
+
+// NewParameterChangeBuilder() creates a ParameterChangeBuilder
+func NewParameterChangeBuilder() ParameterChangeBuilder {
+	return &_ParameterChangeBuilder{_ParameterChange: new(_ParameterChange)}
+}
+
+type _ParameterChangeBuilder struct {
+	*_ParameterChange
+
+	err *utils.MultiError
+}
+
+var _ (ParameterChangeBuilder) = (*_ParameterChangeBuilder)(nil)
+
+func (b *_ParameterChangeBuilder) WithMandatoryFields() ParameterChangeBuilder {
+	return b
+}
+
+func (b *_ParameterChangeBuilder) Build() (ParameterChange, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterChange.deepCopy(), nil
+}
+
+func (b *_ParameterChangeBuilder) MustBuild() ParameterChange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ParameterChangeBuilder) DeepCopy() any {
+	_copy := b.CreateParameterChangeBuilder().(*_ParameterChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterChangeBuilder creates a ParameterChangeBuilder
+func (b *_ParameterChange) CreateParameterChangeBuilder() ParameterChangeBuilder {
+	if b == nil {
+		return NewParameterChangeBuilder()
+	}
+	return &_ParameterChangeBuilder{_ParameterChange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,11 +146,6 @@ func (m *_ParameterChange) GetSpecialChar2() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterChange factory function for _ParameterChange
-func NewParameterChange() *_ParameterChange {
-	return &_ParameterChange{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterChange(structType any) ParameterChange {
@@ -121,7 +193,7 @@ func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ParameterChange) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__parameterChange ParameterChange, err error) {
@@ -185,13 +257,29 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_ParameterChange) IsParameterChange() {}
 
+func (m *_ParameterChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterChange) deepCopy() *_ParameterChange {
+	if m == nil {
+		return nil
+	}
+	_ParameterChangeCopy := &_ParameterChange{}
+	return _ParameterChangeCopy
+}
+
 func (m *_ParameterChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

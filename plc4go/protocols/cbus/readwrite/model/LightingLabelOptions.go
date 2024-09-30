@@ -38,12 +38,15 @@ type LightingLabelOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() LightingLabelFlavour
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() LightingLabelType
 	// IsLightingLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingLabelOptions()
+	// CreateBuilder creates a LightingLabelOptionsBuilder
+	CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder
 }
 
 // _LightingLabelOptions is the data-structure of this message
@@ -58,6 +61,94 @@ type _LightingLabelOptions struct {
 }
 
 var _ LightingLabelOptions = (*_LightingLabelOptions)(nil)
+
+// NewLightingLabelOptions factory function for _LightingLabelOptions
+func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
+	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingLabelOptionsBuilder is a builder for LightingLabelOptions
+type LightingLabelOptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder
+	// WithLabelFlavour adds LabelFlavour (property field)
+	WithLabelFlavour(LightingLabelFlavour) LightingLabelOptionsBuilder
+	// WithLabelType adds LabelType (property field)
+	WithLabelType(LightingLabelType) LightingLabelOptionsBuilder
+	// Build builds the LightingLabelOptions or returns an error if something is wrong
+	Build() (LightingLabelOptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingLabelOptions
+}
+
+// NewLightingLabelOptionsBuilder() creates a LightingLabelOptionsBuilder
+func NewLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
+	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: new(_LightingLabelOptions)}
+}
+
+type _LightingLabelOptionsBuilder struct {
+	*_LightingLabelOptions
+
+	err *utils.MultiError
+}
+
+var _ (LightingLabelOptionsBuilder) = (*_LightingLabelOptionsBuilder)(nil)
+
+func (b *_LightingLabelOptionsBuilder) WithMandatoryFields(labelFlavour LightingLabelFlavour, labelType LightingLabelType) LightingLabelOptionsBuilder {
+	return b.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
+}
+
+func (b *_LightingLabelOptionsBuilder) WithLabelFlavour(labelFlavour LightingLabelFlavour) LightingLabelOptionsBuilder {
+	b.LabelFlavour = labelFlavour
+	return b
+}
+
+func (b *_LightingLabelOptionsBuilder) WithLabelType(labelType LightingLabelType) LightingLabelOptionsBuilder {
+	b.LabelType = labelType
+	return b
+}
+
+func (b *_LightingLabelOptionsBuilder) Build() (LightingLabelOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LightingLabelOptions.deepCopy(), nil
+}
+
+func (b *_LightingLabelOptionsBuilder) MustBuild() LightingLabelOptions {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LightingLabelOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateLightingLabelOptionsBuilder().(*_LightingLabelOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLightingLabelOptionsBuilder creates a LightingLabelOptionsBuilder
+func (b *_LightingLabelOptions) CreateLightingLabelOptionsBuilder() LightingLabelOptionsBuilder {
+	if b == nil {
+		return NewLightingLabelOptionsBuilder()
+	}
+	return &_LightingLabelOptionsBuilder{_LightingLabelOptions: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,11 +167,6 @@ func (m *_LightingLabelOptions) GetLabelType() LightingLabelType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingLabelOptions factory function for _LightingLabelOptions
-func NewLightingLabelOptions(labelFlavour LightingLabelFlavour, labelType LightingLabelType) *_LightingLabelOptions {
-	return &_LightingLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingLabelOptions(structType any) LightingLabelOptions {
@@ -140,7 +226,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_LightingLabelOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__lightingLabelOptions LightingLabelOptions, err error) {
@@ -244,13 +330,36 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_LightingLabelOptions) IsLightingLabelOptions() {}
 
+func (m *_LightingLabelOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingLabelOptions) deepCopy() *_LightingLabelOptions {
+	if m == nil {
+		return nil
+	}
+	_LightingLabelOptionsCopy := &_LightingLabelOptions{
+		m.LabelFlavour,
+		m.LabelType,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _LightingLabelOptionsCopy
+}
+
 func (m *_LightingLabelOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

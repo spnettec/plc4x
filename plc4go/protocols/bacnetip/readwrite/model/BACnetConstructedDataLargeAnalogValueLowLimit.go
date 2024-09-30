@@ -38,6 +38,7 @@ type BACnetConstructedDataLargeAnalogValueLowLimit interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLowLimit returns LowLimit (property field)
 	GetLowLimit() BACnetApplicationTagDouble
@@ -45,6 +46,8 @@ type BACnetConstructedDataLargeAnalogValueLowLimit interface {
 	GetActualValue() BACnetApplicationTagDouble
 	// IsBACnetConstructedDataLargeAnalogValueLowLimit is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLargeAnalogValueLowLimit()
+	// CreateBuilder creates a BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	CreateBACnetConstructedDataLargeAnalogValueLowLimitBuilder() BACnetConstructedDataLargeAnalogValueLowLimitBuilder
 }
 
 // _BACnetConstructedDataLargeAnalogValueLowLimit is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLargeAnalogValueLowLimit struct {
 
 var _ BACnetConstructedDataLargeAnalogValueLowLimit = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLargeAnalogValueLowLimit)(nil)
+
+// NewBACnetConstructedDataLargeAnalogValueLowLimit factory function for _BACnetConstructedDataLargeAnalogValueLowLimit
+func NewBACnetConstructedDataLargeAnalogValueLowLimit(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lowLimit BACnetApplicationTagDouble, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueLowLimit {
+	if lowLimit == nil {
+		panic("lowLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueLowLimit must not be nil")
+	}
+	_result := &_BACnetConstructedDataLargeAnalogValueLowLimit{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LowLimit:                      lowLimit,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLargeAnalogValueLowLimitBuilder is a builder for BACnetConstructedDataLargeAnalogValueLowLimit
+type BACnetConstructedDataLargeAnalogValueLowLimitBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lowLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	// WithLowLimit adds LowLimit (property field)
+	WithLowLimit(BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	// WithLowLimitBuilder adds LowLimit (property field) which is build by the builder
+	WithLowLimitBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+	// Build builds the BACnetConstructedDataLargeAnalogValueLowLimit or returns an error if something is wrong
+	Build() (BACnetConstructedDataLargeAnalogValueLowLimit, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLargeAnalogValueLowLimit
+}
+
+// NewBACnetConstructedDataLargeAnalogValueLowLimitBuilder() creates a BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+func NewBACnetConstructedDataLargeAnalogValueLowLimitBuilder() BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
+	return &_BACnetConstructedDataLargeAnalogValueLowLimitBuilder{_BACnetConstructedDataLargeAnalogValueLowLimit: new(_BACnetConstructedDataLargeAnalogValueLowLimit)}
+}
+
+type _BACnetConstructedDataLargeAnalogValueLowLimitBuilder struct {
+	*_BACnetConstructedDataLargeAnalogValueLowLimit
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLargeAnalogValueLowLimitBuilder) = (*_BACnetConstructedDataLargeAnalogValueLowLimitBuilder)(nil)
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) WithMandatoryFields(lowLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
+	return b.WithLowLimit(lowLimit)
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) WithLowLimit(lowLimit BACnetApplicationTagDouble) BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
+	b.LowLimit = lowLimit
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) WithLowLimitBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
+	builder := builderSupplier(b.LowLimit.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	b.LowLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) Build() (BACnetConstructedDataLargeAnalogValueLowLimit, error) {
+	if b.LowLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lowLimit' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLargeAnalogValueLowLimit.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) MustBuild() BACnetConstructedDataLargeAnalogValueLowLimit {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimitBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLargeAnalogValueLowLimitBuilder().(*_BACnetConstructedDataLargeAnalogValueLowLimitBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLargeAnalogValueLowLimitBuilder creates a BACnetConstructedDataLargeAnalogValueLowLimitBuilder
+func (b *_BACnetConstructedDataLargeAnalogValueLowLimit) CreateBACnetConstructedDataLargeAnalogValueLowLimitBuilder() BACnetConstructedDataLargeAnalogValueLowLimitBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLargeAnalogValueLowLimitBuilder()
+	}
+	return &_BACnetConstructedDataLargeAnalogValueLowLimitBuilder{_BACnetConstructedDataLargeAnalogValueLowLimit: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) GetActualValue() BACnet
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLargeAnalogValueLowLimit factory function for _BACnetConstructedDataLargeAnalogValueLowLimit
-func NewBACnetConstructedDataLargeAnalogValueLowLimit(lowLimit BACnetApplicationTagDouble, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLargeAnalogValueLowLimit {
-	if lowLimit == nil {
-		panic("lowLimit of type BACnetApplicationTagDouble for BACnetConstructedDataLargeAnalogValueLowLimit must not be nil")
-	}
-	_result := &_BACnetConstructedDataLargeAnalogValueLowLimit{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LowLimit:                      lowLimit,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLargeAnalogValueLowLimit(structType any) BACnetConstructedDataLargeAnalogValueLowLimit {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) SerializeWithWriteBuffe
 func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) IsBACnetConstructedDataLargeAnalogValueLowLimit() {
 }
 
+func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) deepCopy() *_BACnetConstructedDataLargeAnalogValueLowLimit {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLargeAnalogValueLowLimitCopy := &_BACnetConstructedDataLargeAnalogValueLowLimit{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LowLimit.DeepCopy().(BACnetApplicationTagDouble),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLargeAnalogValueLowLimitCopy
+}
+
 func (m *_BACnetConstructedDataLargeAnalogValueLowLimit) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

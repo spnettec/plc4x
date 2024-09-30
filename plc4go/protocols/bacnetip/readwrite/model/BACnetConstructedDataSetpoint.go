@@ -38,6 +38,7 @@ type BACnetConstructedDataSetpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetSetpoint returns Setpoint (property field)
 	GetSetpoint() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataSetpoint interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataSetpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataSetpoint()
+	// CreateBuilder creates a BACnetConstructedDataSetpointBuilder
+	CreateBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuilder
 }
 
 // _BACnetConstructedDataSetpoint is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataSetpoint struct {
 
 var _ BACnetConstructedDataSetpoint = (*_BACnetConstructedDataSetpoint)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataSetpoint)(nil)
+
+// NewBACnetConstructedDataSetpoint factory function for _BACnetConstructedDataSetpoint
+func NewBACnetConstructedDataSetpoint(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, setpoint BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
+	if setpoint == nil {
+		panic("setpoint of type BACnetApplicationTagReal for BACnetConstructedDataSetpoint must not be nil")
+	}
+	_result := &_BACnetConstructedDataSetpoint{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Setpoint:                      setpoint,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataSetpointBuilder is a builder for BACnetConstructedDataSetpoint
+type BACnetConstructedDataSetpointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder
+	// WithSetpoint adds Setpoint (property field)
+	WithSetpoint(BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder
+	// WithSetpointBuilder adds Setpoint (property field) which is build by the builder
+	WithSetpointBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataSetpointBuilder
+	// Build builds the BACnetConstructedDataSetpoint or returns an error if something is wrong
+	Build() (BACnetConstructedDataSetpoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataSetpoint
+}
+
+// NewBACnetConstructedDataSetpointBuilder() creates a BACnetConstructedDataSetpointBuilder
+func NewBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuilder {
+	return &_BACnetConstructedDataSetpointBuilder{_BACnetConstructedDataSetpoint: new(_BACnetConstructedDataSetpoint)}
+}
+
+type _BACnetConstructedDataSetpointBuilder struct {
+	*_BACnetConstructedDataSetpoint
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataSetpointBuilder) = (*_BACnetConstructedDataSetpointBuilder)(nil)
+
+func (b *_BACnetConstructedDataSetpointBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) WithMandatoryFields(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
+	return b.WithSetpoint(setpoint)
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) WithSetpoint(setpoint BACnetApplicationTagReal) BACnetConstructedDataSetpointBuilder {
+	b.Setpoint = setpoint
+	return b
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) WithSetpointBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataSetpointBuilder {
+	builder := builderSupplier(b.Setpoint.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.Setpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) Build() (BACnetConstructedDataSetpoint, error) {
+	if b.Setpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'setpoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataSetpoint.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) MustBuild() BACnetConstructedDataSetpoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataSetpointBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataSetpointBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataSetpointBuilder().(*_BACnetConstructedDataSetpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataSetpointBuilder creates a BACnetConstructedDataSetpointBuilder
+func (b *_BACnetConstructedDataSetpoint) CreateBACnetConstructedDataSetpointBuilder() BACnetConstructedDataSetpointBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataSetpointBuilder()
+	}
+	return &_BACnetConstructedDataSetpointBuilder{_BACnetConstructedDataSetpoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataSetpoint) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataSetpoint factory function for _BACnetConstructedDataSetpoint
-func NewBACnetConstructedDataSetpoint(setpoint BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataSetpoint {
-	if setpoint == nil {
-		panic("setpoint of type BACnetApplicationTagReal for BACnetConstructedDataSetpoint must not be nil")
-	}
-	_result := &_BACnetConstructedDataSetpoint{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Setpoint:                      setpoint,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataSetpoint(structType any) BACnetConstructedDataSetpoint {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataSetpoint) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataSetpoint) IsBACnetConstructedDataSetpoint() {}
 
+func (m *_BACnetConstructedDataSetpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataSetpoint) deepCopy() *_BACnetConstructedDataSetpoint {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataSetpointCopy := &_BACnetConstructedDataSetpoint{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Setpoint.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataSetpointCopy
+}
+
 func (m *_BACnetConstructedDataSetpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

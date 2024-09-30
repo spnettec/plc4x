@@ -38,6 +38,7 @@ type VariantExpandedNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantExpandedNodeId interface {
 	GetValue() []ExpandedNodeId
 	// IsVariantExpandedNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantExpandedNodeId()
+	// CreateBuilder creates a VariantExpandedNodeIdBuilder
+	CreateVariantExpandedNodeIdBuilder() VariantExpandedNodeIdBuilder
 }
 
 // _VariantExpandedNodeId is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantExpandedNodeId struct {
 
 var _ VariantExpandedNodeId = (*_VariantExpandedNodeId)(nil)
 var _ VariantRequirements = (*_VariantExpandedNodeId)(nil)
+
+// NewVariantExpandedNodeId factory function for _VariantExpandedNodeId
+func NewVariantExpandedNodeId(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []ExpandedNodeId) *_VariantExpandedNodeId {
+	_result := &_VariantExpandedNodeId{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantExpandedNodeIdBuilder is a builder for VariantExpandedNodeId
+type VariantExpandedNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []ExpandedNodeId) VariantExpandedNodeIdBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantExpandedNodeIdBuilder
+	// WithValue adds Value (property field)
+	WithValue(...ExpandedNodeId) VariantExpandedNodeIdBuilder
+	// Build builds the VariantExpandedNodeId or returns an error if something is wrong
+	Build() (VariantExpandedNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantExpandedNodeId
+}
+
+// NewVariantExpandedNodeIdBuilder() creates a VariantExpandedNodeIdBuilder
+func NewVariantExpandedNodeIdBuilder() VariantExpandedNodeIdBuilder {
+	return &_VariantExpandedNodeIdBuilder{_VariantExpandedNodeId: new(_VariantExpandedNodeId)}
+}
+
+type _VariantExpandedNodeIdBuilder struct {
+	*_VariantExpandedNodeId
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantExpandedNodeIdBuilder) = (*_VariantExpandedNodeIdBuilder)(nil)
+
+func (b *_VariantExpandedNodeIdBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantExpandedNodeIdBuilder) WithMandatoryFields(value []ExpandedNodeId) VariantExpandedNodeIdBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantExpandedNodeIdBuilder) WithOptionalArrayLength(arrayLength int32) VariantExpandedNodeIdBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantExpandedNodeIdBuilder) WithValue(value ...ExpandedNodeId) VariantExpandedNodeIdBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantExpandedNodeIdBuilder) Build() (VariantExpandedNodeId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantExpandedNodeId.deepCopy(), nil
+}
+
+func (b *_VariantExpandedNodeIdBuilder) MustBuild() VariantExpandedNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantExpandedNodeIdBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantExpandedNodeIdBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantExpandedNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateVariantExpandedNodeIdBuilder().(*_VariantExpandedNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantExpandedNodeIdBuilder creates a VariantExpandedNodeIdBuilder
+func (b *_VariantExpandedNodeId) CreateVariantExpandedNodeIdBuilder() VariantExpandedNodeIdBuilder {
+	if b == nil {
+		return NewVariantExpandedNodeIdBuilder()
+	}
+	return &_VariantExpandedNodeIdBuilder{_VariantExpandedNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantExpandedNodeId) GetValue() []ExpandedNodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantExpandedNodeId factory function for _VariantExpandedNodeId
-func NewVariantExpandedNodeId(arrayLength *int32, value []ExpandedNodeId, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantExpandedNodeId {
-	_result := &_VariantExpandedNodeId{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantExpandedNodeId(structType any) VariantExpandedNodeId {
@@ -211,13 +312,34 @@ func (m *_VariantExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_VariantExpandedNodeId) IsVariantExpandedNodeId() {}
 
+func (m *_VariantExpandedNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantExpandedNodeId) deepCopy() *_VariantExpandedNodeId {
+	if m == nil {
+		return nil
+	}
+	_VariantExpandedNodeIdCopy := &_VariantExpandedNodeId{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[ExpandedNodeId, ExpandedNodeId](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantExpandedNodeIdCopy
+}
+
 func (m *_VariantExpandedNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

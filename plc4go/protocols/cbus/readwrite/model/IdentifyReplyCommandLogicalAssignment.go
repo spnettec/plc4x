@@ -38,11 +38,14 @@ type IdentifyReplyCommandLogicalAssignment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetLogicAssigment returns LogicAssigment (property field)
 	GetLogicAssigment() []LogicAssignment
 	// IsIdentifyReplyCommandLogicalAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandLogicalAssignment()
+	// CreateBuilder creates a IdentifyReplyCommandLogicalAssignmentBuilder
+	CreateIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogicalAssignmentBuilder
 }
 
 // _IdentifyReplyCommandLogicalAssignment is the data-structure of this message
@@ -53,6 +56,107 @@ type _IdentifyReplyCommandLogicalAssignment struct {
 
 var _ IdentifyReplyCommandLogicalAssignment = (*_IdentifyReplyCommandLogicalAssignment)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandLogicalAssignment)(nil)
+
+// NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
+func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
+	_result := &_IdentifyReplyCommandLogicalAssignment{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		LogicAssigment:               logicAssigment,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandLogicalAssignmentBuilder is a builder for IdentifyReplyCommandLogicalAssignment
+type IdentifyReplyCommandLogicalAssignmentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder
+	// WithLogicAssigment adds LogicAssigment (property field)
+	WithLogicAssigment(...LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder
+	// Build builds the IdentifyReplyCommandLogicalAssignment or returns an error if something is wrong
+	Build() (IdentifyReplyCommandLogicalAssignment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandLogicalAssignment
+}
+
+// NewIdentifyReplyCommandLogicalAssignmentBuilder() creates a IdentifyReplyCommandLogicalAssignmentBuilder
+func NewIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogicalAssignmentBuilder {
+	return &_IdentifyReplyCommandLogicalAssignmentBuilder{_IdentifyReplyCommandLogicalAssignment: new(_IdentifyReplyCommandLogicalAssignment)}
+}
+
+type _IdentifyReplyCommandLogicalAssignmentBuilder struct {
+	*_IdentifyReplyCommandLogicalAssignment
+
+	parentBuilder *_IdentifyReplyCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandLogicalAssignmentBuilder) = (*_IdentifyReplyCommandLogicalAssignmentBuilder)(nil)
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) WithMandatoryFields(logicAssigment []LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
+	return b.WithLogicAssigment(logicAssigment...)
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) WithLogicAssigment(logicAssigment ...LogicAssignment) IdentifyReplyCommandLogicalAssignmentBuilder {
+	b.LogicAssigment = logicAssigment
+	return b
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) Build() (IdentifyReplyCommandLogicalAssignment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IdentifyReplyCommandLogicalAssignment.deepCopy(), nil
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) MustBuild() IdentifyReplyCommandLogicalAssignment {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandLogicalAssignmentBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandLogicalAssignmentBuilder().(*_IdentifyReplyCommandLogicalAssignmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIdentifyReplyCommandLogicalAssignmentBuilder creates a IdentifyReplyCommandLogicalAssignmentBuilder
+func (b *_IdentifyReplyCommandLogicalAssignment) CreateIdentifyReplyCommandLogicalAssignmentBuilder() IdentifyReplyCommandLogicalAssignmentBuilder {
+	if b == nil {
+		return NewIdentifyReplyCommandLogicalAssignmentBuilder()
+	}
+	return &_IdentifyReplyCommandLogicalAssignmentBuilder{_IdentifyReplyCommandLogicalAssignment: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_IdentifyReplyCommandLogicalAssignment) GetLogicAssigment() []LogicAssi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandLogicalAssignment factory function for _IdentifyReplyCommandLogicalAssignment
-func NewIdentifyReplyCommandLogicalAssignment(logicAssigment []LogicAssignment, numBytes uint8) *_IdentifyReplyCommandLogicalAssignment {
-	_result := &_IdentifyReplyCommandLogicalAssignment{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		LogicAssigment:               logicAssigment,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandLogicalAssignment(structType any) IdentifyReplyCommandLogicalAssignment {
@@ -187,13 +281,33 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 
 func (m *_IdentifyReplyCommandLogicalAssignment) IsIdentifyReplyCommandLogicalAssignment() {}
 
+func (m *_IdentifyReplyCommandLogicalAssignment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandLogicalAssignment) deepCopy() *_IdentifyReplyCommandLogicalAssignment {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandLogicalAssignmentCopy := &_IdentifyReplyCommandLogicalAssignment{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[LogicAssignment, LogicAssignment](m.LogicAssigment),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandLogicalAssignmentCopy
+}
+
 func (m *_IdentifyReplyCommandLogicalAssignment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

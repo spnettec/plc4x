@@ -38,6 +38,7 @@ type BACnetConstructedDataNetworkNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataNetworkNumber interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataNetworkNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNetworkNumber()
+	// CreateBuilder creates a BACnetConstructedDataNetworkNumberBuilder
+	CreateBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetworkNumberBuilder
 }
 
 // _BACnetConstructedDataNetworkNumber is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataNetworkNumber struct {
 
 var _ BACnetConstructedDataNetworkNumber = (*_BACnetConstructedDataNetworkNumber)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNetworkNumber)(nil)
+
+// NewBACnetConstructedDataNetworkNumber factory function for _BACnetConstructedDataNetworkNumber
+func NewBACnetConstructedDataNetworkNumber(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, networkNumber BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumber {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkNumber must not be nil")
+	}
+	_result := &_BACnetConstructedDataNetworkNumber{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NetworkNumber:                 networkNumber,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNetworkNumberBuilder is a builder for BACnetConstructedDataNetworkNumber
+type BACnetConstructedDataNetworkNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder
+	// WithNetworkNumber adds NetworkNumber (property field)
+	WithNetworkNumber(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder
+	// WithNetworkNumberBuilder adds NetworkNumber (property field) which is build by the builder
+	WithNetworkNumberBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkNumberBuilder
+	// Build builds the BACnetConstructedDataNetworkNumber or returns an error if something is wrong
+	Build() (BACnetConstructedDataNetworkNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNetworkNumber
+}
+
+// NewBACnetConstructedDataNetworkNumberBuilder() creates a BACnetConstructedDataNetworkNumberBuilder
+func NewBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetworkNumberBuilder {
+	return &_BACnetConstructedDataNetworkNumberBuilder{_BACnetConstructedDataNetworkNumber: new(_BACnetConstructedDataNetworkNumber)}
+}
+
+type _BACnetConstructedDataNetworkNumberBuilder struct {
+	*_BACnetConstructedDataNetworkNumber
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNetworkNumberBuilder) = (*_BACnetConstructedDataNetworkNumberBuilder)(nil)
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithMandatoryFields(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
+	return b.WithNetworkNumber(networkNumber)
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger) BACnetConstructedDataNetworkNumberBuilder {
+	b.NetworkNumber = networkNumber
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) WithNetworkNumberBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataNetworkNumberBuilder {
+	builder := builderSupplier(b.NetworkNumber.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NetworkNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) Build() (BACnetConstructedDataNetworkNumber, error) {
+	if b.NetworkNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'networkNumber' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataNetworkNumber.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) MustBuild() BACnetConstructedDataNetworkNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNetworkNumberBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNetworkNumberBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNetworkNumberBuilder().(*_BACnetConstructedDataNetworkNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataNetworkNumberBuilder creates a BACnetConstructedDataNetworkNumberBuilder
+func (b *_BACnetConstructedDataNetworkNumber) CreateBACnetConstructedDataNetworkNumberBuilder() BACnetConstructedDataNetworkNumberBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataNetworkNumberBuilder()
+	}
+	return &_BACnetConstructedDataNetworkNumberBuilder{_BACnetConstructedDataNetworkNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataNetworkNumber) GetActualValue() BACnetApplication
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataNetworkNumber factory function for _BACnetConstructedDataNetworkNumber
-func NewBACnetConstructedDataNetworkNumber(networkNumber BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNetworkNumber {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataNetworkNumber must not be nil")
-	}
-	_result := &_BACnetConstructedDataNetworkNumber{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NetworkNumber:                 networkNumber,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataNetworkNumber(structType any) BACnetConstructedDataNetworkNumber {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataNetworkNumber) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataNetworkNumber) IsBACnetConstructedDataNetworkNumber() {}
 
+func (m *_BACnetConstructedDataNetworkNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNetworkNumber) deepCopy() *_BACnetConstructedDataNetworkNumber {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNetworkNumberCopy := &_BACnetConstructedDataNetworkNumber{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NetworkNumber.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNetworkNumberCopy
+}
+
 func (m *_BACnetConstructedDataNetworkNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

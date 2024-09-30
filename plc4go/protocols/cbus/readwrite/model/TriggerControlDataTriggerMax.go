@@ -36,9 +36,12 @@ type TriggerControlDataTriggerMax interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataTriggerMax is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMax()
+	// CreateBuilder creates a TriggerControlDataTriggerMaxBuilder
+	CreateTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilder
 }
 
 // _TriggerControlDataTriggerMax is the data-structure of this message
@@ -48,6 +51,99 @@ type _TriggerControlDataTriggerMax struct {
 
 var _ TriggerControlDataTriggerMax = (*_TriggerControlDataTriggerMax)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
+
+// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
+func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
+	_result := &_TriggerControlDataTriggerMax{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataTriggerMaxBuilder is a builder for TriggerControlDataTriggerMax
+type TriggerControlDataTriggerMaxBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TriggerControlDataTriggerMaxBuilder
+	// Build builds the TriggerControlDataTriggerMax or returns an error if something is wrong
+	Build() (TriggerControlDataTriggerMax, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlDataTriggerMax
+}
+
+// NewTriggerControlDataTriggerMaxBuilder() creates a TriggerControlDataTriggerMaxBuilder
+func NewTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilder {
+	return &_TriggerControlDataTriggerMaxBuilder{_TriggerControlDataTriggerMax: new(_TriggerControlDataTriggerMax)}
+}
+
+type _TriggerControlDataTriggerMaxBuilder struct {
+	*_TriggerControlDataTriggerMax
+
+	parentBuilder *_TriggerControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataTriggerMaxBuilder) = (*_TriggerControlDataTriggerMaxBuilder)(nil)
+
+func (b *_TriggerControlDataTriggerMaxBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) WithMandatoryFields() TriggerControlDataTriggerMaxBuilder {
+	return b
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) Build() (TriggerControlDataTriggerMax, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TriggerControlDataTriggerMax.deepCopy(), nil
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) MustBuild() TriggerControlDataTriggerMax {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataTriggerMaxBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataTriggerMaxBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataTriggerMaxBuilder().(*_TriggerControlDataTriggerMaxBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTriggerControlDataTriggerMaxBuilder creates a TriggerControlDataTriggerMaxBuilder
+func (b *_TriggerControlDataTriggerMax) CreateTriggerControlDataTriggerMaxBuilder() TriggerControlDataTriggerMaxBuilder {
+	if b == nil {
+		return NewTriggerControlDataTriggerMaxBuilder()
+	}
+	return &_TriggerControlDataTriggerMaxBuilder{_TriggerControlDataTriggerMax: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMax)(nil)
 
 func (m *_TriggerControlDataTriggerMax) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataTriggerMax factory function for _TriggerControlDataTriggerMax
-func NewTriggerControlDataTriggerMax(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMax {
-	_result := &_TriggerControlDataTriggerMax{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_TriggerControlDataTriggerMax) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_TriggerControlDataTriggerMax) IsTriggerControlDataTriggerMax() {}
 
+func (m *_TriggerControlDataTriggerMax) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerMax) deepCopy() *_TriggerControlDataTriggerMax {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerMaxCopy := &_TriggerControlDataTriggerMax{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerMaxCopy
+}
+
 func (m *_TriggerControlDataTriggerMax) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

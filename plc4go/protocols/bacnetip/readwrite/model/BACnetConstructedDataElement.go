@@ -38,6 +38,7 @@ type BACnetConstructedDataElement interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
 	GetPeekedTagHeader() BACnetTagHeader
 	// GetApplicationTag returns ApplicationTag (property field)
@@ -56,6 +57,8 @@ type BACnetConstructedDataElement interface {
 	GetIsContextTag() bool
 	// IsBACnetConstructedDataElement is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataElement()
+	// CreateBuilder creates a BACnetConstructedDataElementBuilder
+	CreateBACnetConstructedDataElementBuilder() BACnetConstructedDataElementBuilder
 }
 
 // _BACnetConstructedDataElement is the data-structure of this message
@@ -72,6 +75,177 @@ type _BACnetConstructedDataElement struct {
 }
 
 var _ BACnetConstructedDataElement = (*_BACnetConstructedDataElement)(nil)
+
+// NewBACnetConstructedDataElement factory function for _BACnetConstructedDataElement
+func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElement {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedDataElement must not be nil")
+	}
+	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataElementBuilder is a builder for BACnetConstructedDataElement
+type BACnetConstructedDataElementBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetConstructedDataElementBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetConstructedDataElementBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataElementBuilder
+	// WithApplicationTag adds ApplicationTag (property field)
+	WithOptionalApplicationTag(BACnetApplicationTag) BACnetConstructedDataElementBuilder
+	// WithOptionalApplicationTagBuilder adds ApplicationTag (property field) which is build by the builder
+	WithOptionalApplicationTagBuilder(func(BACnetApplicationTagBuilder) BACnetApplicationTagBuilder) BACnetConstructedDataElementBuilder
+	// WithContextTag adds ContextTag (property field)
+	WithOptionalContextTag(BACnetContextTag) BACnetConstructedDataElementBuilder
+	// WithOptionalContextTagBuilder adds ContextTag (property field) which is build by the builder
+	WithOptionalContextTagBuilder(func(BACnetContextTagBuilder) BACnetContextTagBuilder) BACnetConstructedDataElementBuilder
+	// WithConstructedData adds ConstructedData (property field)
+	WithOptionalConstructedData(BACnetConstructedData) BACnetConstructedDataElementBuilder
+	// WithOptionalConstructedDataBuilder adds ConstructedData (property field) which is build by the builder
+	WithOptionalConstructedDataBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConstructedDataElementBuilder
+	// Build builds the BACnetConstructedDataElement or returns an error if something is wrong
+	Build() (BACnetConstructedDataElement, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataElement
+}
+
+// NewBACnetConstructedDataElementBuilder() creates a BACnetConstructedDataElementBuilder
+func NewBACnetConstructedDataElementBuilder() BACnetConstructedDataElementBuilder {
+	return &_BACnetConstructedDataElementBuilder{_BACnetConstructedDataElement: new(_BACnetConstructedDataElement)}
+}
+
+type _BACnetConstructedDataElementBuilder struct {
+	*_BACnetConstructedDataElement
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataElementBuilder) = (*_BACnetConstructedDataElementBuilder)(nil)
+
+func (b *_BACnetConstructedDataElementBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetConstructedDataElementBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConstructedDataElementBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConstructedDataElementBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalApplicationTag(applicationTag BACnetApplicationTag) BACnetConstructedDataElementBuilder {
+	b.ApplicationTag = applicationTag
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalApplicationTagBuilder(builderSupplier func(BACnetApplicationTagBuilder) BACnetApplicationTagBuilder) BACnetConstructedDataElementBuilder {
+	builder := builderSupplier(b.ApplicationTag.CreateBACnetApplicationTagBuilder())
+	var err error
+	b.ApplicationTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalContextTag(contextTag BACnetContextTag) BACnetConstructedDataElementBuilder {
+	b.ContextTag = contextTag
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalContextTagBuilder(builderSupplier func(BACnetContextTagBuilder) BACnetContextTagBuilder) BACnetConstructedDataElementBuilder {
+	builder := builderSupplier(b.ContextTag.CreateBACnetContextTagBuilder())
+	var err error
+	b.ContextTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalConstructedData(constructedData BACnetConstructedData) BACnetConstructedDataElementBuilder {
+	b.ConstructedData = constructedData
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) WithOptionalConstructedDataBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetConstructedDataElementBuilder {
+	builder := builderSupplier(b.ConstructedData.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.ConstructedData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataElementBuilder) Build() (BACnetConstructedDataElement, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataElement.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataElementBuilder) MustBuild() BACnetConstructedDataElement {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConstructedDataElementBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataElementBuilder().(*_BACnetConstructedDataElementBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataElementBuilder creates a BACnetConstructedDataElementBuilder
+func (b *_BACnetConstructedDataElement) CreateBACnetConstructedDataElementBuilder() BACnetConstructedDataElementBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataElementBuilder()
+	}
+	return &_BACnetConstructedDataElementBuilder{_BACnetConstructedDataElement: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -156,14 +330,6 @@ func (m *_BACnetConstructedDataElement) GetIsContextTag() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetConstructedDataElement factory function for _BACnetConstructedDataElement
-func NewBACnetConstructedDataElement(peekedTagHeader BACnetTagHeader, applicationTag BACnetApplicationTag, contextTag BACnetContextTag, constructedData BACnetConstructedData, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataElement {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConstructedDataElement must not be nil")
-	}
-	return &_BACnetConstructedDataElement{PeekedTagHeader: peekedTagHeader, ApplicationTag: applicationTag, ContextTag: contextTag, ConstructedData: constructedData, ObjectTypeArgument: objectTypeArgument, PropertyIdentifierArgument: propertyIdentifierArgument, ArrayIndexArgument: arrayIndexArgument}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataElement(structType any) BACnetConstructedDataElement {
 	if casted, ok := structType.(BACnetConstructedDataElement); ok {
@@ -227,7 +393,7 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetConstructedDataElement) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (__bACnetConstructedDataElement BACnetConstructedDataElement, err error) {
@@ -393,13 +559,37 @@ func (m *_BACnetConstructedDataElement) GetArrayIndexArgument() BACnetTagPayload
 
 func (m *_BACnetConstructedDataElement) IsBACnetConstructedDataElement() {}
 
+func (m *_BACnetConstructedDataElement) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataElement) deepCopy() *_BACnetConstructedDataElement {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataElementCopy := &_BACnetConstructedDataElement{
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ApplicationTag.DeepCopy().(BACnetApplicationTag),
+		m.ContextTag.DeepCopy().(BACnetContextTag),
+		m.ConstructedData.DeepCopy().(BACnetConstructedData),
+		m.ObjectTypeArgument,
+		m.PropertyIdentifierArgument,
+		m.ArrayIndexArgument,
+	}
+	return _BACnetConstructedDataElementCopy
+}
+
 func (m *_BACnetConstructedDataElement) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

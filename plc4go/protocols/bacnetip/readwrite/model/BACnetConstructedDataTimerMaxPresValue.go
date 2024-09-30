@@ -38,6 +38,7 @@ type BACnetConstructedDataTimerMaxPresValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxPresValue returns MaxPresValue (property field)
 	GetMaxPresValue() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataTimerMaxPresValue interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataTimerMaxPresValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimerMaxPresValue()
+	// CreateBuilder creates a BACnetConstructedDataTimerMaxPresValueBuilder
+	CreateBACnetConstructedDataTimerMaxPresValueBuilder() BACnetConstructedDataTimerMaxPresValueBuilder
 }
 
 // _BACnetConstructedDataTimerMaxPresValue is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataTimerMaxPresValue struct {
 
 var _ BACnetConstructedDataTimerMaxPresValue = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimerMaxPresValue)(nil)
+
+// NewBACnetConstructedDataTimerMaxPresValue factory function for _BACnetConstructedDataTimerMaxPresValue
+func NewBACnetConstructedDataTimerMaxPresValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxPresValue BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
+	if maxPresValue == nil {
+		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMaxPresValue must not be nil")
+	}
+	_result := &_BACnetConstructedDataTimerMaxPresValue{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxPresValue:                  maxPresValue,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimerMaxPresValueBuilder is a builder for BACnetConstructedDataTimerMaxPresValue
+type BACnetConstructedDataTimerMaxPresValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder
+	// WithMaxPresValue adds MaxPresValue (property field)
+	WithMaxPresValue(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder
+	// WithMaxPresValueBuilder adds MaxPresValue (property field) which is build by the builder
+	WithMaxPresValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerMaxPresValueBuilder
+	// Build builds the BACnetConstructedDataTimerMaxPresValue or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimerMaxPresValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimerMaxPresValue
+}
+
+// NewBACnetConstructedDataTimerMaxPresValueBuilder() creates a BACnetConstructedDataTimerMaxPresValueBuilder
+func NewBACnetConstructedDataTimerMaxPresValueBuilder() BACnetConstructedDataTimerMaxPresValueBuilder {
+	return &_BACnetConstructedDataTimerMaxPresValueBuilder{_BACnetConstructedDataTimerMaxPresValue: new(_BACnetConstructedDataTimerMaxPresValue)}
+}
+
+type _BACnetConstructedDataTimerMaxPresValueBuilder struct {
+	*_BACnetConstructedDataTimerMaxPresValue
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimerMaxPresValueBuilder) = (*_BACnetConstructedDataTimerMaxPresValueBuilder)(nil)
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) WithMandatoryFields(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder {
+	return b.WithMaxPresValue(maxPresValue)
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) WithMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger) BACnetConstructedDataTimerMaxPresValueBuilder {
+	b.MaxPresValue = maxPresValue
+	return b
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) WithMaxPresValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataTimerMaxPresValueBuilder {
+	builder := builderSupplier(b.MaxPresValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.MaxPresValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) Build() (BACnetConstructedDataTimerMaxPresValue, error) {
+	if b.MaxPresValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxPresValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTimerMaxPresValue.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) MustBuild() BACnetConstructedDataTimerMaxPresValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimerMaxPresValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimerMaxPresValueBuilder().(*_BACnetConstructedDataTimerMaxPresValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTimerMaxPresValueBuilder creates a BACnetConstructedDataTimerMaxPresValueBuilder
+func (b *_BACnetConstructedDataTimerMaxPresValue) CreateBACnetConstructedDataTimerMaxPresValueBuilder() BACnetConstructedDataTimerMaxPresValueBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTimerMaxPresValueBuilder()
+	}
+	return &_BACnetConstructedDataTimerMaxPresValueBuilder{_BACnetConstructedDataTimerMaxPresValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTimerMaxPresValue factory function for _BACnetConstructedDataTimerMaxPresValue
-func NewBACnetConstructedDataTimerMaxPresValue(maxPresValue BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimerMaxPresValue {
-	if maxPresValue == nil {
-		panic("maxPresValue of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataTimerMaxPresValue must not be nil")
-	}
-	_result := &_BACnetConstructedDataTimerMaxPresValue{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxPresValue:                  maxPresValue,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTimerMaxPresValue(structType any) BACnetConstructedDataTimerMaxPresValue {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataTimerMaxPresValue) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataTimerMaxPresValue) IsBACnetConstructedDataTimerMaxPresValue() {}
 
+func (m *_BACnetConstructedDataTimerMaxPresValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimerMaxPresValue) deepCopy() *_BACnetConstructedDataTimerMaxPresValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimerMaxPresValueCopy := &_BACnetConstructedDataTimerMaxPresValue{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaxPresValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimerMaxPresValueCopy
+}
+
 func (m *_BACnetConstructedDataTimerMaxPresValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

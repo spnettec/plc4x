@@ -38,6 +38,7 @@ type CipReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -47,6 +48,8 @@ type CipReadResponse interface {
 	GetData() CIPData
 	// IsCipReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipReadResponse()
+	// CreateBuilder creates a CipReadResponseBuilder
+	CreateCipReadResponseBuilder() CipReadResponseBuilder
 }
 
 // _CipReadResponse is the data-structure of this message
@@ -61,6 +64,138 @@ type _CipReadResponse struct {
 
 var _ CipReadResponse = (*_CipReadResponse)(nil)
 var _ CipServiceRequirements = (*_CipReadResponse)(nil)
+
+// NewCipReadResponse factory function for _CipReadResponse
+func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen uint16) *_CipReadResponse {
+	_result := &_CipReadResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+		Data:               data,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipReadResponseBuilder is a builder for CipReadResponse
+type CipReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) CipReadResponseBuilder
+	// WithExtStatus adds ExtStatus (property field)
+	WithExtStatus(uint8) CipReadResponseBuilder
+	// WithData adds Data (property field)
+	WithOptionalData(CIPData) CipReadResponseBuilder
+	// WithOptionalDataBuilder adds Data (property field) which is build by the builder
+	WithOptionalDataBuilder(func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder
+	// Build builds the CipReadResponse or returns an error if something is wrong
+	Build() (CipReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipReadResponse
+}
+
+// NewCipReadResponseBuilder() creates a CipReadResponseBuilder
+func NewCipReadResponseBuilder() CipReadResponseBuilder {
+	return &_CipReadResponseBuilder{_CipReadResponse: new(_CipReadResponse)}
+}
+
+type _CipReadResponseBuilder struct {
+	*_CipReadResponse
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipReadResponseBuilder) = (*_CipReadResponseBuilder)(nil)
+
+func (b *_CipReadResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipReadResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipReadResponseBuilder {
+	return b.WithStatus(status).WithExtStatus(extStatus)
+}
+
+func (b *_CipReadResponseBuilder) WithStatus(status uint8) CipReadResponseBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_CipReadResponseBuilder) WithExtStatus(extStatus uint8) CipReadResponseBuilder {
+	b.ExtStatus = extStatus
+	return b
+}
+
+func (b *_CipReadResponseBuilder) WithOptionalData(data CIPData) CipReadResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CipReadResponseBuilder) WithOptionalDataBuilder(builderSupplier func(CIPDataBuilder) CIPDataBuilder) CipReadResponseBuilder {
+	builder := builderSupplier(b.Data.CreateCIPDataBuilder())
+	var err error
+	b.Data, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CIPDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CipReadResponseBuilder) Build() (CipReadResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipReadResponse.deepCopy(), nil
+}
+
+func (b *_CipReadResponseBuilder) MustBuild() CipReadResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipReadResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipReadResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipReadResponseBuilder().(*_CipReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipReadResponseBuilder creates a CipReadResponseBuilder
+func (b *_CipReadResponse) CreateCipReadResponseBuilder() CipReadResponseBuilder {
+	if b == nil {
+		return NewCipReadResponseBuilder()
+	}
+	return &_CipReadResponseBuilder{_CipReadResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,18 +244,6 @@ func (m *_CipReadResponse) GetData() CIPData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipReadResponse factory function for _CipReadResponse
-func NewCipReadResponse(status uint8, extStatus uint8, data CIPData, serviceLen uint16) *_CipReadResponse {
-	_result := &_CipReadResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-		Data:               data,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipReadResponse(structType any) CipReadResponse {
@@ -251,13 +374,36 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_CipReadResponse) IsCipReadResponse() {}
 
+func (m *_CipReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipReadResponse) deepCopy() *_CipReadResponse {
+	if m == nil {
+		return nil
+	}
+	_CipReadResponseCopy := &_CipReadResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.ExtStatus,
+		m.Data.DeepCopy().(CIPData),
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipReadResponseCopy
+}
+
 func (m *_CipReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

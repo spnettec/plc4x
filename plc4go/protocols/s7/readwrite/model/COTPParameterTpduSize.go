@@ -38,11 +38,14 @@ type COTPParameterTpduSize interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	COTPParameter
 	// GetTpduSize returns TpduSize (property field)
 	GetTpduSize() COTPTpduSize
 	// IsCOTPParameterTpduSize is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCOTPParameterTpduSize()
+	// CreateBuilder creates a COTPParameterTpduSizeBuilder
+	CreateCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder
 }
 
 // _COTPParameterTpduSize is the data-structure of this message
@@ -53,6 +56,107 @@ type _COTPParameterTpduSize struct {
 
 var _ COTPParameterTpduSize = (*_COTPParameterTpduSize)(nil)
 var _ COTPParameterRequirements = (*_COTPParameterTpduSize)(nil)
+
+// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
+func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
+	_result := &_COTPParameterTpduSize{
+		COTPParameterContract: NewCOTPParameter(rest),
+		TpduSize:              tpduSize,
+	}
+	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// COTPParameterTpduSizeBuilder is a builder for COTPParameterTpduSize
+type COTPParameterTpduSizeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder
+	// WithTpduSize adds TpduSize (property field)
+	WithTpduSize(COTPTpduSize) COTPParameterTpduSizeBuilder
+	// Build builds the COTPParameterTpduSize or returns an error if something is wrong
+	Build() (COTPParameterTpduSize, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() COTPParameterTpduSize
+}
+
+// NewCOTPParameterTpduSizeBuilder() creates a COTPParameterTpduSizeBuilder
+func NewCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder {
+	return &_COTPParameterTpduSizeBuilder{_COTPParameterTpduSize: new(_COTPParameterTpduSize)}
+}
+
+type _COTPParameterTpduSizeBuilder struct {
+	*_COTPParameterTpduSize
+
+	parentBuilder *_COTPParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (COTPParameterTpduSizeBuilder) = (*_COTPParameterTpduSizeBuilder)(nil)
+
+func (b *_COTPParameterTpduSizeBuilder) setParent(contract COTPParameterContract) {
+	b.COTPParameterContract = contract
+}
+
+func (b *_COTPParameterTpduSizeBuilder) WithMandatoryFields(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
+	return b.WithTpduSize(tpduSize)
+}
+
+func (b *_COTPParameterTpduSizeBuilder) WithTpduSize(tpduSize COTPTpduSize) COTPParameterTpduSizeBuilder {
+	b.TpduSize = tpduSize
+	return b
+}
+
+func (b *_COTPParameterTpduSizeBuilder) Build() (COTPParameterTpduSize, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._COTPParameterTpduSize.deepCopy(), nil
+}
+
+func (b *_COTPParameterTpduSizeBuilder) MustBuild() COTPParameterTpduSize {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_COTPParameterTpduSizeBuilder) Done() COTPParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_COTPParameterTpduSizeBuilder) buildForCOTPParameter() (COTPParameter, error) {
+	return b.Build()
+}
+
+func (b *_COTPParameterTpduSizeBuilder) DeepCopy() any {
+	_copy := b.CreateCOTPParameterTpduSizeBuilder().(*_COTPParameterTpduSizeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCOTPParameterTpduSizeBuilder creates a COTPParameterTpduSizeBuilder
+func (b *_COTPParameterTpduSize) CreateCOTPParameterTpduSizeBuilder() COTPParameterTpduSizeBuilder {
+	if b == nil {
+		return NewCOTPParameterTpduSizeBuilder()
+	}
+	return &_COTPParameterTpduSizeBuilder{_COTPParameterTpduSize: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_COTPParameterTpduSize) GetTpduSize() COTPTpduSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCOTPParameterTpduSize factory function for _COTPParameterTpduSize
-func NewCOTPParameterTpduSize(tpduSize COTPTpduSize, rest uint8) *_COTPParameterTpduSize {
-	_result := &_COTPParameterTpduSize{
-		COTPParameterContract: NewCOTPParameter(rest),
-		TpduSize:              tpduSize,
-	}
-	_result.COTPParameterContract.(*_COTPParameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCOTPParameterTpduSize(structType any) COTPParameterTpduSize {
@@ -180,13 +274,33 @@ func (m *_COTPParameterTpduSize) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_COTPParameterTpduSize) IsCOTPParameterTpduSize() {}
 
+func (m *_COTPParameterTpduSize) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_COTPParameterTpduSize) deepCopy() *_COTPParameterTpduSize {
+	if m == nil {
+		return nil
+	}
+	_COTPParameterTpduSizeCopy := &_COTPParameterTpduSize{
+		m.COTPParameterContract.(*_COTPParameter).deepCopy(),
+		m.TpduSize,
+	}
+	m.COTPParameterContract.(*_COTPParameter)._SubType = m
+	return _COTPParameterTpduSizeCopy
+}
+
 func (m *_COTPParameterTpduSize) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -41,6 +41,7 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMIAdditionalInformation
 	// GetFrameErrorFlag returns FrameErrorFlag (property field)
 	GetFrameErrorFlag() bool
@@ -56,6 +57,8 @@ type CEMIAdditionalInformationBusmonitorInfo interface {
 	GetSequenceNumber() uint8
 	// IsCEMIAdditionalInformationBusmonitorInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCEMIAdditionalInformationBusmonitorInfo()
+	// CreateBuilder creates a CEMIAdditionalInformationBusmonitorInfoBuilder
+	CreateCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformationBusmonitorInfoBuilder
 }
 
 // _CEMIAdditionalInformationBusmonitorInfo is the data-structure of this message
@@ -71,6 +74,147 @@ type _CEMIAdditionalInformationBusmonitorInfo struct {
 
 var _ CEMIAdditionalInformationBusmonitorInfo = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
 var _ CEMIAdditionalInformationRequirements = (*_CEMIAdditionalInformationBusmonitorInfo)(nil)
+
+// NewCEMIAdditionalInformationBusmonitorInfo factory function for _CEMIAdditionalInformationBusmonitorInfo
+func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *_CEMIAdditionalInformationBusmonitorInfo {
+	_result := &_CEMIAdditionalInformationBusmonitorInfo{
+		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
+		FrameErrorFlag:                    frameErrorFlag,
+		BitErrorFlag:                      bitErrorFlag,
+		ParityErrorFlag:                   parityErrorFlag,
+		UnknownFlag:                       unknownFlag,
+		LostFlag:                          lostFlag,
+		SequenceNumber:                    sequenceNumber,
+	}
+	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CEMIAdditionalInformationBusmonitorInfoBuilder is a builder for CEMIAdditionalInformationBusmonitorInfo
+type CEMIAdditionalInformationBusmonitorInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithFrameErrorFlag adds FrameErrorFlag (property field)
+	WithFrameErrorFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithBitErrorFlag adds BitErrorFlag (property field)
+	WithBitErrorFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithParityErrorFlag adds ParityErrorFlag (property field)
+	WithParityErrorFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithUnknownFlag adds UnknownFlag (property field)
+	WithUnknownFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithLostFlag adds LostFlag (property field)
+	WithLostFlag(bool) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// WithSequenceNumber adds SequenceNumber (property field)
+	WithSequenceNumber(uint8) CEMIAdditionalInformationBusmonitorInfoBuilder
+	// Build builds the CEMIAdditionalInformationBusmonitorInfo or returns an error if something is wrong
+	Build() (CEMIAdditionalInformationBusmonitorInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CEMIAdditionalInformationBusmonitorInfo
+}
+
+// NewCEMIAdditionalInformationBusmonitorInfoBuilder() creates a CEMIAdditionalInformationBusmonitorInfoBuilder
+func NewCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformationBusmonitorInfoBuilder {
+	return &_CEMIAdditionalInformationBusmonitorInfoBuilder{_CEMIAdditionalInformationBusmonitorInfo: new(_CEMIAdditionalInformationBusmonitorInfo)}
+}
+
+type _CEMIAdditionalInformationBusmonitorInfoBuilder struct {
+	*_CEMIAdditionalInformationBusmonitorInfo
+
+	parentBuilder *_CEMIAdditionalInformationBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CEMIAdditionalInformationBusmonitorInfoBuilder) = (*_CEMIAdditionalInformationBusmonitorInfoBuilder)(nil)
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) setParent(contract CEMIAdditionalInformationContract) {
+	b.CEMIAdditionalInformationContract = contract
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithMandatoryFields(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	return b.WithFrameErrorFlag(frameErrorFlag).WithBitErrorFlag(bitErrorFlag).WithParityErrorFlag(parityErrorFlag).WithUnknownFlag(unknownFlag).WithLostFlag(lostFlag).WithSequenceNumber(sequenceNumber)
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithFrameErrorFlag(frameErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.FrameErrorFlag = frameErrorFlag
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithBitErrorFlag(bitErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.BitErrorFlag = bitErrorFlag
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithParityErrorFlag(parityErrorFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.ParityErrorFlag = parityErrorFlag
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithUnknownFlag(unknownFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.UnknownFlag = unknownFlag
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithLostFlag(lostFlag bool) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.LostFlag = lostFlag
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) WithSequenceNumber(sequenceNumber uint8) CEMIAdditionalInformationBusmonitorInfoBuilder {
+	b.SequenceNumber = sequenceNumber
+	return b
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Build() (CEMIAdditionalInformationBusmonitorInfo, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CEMIAdditionalInformationBusmonitorInfo.deepCopy(), nil
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) MustBuild() CEMIAdditionalInformationBusmonitorInfo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) Done() CEMIAdditionalInformationBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) buildForCEMIAdditionalInformation() (CEMIAdditionalInformation, error) {
+	return b.Build()
+}
+
+func (b *_CEMIAdditionalInformationBusmonitorInfoBuilder) DeepCopy() any {
+	_copy := b.CreateCEMIAdditionalInformationBusmonitorInfoBuilder().(*_CEMIAdditionalInformationBusmonitorInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCEMIAdditionalInformationBusmonitorInfoBuilder creates a CEMIAdditionalInformationBusmonitorInfoBuilder
+func (b *_CEMIAdditionalInformationBusmonitorInfo) CreateCEMIAdditionalInformationBusmonitorInfoBuilder() CEMIAdditionalInformationBusmonitorInfoBuilder {
+	if b == nil {
+		return NewCEMIAdditionalInformationBusmonitorInfoBuilder()
+	}
+	return &_CEMIAdditionalInformationBusmonitorInfoBuilder{_CEMIAdditionalInformationBusmonitorInfo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -136,21 +280,6 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) GetLen() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCEMIAdditionalInformationBusmonitorInfo factory function for _CEMIAdditionalInformationBusmonitorInfo
-func NewCEMIAdditionalInformationBusmonitorInfo(frameErrorFlag bool, bitErrorFlag bool, parityErrorFlag bool, unknownFlag bool, lostFlag bool, sequenceNumber uint8) *_CEMIAdditionalInformationBusmonitorInfo {
-	_result := &_CEMIAdditionalInformationBusmonitorInfo{
-		CEMIAdditionalInformationContract: NewCEMIAdditionalInformation(),
-		FrameErrorFlag:                    frameErrorFlag,
-		BitErrorFlag:                      bitErrorFlag,
-		ParityErrorFlag:                   parityErrorFlag,
-		UnknownFlag:                       unknownFlag,
-		LostFlag:                          lostFlag,
-		SequenceNumber:                    sequenceNumber,
-	}
-	_result.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCEMIAdditionalInformationBusmonitorInfo(structType any) CEMIAdditionalInformationBusmonitorInfo {
@@ -314,13 +443,38 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 
 func (m *_CEMIAdditionalInformationBusmonitorInfo) IsCEMIAdditionalInformationBusmonitorInfo() {}
 
+func (m *_CEMIAdditionalInformationBusmonitorInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CEMIAdditionalInformationBusmonitorInfo) deepCopy() *_CEMIAdditionalInformationBusmonitorInfo {
+	if m == nil {
+		return nil
+	}
+	_CEMIAdditionalInformationBusmonitorInfoCopy := &_CEMIAdditionalInformationBusmonitorInfo{
+		m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation).deepCopy(),
+		m.FrameErrorFlag,
+		m.BitErrorFlag,
+		m.ParityErrorFlag,
+		m.UnknownFlag,
+		m.LostFlag,
+		m.SequenceNumber,
+	}
+	m.CEMIAdditionalInformationContract.(*_CEMIAdditionalInformation)._SubType = m
+	return _CEMIAdditionalInformationBusmonitorInfoCopy
+}
+
 func (m *_CEMIAdditionalInformationBusmonitorInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

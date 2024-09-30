@@ -36,9 +36,12 @@ type TDataConnectedInd interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsTDataConnectedInd is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTDataConnectedInd()
+	// CreateBuilder creates a TDataConnectedIndBuilder
+	CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder
 }
 
 // _TDataConnectedInd is the data-structure of this message
@@ -48,6 +51,99 @@ type _TDataConnectedInd struct {
 
 var _ TDataConnectedInd = (*_TDataConnectedInd)(nil)
 var _ CEMIRequirements = (*_TDataConnectedInd)(nil)
+
+// NewTDataConnectedInd factory function for _TDataConnectedInd
+func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
+	_result := &_TDataConnectedInd{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TDataConnectedIndBuilder is a builder for TDataConnectedInd
+type TDataConnectedIndBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TDataConnectedIndBuilder
+	// Build builds the TDataConnectedInd or returns an error if something is wrong
+	Build() (TDataConnectedInd, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TDataConnectedInd
+}
+
+// NewTDataConnectedIndBuilder() creates a TDataConnectedIndBuilder
+func NewTDataConnectedIndBuilder() TDataConnectedIndBuilder {
+	return &_TDataConnectedIndBuilder{_TDataConnectedInd: new(_TDataConnectedInd)}
+}
+
+type _TDataConnectedIndBuilder struct {
+	*_TDataConnectedInd
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TDataConnectedIndBuilder) = (*_TDataConnectedIndBuilder)(nil)
+
+func (b *_TDataConnectedIndBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_TDataConnectedIndBuilder) WithMandatoryFields() TDataConnectedIndBuilder {
+	return b
+}
+
+func (b *_TDataConnectedIndBuilder) Build() (TDataConnectedInd, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TDataConnectedInd.deepCopy(), nil
+}
+
+func (b *_TDataConnectedIndBuilder) MustBuild() TDataConnectedInd {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TDataConnectedIndBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TDataConnectedIndBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_TDataConnectedIndBuilder) DeepCopy() any {
+	_copy := b.CreateTDataConnectedIndBuilder().(*_TDataConnectedIndBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTDataConnectedIndBuilder creates a TDataConnectedIndBuilder
+func (b *_TDataConnectedInd) CreateTDataConnectedIndBuilder() TDataConnectedIndBuilder {
+	if b == nil {
+		return NewTDataConnectedIndBuilder()
+	}
+	return &_TDataConnectedIndBuilder{_TDataConnectedInd: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_TDataConnectedInd) GetMessageCode() uint8 {
 
 func (m *_TDataConnectedInd) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewTDataConnectedInd factory function for _TDataConnectedInd
-func NewTDataConnectedInd(size uint16) *_TDataConnectedInd {
-	_result := &_TDataConnectedInd{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_TDataConnectedInd) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_TDataConnectedInd) IsTDataConnectedInd() {}
 
+func (m *_TDataConnectedInd) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TDataConnectedInd) deepCopy() *_TDataConnectedInd {
+	if m == nil {
+		return nil
+	}
+	_TDataConnectedIndCopy := &_TDataConnectedInd{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _TDataConnectedIndCopy
+}
+
 func (m *_TDataConnectedInd) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

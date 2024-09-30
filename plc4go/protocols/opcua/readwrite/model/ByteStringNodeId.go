@@ -38,12 +38,15 @@ type ByteStringNodeId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
 	// GetIdentifier returns Identifier (property field)
 	GetIdentifier() PascalByteString
 	// IsByteStringNodeId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsByteStringNodeId()
+	// CreateBuilder creates a ByteStringNodeIdBuilder
+	CreateByteStringNodeIdBuilder() ByteStringNodeIdBuilder
 }
 
 // _ByteStringNodeId is the data-structure of this message
@@ -53,6 +56,118 @@ type _ByteStringNodeId struct {
 }
 
 var _ ByteStringNodeId = (*_ByteStringNodeId)(nil)
+
+// NewByteStringNodeId factory function for _ByteStringNodeId
+func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
+	if identifier == nil {
+		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
+	}
+	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ByteStringNodeIdBuilder is a builder for ByteStringNodeId
+type ByteStringNodeIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, identifier PascalByteString) ByteStringNodeIdBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) ByteStringNodeIdBuilder
+	// WithIdentifier adds Identifier (property field)
+	WithIdentifier(PascalByteString) ByteStringNodeIdBuilder
+	// WithIdentifierBuilder adds Identifier (property field) which is build by the builder
+	WithIdentifierBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) ByteStringNodeIdBuilder
+	// Build builds the ByteStringNodeId or returns an error if something is wrong
+	Build() (ByteStringNodeId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ByteStringNodeId
+}
+
+// NewByteStringNodeIdBuilder() creates a ByteStringNodeIdBuilder
+func NewByteStringNodeIdBuilder() ByteStringNodeIdBuilder {
+	return &_ByteStringNodeIdBuilder{_ByteStringNodeId: new(_ByteStringNodeId)}
+}
+
+type _ByteStringNodeIdBuilder struct {
+	*_ByteStringNodeId
+
+	err *utils.MultiError
+}
+
+var _ (ByteStringNodeIdBuilder) = (*_ByteStringNodeIdBuilder)(nil)
+
+func (b *_ByteStringNodeIdBuilder) WithMandatoryFields(namespaceIndex uint16, identifier PascalByteString) ByteStringNodeIdBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithIdentifier(identifier)
+}
+
+func (b *_ByteStringNodeIdBuilder) WithNamespaceIndex(namespaceIndex uint16) ByteStringNodeIdBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_ByteStringNodeIdBuilder) WithIdentifier(identifier PascalByteString) ByteStringNodeIdBuilder {
+	b.Identifier = identifier
+	return b
+}
+
+func (b *_ByteStringNodeIdBuilder) WithIdentifierBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) ByteStringNodeIdBuilder {
+	builder := builderSupplier(b.Identifier.CreatePascalByteStringBuilder())
+	var err error
+	b.Identifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ByteStringNodeIdBuilder) Build() (ByteStringNodeId, error) {
+	if b.Identifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'identifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ByteStringNodeId.deepCopy(), nil
+}
+
+func (b *_ByteStringNodeIdBuilder) MustBuild() ByteStringNodeId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ByteStringNodeIdBuilder) DeepCopy() any {
+	_copy := b.CreateByteStringNodeIdBuilder().(*_ByteStringNodeIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateByteStringNodeIdBuilder creates a ByteStringNodeIdBuilder
+func (b *_ByteStringNodeId) CreateByteStringNodeIdBuilder() ByteStringNodeIdBuilder {
+	if b == nil {
+		return NewByteStringNodeIdBuilder()
+	}
+	return &_ByteStringNodeIdBuilder{_ByteStringNodeId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +186,6 @@ func (m *_ByteStringNodeId) GetIdentifier() PascalByteString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewByteStringNodeId factory function for _ByteStringNodeId
-func NewByteStringNodeId(namespaceIndex uint16, identifier PascalByteString) *_ByteStringNodeId {
-	if identifier == nil {
-		panic("identifier of type PascalByteString for ByteStringNodeId must not be nil")
-	}
-	return &_ByteStringNodeId{NamespaceIndex: namespaceIndex, Identifier: identifier}
-}
 
 // Deprecated: use the interface for direct cast
 func CastByteStringNodeId(structType any) ByteStringNodeId {
@@ -126,7 +233,7 @@ func ByteStringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ByteStringNodeId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__byteStringNodeId ByteStringNodeId, err error) {
@@ -190,13 +297,32 @@ func (m *_ByteStringNodeId) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_ByteStringNodeId) IsByteStringNodeId() {}
 
+func (m *_ByteStringNodeId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ByteStringNodeId) deepCopy() *_ByteStringNodeId {
+	if m == nil {
+		return nil
+	}
+	_ByteStringNodeIdCopy := &_ByteStringNodeId{
+		m.NamespaceIndex,
+		m.Identifier.DeepCopy().(PascalByteString),
+	}
+	return _ByteStringNodeIdCopy
+}
+
 func (m *_ByteStringNodeId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

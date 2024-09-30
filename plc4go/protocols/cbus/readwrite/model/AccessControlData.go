@@ -40,8 +40,11 @@ type AccessControlData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
+	// CreateBuilder creates a AccessControlDataBuilder
+	CreateAccessControlDataBuilder() AccessControlDataBuilder
 }
 
 // AccessControlDataContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type AccessControlDataContract interface {
 	GetCommandType() AccessControlCommandType
 	// IsAccessControlData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAccessControlData()
+	// CreateBuilder creates a AccessControlDataBuilder
+	CreateAccessControlDataBuilder() AccessControlDataBuilder
 }
 
 // AccessControlDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +80,303 @@ type _AccessControlData struct {
 }
 
 var _ AccessControlDataContract = (*_AccessControlData)(nil)
+
+// NewAccessControlData factory function for _AccessControlData
+func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
+	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AccessControlDataBuilder is a builder for AccessControlData
+type AccessControlDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) AccessControlDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(AccessControlCommandTypeContainer) AccessControlDataBuilder
+	// WithNetworkId adds NetworkId (property field)
+	WithNetworkId(byte) AccessControlDataBuilder
+	// WithAccessPointId adds AccessPointId (property field)
+	WithAccessPointId(byte) AccessControlDataBuilder
+	// AsAccessControlDataValidAccessRequest converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataValidAccessRequest() interface {
+		AccessControlDataValidAccessRequestBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataInvalidAccessRequest converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataInvalidAccessRequest() interface {
+		AccessControlDataInvalidAccessRequestBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataAccessPointLeftOpen converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataAccessPointLeftOpen() interface {
+		AccessControlDataAccessPointLeftOpenBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataAccessPointForcedOpen converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataAccessPointForcedOpen() interface {
+		AccessControlDataAccessPointForcedOpenBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataAccessPointClosed converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataAccessPointClosed() interface {
+		AccessControlDataAccessPointClosedBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataRequestToExit converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataRequestToExit() interface {
+		AccessControlDataRequestToExitBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataCloseAccessPoint converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataCloseAccessPoint() interface {
+		AccessControlDataCloseAccessPointBuilder
+		Done() AccessControlDataBuilder
+	}
+	// AsAccessControlDataLockAccessPoint converts this build to a subType of AccessControlData. It is always possible to return to current builder using Done()
+	AsAccessControlDataLockAccessPoint() interface {
+		AccessControlDataLockAccessPointBuilder
+		Done() AccessControlDataBuilder
+	}
+	// Build builds the AccessControlData or returns an error if something is wrong
+	PartialBuild() (AccessControlDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() AccessControlDataContract
+	// Build builds the AccessControlData or returns an error if something is wrong
+	Build() (AccessControlData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AccessControlData
+}
+
+// NewAccessControlDataBuilder() creates a AccessControlDataBuilder
+func NewAccessControlDataBuilder() AccessControlDataBuilder {
+	return &_AccessControlDataBuilder{_AccessControlData: new(_AccessControlData)}
+}
+
+type _AccessControlDataChildBuilder interface {
+	utils.Copyable
+	setParent(AccessControlDataContract)
+	buildForAccessControlData() (AccessControlData, error)
+}
+
+type _AccessControlDataBuilder struct {
+	*_AccessControlData
+
+	childBuilder _AccessControlDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AccessControlDataBuilder) = (*_AccessControlDataBuilder)(nil)
+
+func (b *_AccessControlDataBuilder) WithMandatoryFields(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) AccessControlDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithNetworkId(networkId).WithAccessPointId(accessPointId)
+}
+
+func (b *_AccessControlDataBuilder) WithCommandTypeContainer(commandTypeContainer AccessControlCommandTypeContainer) AccessControlDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_AccessControlDataBuilder) WithNetworkId(networkId byte) AccessControlDataBuilder {
+	b.NetworkId = networkId
+	return b
+}
+
+func (b *_AccessControlDataBuilder) WithAccessPointId(accessPointId byte) AccessControlDataBuilder {
+	b.AccessPointId = accessPointId
+	return b
+}
+
+func (b *_AccessControlDataBuilder) PartialBuild() (AccessControlDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AccessControlData.deepCopy(), nil
+}
+
+func (b *_AccessControlDataBuilder) PartialMustBuild() AccessControlDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataValidAccessRequest() interface {
+	AccessControlDataValidAccessRequestBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataValidAccessRequestBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataValidAccessRequestBuilder().(*_AccessControlDataValidAccessRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataInvalidAccessRequest() interface {
+	AccessControlDataInvalidAccessRequestBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataInvalidAccessRequestBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataInvalidAccessRequestBuilder().(*_AccessControlDataInvalidAccessRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointLeftOpen() interface {
+	AccessControlDataAccessPointLeftOpenBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataAccessPointLeftOpenBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataAccessPointLeftOpenBuilder().(*_AccessControlDataAccessPointLeftOpenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointForcedOpen() interface {
+	AccessControlDataAccessPointForcedOpenBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataAccessPointForcedOpenBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataAccessPointForcedOpenBuilder().(*_AccessControlDataAccessPointForcedOpenBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataAccessPointClosed() interface {
+	AccessControlDataAccessPointClosedBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataAccessPointClosedBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataAccessPointClosedBuilder().(*_AccessControlDataAccessPointClosedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataRequestToExit() interface {
+	AccessControlDataRequestToExitBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataRequestToExitBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataRequestToExitBuilder().(*_AccessControlDataRequestToExitBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataCloseAccessPoint() interface {
+	AccessControlDataCloseAccessPointBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataCloseAccessPointBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataCloseAccessPointBuilder().(*_AccessControlDataCloseAccessPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) AsAccessControlDataLockAccessPoint() interface {
+	AccessControlDataLockAccessPointBuilder
+	Done() AccessControlDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		AccessControlDataLockAccessPointBuilder
+		Done() AccessControlDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewAccessControlDataLockAccessPointBuilder().(*_AccessControlDataLockAccessPointBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_AccessControlDataBuilder) Build() (AccessControlData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForAccessControlData()
+}
+
+func (b *_AccessControlDataBuilder) MustBuild() AccessControlData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AccessControlDataBuilder) DeepCopy() any {
+	_copy := b.CreateAccessControlDataBuilder().(*_AccessControlDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_AccessControlDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAccessControlDataBuilder creates a AccessControlDataBuilder
+func (b *_AccessControlData) CreateAccessControlDataBuilder() AccessControlDataBuilder {
+	if b == nil {
+		return NewAccessControlDataBuilder()
+	}
+	return &_AccessControlDataBuilder{_AccessControlData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +415,6 @@ func (pm *_AccessControlData) GetCommandType() AccessControlCommandType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAccessControlData factory function for _AccessControlData
-func NewAccessControlData(commandTypeContainer AccessControlCommandTypeContainer, networkId byte, accessPointId byte) *_AccessControlData {
-	return &_AccessControlData{CommandTypeContainer: commandTypeContainer, NetworkId: networkId, AccessPointId: accessPointId}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAccessControlData(structType any) AccessControlData {
@@ -166,7 +463,7 @@ func AccessControlDataParseWithBufferProducer[T AccessControlData]() func(ctx co
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -176,7 +473,12 @@ func AccessControlDataParseWithBuffer[T AccessControlData](ctx context.Context, 
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_AccessControlData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__accessControlData AccessControlData, err error) {
@@ -221,35 +523,35 @@ func (m *_AccessControlData) parse(ctx context.Context, readBuffer utils.ReadBuf
 	var _child AccessControlData
 	switch {
 	case commandType == AccessControlCommandType_VALID_ACCESS: // AccessControlDataValidAccessRequest
-		if _child, err = (&_AccessControlDataValidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_AccessControlDataValidAccessRequest).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataValidAccessRequest for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_INVALID_ACCESS: // AccessControlDataInvalidAccessRequest
-		if _child, err = (&_AccessControlDataInvalidAccessRequest{}).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
+		if _child, err = new(_AccessControlDataInvalidAccessRequest).parse(ctx, readBuffer, m, commandTypeContainer); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataInvalidAccessRequest for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_LEFT_OPEN: // AccessControlDataAccessPointLeftOpen
-		if _child, err = (&_AccessControlDataAccessPointLeftOpen{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointLeftOpen).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointLeftOpen for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_FORCED_OPEN: // AccessControlDataAccessPointForcedOpen
-		if _child, err = (&_AccessControlDataAccessPointForcedOpen{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointForcedOpen).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointForcedOpen for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_ACCESS_POINT_CLOSED: // AccessControlDataAccessPointClosed
-		if _child, err = (&_AccessControlDataAccessPointClosed{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataAccessPointClosed).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataAccessPointClosed for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_REQUEST_TO_EXIT: // AccessControlDataRequestToExit
-		if _child, err = (&_AccessControlDataRequestToExit{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataRequestToExit).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataRequestToExit for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_CLOSE_ACCESS_POINT: // AccessControlDataCloseAccessPoint
-		if _child, err = (&_AccessControlDataCloseAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataCloseAccessPoint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataCloseAccessPoint for type-switch of AccessControlData")
 		}
 	case commandType == AccessControlCommandType_LOCK_ACCESS_POINT: // AccessControlDataLockAccessPoint
-		if _child, err = (&_AccessControlDataLockAccessPoint{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_AccessControlDataLockAccessPoint).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type AccessControlDataLockAccessPoint for type-switch of AccessControlData")
 		}
 	default:
@@ -305,3 +607,20 @@ func (pm *_AccessControlData) serializeParent(ctx context.Context, writeBuffer u
 }
 
 func (m *_AccessControlData) IsAccessControlData() {}
+
+func (m *_AccessControlData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AccessControlData) deepCopy() *_AccessControlData {
+	if m == nil {
+		return nil
+	}
+	_AccessControlDataCopy := &_AccessControlData{
+		nil, // will be set by child
+		m.CommandTypeContainer,
+		m.NetworkId,
+		m.AccessPointId,
+	}
+	return _AccessControlDataCopy
+}

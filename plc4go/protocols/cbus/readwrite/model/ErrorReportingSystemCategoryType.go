@@ -38,14 +38,19 @@ type ErrorReportingSystemCategoryType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsErrorReportingSystemCategoryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryType()
+	// CreateBuilder creates a ErrorReportingSystemCategoryTypeBuilder
+	CreateErrorReportingSystemCategoryTypeBuilder() ErrorReportingSystemCategoryTypeBuilder
 }
 
 // ErrorReportingSystemCategoryTypeContract provides a set of functions which can be overwritten by a sub struct
 type ErrorReportingSystemCategoryTypeContract interface {
 	// IsErrorReportingSystemCategoryType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsErrorReportingSystemCategoryType()
+	// CreateBuilder creates a ErrorReportingSystemCategoryTypeBuilder
+	CreateErrorReportingSystemCategoryTypeBuilder() ErrorReportingSystemCategoryTypeBuilder
 }
 
 // ErrorReportingSystemCategoryTypeRequirements provides a set of functions which need to be implemented by a sub struct
@@ -67,6 +72,235 @@ var _ ErrorReportingSystemCategoryTypeContract = (*_ErrorReportingSystemCategory
 func NewErrorReportingSystemCategoryType() *_ErrorReportingSystemCategoryType {
 	return &_ErrorReportingSystemCategoryType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorReportingSystemCategoryTypeBuilder is a builder for ErrorReportingSystemCategoryType
+type ErrorReportingSystemCategoryTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ErrorReportingSystemCategoryTypeBuilder
+	// AsErrorReportingSystemCategoryTypeInputUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeInputUnits() interface {
+		ErrorReportingSystemCategoryTypeInputUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// AsErrorReportingSystemCategoryTypeSupportUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeSupportUnits() interface {
+		ErrorReportingSystemCategoryTypeSupportUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// AsErrorReportingSystemCategoryTypeBuildingManagementSystems converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeBuildingManagementSystems() interface {
+		ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// AsErrorReportingSystemCategoryTypeOutputUnits converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeOutputUnits() interface {
+		ErrorReportingSystemCategoryTypeOutputUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// AsErrorReportingSystemCategoryTypeClimateControllers converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeClimateControllers() interface {
+		ErrorReportingSystemCategoryTypeClimateControllersBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// AsErrorReportingSystemCategoryTypeReserved converts this build to a subType of ErrorReportingSystemCategoryType. It is always possible to return to current builder using Done()
+	AsErrorReportingSystemCategoryTypeReserved() interface {
+		ErrorReportingSystemCategoryTypeReservedBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}
+	// Build builds the ErrorReportingSystemCategoryType or returns an error if something is wrong
+	PartialBuild() (ErrorReportingSystemCategoryTypeContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ErrorReportingSystemCategoryTypeContract
+	// Build builds the ErrorReportingSystemCategoryType or returns an error if something is wrong
+	Build() (ErrorReportingSystemCategoryType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ErrorReportingSystemCategoryType
+}
+
+// NewErrorReportingSystemCategoryTypeBuilder() creates a ErrorReportingSystemCategoryTypeBuilder
+func NewErrorReportingSystemCategoryTypeBuilder() ErrorReportingSystemCategoryTypeBuilder {
+	return &_ErrorReportingSystemCategoryTypeBuilder{_ErrorReportingSystemCategoryType: new(_ErrorReportingSystemCategoryType)}
+}
+
+type _ErrorReportingSystemCategoryTypeChildBuilder interface {
+	utils.Copyable
+	setParent(ErrorReportingSystemCategoryTypeContract)
+	buildForErrorReportingSystemCategoryType() (ErrorReportingSystemCategoryType, error)
+}
+
+type _ErrorReportingSystemCategoryTypeBuilder struct {
+	*_ErrorReportingSystemCategoryType
+
+	childBuilder _ErrorReportingSystemCategoryTypeChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ErrorReportingSystemCategoryTypeBuilder) = (*_ErrorReportingSystemCategoryTypeBuilder)(nil)
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) WithMandatoryFields() ErrorReportingSystemCategoryTypeBuilder {
+	return b
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) PartialBuild() (ErrorReportingSystemCategoryTypeContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ErrorReportingSystemCategoryType.deepCopy(), nil
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) PartialMustBuild() ErrorReportingSystemCategoryTypeContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeInputUnits() interface {
+	ErrorReportingSystemCategoryTypeInputUnitsBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeInputUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeInputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeInputUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeSupportUnits() interface {
+	ErrorReportingSystemCategoryTypeSupportUnitsBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeSupportUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeSupportUnitsBuilder().(*_ErrorReportingSystemCategoryTypeSupportUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeBuildingManagementSystems() interface {
+	ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder().(*_ErrorReportingSystemCategoryTypeBuildingManagementSystemsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeOutputUnits() interface {
+	ErrorReportingSystemCategoryTypeOutputUnitsBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeOutputUnitsBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeOutputUnitsBuilder().(*_ErrorReportingSystemCategoryTypeOutputUnitsBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeClimateControllers() interface {
+	ErrorReportingSystemCategoryTypeClimateControllersBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeClimateControllersBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeClimateControllersBuilder().(*_ErrorReportingSystemCategoryTypeClimateControllersBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) AsErrorReportingSystemCategoryTypeReserved() interface {
+	ErrorReportingSystemCategoryTypeReservedBuilder
+	Done() ErrorReportingSystemCategoryTypeBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ErrorReportingSystemCategoryTypeReservedBuilder
+		Done() ErrorReportingSystemCategoryTypeBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewErrorReportingSystemCategoryTypeReservedBuilder().(*_ErrorReportingSystemCategoryTypeReservedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) Build() (ErrorReportingSystemCategoryType, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForErrorReportingSystemCategoryType()
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) MustBuild() ErrorReportingSystemCategoryType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorReportingSystemCategoryTypeBuilder) DeepCopy() any {
+	_copy := b.CreateErrorReportingSystemCategoryTypeBuilder().(*_ErrorReportingSystemCategoryTypeBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ErrorReportingSystemCategoryTypeChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorReportingSystemCategoryTypeBuilder creates a ErrorReportingSystemCategoryTypeBuilder
+func (b *_ErrorReportingSystemCategoryType) CreateErrorReportingSystemCategoryTypeBuilder() ErrorReportingSystemCategoryTypeBuilder {
+	if b == nil {
+		return NewErrorReportingSystemCategoryTypeBuilder()
+	}
+	return &_ErrorReportingSystemCategoryTypeBuilder{_ErrorReportingSystemCategoryType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastErrorReportingSystemCategoryType(structType any) ErrorReportingSystemCategoryType {
@@ -104,7 +338,7 @@ func ErrorReportingSystemCategoryTypeParseWithBufferProducer[T ErrorReportingSys
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -114,7 +348,12 @@ func ErrorReportingSystemCategoryTypeParseWithBuffer[T ErrorReportingSystemCateg
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ErrorReportingSystemCategoryType) parse(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (__errorReportingSystemCategoryType ErrorReportingSystemCategoryType, err error) {
@@ -130,27 +369,27 @@ func (m *_ErrorReportingSystemCategoryType) parse(ctx context.Context, readBuffe
 	var _child ErrorReportingSystemCategoryType
 	switch {
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_INPUT_UNITS: // ErrorReportingSystemCategoryTypeInputUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeInputUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeInputUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeInputUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_SUPPORT_UNITS: // ErrorReportingSystemCategoryTypeSupportUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeSupportUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeSupportUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeSupportUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_BUILDING_MANAGEMENT_SYSTEMS: // ErrorReportingSystemCategoryTypeBuildingManagementSystems
-		if _child, err = (&_ErrorReportingSystemCategoryTypeBuildingManagementSystems{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeBuildingManagementSystems).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeBuildingManagementSystems for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_OUTPUT_UNITS: // ErrorReportingSystemCategoryTypeOutputUnits
-		if _child, err = (&_ErrorReportingSystemCategoryTypeOutputUnits{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeOutputUnits).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeOutputUnits for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case errorReportingSystemCategoryClass == ErrorReportingSystemCategoryClass_CLIMATE_CONTROLLERS: // ErrorReportingSystemCategoryTypeClimateControllers
-		if _child, err = (&_ErrorReportingSystemCategoryTypeClimateControllers{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeClimateControllers).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeClimateControllers for type-switch of ErrorReportingSystemCategoryType")
 		}
 	case 0 == 0: // ErrorReportingSystemCategoryTypeReserved
-		if _child, err = (&_ErrorReportingSystemCategoryTypeReserved{}).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
+		if _child, err = new(_ErrorReportingSystemCategoryTypeReserved).parse(ctx, readBuffer, m, errorReportingSystemCategoryClass); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ErrorReportingSystemCategoryTypeReserved for type-switch of ErrorReportingSystemCategoryType")
 		}
 	default:
@@ -188,3 +427,17 @@ func (pm *_ErrorReportingSystemCategoryType) serializeParent(ctx context.Context
 }
 
 func (m *_ErrorReportingSystemCategoryType) IsErrorReportingSystemCategoryType() {}
+
+func (m *_ErrorReportingSystemCategoryType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ErrorReportingSystemCategoryType) deepCopy() *_ErrorReportingSystemCategoryType {
+	if m == nil {
+		return nil
+	}
+	_ErrorReportingSystemCategoryTypeCopy := &_ErrorReportingSystemCategoryType{
+		nil, // will be set by child
+	}
+	return _ErrorReportingSystemCategoryTypeCopy
+}

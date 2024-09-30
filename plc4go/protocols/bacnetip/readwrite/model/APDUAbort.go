@@ -38,6 +38,7 @@ type APDUAbort interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	APDU
 	// GetServer returns Server (property field)
 	GetServer() bool
@@ -47,6 +48,8 @@ type APDUAbort interface {
 	GetAbortReason() BACnetAbortReasonTagged
 	// IsAPDUAbort is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAPDUAbort()
+	// CreateBuilder creates a APDUAbortBuilder
+	CreateAPDUAbortBuilder() APDUAbortBuilder
 }
 
 // _APDUAbort is the data-structure of this message
@@ -61,6 +64,147 @@ type _APDUAbort struct {
 
 var _ APDUAbort = (*_APDUAbort)(nil)
 var _ APDURequirements = (*_APDUAbort)(nil)
+
+// NewAPDUAbort factory function for _APDUAbort
+func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
+	if abortReason == nil {
+		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
+	}
+	_result := &_APDUAbort{
+		APDUContract:     NewAPDU(apduLength),
+		Server:           server,
+		OriginalInvokeId: originalInvokeId,
+		AbortReason:      abortReason,
+	}
+	_result.APDUContract.(*_APDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// APDUAbortBuilder is a builder for APDUAbort
+type APDUAbortBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) APDUAbortBuilder
+	// WithServer adds Server (property field)
+	WithServer(bool) APDUAbortBuilder
+	// WithOriginalInvokeId adds OriginalInvokeId (property field)
+	WithOriginalInvokeId(uint8) APDUAbortBuilder
+	// WithAbortReason adds AbortReason (property field)
+	WithAbortReason(BACnetAbortReasonTagged) APDUAbortBuilder
+	// WithAbortReasonBuilder adds AbortReason (property field) which is build by the builder
+	WithAbortReasonBuilder(func(BACnetAbortReasonTaggedBuilder) BACnetAbortReasonTaggedBuilder) APDUAbortBuilder
+	// Build builds the APDUAbort or returns an error if something is wrong
+	Build() (APDUAbort, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() APDUAbort
+}
+
+// NewAPDUAbortBuilder() creates a APDUAbortBuilder
+func NewAPDUAbortBuilder() APDUAbortBuilder {
+	return &_APDUAbortBuilder{_APDUAbort: new(_APDUAbort)}
+}
+
+type _APDUAbortBuilder struct {
+	*_APDUAbort
+
+	parentBuilder *_APDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (APDUAbortBuilder) = (*_APDUAbortBuilder)(nil)
+
+func (b *_APDUAbortBuilder) setParent(contract APDUContract) {
+	b.APDUContract = contract
+}
+
+func (b *_APDUAbortBuilder) WithMandatoryFields(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
+	return b.WithServer(server).WithOriginalInvokeId(originalInvokeId).WithAbortReason(abortReason)
+}
+
+func (b *_APDUAbortBuilder) WithServer(server bool) APDUAbortBuilder {
+	b.Server = server
+	return b
+}
+
+func (b *_APDUAbortBuilder) WithOriginalInvokeId(originalInvokeId uint8) APDUAbortBuilder {
+	b.OriginalInvokeId = originalInvokeId
+	return b
+}
+
+func (b *_APDUAbortBuilder) WithAbortReason(abortReason BACnetAbortReasonTagged) APDUAbortBuilder {
+	b.AbortReason = abortReason
+	return b
+}
+
+func (b *_APDUAbortBuilder) WithAbortReasonBuilder(builderSupplier func(BACnetAbortReasonTaggedBuilder) BACnetAbortReasonTaggedBuilder) APDUAbortBuilder {
+	builder := builderSupplier(b.AbortReason.CreateBACnetAbortReasonTaggedBuilder())
+	var err error
+	b.AbortReason, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAbortReasonTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_APDUAbortBuilder) Build() (APDUAbort, error) {
+	if b.AbortReason == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'abortReason' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._APDUAbort.deepCopy(), nil
+}
+
+func (b *_APDUAbortBuilder) MustBuild() APDUAbort {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_APDUAbortBuilder) Done() APDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_APDUAbortBuilder) buildForAPDU() (APDU, error) {
+	return b.Build()
+}
+
+func (b *_APDUAbortBuilder) DeepCopy() any {
+	_copy := b.CreateAPDUAbortBuilder().(*_APDUAbortBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAPDUAbortBuilder creates a APDUAbortBuilder
+func (b *_APDUAbort) CreateAPDUAbortBuilder() APDUAbortBuilder {
+	if b == nil {
+		return NewAPDUAbortBuilder()
+	}
+	return &_APDUAbortBuilder{_APDUAbort: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,21 +245,6 @@ func (m *_APDUAbort) GetAbortReason() BACnetAbortReasonTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAPDUAbort factory function for _APDUAbort
-func NewAPDUAbort(server bool, originalInvokeId uint8, abortReason BACnetAbortReasonTagged, apduLength uint16) *_APDUAbort {
-	if abortReason == nil {
-		panic("abortReason of type BACnetAbortReasonTagged for APDUAbort must not be nil")
-	}
-	_result := &_APDUAbort{
-		APDUContract:     NewAPDU(apduLength),
-		Server:           server,
-		OriginalInvokeId: originalInvokeId,
-		AbortReason:      abortReason,
-	}
-	_result.APDUContract.(*_APDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAPDUAbort(structType any) APDUAbort {
@@ -240,13 +369,36 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 func (m *_APDUAbort) IsAPDUAbort() {}
 
+func (m *_APDUAbort) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_APDUAbort) deepCopy() *_APDUAbort {
+	if m == nil {
+		return nil
+	}
+	_APDUAbortCopy := &_APDUAbort{
+		m.APDUContract.(*_APDU).deepCopy(),
+		m.Server,
+		m.OriginalInvokeId,
+		m.AbortReason.DeepCopy().(BACnetAbortReasonTagged),
+		m.reservedField0,
+	}
+	m.APDUContract.(*_APDU)._SubType = m
+	return _APDUAbortCopy
+}
+
 func (m *_APDUAbort) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

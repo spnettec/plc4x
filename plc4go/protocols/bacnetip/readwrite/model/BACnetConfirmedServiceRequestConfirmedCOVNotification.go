@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -51,6 +52,8 @@ type BACnetConfirmedServiceRequestConfirmedCOVNotification interface {
 	GetListOfValues() BACnetPropertyValues
 	// IsBACnetConfirmedServiceRequestConfirmedCOVNotification is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestConfirmedCOVNotification()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder() BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
 }
 
 // _BACnetConfirmedServiceRequestConfirmedCOVNotification is the data-structure of this message
@@ -65,6 +68,259 @@ type _BACnetConfirmedServiceRequestConfirmedCOVNotification struct {
 
 var _ BACnetConfirmedServiceRequestConfirmedCOVNotification = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestConfirmedCOVNotification)(nil)
+
+// NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotification
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if initiatingDeviceIdentifier == nil {
+		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if lifetimeInSeconds == nil {
+		panic("lifetimeInSeconds of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	if listOfValues == nil {
+		panic("listOfValues of type BACnetPropertyValues for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotification{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
+		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
+		LifetimeInSeconds:                     lifetimeInSeconds,
+		ListOfValues:                          listOfValues,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder is a builder for BACnetConfirmedServiceRequestConfirmedCOVNotification
+type BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithSubscriberProcessIdentifier adds SubscriberProcessIdentifier (property field)
+	WithSubscriberProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithSubscriberProcessIdentifierBuilder adds SubscriberProcessIdentifier (property field) which is build by the builder
+	WithSubscriberProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithInitiatingDeviceIdentifier adds InitiatingDeviceIdentifier (property field)
+	WithInitiatingDeviceIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithInitiatingDeviceIdentifierBuilder adds InitiatingDeviceIdentifier (property field) which is build by the builder
+	WithInitiatingDeviceIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithMonitoredObjectIdentifier adds MonitoredObjectIdentifier (property field)
+	WithMonitoredObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithMonitoredObjectIdentifierBuilder adds MonitoredObjectIdentifier (property field) which is build by the builder
+	WithMonitoredObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithLifetimeInSeconds adds LifetimeInSeconds (property field)
+	WithLifetimeInSeconds(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithLifetimeInSecondsBuilder adds LifetimeInSeconds (property field) which is build by the builder
+	WithLifetimeInSecondsBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithListOfValues adds ListOfValues (property field)
+	WithListOfValues(BACnetPropertyValues) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// WithListOfValuesBuilder adds ListOfValues (property field) which is build by the builder
+	WithListOfValuesBuilder(func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+	// Build builds the BACnetConfirmedServiceRequestConfirmedCOVNotification or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestConfirmedCOVNotification, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestConfirmedCOVNotification
+}
+
+// NewBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder() creates a BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+func NewBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder() BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	return &_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder{_BACnetConfirmedServiceRequestConfirmedCOVNotification: new(_BACnetConfirmedServiceRequestConfirmedCOVNotification)}
+}
+
+type _BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder struct {
+	*_BACnetConfirmedServiceRequestConfirmedCOVNotification
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) = (*_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	return b.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier).WithMonitoredObjectIdentifier(monitoredObjectIdentifier).WithLifetimeInSeconds(lifetimeInSeconds).WithListOfValues(listOfValues)
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	b.SubscriberProcessIdentifier = subscriberProcessIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	builder := builderSupplier(b.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.SubscriberProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithInitiatingDeviceIdentifier(initiatingDeviceIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	b.InitiatingDeviceIdentifier = initiatingDeviceIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithInitiatingDeviceIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	builder := builderSupplier(b.InitiatingDeviceIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.InitiatingDeviceIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	b.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	builder := builderSupplier(b.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.MonitoredObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithLifetimeInSeconds(lifetimeInSeconds BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	b.LifetimeInSeconds = lifetimeInSeconds
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithLifetimeInSecondsBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	builder := builderSupplier(b.LifetimeInSeconds.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.LifetimeInSeconds, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithListOfValues(listOfValues BACnetPropertyValues) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	b.ListOfValues = listOfValues
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) WithListOfValuesBuilder(builderSupplier func(BACnetPropertyValuesBuilder) BACnetPropertyValuesBuilder) BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	builder := builderSupplier(b.ListOfValues.CreateBACnetPropertyValuesBuilder())
+	var err error
+	b.ListOfValues, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPropertyValuesBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) Build() (BACnetConfirmedServiceRequestConfirmedCOVNotification, error) {
+	if b.SubscriberProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+	}
+	if b.InitiatingDeviceIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'initiatingDeviceIdentifier' not set"))
+	}
+	if b.MonitoredObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+	}
+	if b.LifetimeInSeconds == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lifetimeInSeconds' not set"))
+	}
+	if b.ListOfValues == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'listOfValues' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestConfirmedCOVNotification.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder().(*_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder creates a BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder
+func (b *_BACnetConfirmedServiceRequestConfirmedCOVNotification) CreateBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder() BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestConfirmedCOVNotificationBuilder{_BACnetConfirmedServiceRequestConfirmedCOVNotification: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,35 +369,6 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) GetListOfValues
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedCOVNotification factory function for _BACnetConfirmedServiceRequestConfirmedCOVNotification
-func NewBACnetConfirmedServiceRequestConfirmedCOVNotification(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, initiatingDeviceIdentifier BACnetContextTagObjectIdentifier, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, lifetimeInSeconds BACnetContextTagUnsignedInteger, listOfValues BACnetPropertyValues, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
-	if subscriberProcessIdentifier == nil {
-		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if initiatingDeviceIdentifier == nil {
-		panic("initiatingDeviceIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if lifetimeInSeconds == nil {
-		panic("lifetimeInSeconds of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	if listOfValues == nil {
-		panic("listOfValues of type BACnetPropertyValues for BACnetConfirmedServiceRequestConfirmedCOVNotification must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestConfirmedCOVNotification{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
-		InitiatingDeviceIdentifier:            initiatingDeviceIdentifier,
-		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
-		LifetimeInSeconds:                     lifetimeInSeconds,
-		ListOfValues:                          listOfValues,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedCOVNotification(structType any) BACnetConfirmedServiceRequestConfirmedCOVNotification {
@@ -280,13 +507,37 @@ func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) SerializeWithWr
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) IsBACnetConfirmedServiceRequestConfirmedCOVNotification() {
 }
 
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) deepCopy() *_BACnetConfirmedServiceRequestConfirmedCOVNotification {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedCOVNotificationCopy := &_BACnetConfirmedServiceRequestConfirmedCOVNotification{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.InitiatingDeviceIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.LifetimeInSeconds.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.ListOfValues.DeepCopy().(BACnetPropertyValues),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestConfirmedCOVNotificationCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestConfirmedCOVNotification) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataGlobalGroupGroupMembers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataGlobalGroupGroupMembers interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataGlobalGroupGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataGlobalGroupGroupMembers()
+	// CreateBuilder creates a BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	CreateBACnetConstructedDataGlobalGroupGroupMembersBuilder() BACnetConstructedDataGlobalGroupGroupMembersBuilder
 }
 
 // _BACnetConstructedDataGlobalGroupGroupMembers is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataGlobalGroupGroupMembers struct {
 
 var _ BACnetConstructedDataGlobalGroupGroupMembers = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataGlobalGroupGroupMembers)(nil)
+
+// NewBACnetConstructedDataGlobalGroupGroupMembers factory function for _BACnetConstructedDataGlobalGroupGroupMembers
+func NewBACnetConstructedDataGlobalGroupGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupGroupMembers {
+	_result := &_BACnetConstructedDataGlobalGroupGroupMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		GroupMembers:                  groupMembers,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataGlobalGroupGroupMembersBuilder is a builder for BACnetConstructedDataGlobalGroupGroupMembers
+type BACnetConstructedDataGlobalGroupGroupMembersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(groupMembers []BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	// WithGroupMembers adds GroupMembers (property field)
+	WithGroupMembers(...BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder
+	// Build builds the BACnetConstructedDataGlobalGroupGroupMembers or returns an error if something is wrong
+	Build() (BACnetConstructedDataGlobalGroupGroupMembers, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataGlobalGroupGroupMembers
+}
+
+// NewBACnetConstructedDataGlobalGroupGroupMembersBuilder() creates a BACnetConstructedDataGlobalGroupGroupMembersBuilder
+func NewBACnetConstructedDataGlobalGroupGroupMembersBuilder() BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	return &_BACnetConstructedDataGlobalGroupGroupMembersBuilder{_BACnetConstructedDataGlobalGroupGroupMembers: new(_BACnetConstructedDataGlobalGroupGroupMembers)}
+}
+
+type _BACnetConstructedDataGlobalGroupGroupMembersBuilder struct {
+	*_BACnetConstructedDataGlobalGroupGroupMembers
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataGlobalGroupGroupMembersBuilder) = (*_BACnetConstructedDataGlobalGroupGroupMembersBuilder)(nil)
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) WithMandatoryFields(groupMembers []BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	return b.WithGroupMembers(groupMembers...)
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) WithGroupMembers(groupMembers ...BACnetDeviceObjectPropertyReference) BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	b.GroupMembers = groupMembers
+	return b
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) Build() (BACnetConstructedDataGlobalGroupGroupMembers, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataGlobalGroupGroupMembers.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) MustBuild() BACnetConstructedDataGlobalGroupGroupMembers {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataGlobalGroupGroupMembersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataGlobalGroupGroupMembersBuilder().(*_BACnetConstructedDataGlobalGroupGroupMembersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataGlobalGroupGroupMembersBuilder creates a BACnetConstructedDataGlobalGroupGroupMembersBuilder
+func (b *_BACnetConstructedDataGlobalGroupGroupMembers) CreateBACnetConstructedDataGlobalGroupGroupMembersBuilder() BACnetConstructedDataGlobalGroupGroupMembersBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataGlobalGroupGroupMembersBuilder()
+	}
+	return &_BACnetConstructedDataGlobalGroupGroupMembersBuilder{_BACnetConstructedDataGlobalGroupGroupMembers: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataGlobalGroupGroupMembers) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataGlobalGroupGroupMembers factory function for _BACnetConstructedDataGlobalGroupGroupMembers
-func NewBACnetConstructedDataGlobalGroupGroupMembers(numberOfDataElements BACnetApplicationTagUnsignedInteger, groupMembers []BACnetDeviceObjectPropertyReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataGlobalGroupGroupMembers {
-	_result := &_BACnetConstructedDataGlobalGroupGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		GroupMembers:                  groupMembers,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataGlobalGroupGroupMembers(structType any) BACnetConstructedDataGlobalGroupGroupMembers {
@@ -249,13 +365,34 @@ func (m *_BACnetConstructedDataGlobalGroupGroupMembers) SerializeWithWriteBuffer
 func (m *_BACnetConstructedDataGlobalGroupGroupMembers) IsBACnetConstructedDataGlobalGroupGroupMembers() {
 }
 
+func (m *_BACnetConstructedDataGlobalGroupGroupMembers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataGlobalGroupGroupMembers) deepCopy() *_BACnetConstructedDataGlobalGroupGroupMembers {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataGlobalGroupGroupMembersCopy := &_BACnetConstructedDataGlobalGroupGroupMembers{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetDeviceObjectPropertyReference, BACnetDeviceObjectPropertyReference](m.GroupMembers),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataGlobalGroupGroupMembersCopy
+}
+
 func (m *_BACnetConstructedDataGlobalGroupGroupMembers) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

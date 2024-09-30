@@ -38,11 +38,14 @@ type MeteringDataDrinkingWaterConsumption interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MeteringData
 	// GetKL returns KL (property field)
 	GetKL() uint32
 	// IsMeteringDataDrinkingWaterConsumption is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMeteringDataDrinkingWaterConsumption()
+	// CreateBuilder creates a MeteringDataDrinkingWaterConsumptionBuilder
+	CreateMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterConsumptionBuilder
 }
 
 // _MeteringDataDrinkingWaterConsumption is the data-structure of this message
@@ -53,6 +56,107 @@ type _MeteringDataDrinkingWaterConsumption struct {
 
 var _ MeteringDataDrinkingWaterConsumption = (*_MeteringDataDrinkingWaterConsumption)(nil)
 var _ MeteringDataRequirements = (*_MeteringDataDrinkingWaterConsumption)(nil)
+
+// NewMeteringDataDrinkingWaterConsumption factory function for _MeteringDataDrinkingWaterConsumption
+func NewMeteringDataDrinkingWaterConsumption(commandTypeContainer MeteringCommandTypeContainer, argument byte, kL uint32) *_MeteringDataDrinkingWaterConsumption {
+	_result := &_MeteringDataDrinkingWaterConsumption{
+		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
+		KL:                   kL,
+	}
+	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MeteringDataDrinkingWaterConsumptionBuilder is a builder for MeteringDataDrinkingWaterConsumption
+type MeteringDataDrinkingWaterConsumptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder
+	// WithKL adds KL (property field)
+	WithKL(uint32) MeteringDataDrinkingWaterConsumptionBuilder
+	// Build builds the MeteringDataDrinkingWaterConsumption or returns an error if something is wrong
+	Build() (MeteringDataDrinkingWaterConsumption, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MeteringDataDrinkingWaterConsumption
+}
+
+// NewMeteringDataDrinkingWaterConsumptionBuilder() creates a MeteringDataDrinkingWaterConsumptionBuilder
+func NewMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterConsumptionBuilder {
+	return &_MeteringDataDrinkingWaterConsumptionBuilder{_MeteringDataDrinkingWaterConsumption: new(_MeteringDataDrinkingWaterConsumption)}
+}
+
+type _MeteringDataDrinkingWaterConsumptionBuilder struct {
+	*_MeteringDataDrinkingWaterConsumption
+
+	parentBuilder *_MeteringDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MeteringDataDrinkingWaterConsumptionBuilder) = (*_MeteringDataDrinkingWaterConsumptionBuilder)(nil)
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) setParent(contract MeteringDataContract) {
+	b.MeteringDataContract = contract
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) WithMandatoryFields(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
+	return b.WithKL(kL)
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) WithKL(kL uint32) MeteringDataDrinkingWaterConsumptionBuilder {
+	b.KL = kL
+	return b
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) Build() (MeteringDataDrinkingWaterConsumption, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MeteringDataDrinkingWaterConsumption.deepCopy(), nil
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) MustBuild() MeteringDataDrinkingWaterConsumption {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) Done() MeteringDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) buildForMeteringData() (MeteringData, error) {
+	return b.Build()
+}
+
+func (b *_MeteringDataDrinkingWaterConsumptionBuilder) DeepCopy() any {
+	_copy := b.CreateMeteringDataDrinkingWaterConsumptionBuilder().(*_MeteringDataDrinkingWaterConsumptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMeteringDataDrinkingWaterConsumptionBuilder creates a MeteringDataDrinkingWaterConsumptionBuilder
+func (b *_MeteringDataDrinkingWaterConsumption) CreateMeteringDataDrinkingWaterConsumptionBuilder() MeteringDataDrinkingWaterConsumptionBuilder {
+	if b == nil {
+		return NewMeteringDataDrinkingWaterConsumptionBuilder()
+	}
+	return &_MeteringDataDrinkingWaterConsumptionBuilder{_MeteringDataDrinkingWaterConsumption: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_MeteringDataDrinkingWaterConsumption) GetKL() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMeteringDataDrinkingWaterConsumption factory function for _MeteringDataDrinkingWaterConsumption
-func NewMeteringDataDrinkingWaterConsumption(kL uint32, commandTypeContainer MeteringCommandTypeContainer, argument byte) *_MeteringDataDrinkingWaterConsumption {
-	_result := &_MeteringDataDrinkingWaterConsumption{
-		MeteringDataContract: NewMeteringData(commandTypeContainer, argument),
-		KL:                   kL,
-	}
-	_result.MeteringDataContract.(*_MeteringData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMeteringDataDrinkingWaterConsumption(structType any) MeteringDataDrinkingWaterConsumption {
@@ -176,13 +270,33 @@ func (m *_MeteringDataDrinkingWaterConsumption) SerializeWithWriteBuffer(ctx con
 
 func (m *_MeteringDataDrinkingWaterConsumption) IsMeteringDataDrinkingWaterConsumption() {}
 
+func (m *_MeteringDataDrinkingWaterConsumption) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MeteringDataDrinkingWaterConsumption) deepCopy() *_MeteringDataDrinkingWaterConsumption {
+	if m == nil {
+		return nil
+	}
+	_MeteringDataDrinkingWaterConsumptionCopy := &_MeteringDataDrinkingWaterConsumption{
+		m.MeteringDataContract.(*_MeteringData).deepCopy(),
+		m.KL,
+	}
+	m.MeteringDataContract.(*_MeteringData)._SubType = m
+	return _MeteringDataDrinkingWaterConsumptionCopy
+}
+
 func (m *_MeteringDataDrinkingWaterConsumption) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetValueSourceAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetValueSource
 	// GetAddress returns Address (property field)
 	GetAddress() BACnetAddressEnclosed
 	// IsBACnetValueSourceAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetValueSourceAddress()
+	// CreateBuilder creates a BACnetValueSourceAddressBuilder
+	CreateBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder
 }
 
 // _BACnetValueSourceAddress is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetValueSourceAddress struct {
 
 var _ BACnetValueSourceAddress = (*_BACnetValueSourceAddress)(nil)
 var _ BACnetValueSourceRequirements = (*_BACnetValueSourceAddress)(nil)
+
+// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
+func NewBACnetValueSourceAddress(peekedTagHeader BACnetTagHeader, address BACnetAddressEnclosed) *_BACnetValueSourceAddress {
+	if address == nil {
+		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
+	}
+	_result := &_BACnetValueSourceAddress{
+		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
+		Address:                   address,
+	}
+	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetValueSourceAddressBuilder is a builder for BACnetValueSourceAddress
+type BACnetValueSourceAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder
+	// WithAddress adds Address (property field)
+	WithAddress(BACnetAddressEnclosed) BACnetValueSourceAddressBuilder
+	// WithAddressBuilder adds Address (property field) which is build by the builder
+	WithAddressBuilder(func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetValueSourceAddressBuilder
+	// Build builds the BACnetValueSourceAddress or returns an error if something is wrong
+	Build() (BACnetValueSourceAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetValueSourceAddress
+}
+
+// NewBACnetValueSourceAddressBuilder() creates a BACnetValueSourceAddressBuilder
+func NewBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder {
+	return &_BACnetValueSourceAddressBuilder{_BACnetValueSourceAddress: new(_BACnetValueSourceAddress)}
+}
+
+type _BACnetValueSourceAddressBuilder struct {
+	*_BACnetValueSourceAddress
+
+	parentBuilder *_BACnetValueSourceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetValueSourceAddressBuilder) = (*_BACnetValueSourceAddressBuilder)(nil)
+
+func (b *_BACnetValueSourceAddressBuilder) setParent(contract BACnetValueSourceContract) {
+	b.BACnetValueSourceContract = contract
+}
+
+func (b *_BACnetValueSourceAddressBuilder) WithMandatoryFields(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
+	return b.WithAddress(address)
+}
+
+func (b *_BACnetValueSourceAddressBuilder) WithAddress(address BACnetAddressEnclosed) BACnetValueSourceAddressBuilder {
+	b.Address = address
+	return b
+}
+
+func (b *_BACnetValueSourceAddressBuilder) WithAddressBuilder(builderSupplier func(BACnetAddressEnclosedBuilder) BACnetAddressEnclosedBuilder) BACnetValueSourceAddressBuilder {
+	builder := builderSupplier(b.Address.CreateBACnetAddressEnclosedBuilder())
+	var err error
+	b.Address, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetAddressEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetValueSourceAddressBuilder) Build() (BACnetValueSourceAddress, error) {
+	if b.Address == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'address' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetValueSourceAddress.deepCopy(), nil
+}
+
+func (b *_BACnetValueSourceAddressBuilder) MustBuild() BACnetValueSourceAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetValueSourceAddressBuilder) Done() BACnetValueSourceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetValueSourceAddressBuilder) buildForBACnetValueSource() (BACnetValueSource, error) {
+	return b.Build()
+}
+
+func (b *_BACnetValueSourceAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetValueSourceAddressBuilder().(*_BACnetValueSourceAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetValueSourceAddressBuilder creates a BACnetValueSourceAddressBuilder
+func (b *_BACnetValueSourceAddress) CreateBACnetValueSourceAddressBuilder() BACnetValueSourceAddressBuilder {
+	if b == nil {
+		return NewBACnetValueSourceAddressBuilder()
+	}
+	return &_BACnetValueSourceAddressBuilder{_BACnetValueSourceAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetValueSourceAddress) GetAddress() BACnetAddressEnclosed {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetValueSourceAddress factory function for _BACnetValueSourceAddress
-func NewBACnetValueSourceAddress(address BACnetAddressEnclosed, peekedTagHeader BACnetTagHeader) *_BACnetValueSourceAddress {
-	if address == nil {
-		panic("address of type BACnetAddressEnclosed for BACnetValueSourceAddress must not be nil")
-	}
-	_result := &_BACnetValueSourceAddress{
-		BACnetValueSourceContract: NewBACnetValueSource(peekedTagHeader),
-		Address:                   address,
-	}
-	_result.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetValueSourceAddress(structType any) BACnetValueSourceAddress {
@@ -179,13 +294,33 @@ func (m *_BACnetValueSourceAddress) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_BACnetValueSourceAddress) IsBACnetValueSourceAddress() {}
 
+func (m *_BACnetValueSourceAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetValueSourceAddress) deepCopy() *_BACnetValueSourceAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetValueSourceAddressCopy := &_BACnetValueSourceAddress{
+		m.BACnetValueSourceContract.(*_BACnetValueSource).deepCopy(),
+		m.Address.DeepCopy().(BACnetAddressEnclosed),
+	}
+	m.BACnetValueSourceContract.(*_BACnetValueSource)._SubType = m
+	return _BACnetValueSourceAddressCopy
+}
+
 func (m *_BACnetValueSourceAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

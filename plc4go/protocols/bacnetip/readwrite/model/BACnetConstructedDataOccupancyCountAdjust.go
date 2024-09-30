@@ -38,6 +38,7 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetOccupancyCountAdjust returns OccupancyCountAdjust (property field)
 	GetOccupancyCountAdjust() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataOccupancyCountAdjust interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataOccupancyCountAdjust is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataOccupancyCountAdjust()
+	// CreateBuilder creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+	CreateBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder
 }
 
 // _BACnetConstructedDataOccupancyCountAdjust is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataOccupancyCountAdjust struct {
 
 var _ BACnetConstructedDataOccupancyCountAdjust = (*_BACnetConstructedDataOccupancyCountAdjust)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataOccupancyCountAdjust)(nil)
+
+// NewBACnetConstructedDataOccupancyCountAdjust factory function for _BACnetConstructedDataOccupancyCountAdjust
+func NewBACnetConstructedDataOccupancyCountAdjust(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, occupancyCountAdjust BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountAdjust {
+	if occupancyCountAdjust == nil {
+		panic("occupancyCountAdjust of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountAdjust must not be nil")
+	}
+	_result := &_BACnetConstructedDataOccupancyCountAdjust{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		OccupancyCountAdjust:          occupancyCountAdjust,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataOccupancyCountAdjustBuilder is a builder for BACnetConstructedDataOccupancyCountAdjust
+type BACnetConstructedDataOccupancyCountAdjustBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// WithOccupancyCountAdjust adds OccupancyCountAdjust (property field)
+	WithOccupancyCountAdjust(BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// WithOccupancyCountAdjustBuilder adds OccupancyCountAdjust (property field) which is build by the builder
+	WithOccupancyCountAdjustBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyCountAdjustBuilder
+	// Build builds the BACnetConstructedDataOccupancyCountAdjust or returns an error if something is wrong
+	Build() (BACnetConstructedDataOccupancyCountAdjust, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataOccupancyCountAdjust
+}
+
+// NewBACnetConstructedDataOccupancyCountAdjustBuilder() creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+func NewBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder {
+	return &_BACnetConstructedDataOccupancyCountAdjustBuilder{_BACnetConstructedDataOccupancyCountAdjust: new(_BACnetConstructedDataOccupancyCountAdjust)}
+}
+
+type _BACnetConstructedDataOccupancyCountAdjustBuilder struct {
+	*_BACnetConstructedDataOccupancyCountAdjust
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataOccupancyCountAdjustBuilder) = (*_BACnetConstructedDataOccupancyCountAdjustBuilder)(nil)
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithMandatoryFields(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	return b.WithOccupancyCountAdjust(occupancyCountAdjust)
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithOccupancyCountAdjust(occupancyCountAdjust BACnetApplicationTagBoolean) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	b.OccupancyCountAdjust = occupancyCountAdjust
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) WithOccupancyCountAdjustBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataOccupancyCountAdjustBuilder {
+	builder := builderSupplier(b.OccupancyCountAdjust.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.OccupancyCountAdjust, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) Build() (BACnetConstructedDataOccupancyCountAdjust, error) {
+	if b.OccupancyCountAdjust == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'occupancyCountAdjust' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataOccupancyCountAdjust.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) MustBuild() BACnetConstructedDataOccupancyCountAdjust {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataOccupancyCountAdjustBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataOccupancyCountAdjustBuilder().(*_BACnetConstructedDataOccupancyCountAdjustBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataOccupancyCountAdjustBuilder creates a BACnetConstructedDataOccupancyCountAdjustBuilder
+func (b *_BACnetConstructedDataOccupancyCountAdjust) CreateBACnetConstructedDataOccupancyCountAdjustBuilder() BACnetConstructedDataOccupancyCountAdjustBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataOccupancyCountAdjustBuilder()
+	}
+	return &_BACnetConstructedDataOccupancyCountAdjustBuilder{_BACnetConstructedDataOccupancyCountAdjust: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) GetActualValue() BACnetAppl
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataOccupancyCountAdjust factory function for _BACnetConstructedDataOccupancyCountAdjust
-func NewBACnetConstructedDataOccupancyCountAdjust(occupancyCountAdjust BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataOccupancyCountAdjust {
-	if occupancyCountAdjust == nil {
-		panic("occupancyCountAdjust of type BACnetApplicationTagBoolean for BACnetConstructedDataOccupancyCountAdjust must not be nil")
-	}
-	_result := &_BACnetConstructedDataOccupancyCountAdjust{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		OccupancyCountAdjust:          occupancyCountAdjust,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataOccupancyCountAdjust(structType any) BACnetConstructedDataOccupancyCountAdjust {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataOccupancyCountAdjust) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataOccupancyCountAdjust) IsBACnetConstructedDataOccupancyCountAdjust() {}
 
+func (m *_BACnetConstructedDataOccupancyCountAdjust) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataOccupancyCountAdjust) deepCopy() *_BACnetConstructedDataOccupancyCountAdjust {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataOccupancyCountAdjustCopy := &_BACnetConstructedDataOccupancyCountAdjust{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.OccupancyCountAdjust.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataOccupancyCountAdjustCopy
+}
+
 func (m *_BACnetConstructedDataOccupancyCountAdjust) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

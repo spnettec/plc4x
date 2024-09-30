@@ -38,12 +38,15 @@ type Error interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetErrorClass returns ErrorClass (property field)
 	GetErrorClass() ErrorClassTagged
 	// GetErrorCode returns ErrorCode (property field)
 	GetErrorCode() ErrorCodeTagged
 	// IsError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsError()
+	// CreateBuilder creates a ErrorBuilder
+	CreateErrorBuilder() ErrorBuilder
 }
 
 // _Error is the data-structure of this message
@@ -53,6 +56,142 @@ type _Error struct {
 }
 
 var _ Error = (*_Error)(nil)
+
+// NewError factory function for _Error
+func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
+	if errorClass == nil {
+		panic("errorClass of type ErrorClassTagged for Error must not be nil")
+	}
+	if errorCode == nil {
+		panic("errorCode of type ErrorCodeTagged for Error must not be nil")
+	}
+	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ErrorBuilder is a builder for Error
+type ErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder
+	// WithErrorClass adds ErrorClass (property field)
+	WithErrorClass(ErrorClassTagged) ErrorBuilder
+	// WithErrorClassBuilder adds ErrorClass (property field) which is build by the builder
+	WithErrorClassBuilder(func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder
+	// WithErrorCode adds ErrorCode (property field)
+	WithErrorCode(ErrorCodeTagged) ErrorBuilder
+	// WithErrorCodeBuilder adds ErrorCode (property field) which is build by the builder
+	WithErrorCodeBuilder(func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder
+	// Build builds the Error or returns an error if something is wrong
+	Build() (Error, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Error
+}
+
+// NewErrorBuilder() creates a ErrorBuilder
+func NewErrorBuilder() ErrorBuilder {
+	return &_ErrorBuilder{_Error: new(_Error)}
+}
+
+type _ErrorBuilder struct {
+	*_Error
+
+	err *utils.MultiError
+}
+
+var _ (ErrorBuilder) = (*_ErrorBuilder)(nil)
+
+func (b *_ErrorBuilder) WithMandatoryFields(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) ErrorBuilder {
+	return b.WithErrorClass(errorClass).WithErrorCode(errorCode)
+}
+
+func (b *_ErrorBuilder) WithErrorClass(errorClass ErrorClassTagged) ErrorBuilder {
+	b.ErrorClass = errorClass
+	return b
+}
+
+func (b *_ErrorBuilder) WithErrorClassBuilder(builderSupplier func(ErrorClassTaggedBuilder) ErrorClassTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(b.ErrorClass.CreateErrorClassTaggedBuilder())
+	var err error
+	b.ErrorClass, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorClassTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorBuilder) WithErrorCode(errorCode ErrorCodeTagged) ErrorBuilder {
+	b.ErrorCode = errorCode
+	return b
+}
+
+func (b *_ErrorBuilder) WithErrorCodeBuilder(builderSupplier func(ErrorCodeTaggedBuilder) ErrorCodeTaggedBuilder) ErrorBuilder {
+	builder := builderSupplier(b.ErrorCode.CreateErrorCodeTaggedBuilder())
+	var err error
+	b.ErrorCode, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorCodeTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ErrorBuilder) Build() (Error, error) {
+	if b.ErrorClass == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorClass' not set"))
+	}
+	if b.ErrorCode == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorCode' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Error.deepCopy(), nil
+}
+
+func (b *_ErrorBuilder) MustBuild() Error {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ErrorBuilder) DeepCopy() any {
+	_copy := b.CreateErrorBuilder().(*_ErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateErrorBuilder creates a ErrorBuilder
+func (b *_Error) CreateErrorBuilder() ErrorBuilder {
+	if b == nil {
+		return NewErrorBuilder()
+	}
+	return &_ErrorBuilder{_Error: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,17 +210,6 @@ func (m *_Error) GetErrorCode() ErrorCodeTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewError factory function for _Error
-func NewError(errorClass ErrorClassTagged, errorCode ErrorCodeTagged) *_Error {
-	if errorClass == nil {
-		panic("errorClass of type ErrorClassTagged for Error must not be nil")
-	}
-	if errorCode == nil {
-		panic("errorCode of type ErrorCodeTagged for Error must not be nil")
-	}
-	return &_Error{ErrorClass: errorClass, ErrorCode: errorCode}
-}
 
 // Deprecated: use the interface for direct cast
 func CastError(structType any) Error {
@@ -129,7 +257,7 @@ func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Err
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Error) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__error Error, err error) {
@@ -193,13 +321,32 @@ func (m *_Error) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 func (m *_Error) IsError() {}
 
+func (m *_Error) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Error) deepCopy() *_Error {
+	if m == nil {
+		return nil
+	}
+	_ErrorCopy := &_Error{
+		m.ErrorClass.DeepCopy().(ErrorClassTagged),
+		m.ErrorCode.DeepCopy().(ErrorCodeTagged),
+	}
+	return _ErrorCopy
+}
+
 func (m *_Error) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

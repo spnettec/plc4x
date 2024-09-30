@@ -38,6 +38,7 @@ type ConnectedDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetSequenceCount returns SequenceCount (property field)
 	GetSequenceCount() uint16
@@ -45,6 +46,8 @@ type ConnectedDataItem interface {
 	GetService() CipService
 	// IsConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectedDataItem()
+	// CreateBuilder creates a ConnectedDataItemBuilder
+	CreateConnectedDataItemBuilder() ConnectedDataItemBuilder
 }
 
 // _ConnectedDataItem is the data-structure of this message
@@ -56,6 +59,139 @@ type _ConnectedDataItem struct {
 
 var _ ConnectedDataItem = (*_ConnectedDataItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedDataItem)(nil)
+
+// NewConnectedDataItem factory function for _ConnectedDataItem
+func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for ConnectedDataItem must not be nil")
+	}
+	_result := &_ConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		SequenceCount:  sequenceCount,
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectedDataItemBuilder is a builder for ConnectedDataItem
+type ConnectedDataItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sequenceCount uint16, service CipService) ConnectedDataItemBuilder
+	// WithSequenceCount adds SequenceCount (property field)
+	WithSequenceCount(uint16) ConnectedDataItemBuilder
+	// WithService adds Service (property field)
+	WithService(CipService) ConnectedDataItemBuilder
+	// WithServiceBuilder adds Service (property field) which is build by the builder
+	WithServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) ConnectedDataItemBuilder
+	// Build builds the ConnectedDataItem or returns an error if something is wrong
+	Build() (ConnectedDataItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectedDataItem
+}
+
+// NewConnectedDataItemBuilder() creates a ConnectedDataItemBuilder
+func NewConnectedDataItemBuilder() ConnectedDataItemBuilder {
+	return &_ConnectedDataItemBuilder{_ConnectedDataItem: new(_ConnectedDataItem)}
+}
+
+type _ConnectedDataItemBuilder struct {
+	*_ConnectedDataItem
+
+	parentBuilder *_TypeIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectedDataItemBuilder) = (*_ConnectedDataItemBuilder)(nil)
+
+func (b *_ConnectedDataItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
+}
+
+func (b *_ConnectedDataItemBuilder) WithMandatoryFields(sequenceCount uint16, service CipService) ConnectedDataItemBuilder {
+	return b.WithSequenceCount(sequenceCount).WithService(service)
+}
+
+func (b *_ConnectedDataItemBuilder) WithSequenceCount(sequenceCount uint16) ConnectedDataItemBuilder {
+	b.SequenceCount = sequenceCount
+	return b
+}
+
+func (b *_ConnectedDataItemBuilder) WithService(service CipService) ConnectedDataItemBuilder {
+	b.Service = service
+	return b
+}
+
+func (b *_ConnectedDataItemBuilder) WithServiceBuilder(builderSupplier func(CipServiceBuilder) CipServiceBuilder) ConnectedDataItemBuilder {
+	builder := builderSupplier(b.Service.CreateCipServiceBuilder())
+	var err error
+	b.Service, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CipServiceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ConnectedDataItemBuilder) Build() (ConnectedDataItem, error) {
+	if b.Service == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'service' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectedDataItem.deepCopy(), nil
+}
+
+func (b *_ConnectedDataItemBuilder) MustBuild() ConnectedDataItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectedDataItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectedDataItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ConnectedDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateConnectedDataItemBuilder().(*_ConnectedDataItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectedDataItemBuilder creates a ConnectedDataItemBuilder
+func (b *_ConnectedDataItem) CreateConnectedDataItemBuilder() ConnectedDataItemBuilder {
+	if b == nil {
+		return NewConnectedDataItemBuilder()
+	}
+	return &_ConnectedDataItemBuilder{_ConnectedDataItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +228,6 @@ func (m *_ConnectedDataItem) GetService() CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedDataItem factory function for _ConnectedDataItem
-func NewConnectedDataItem(sequenceCount uint16, service CipService) *_ConnectedDataItem {
-	if service == nil {
-		panic("service of type CipService for ConnectedDataItem must not be nil")
-	}
-	_result := &_ConnectedDataItem{
-		TypeIdContract: NewTypeId(),
-		SequenceCount:  sequenceCount,
-		Service:        service,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedDataItem(structType any) ConnectedDataItem {
@@ -217,13 +339,34 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_ConnectedDataItem) IsConnectedDataItem() {}
 
+func (m *_ConnectedDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedDataItem) deepCopy() *_ConnectedDataItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedDataItemCopy := &_ConnectedDataItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.SequenceCount,
+		m.Service.DeepCopy().(CipService),
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedDataItemCopy
+}
+
 func (m *_ConnectedDataItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

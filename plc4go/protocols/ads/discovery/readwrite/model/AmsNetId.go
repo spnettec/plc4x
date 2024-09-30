@@ -38,6 +38,7 @@ type AmsNetId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOctet1 returns Octet1 (property field)
 	GetOctet1() uint8
 	// GetOctet2 returns Octet2 (property field)
@@ -52,6 +53,8 @@ type AmsNetId interface {
 	GetOctet6() uint8
 	// IsAmsNetId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsNetId()
+	// CreateBuilder creates a AmsNetIdBuilder
+	CreateAmsNetIdBuilder() AmsNetIdBuilder
 }
 
 // _AmsNetId is the data-structure of this message
@@ -65,6 +68,122 @@ type _AmsNetId struct {
 }
 
 var _ AmsNetId = (*_AmsNetId)(nil)
+
+// NewAmsNetId factory function for _AmsNetId
+func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
+	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsNetIdBuilder is a builder for AmsNetId
+type AmsNetIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) AmsNetIdBuilder
+	// WithOctet1 adds Octet1 (property field)
+	WithOctet1(uint8) AmsNetIdBuilder
+	// WithOctet2 adds Octet2 (property field)
+	WithOctet2(uint8) AmsNetIdBuilder
+	// WithOctet3 adds Octet3 (property field)
+	WithOctet3(uint8) AmsNetIdBuilder
+	// WithOctet4 adds Octet4 (property field)
+	WithOctet4(uint8) AmsNetIdBuilder
+	// WithOctet5 adds Octet5 (property field)
+	WithOctet5(uint8) AmsNetIdBuilder
+	// WithOctet6 adds Octet6 (property field)
+	WithOctet6(uint8) AmsNetIdBuilder
+	// Build builds the AmsNetId or returns an error if something is wrong
+	Build() (AmsNetId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsNetId
+}
+
+// NewAmsNetIdBuilder() creates a AmsNetIdBuilder
+func NewAmsNetIdBuilder() AmsNetIdBuilder {
+	return &_AmsNetIdBuilder{_AmsNetId: new(_AmsNetId)}
+}
+
+type _AmsNetIdBuilder struct {
+	*_AmsNetId
+
+	err *utils.MultiError
+}
+
+var _ (AmsNetIdBuilder) = (*_AmsNetIdBuilder)(nil)
+
+func (b *_AmsNetIdBuilder) WithMandatoryFields(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) AmsNetIdBuilder {
+	return b.WithOctet1(octet1).WithOctet2(octet2).WithOctet3(octet3).WithOctet4(octet4).WithOctet5(octet5).WithOctet6(octet6)
+}
+
+func (b *_AmsNetIdBuilder) WithOctet1(octet1 uint8) AmsNetIdBuilder {
+	b.Octet1 = octet1
+	return b
+}
+
+func (b *_AmsNetIdBuilder) WithOctet2(octet2 uint8) AmsNetIdBuilder {
+	b.Octet2 = octet2
+	return b
+}
+
+func (b *_AmsNetIdBuilder) WithOctet3(octet3 uint8) AmsNetIdBuilder {
+	b.Octet3 = octet3
+	return b
+}
+
+func (b *_AmsNetIdBuilder) WithOctet4(octet4 uint8) AmsNetIdBuilder {
+	b.Octet4 = octet4
+	return b
+}
+
+func (b *_AmsNetIdBuilder) WithOctet5(octet5 uint8) AmsNetIdBuilder {
+	b.Octet5 = octet5
+	return b
+}
+
+func (b *_AmsNetIdBuilder) WithOctet6(octet6 uint8) AmsNetIdBuilder {
+	b.Octet6 = octet6
+	return b
+}
+
+func (b *_AmsNetIdBuilder) Build() (AmsNetId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsNetId.deepCopy(), nil
+}
+
+func (b *_AmsNetIdBuilder) MustBuild() AmsNetId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsNetIdBuilder) DeepCopy() any {
+	_copy := b.CreateAmsNetIdBuilder().(*_AmsNetIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAmsNetIdBuilder creates a AmsNetIdBuilder
+func (b *_AmsNetId) CreateAmsNetIdBuilder() AmsNetIdBuilder {
+	if b == nil {
+		return NewAmsNetIdBuilder()
+	}
+	return &_AmsNetIdBuilder{_AmsNetId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +218,6 @@ func (m *_AmsNetId) GetOctet6() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsNetId factory function for _AmsNetId
-func NewAmsNetId(octet1 uint8, octet2 uint8, octet3 uint8, octet4 uint8, octet5 uint8, octet6 uint8) *_AmsNetId {
-	return &_AmsNetId{Octet1: octet1, Octet2: octet2, Octet3: octet3, Octet4: octet4, Octet5: octet5, Octet6: octet6}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsNetId(structType any) AmsNetId {
@@ -163,7 +277,7 @@ func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AmsNetId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsNetId AmsNetId, err error) {
@@ -267,13 +381,36 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_AmsNetId) IsAmsNetId() {}
 
+func (m *_AmsNetId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsNetId) deepCopy() *_AmsNetId {
+	if m == nil {
+		return nil
+	}
+	_AmsNetIdCopy := &_AmsNetId{
+		m.Octet1,
+		m.Octet2,
+		m.Octet3,
+		m.Octet4,
+		m.Octet5,
+		m.Octet6,
+	}
+	return _AmsNetIdCopy
+}
+
 func (m *_AmsNetId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

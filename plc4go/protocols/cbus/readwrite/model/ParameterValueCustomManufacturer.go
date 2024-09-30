@@ -38,11 +38,14 @@ type ParameterValueCustomManufacturer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ParameterValue
 	// GetValue returns Value (property field)
 	GetValue() CustomManufacturer
 	// IsParameterValueCustomManufacturer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsParameterValueCustomManufacturer()
+	// CreateBuilder creates a ParameterValueCustomManufacturerBuilder
+	CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder
 }
 
 // _ParameterValueCustomManufacturer is the data-structure of this message
@@ -53,6 +56,131 @@ type _ParameterValueCustomManufacturer struct {
 
 var _ ParameterValueCustomManufacturer = (*_ParameterValueCustomManufacturer)(nil)
 var _ ParameterValueRequirements = (*_ParameterValueCustomManufacturer)(nil)
+
+// NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
+func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
+	if value == nil {
+		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
+	}
+	_result := &_ParameterValueCustomManufacturer{
+		ParameterValueContract: NewParameterValue(numBytes),
+		Value:                  value,
+	}
+	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ParameterValueCustomManufacturerBuilder is a builder for ParameterValueCustomManufacturer
+type ParameterValueCustomManufacturerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder
+	// WithValue adds Value (property field)
+	WithValue(CustomManufacturer) ParameterValueCustomManufacturerBuilder
+	// WithValueBuilder adds Value (property field) which is build by the builder
+	WithValueBuilder(func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder
+	// Build builds the ParameterValueCustomManufacturer or returns an error if something is wrong
+	Build() (ParameterValueCustomManufacturer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ParameterValueCustomManufacturer
+}
+
+// NewParameterValueCustomManufacturerBuilder() creates a ParameterValueCustomManufacturerBuilder
+func NewParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
+	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: new(_ParameterValueCustomManufacturer)}
+}
+
+type _ParameterValueCustomManufacturerBuilder struct {
+	*_ParameterValueCustomManufacturer
+
+	parentBuilder *_ParameterValueBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ParameterValueCustomManufacturerBuilder) = (*_ParameterValueCustomManufacturerBuilder)(nil)
+
+func (b *_ParameterValueCustomManufacturerBuilder) setParent(contract ParameterValueContract) {
+	b.ParameterValueContract = contract
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) WithMandatoryFields(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	return b.WithValue(value)
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) WithValue(value CustomManufacturer) ParameterValueCustomManufacturerBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) WithValueBuilder(builderSupplier func(CustomManufacturerBuilder) CustomManufacturerBuilder) ParameterValueCustomManufacturerBuilder {
+	builder := builderSupplier(b.Value.CreateCustomManufacturerBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CustomManufacturerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) Build() (ParameterValueCustomManufacturer, error) {
+	if b.Value == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'value' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ParameterValueCustomManufacturer.deepCopy(), nil
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) MustBuild() ParameterValueCustomManufacturer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ParameterValueCustomManufacturerBuilder) Done() ParameterValueBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) buildForParameterValue() (ParameterValue, error) {
+	return b.Build()
+}
+
+func (b *_ParameterValueCustomManufacturerBuilder) DeepCopy() any {
+	_copy := b.CreateParameterValueCustomManufacturerBuilder().(*_ParameterValueCustomManufacturerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateParameterValueCustomManufacturerBuilder creates a ParameterValueCustomManufacturerBuilder
+func (b *_ParameterValueCustomManufacturer) CreateParameterValueCustomManufacturerBuilder() ParameterValueCustomManufacturerBuilder {
+	if b == nil {
+		return NewParameterValueCustomManufacturerBuilder()
+	}
+	return &_ParameterValueCustomManufacturerBuilder{_ParameterValueCustomManufacturer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_ParameterValueCustomManufacturer) GetValue() CustomManufacturer {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewParameterValueCustomManufacturer factory function for _ParameterValueCustomManufacturer
-func NewParameterValueCustomManufacturer(value CustomManufacturer, numBytes uint8) *_ParameterValueCustomManufacturer {
-	if value == nil {
-		panic("value of type CustomManufacturer for ParameterValueCustomManufacturer must not be nil")
-	}
-	_result := &_ParameterValueCustomManufacturer{
-		ParameterValueContract: NewParameterValue(numBytes),
-		Value:                  value,
-	}
-	_result.ParameterValueContract.(*_ParameterValue)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastParameterValueCustomManufacturer(structType any) ParameterValueCustomManufacturer {
@@ -183,13 +298,33 @@ func (m *_ParameterValueCustomManufacturer) SerializeWithWriteBuffer(ctx context
 
 func (m *_ParameterValueCustomManufacturer) IsParameterValueCustomManufacturer() {}
 
+func (m *_ParameterValueCustomManufacturer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ParameterValueCustomManufacturer) deepCopy() *_ParameterValueCustomManufacturer {
+	if m == nil {
+		return nil
+	}
+	_ParameterValueCustomManufacturerCopy := &_ParameterValueCustomManufacturer{
+		m.ParameterValueContract.(*_ParameterValue).deepCopy(),
+		m.Value.DeepCopy().(CustomManufacturer),
+	}
+	m.ParameterValueContract.(*_ParameterValue)._SubType = m
+	return _ParameterValueCustomManufacturerCopy
+}
+
 func (m *_ParameterValueCustomManufacturer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

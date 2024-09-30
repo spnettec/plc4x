@@ -38,6 +38,7 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetIpDhcpEnable returns IpDhcpEnable (property field)
 	GetIpDhcpEnable() BACnetApplicationTagBoolean
@@ -45,6 +46,8 @@ type BACnetConstructedDataIPDHCPEnable interface {
 	GetActualValue() BACnetApplicationTagBoolean
 	// IsBACnetConstructedDataIPDHCPEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataIPDHCPEnable()
+	// CreateBuilder creates a BACnetConstructedDataIPDHCPEnableBuilder
+	CreateBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEnableBuilder
 }
 
 // _BACnetConstructedDataIPDHCPEnable is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataIPDHCPEnable struct {
 
 var _ BACnetConstructedDataIPDHCPEnable = (*_BACnetConstructedDataIPDHCPEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataIPDHCPEnable)(nil)
+
+// NewBACnetConstructedDataIPDHCPEnable factory function for _BACnetConstructedDataIPDHCPEnable
+func NewBACnetConstructedDataIPDHCPEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, ipDhcpEnable BACnetApplicationTagBoolean, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPEnable {
+	if ipDhcpEnable == nil {
+		panic("ipDhcpEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPDHCPEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataIPDHCPEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		IpDhcpEnable:                  ipDhcpEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataIPDHCPEnableBuilder is a builder for BACnetConstructedDataIPDHCPEnable
+type BACnetConstructedDataIPDHCPEnableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder
+	// WithIpDhcpEnable adds IpDhcpEnable (property field)
+	WithIpDhcpEnable(BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder
+	// WithIpDhcpEnableBuilder adds IpDhcpEnable (property field) which is build by the builder
+	WithIpDhcpEnableBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPDHCPEnableBuilder
+	// Build builds the BACnetConstructedDataIPDHCPEnable or returns an error if something is wrong
+	Build() (BACnetConstructedDataIPDHCPEnable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataIPDHCPEnable
+}
+
+// NewBACnetConstructedDataIPDHCPEnableBuilder() creates a BACnetConstructedDataIPDHCPEnableBuilder
+func NewBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEnableBuilder {
+	return &_BACnetConstructedDataIPDHCPEnableBuilder{_BACnetConstructedDataIPDHCPEnable: new(_BACnetConstructedDataIPDHCPEnable)}
+}
+
+type _BACnetConstructedDataIPDHCPEnableBuilder struct {
+	*_BACnetConstructedDataIPDHCPEnable
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataIPDHCPEnableBuilder) = (*_BACnetConstructedDataIPDHCPEnableBuilder)(nil)
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithMandatoryFields(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
+	return b.WithIpDhcpEnable(ipDhcpEnable)
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnable(ipDhcpEnable BACnetApplicationTagBoolean) BACnetConstructedDataIPDHCPEnableBuilder {
+	b.IpDhcpEnable = ipDhcpEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) WithIpDhcpEnableBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetConstructedDataIPDHCPEnableBuilder {
+	builder := builderSupplier(b.IpDhcpEnable.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.IpDhcpEnable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) Build() (BACnetConstructedDataIPDHCPEnable, error) {
+	if b.IpDhcpEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipDhcpEnable' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataIPDHCPEnable.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) MustBuild() BACnetConstructedDataIPDHCPEnable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataIPDHCPEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataIPDHCPEnableBuilder().(*_BACnetConstructedDataIPDHCPEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataIPDHCPEnableBuilder creates a BACnetConstructedDataIPDHCPEnableBuilder
+func (b *_BACnetConstructedDataIPDHCPEnable) CreateBACnetConstructedDataIPDHCPEnableBuilder() BACnetConstructedDataIPDHCPEnableBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataIPDHCPEnableBuilder()
+	}
+	return &_BACnetConstructedDataIPDHCPEnableBuilder{_BACnetConstructedDataIPDHCPEnable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataIPDHCPEnable) GetActualValue() BACnetApplicationT
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataIPDHCPEnable factory function for _BACnetConstructedDataIPDHCPEnable
-func NewBACnetConstructedDataIPDHCPEnable(ipDhcpEnable BACnetApplicationTagBoolean, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataIPDHCPEnable {
-	if ipDhcpEnable == nil {
-		panic("ipDhcpEnable of type BACnetApplicationTagBoolean for BACnetConstructedDataIPDHCPEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataIPDHCPEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		IpDhcpEnable:                  ipDhcpEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataIPDHCPEnable(structType any) BACnetConstructedDataIPDHCPEnable {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataIPDHCPEnable) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetConstructedDataIPDHCPEnable) IsBACnetConstructedDataIPDHCPEnable() {}
 
+func (m *_BACnetConstructedDataIPDHCPEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataIPDHCPEnable) deepCopy() *_BACnetConstructedDataIPDHCPEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataIPDHCPEnableCopy := &_BACnetConstructedDataIPDHCPEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.IpDhcpEnable.DeepCopy().(BACnetApplicationTagBoolean),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataIPDHCPEnableCopy
+}
+
 func (m *_BACnetConstructedDataIPDHCPEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

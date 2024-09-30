@@ -38,6 +38,7 @@ type AmsSerialResetFrame interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMagicCookie returns MagicCookie (property field)
 	GetMagicCookie() uint16
 	// GetTransmitterAddress returns TransmitterAddress (property field)
@@ -52,6 +53,8 @@ type AmsSerialResetFrame interface {
 	GetCrc() uint16
 	// IsAmsSerialResetFrame is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAmsSerialResetFrame()
+	// CreateBuilder creates a AmsSerialResetFrameBuilder
+	CreateAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder
 }
 
 // _AmsSerialResetFrame is the data-structure of this message
@@ -65,6 +68,122 @@ type _AmsSerialResetFrame struct {
 }
 
 var _ AmsSerialResetFrame = (*_AmsSerialResetFrame)(nil)
+
+// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
+func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
+	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AmsSerialResetFrameBuilder is a builder for AmsSerialResetFrame
+type AmsSerialResetFrameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialResetFrameBuilder
+	// WithMagicCookie adds MagicCookie (property field)
+	WithMagicCookie(uint16) AmsSerialResetFrameBuilder
+	// WithTransmitterAddress adds TransmitterAddress (property field)
+	WithTransmitterAddress(int8) AmsSerialResetFrameBuilder
+	// WithReceiverAddress adds ReceiverAddress (property field)
+	WithReceiverAddress(int8) AmsSerialResetFrameBuilder
+	// WithFragmentNumber adds FragmentNumber (property field)
+	WithFragmentNumber(int8) AmsSerialResetFrameBuilder
+	// WithLength adds Length (property field)
+	WithLength(int8) AmsSerialResetFrameBuilder
+	// WithCrc adds Crc (property field)
+	WithCrc(uint16) AmsSerialResetFrameBuilder
+	// Build builds the AmsSerialResetFrame or returns an error if something is wrong
+	Build() (AmsSerialResetFrame, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AmsSerialResetFrame
+}
+
+// NewAmsSerialResetFrameBuilder() creates a AmsSerialResetFrameBuilder
+func NewAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder {
+	return &_AmsSerialResetFrameBuilder{_AmsSerialResetFrame: new(_AmsSerialResetFrame)}
+}
+
+type _AmsSerialResetFrameBuilder struct {
+	*_AmsSerialResetFrame
+
+	err *utils.MultiError
+}
+
+var _ (AmsSerialResetFrameBuilder) = (*_AmsSerialResetFrameBuilder)(nil)
+
+func (b *_AmsSerialResetFrameBuilder) WithMandatoryFields(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) AmsSerialResetFrameBuilder {
+	return b.WithMagicCookie(magicCookie).WithTransmitterAddress(transmitterAddress).WithReceiverAddress(receiverAddress).WithFragmentNumber(fragmentNumber).WithLength(length).WithCrc(crc)
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithMagicCookie(magicCookie uint16) AmsSerialResetFrameBuilder {
+	b.MagicCookie = magicCookie
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithTransmitterAddress(transmitterAddress int8) AmsSerialResetFrameBuilder {
+	b.TransmitterAddress = transmitterAddress
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithReceiverAddress(receiverAddress int8) AmsSerialResetFrameBuilder {
+	b.ReceiverAddress = receiverAddress
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithFragmentNumber(fragmentNumber int8) AmsSerialResetFrameBuilder {
+	b.FragmentNumber = fragmentNumber
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithLength(length int8) AmsSerialResetFrameBuilder {
+	b.Length = length
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) WithCrc(crc uint16) AmsSerialResetFrameBuilder {
+	b.Crc = crc
+	return b
+}
+
+func (b *_AmsSerialResetFrameBuilder) Build() (AmsSerialResetFrame, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AmsSerialResetFrame.deepCopy(), nil
+}
+
+func (b *_AmsSerialResetFrameBuilder) MustBuild() AmsSerialResetFrame {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AmsSerialResetFrameBuilder) DeepCopy() any {
+	_copy := b.CreateAmsSerialResetFrameBuilder().(*_AmsSerialResetFrameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAmsSerialResetFrameBuilder creates a AmsSerialResetFrameBuilder
+func (b *_AmsSerialResetFrame) CreateAmsSerialResetFrameBuilder() AmsSerialResetFrameBuilder {
+	if b == nil {
+		return NewAmsSerialResetFrameBuilder()
+	}
+	return &_AmsSerialResetFrameBuilder{_AmsSerialResetFrame: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,11 +218,6 @@ func (m *_AmsSerialResetFrame) GetCrc() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAmsSerialResetFrame factory function for _AmsSerialResetFrame
-func NewAmsSerialResetFrame(magicCookie uint16, transmitterAddress int8, receiverAddress int8, fragmentNumber int8, length int8, crc uint16) *_AmsSerialResetFrame {
-	return &_AmsSerialResetFrame{MagicCookie: magicCookie, TransmitterAddress: transmitterAddress, ReceiverAddress: receiverAddress, FragmentNumber: fragmentNumber, Length: length, Crc: crc}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAmsSerialResetFrame(structType any) AmsSerialResetFrame {
@@ -163,7 +277,7 @@ func AmsSerialResetFrameParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AmsSerialResetFrame) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__amsSerialResetFrame AmsSerialResetFrame, err error) {
@@ -267,13 +381,36 @@ func (m *_AmsSerialResetFrame) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_AmsSerialResetFrame) IsAmsSerialResetFrame() {}
 
+func (m *_AmsSerialResetFrame) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AmsSerialResetFrame) deepCopy() *_AmsSerialResetFrame {
+	if m == nil {
+		return nil
+	}
+	_AmsSerialResetFrameCopy := &_AmsSerialResetFrame{
+		m.MagicCookie,
+		m.TransmitterAddress,
+		m.ReceiverAddress,
+		m.FragmentNumber,
+		m.Length,
+		m.Crc,
+	}
+	return _AmsSerialResetFrameCopy
+}
+
 func (m *_AmsSerialResetFrame) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

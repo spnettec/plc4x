@@ -38,11 +38,14 @@ type UnConnectedDataItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetService returns Service (property field)
 	GetService() CipService
 	// IsUnConnectedDataItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnConnectedDataItem()
+	// CreateBuilder creates a UnConnectedDataItemBuilder
+	CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder
 }
 
 // _UnConnectedDataItem is the data-structure of this message
@@ -53,6 +56,131 @@ type _UnConnectedDataItem struct {
 
 var _ UnConnectedDataItem = (*_UnConnectedDataItem)(nil)
 var _ TypeIdRequirements = (*_UnConnectedDataItem)(nil)
+
+// NewUnConnectedDataItem factory function for _UnConnectedDataItem
+func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
+	if service == nil {
+		panic("service of type CipService for UnConnectedDataItem must not be nil")
+	}
+	_result := &_UnConnectedDataItem{
+		TypeIdContract: NewTypeId(),
+		Service:        service,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnConnectedDataItemBuilder is a builder for UnConnectedDataItem
+type UnConnectedDataItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(service CipService) UnConnectedDataItemBuilder
+	// WithService adds Service (property field)
+	WithService(CipService) UnConnectedDataItemBuilder
+	// WithServiceBuilder adds Service (property field) which is build by the builder
+	WithServiceBuilder(func(CipServiceBuilder) CipServiceBuilder) UnConnectedDataItemBuilder
+	// Build builds the UnConnectedDataItem or returns an error if something is wrong
+	Build() (UnConnectedDataItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnConnectedDataItem
+}
+
+// NewUnConnectedDataItemBuilder() creates a UnConnectedDataItemBuilder
+func NewUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
+	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: new(_UnConnectedDataItem)}
+}
+
+type _UnConnectedDataItemBuilder struct {
+	*_UnConnectedDataItem
+
+	parentBuilder *_TypeIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UnConnectedDataItemBuilder) = (*_UnConnectedDataItemBuilder)(nil)
+
+func (b *_UnConnectedDataItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
+}
+
+func (b *_UnConnectedDataItemBuilder) WithMandatoryFields(service CipService) UnConnectedDataItemBuilder {
+	return b.WithService(service)
+}
+
+func (b *_UnConnectedDataItemBuilder) WithService(service CipService) UnConnectedDataItemBuilder {
+	b.Service = service
+	return b
+}
+
+func (b *_UnConnectedDataItemBuilder) WithServiceBuilder(builderSupplier func(CipServiceBuilder) CipServiceBuilder) UnConnectedDataItemBuilder {
+	builder := builderSupplier(b.Service.CreateCipServiceBuilder())
+	var err error
+	b.Service, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CipServiceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_UnConnectedDataItemBuilder) Build() (UnConnectedDataItem, error) {
+	if b.Service == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'service' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnConnectedDataItem.deepCopy(), nil
+}
+
+func (b *_UnConnectedDataItemBuilder) MustBuild() UnConnectedDataItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnConnectedDataItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnConnectedDataItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_UnConnectedDataItemBuilder) DeepCopy() any {
+	_copy := b.CreateUnConnectedDataItemBuilder().(*_UnConnectedDataItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUnConnectedDataItemBuilder creates a UnConnectedDataItemBuilder
+func (b *_UnConnectedDataItem) CreateUnConnectedDataItemBuilder() UnConnectedDataItemBuilder {
+	if b == nil {
+		return NewUnConnectedDataItemBuilder()
+	}
+	return &_UnConnectedDataItemBuilder{_UnConnectedDataItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_UnConnectedDataItem) GetService() CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnConnectedDataItem factory function for _UnConnectedDataItem
-func NewUnConnectedDataItem(service CipService) *_UnConnectedDataItem {
-	if service == nil {
-		panic("service of type CipService for UnConnectedDataItem must not be nil")
-	}
-	_result := &_UnConnectedDataItem{
-		TypeIdContract: NewTypeId(),
-		Service:        service,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnConnectedDataItem(structType any) UnConnectedDataItem {
@@ -196,13 +311,33 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_UnConnectedDataItem) IsUnConnectedDataItem() {}
 
+func (m *_UnConnectedDataItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnConnectedDataItem) deepCopy() *_UnConnectedDataItem {
+	if m == nil {
+		return nil
+	}
+	_UnConnectedDataItemCopy := &_UnConnectedDataItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.Service.DeepCopy().(CipService),
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _UnConnectedDataItemCopy
+}
+
 func (m *_UnConnectedDataItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

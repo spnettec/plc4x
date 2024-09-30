@@ -36,9 +36,12 @@ type BACnetConstructedDataLoopAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataLoopAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLoopAll()
+	// CreateBuilder creates a BACnetConstructedDataLoopAllBuilder
+	CreateBACnetConstructedDataLoopAllBuilder() BACnetConstructedDataLoopAllBuilder
 }
 
 // _BACnetConstructedDataLoopAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataLoopAll struct {
 
 var _ BACnetConstructedDataLoopAll = (*_BACnetConstructedDataLoopAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLoopAll)(nil)
+
+// NewBACnetConstructedDataLoopAll factory function for _BACnetConstructedDataLoopAll
+func NewBACnetConstructedDataLoopAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAll {
+	_result := &_BACnetConstructedDataLoopAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLoopAllBuilder is a builder for BACnetConstructedDataLoopAll
+type BACnetConstructedDataLoopAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataLoopAllBuilder
+	// Build builds the BACnetConstructedDataLoopAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataLoopAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLoopAll
+}
+
+// NewBACnetConstructedDataLoopAllBuilder() creates a BACnetConstructedDataLoopAllBuilder
+func NewBACnetConstructedDataLoopAllBuilder() BACnetConstructedDataLoopAllBuilder {
+	return &_BACnetConstructedDataLoopAllBuilder{_BACnetConstructedDataLoopAll: new(_BACnetConstructedDataLoopAll)}
+}
+
+type _BACnetConstructedDataLoopAllBuilder struct {
+	*_BACnetConstructedDataLoopAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLoopAllBuilder) = (*_BACnetConstructedDataLoopAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataLoopAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLoopAllBuilder) WithMandatoryFields() BACnetConstructedDataLoopAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataLoopAllBuilder) Build() (BACnetConstructedDataLoopAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLoopAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLoopAllBuilder) MustBuild() BACnetConstructedDataLoopAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLoopAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLoopAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLoopAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLoopAllBuilder().(*_BACnetConstructedDataLoopAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLoopAllBuilder creates a BACnetConstructedDataLoopAllBuilder
+func (b *_BACnetConstructedDataLoopAll) CreateBACnetConstructedDataLoopAllBuilder() BACnetConstructedDataLoopAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLoopAllBuilder()
+	}
+	return &_BACnetConstructedDataLoopAllBuilder{_BACnetConstructedDataLoopAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataLoopAll) GetPropertyIdentifierArgument() BACnetPr
 
 func (m *_BACnetConstructedDataLoopAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataLoopAll factory function for _BACnetConstructedDataLoopAll
-func NewBACnetConstructedDataLoopAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLoopAll {
-	_result := &_BACnetConstructedDataLoopAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataLoopAll) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetConstructedDataLoopAll) IsBACnetConstructedDataLoopAll() {}
 
+func (m *_BACnetConstructedDataLoopAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLoopAll) deepCopy() *_BACnetConstructedDataLoopAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLoopAllCopy := &_BACnetConstructedDataLoopAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLoopAllCopy
+}
+
 func (m *_BACnetConstructedDataLoopAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

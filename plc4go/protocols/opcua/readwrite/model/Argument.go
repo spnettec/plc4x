@@ -38,6 +38,7 @@ type Argument interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -53,6 +54,8 @@ type Argument interface {
 	GetDescription() LocalizedText
 	// IsArgument is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsArgument()
+	// CreateBuilder creates a ArgumentBuilder
+	CreateArgumentBuilder() ArgumentBuilder
 }
 
 // _Argument is the data-structure of this message
@@ -68,6 +71,219 @@ type _Argument struct {
 
 var _ Argument = (*_Argument)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_Argument)(nil)
+
+// NewArgument factory function for _Argument
+func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) *_Argument {
+	if name == nil {
+		panic("name of type PascalString for Argument must not be nil")
+	}
+	if dataType == nil {
+		panic("dataType of type NodeId for Argument must not be nil")
+	}
+	if description == nil {
+		panic("description of type LocalizedText for Argument must not be nil")
+	}
+	_result := &_Argument{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		DataType:                          dataType,
+		ValueRank:                         valueRank,
+		NoOfArrayDimensions:               noOfArrayDimensions,
+		ArrayDimensions:                   arrayDimensions,
+		Description:                       description,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ArgumentBuilder is a builder for Argument
+type ArgumentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) ArgumentBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(NodeId) ArgumentBuilder
+	// WithDataTypeBuilder adds DataType (property field) which is build by the builder
+	WithDataTypeBuilder(func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder
+	// WithValueRank adds ValueRank (property field)
+	WithValueRank(int32) ArgumentBuilder
+	// WithNoOfArrayDimensions adds NoOfArrayDimensions (property field)
+	WithNoOfArrayDimensions(int32) ArgumentBuilder
+	// WithArrayDimensions adds ArrayDimensions (property field)
+	WithArrayDimensions(...uint32) ArgumentBuilder
+	// WithDescription adds Description (property field)
+	WithDescription(LocalizedText) ArgumentBuilder
+	// WithDescriptionBuilder adds Description (property field) which is build by the builder
+	WithDescriptionBuilder(func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder
+	// Build builds the Argument or returns an error if something is wrong
+	Build() (Argument, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Argument
+}
+
+// NewArgumentBuilder() creates a ArgumentBuilder
+func NewArgumentBuilder() ArgumentBuilder {
+	return &_ArgumentBuilder{_Argument: new(_Argument)}
+}
+
+type _ArgumentBuilder struct {
+	*_Argument
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ArgumentBuilder) = (*_ArgumentBuilder)(nil)
+
+func (b *_ArgumentBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ArgumentBuilder) WithMandatoryFields(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) ArgumentBuilder {
+	return b.WithName(name).WithDataType(dataType).WithValueRank(valueRank).WithNoOfArrayDimensions(noOfArrayDimensions).WithArrayDimensions(arrayDimensions...).WithDescription(description)
+}
+
+func (b *_ArgumentBuilder) WithName(name PascalString) ArgumentBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_ArgumentBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ArgumentBuilder) WithDataType(dataType NodeId) ArgumentBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_ArgumentBuilder) WithDataTypeBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.DataType.CreateNodeIdBuilder())
+	var err error
+	b.DataType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ArgumentBuilder) WithValueRank(valueRank int32) ArgumentBuilder {
+	b.ValueRank = valueRank
+	return b
+}
+
+func (b *_ArgumentBuilder) WithNoOfArrayDimensions(noOfArrayDimensions int32) ArgumentBuilder {
+	b.NoOfArrayDimensions = noOfArrayDimensions
+	return b
+}
+
+func (b *_ArgumentBuilder) WithArrayDimensions(arrayDimensions ...uint32) ArgumentBuilder {
+	b.ArrayDimensions = arrayDimensions
+	return b
+}
+
+func (b *_ArgumentBuilder) WithDescription(description LocalizedText) ArgumentBuilder {
+	b.Description = description
+	return b
+}
+
+func (b *_ArgumentBuilder) WithDescriptionBuilder(builderSupplier func(LocalizedTextBuilder) LocalizedTextBuilder) ArgumentBuilder {
+	builder := builderSupplier(b.Description.CreateLocalizedTextBuilder())
+	var err error
+	b.Description, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LocalizedTextBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ArgumentBuilder) Build() (Argument, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.DataType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataType' not set"))
+	}
+	if b.Description == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'description' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Argument.deepCopy(), nil
+}
+
+func (b *_ArgumentBuilder) MustBuild() Argument {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ArgumentBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ArgumentBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ArgumentBuilder) DeepCopy() any {
+	_copy := b.CreateArgumentBuilder().(*_ArgumentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateArgumentBuilder creates a ArgumentBuilder
+func (b *_Argument) CreateArgumentBuilder() ArgumentBuilder {
+	if b == nil {
+		return NewArgumentBuilder()
+	}
+	return &_ArgumentBuilder{_Argument: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -120,30 +336,6 @@ func (m *_Argument) GetDescription() LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewArgument factory function for _Argument
-func NewArgument(name PascalString, dataType NodeId, valueRank int32, noOfArrayDimensions int32, arrayDimensions []uint32, description LocalizedText) *_Argument {
-	if name == nil {
-		panic("name of type PascalString for Argument must not be nil")
-	}
-	if dataType == nil {
-		panic("dataType of type NodeId for Argument must not be nil")
-	}
-	if description == nil {
-		panic("description of type LocalizedText for Argument must not be nil")
-	}
-	_result := &_Argument{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		DataType:                          dataType,
-		ValueRank:                         valueRank,
-		NoOfArrayDimensions:               noOfArrayDimensions,
-		ArrayDimensions:                   arrayDimensions,
-		Description:                       description,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastArgument(structType any) Argument {
@@ -296,13 +488,38 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_Argument) IsArgument() {}
 
+func (m *_Argument) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Argument) deepCopy() *_Argument {
+	if m == nil {
+		return nil
+	}
+	_ArgumentCopy := &_Argument{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.DataType.DeepCopy().(NodeId),
+		m.ValueRank,
+		m.NoOfArrayDimensions,
+		utils.DeepCopySlice[uint32, uint32](m.ArrayDimensions),
+		m.Description.DeepCopy().(LocalizedText),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ArgumentCopy
+}
+
 func (m *_Argument) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

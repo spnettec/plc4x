@@ -38,11 +38,14 @@ type BACnetServiceAckRequestKey interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetBytesOfRemovedService returns BytesOfRemovedService (property field)
 	GetBytesOfRemovedService() []byte
 	// IsBACnetServiceAckRequestKey is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckRequestKey()
+	// CreateBuilder creates a BACnetServiceAckRequestKeyBuilder
+	CreateBACnetServiceAckRequestKeyBuilder() BACnetServiceAckRequestKeyBuilder
 }
 
 // _BACnetServiceAckRequestKey is the data-structure of this message
@@ -56,6 +59,107 @@ type _BACnetServiceAckRequestKey struct {
 
 var _ BACnetServiceAckRequestKey = (*_BACnetServiceAckRequestKey)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckRequestKey)(nil)
+
+// NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
+func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
+	_result := &_BACnetServiceAckRequestKey{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		BytesOfRemovedService:    bytesOfRemovedService,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckRequestKeyBuilder is a builder for BACnetServiceAckRequestKey
+type BACnetServiceAckRequestKeyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder
+	// WithBytesOfRemovedService adds BytesOfRemovedService (property field)
+	WithBytesOfRemovedService(...byte) BACnetServiceAckRequestKeyBuilder
+	// Build builds the BACnetServiceAckRequestKey or returns an error if something is wrong
+	Build() (BACnetServiceAckRequestKey, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckRequestKey
+}
+
+// NewBACnetServiceAckRequestKeyBuilder() creates a BACnetServiceAckRequestKeyBuilder
+func NewBACnetServiceAckRequestKeyBuilder() BACnetServiceAckRequestKeyBuilder {
+	return &_BACnetServiceAckRequestKeyBuilder{_BACnetServiceAckRequestKey: new(_BACnetServiceAckRequestKey)}
+}
+
+type _BACnetServiceAckRequestKeyBuilder struct {
+	*_BACnetServiceAckRequestKey
+
+	parentBuilder *_BACnetServiceAckBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckRequestKeyBuilder) = (*_BACnetServiceAckRequestKeyBuilder)(nil)
+
+func (b *_BACnetServiceAckRequestKeyBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) WithMandatoryFields(bytesOfRemovedService []byte) BACnetServiceAckRequestKeyBuilder {
+	return b.WithBytesOfRemovedService(bytesOfRemovedService...)
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) WithBytesOfRemovedService(bytesOfRemovedService ...byte) BACnetServiceAckRequestKeyBuilder {
+	b.BytesOfRemovedService = bytesOfRemovedService
+	return b
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) Build() (BACnetServiceAckRequestKey, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetServiceAckRequestKey.deepCopy(), nil
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) MustBuild() BACnetServiceAckRequestKey {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckRequestKeyBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckRequestKeyBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckRequestKeyBuilder().(*_BACnetServiceAckRequestKeyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetServiceAckRequestKeyBuilder creates a BACnetServiceAckRequestKeyBuilder
+func (b *_BACnetServiceAckRequestKey) CreateBACnetServiceAckRequestKeyBuilder() BACnetServiceAckRequestKeyBuilder {
+	if b == nil {
+		return NewBACnetServiceAckRequestKeyBuilder()
+	}
+	return &_BACnetServiceAckRequestKeyBuilder{_BACnetServiceAckRequestKey: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -88,16 +192,6 @@ func (m *_BACnetServiceAckRequestKey) GetBytesOfRemovedService() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckRequestKey factory function for _BACnetServiceAckRequestKey
-func NewBACnetServiceAckRequestKey(bytesOfRemovedService []byte, serviceAckPayloadLength uint32, serviceAckLength uint32) *_BACnetServiceAckRequestKey {
-	_result := &_BACnetServiceAckRequestKey{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		BytesOfRemovedService:    bytesOfRemovedService,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckRequestKey(structType any) BACnetServiceAckRequestKey {
@@ -195,13 +289,34 @@ func (m *_BACnetServiceAckRequestKey) GetServiceAckPayloadLength() uint32 {
 
 func (m *_BACnetServiceAckRequestKey) IsBACnetServiceAckRequestKey() {}
 
+func (m *_BACnetServiceAckRequestKey) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckRequestKey) deepCopy() *_BACnetServiceAckRequestKey {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckRequestKeyCopy := &_BACnetServiceAckRequestKey{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.BytesOfRemovedService),
+		m.ServiceAckPayloadLength,
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckRequestKeyCopy
+}
+
 func (m *_BACnetServiceAckRequestKey) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

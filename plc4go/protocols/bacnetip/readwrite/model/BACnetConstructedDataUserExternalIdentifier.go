@@ -38,6 +38,7 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUserExternalIdentifier returns UserExternalIdentifier (property field)
 	GetUserExternalIdentifier() BACnetApplicationTagCharacterString
@@ -45,6 +46,8 @@ type BACnetConstructedDataUserExternalIdentifier interface {
 	GetActualValue() BACnetApplicationTagCharacterString
 	// IsBACnetConstructedDataUserExternalIdentifier is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUserExternalIdentifier()
+	// CreateBuilder creates a BACnetConstructedDataUserExternalIdentifierBuilder
+	CreateBACnetConstructedDataUserExternalIdentifierBuilder() BACnetConstructedDataUserExternalIdentifierBuilder
 }
 
 // _BACnetConstructedDataUserExternalIdentifier is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataUserExternalIdentifier struct {
 
 var _ BACnetConstructedDataUserExternalIdentifier = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUserExternalIdentifier)(nil)
+
+// NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
+func NewBACnetConstructedDataUserExternalIdentifier(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, userExternalIdentifier BACnetApplicationTagCharacterString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
+	if userExternalIdentifier == nil {
+		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
+	}
+	_result := &_BACnetConstructedDataUserExternalIdentifier{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UserExternalIdentifier:        userExternalIdentifier,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUserExternalIdentifierBuilder is a builder for BACnetConstructedDataUserExternalIdentifier
+type BACnetConstructedDataUserExternalIdentifierBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(userExternalIdentifier BACnetApplicationTagCharacterString) BACnetConstructedDataUserExternalIdentifierBuilder
+	// WithUserExternalIdentifier adds UserExternalIdentifier (property field)
+	WithUserExternalIdentifier(BACnetApplicationTagCharacterString) BACnetConstructedDataUserExternalIdentifierBuilder
+	// WithUserExternalIdentifierBuilder adds UserExternalIdentifier (property field) which is build by the builder
+	WithUserExternalIdentifierBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserExternalIdentifierBuilder
+	// Build builds the BACnetConstructedDataUserExternalIdentifier or returns an error if something is wrong
+	Build() (BACnetConstructedDataUserExternalIdentifier, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUserExternalIdentifier
+}
+
+// NewBACnetConstructedDataUserExternalIdentifierBuilder() creates a BACnetConstructedDataUserExternalIdentifierBuilder
+func NewBACnetConstructedDataUserExternalIdentifierBuilder() BACnetConstructedDataUserExternalIdentifierBuilder {
+	return &_BACnetConstructedDataUserExternalIdentifierBuilder{_BACnetConstructedDataUserExternalIdentifier: new(_BACnetConstructedDataUserExternalIdentifier)}
+}
+
+type _BACnetConstructedDataUserExternalIdentifierBuilder struct {
+	*_BACnetConstructedDataUserExternalIdentifier
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUserExternalIdentifierBuilder) = (*_BACnetConstructedDataUserExternalIdentifierBuilder)(nil)
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) WithMandatoryFields(userExternalIdentifier BACnetApplicationTagCharacterString) BACnetConstructedDataUserExternalIdentifierBuilder {
+	return b.WithUserExternalIdentifier(userExternalIdentifier)
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) WithUserExternalIdentifier(userExternalIdentifier BACnetApplicationTagCharacterString) BACnetConstructedDataUserExternalIdentifierBuilder {
+	b.UserExternalIdentifier = userExternalIdentifier
+	return b
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) WithUserExternalIdentifierBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetConstructedDataUserExternalIdentifierBuilder {
+	builder := builderSupplier(b.UserExternalIdentifier.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.UserExternalIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) Build() (BACnetConstructedDataUserExternalIdentifier, error) {
+	if b.UserExternalIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'userExternalIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataUserExternalIdentifier.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) MustBuild() BACnetConstructedDataUserExternalIdentifier {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUserExternalIdentifierBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUserExternalIdentifierBuilder().(*_BACnetConstructedDataUserExternalIdentifierBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataUserExternalIdentifierBuilder creates a BACnetConstructedDataUserExternalIdentifierBuilder
+func (b *_BACnetConstructedDataUserExternalIdentifier) CreateBACnetConstructedDataUserExternalIdentifierBuilder() BACnetConstructedDataUserExternalIdentifierBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataUserExternalIdentifierBuilder()
+	}
+	return &_BACnetConstructedDataUserExternalIdentifierBuilder{_BACnetConstructedDataUserExternalIdentifier: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) GetActualValue() BACnetAp
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUserExternalIdentifier factory function for _BACnetConstructedDataUserExternalIdentifier
-func NewBACnetConstructedDataUserExternalIdentifier(userExternalIdentifier BACnetApplicationTagCharacterString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUserExternalIdentifier {
-	if userExternalIdentifier == nil {
-		panic("userExternalIdentifier of type BACnetApplicationTagCharacterString for BACnetConstructedDataUserExternalIdentifier must not be nil")
-	}
-	_result := &_BACnetConstructedDataUserExternalIdentifier{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UserExternalIdentifier:        userExternalIdentifier,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUserExternalIdentifier(structType any) BACnetConstructedDataUserExternalIdentifier {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataUserExternalIdentifier) SerializeWithWriteBuffer(
 func (m *_BACnetConstructedDataUserExternalIdentifier) IsBACnetConstructedDataUserExternalIdentifier() {
 }
 
+func (m *_BACnetConstructedDataUserExternalIdentifier) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUserExternalIdentifier) deepCopy() *_BACnetConstructedDataUserExternalIdentifier {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUserExternalIdentifierCopy := &_BACnetConstructedDataUserExternalIdentifier{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UserExternalIdentifier.DeepCopy().(BACnetApplicationTagCharacterString),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUserExternalIdentifierCopy
+}
+
 func (m *_BACnetConstructedDataUserExternalIdentifier) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -40,14 +40,19 @@ type ConnectionResponseDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
+	// CreateBuilder creates a ConnectionResponseDataBlockBuilder
+	CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder
 }
 
 // ConnectionResponseDataBlockContract provides a set of functions which can be overwritten by a sub struct
 type ConnectionResponseDataBlockContract interface {
 	// IsConnectionResponseDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionResponseDataBlock()
+	// CreateBuilder creates a ConnectionResponseDataBlockBuilder
+	CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder
 }
 
 // ConnectionResponseDataBlockRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,151 @@ var _ ConnectionResponseDataBlockContract = (*_ConnectionResponseDataBlock)(nil)
 func NewConnectionResponseDataBlock() *_ConnectionResponseDataBlock {
 	return &_ConnectionResponseDataBlock{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionResponseDataBlockBuilder is a builder for ConnectionResponseDataBlock
+type ConnectionResponseDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ConnectionResponseDataBlockBuilder
+	// AsConnectionResponseDataBlockDeviceManagement converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
+	AsConnectionResponseDataBlockDeviceManagement() interface {
+		ConnectionResponseDataBlockDeviceManagementBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}
+	// AsConnectionResponseDataBlockTunnelConnection converts this build to a subType of ConnectionResponseDataBlock. It is always possible to return to current builder using Done()
+	AsConnectionResponseDataBlockTunnelConnection() interface {
+		ConnectionResponseDataBlockTunnelConnectionBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}
+	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
+	PartialBuild() (ConnectionResponseDataBlockContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ConnectionResponseDataBlockContract
+	// Build builds the ConnectionResponseDataBlock or returns an error if something is wrong
+	Build() (ConnectionResponseDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionResponseDataBlock
+}
+
+// NewConnectionResponseDataBlockBuilder() creates a ConnectionResponseDataBlockBuilder
+func NewConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
+	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: new(_ConnectionResponseDataBlock)}
+}
+
+type _ConnectionResponseDataBlockChildBuilder interface {
+	utils.Copyable
+	setParent(ConnectionResponseDataBlockContract)
+	buildForConnectionResponseDataBlock() (ConnectionResponseDataBlock, error)
+}
+
+type _ConnectionResponseDataBlockBuilder struct {
+	*_ConnectionResponseDataBlock
+
+	childBuilder _ConnectionResponseDataBlockChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionResponseDataBlockBuilder) = (*_ConnectionResponseDataBlockBuilder)(nil)
+
+func (b *_ConnectionResponseDataBlockBuilder) WithMandatoryFields() ConnectionResponseDataBlockBuilder {
+	return b
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) PartialBuild() (ConnectionResponseDataBlockContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectionResponseDataBlock.deepCopy(), nil
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) PartialMustBuild() ConnectionResponseDataBlockContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockDeviceManagement() interface {
+	ConnectionResponseDataBlockDeviceManagementBuilder
+	Done() ConnectionResponseDataBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionResponseDataBlockDeviceManagementBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionResponseDataBlockDeviceManagementBuilder().(*_ConnectionResponseDataBlockDeviceManagementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) AsConnectionResponseDataBlockTunnelConnection() interface {
+	ConnectionResponseDataBlockTunnelConnectionBuilder
+	Done() ConnectionResponseDataBlockBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConnectionResponseDataBlockTunnelConnectionBuilder
+		Done() ConnectionResponseDataBlockBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConnectionResponseDataBlockTunnelConnectionBuilder().(*_ConnectionResponseDataBlockTunnelConnectionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) Build() (ConnectionResponseDataBlock, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForConnectionResponseDataBlock()
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) MustBuild() ConnectionResponseDataBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ConnectionResponseDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionResponseDataBlockBuilder().(*_ConnectionResponseDataBlockBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ConnectionResponseDataBlockChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectionResponseDataBlockBuilder creates a ConnectionResponseDataBlockBuilder
+func (b *_ConnectionResponseDataBlock) CreateConnectionResponseDataBlockBuilder() ConnectionResponseDataBlockBuilder {
+	if b == nil {
+		return NewConnectionResponseDataBlockBuilder()
+	}
+	return &_ConnectionResponseDataBlockBuilder{_ConnectionResponseDataBlock: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastConnectionResponseDataBlock(structType any) ConnectionResponseDataBlock {
@@ -111,7 +261,7 @@ func ConnectionResponseDataBlockParseWithBufferProducer[T ConnectionResponseData
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -121,7 +271,12 @@ func ConnectionResponseDataBlockParseWithBuffer[T ConnectionResponseDataBlock](c
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ConnectionResponseDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__connectionResponseDataBlock ConnectionResponseDataBlock, err error) {
@@ -148,11 +303,11 @@ func (m *_ConnectionResponseDataBlock) parse(ctx context.Context, readBuffer uti
 	var _child ConnectionResponseDataBlock
 	switch {
 	case connectionType == 0x03: // ConnectionResponseDataBlockDeviceManagement
-		if _child, err = (&_ConnectionResponseDataBlockDeviceManagement{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionResponseDataBlockDeviceManagement).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockDeviceManagement for type-switch of ConnectionResponseDataBlock")
 		}
 	case connectionType == 0x04: // ConnectionResponseDataBlockTunnelConnection
-		if _child, err = (&_ConnectionResponseDataBlockTunnelConnection{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ConnectionResponseDataBlockTunnelConnection).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConnectionResponseDataBlockTunnelConnection for type-switch of ConnectionResponseDataBlock")
 		}
 	default:
@@ -198,3 +353,17 @@ func (pm *_ConnectionResponseDataBlock) serializeParent(ctx context.Context, wri
 }
 
 func (m *_ConnectionResponseDataBlock) IsConnectionResponseDataBlock() {}
+
+func (m *_ConnectionResponseDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionResponseDataBlock) deepCopy() *_ConnectionResponseDataBlock {
+	if m == nil {
+		return nil
+	}
+	_ConnectionResponseDataBlockCopy := &_ConnectionResponseDataBlock{
+		nil, // will be set by child
+	}
+	return _ConnectionResponseDataBlockCopy
+}

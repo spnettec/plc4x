@@ -38,6 +38,7 @@ type BACnetConstructedDataExceptionSchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataExceptionSchedule interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataExceptionSchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataExceptionSchedule()
+	// CreateBuilder creates a BACnetConstructedDataExceptionScheduleBuilder
+	CreateBACnetConstructedDataExceptionScheduleBuilder() BACnetConstructedDataExceptionScheduleBuilder
 }
 
 // _BACnetConstructedDataExceptionSchedule is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataExceptionSchedule struct {
 
 var _ BACnetConstructedDataExceptionSchedule = (*_BACnetConstructedDataExceptionSchedule)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataExceptionSchedule)(nil)
+
+// NewBACnetConstructedDataExceptionSchedule factory function for _BACnetConstructedDataExceptionSchedule
+func NewBACnetConstructedDataExceptionSchedule(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, exceptionSchedule []BACnetSpecialEvent, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExceptionSchedule {
+	_result := &_BACnetConstructedDataExceptionSchedule{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ExceptionSchedule:             exceptionSchedule,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataExceptionScheduleBuilder is a builder for BACnetConstructedDataExceptionSchedule
+type BACnetConstructedDataExceptionScheduleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(exceptionSchedule []BACnetSpecialEvent) BACnetConstructedDataExceptionScheduleBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExceptionScheduleBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataExceptionScheduleBuilder
+	// WithExceptionSchedule adds ExceptionSchedule (property field)
+	WithExceptionSchedule(...BACnetSpecialEvent) BACnetConstructedDataExceptionScheduleBuilder
+	// Build builds the BACnetConstructedDataExceptionSchedule or returns an error if something is wrong
+	Build() (BACnetConstructedDataExceptionSchedule, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataExceptionSchedule
+}
+
+// NewBACnetConstructedDataExceptionScheduleBuilder() creates a BACnetConstructedDataExceptionScheduleBuilder
+func NewBACnetConstructedDataExceptionScheduleBuilder() BACnetConstructedDataExceptionScheduleBuilder {
+	return &_BACnetConstructedDataExceptionScheduleBuilder{_BACnetConstructedDataExceptionSchedule: new(_BACnetConstructedDataExceptionSchedule)}
+}
+
+type _BACnetConstructedDataExceptionScheduleBuilder struct {
+	*_BACnetConstructedDataExceptionSchedule
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataExceptionScheduleBuilder) = (*_BACnetConstructedDataExceptionScheduleBuilder)(nil)
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) WithMandatoryFields(exceptionSchedule []BACnetSpecialEvent) BACnetConstructedDataExceptionScheduleBuilder {
+	return b.WithExceptionSchedule(exceptionSchedule...)
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataExceptionScheduleBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataExceptionScheduleBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) WithExceptionSchedule(exceptionSchedule ...BACnetSpecialEvent) BACnetConstructedDataExceptionScheduleBuilder {
+	b.ExceptionSchedule = exceptionSchedule
+	return b
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) Build() (BACnetConstructedDataExceptionSchedule, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataExceptionSchedule.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) MustBuild() BACnetConstructedDataExceptionSchedule {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataExceptionScheduleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataExceptionScheduleBuilder().(*_BACnetConstructedDataExceptionScheduleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataExceptionScheduleBuilder creates a BACnetConstructedDataExceptionScheduleBuilder
+func (b *_BACnetConstructedDataExceptionSchedule) CreateBACnetConstructedDataExceptionScheduleBuilder() BACnetConstructedDataExceptionScheduleBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataExceptionScheduleBuilder()
+	}
+	return &_BACnetConstructedDataExceptionScheduleBuilder{_BACnetConstructedDataExceptionSchedule: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataExceptionSchedule) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataExceptionSchedule factory function for _BACnetConstructedDataExceptionSchedule
-func NewBACnetConstructedDataExceptionSchedule(numberOfDataElements BACnetApplicationTagUnsignedInteger, exceptionSchedule []BACnetSpecialEvent, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataExceptionSchedule {
-	_result := &_BACnetConstructedDataExceptionSchedule{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ExceptionSchedule:             exceptionSchedule,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataExceptionSchedule(structType any) BACnetConstructedDataExceptionSchedule {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataExceptionSchedule) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataExceptionSchedule) IsBACnetConstructedDataExceptionSchedule() {}
 
+func (m *_BACnetConstructedDataExceptionSchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataExceptionSchedule) deepCopy() *_BACnetConstructedDataExceptionSchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataExceptionScheduleCopy := &_BACnetConstructedDataExceptionSchedule{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetSpecialEvent, BACnetSpecialEvent](m.ExceptionSchedule),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataExceptionScheduleCopy
+}
+
 func (m *_BACnetConstructedDataExceptionSchedule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

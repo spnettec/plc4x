@@ -38,11 +38,14 @@ type KnxNetIpTunneling interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ServiceId
 	// GetVersion returns Version (property field)
 	GetVersion() uint8
 	// IsKnxNetIpTunneling is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxNetIpTunneling()
+	// CreateBuilder creates a KnxNetIpTunnelingBuilder
+	CreateKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder
 }
 
 // _KnxNetIpTunneling is the data-structure of this message
@@ -53,6 +56,107 @@ type _KnxNetIpTunneling struct {
 
 var _ KnxNetIpTunneling = (*_KnxNetIpTunneling)(nil)
 var _ ServiceIdRequirements = (*_KnxNetIpTunneling)(nil)
+
+// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
+func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
+	_result := &_KnxNetIpTunneling{
+		ServiceIdContract: NewServiceId(),
+		Version:           version,
+	}
+	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxNetIpTunnelingBuilder is a builder for KnxNetIpTunneling
+type KnxNetIpTunnelingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint8) KnxNetIpTunnelingBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint8) KnxNetIpTunnelingBuilder
+	// Build builds the KnxNetIpTunneling or returns an error if something is wrong
+	Build() (KnxNetIpTunneling, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxNetIpTunneling
+}
+
+// NewKnxNetIpTunnelingBuilder() creates a KnxNetIpTunnelingBuilder
+func NewKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder {
+	return &_KnxNetIpTunnelingBuilder{_KnxNetIpTunneling: new(_KnxNetIpTunneling)}
+}
+
+type _KnxNetIpTunnelingBuilder struct {
+	*_KnxNetIpTunneling
+
+	parentBuilder *_ServiceIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (KnxNetIpTunnelingBuilder) = (*_KnxNetIpTunnelingBuilder)(nil)
+
+func (b *_KnxNetIpTunnelingBuilder) setParent(contract ServiceIdContract) {
+	b.ServiceIdContract = contract
+}
+
+func (b *_KnxNetIpTunnelingBuilder) WithMandatoryFields(version uint8) KnxNetIpTunnelingBuilder {
+	return b.WithVersion(version)
+}
+
+func (b *_KnxNetIpTunnelingBuilder) WithVersion(version uint8) KnxNetIpTunnelingBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_KnxNetIpTunnelingBuilder) Build() (KnxNetIpTunneling, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KnxNetIpTunneling.deepCopy(), nil
+}
+
+func (b *_KnxNetIpTunnelingBuilder) MustBuild() KnxNetIpTunneling {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxNetIpTunnelingBuilder) Done() ServiceIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxNetIpTunnelingBuilder) buildForServiceId() (ServiceId, error) {
+	return b.Build()
+}
+
+func (b *_KnxNetIpTunnelingBuilder) DeepCopy() any {
+	_copy := b.CreateKnxNetIpTunnelingBuilder().(*_KnxNetIpTunnelingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateKnxNetIpTunnelingBuilder creates a KnxNetIpTunnelingBuilder
+func (b *_KnxNetIpTunneling) CreateKnxNetIpTunnelingBuilder() KnxNetIpTunnelingBuilder {
+	if b == nil {
+		return NewKnxNetIpTunnelingBuilder()
+	}
+	return &_KnxNetIpTunnelingBuilder{_KnxNetIpTunneling: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_KnxNetIpTunneling) GetVersion() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxNetIpTunneling factory function for _KnxNetIpTunneling
-func NewKnxNetIpTunneling(version uint8) *_KnxNetIpTunneling {
-	_result := &_KnxNetIpTunneling{
-		ServiceIdContract: NewServiceId(),
-		Version:           version,
-	}
-	_result.ServiceIdContract.(*_ServiceId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxNetIpTunneling(structType any) KnxNetIpTunneling {
@@ -180,13 +274,33 @@ func (m *_KnxNetIpTunneling) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_KnxNetIpTunneling) IsKnxNetIpTunneling() {}
 
+func (m *_KnxNetIpTunneling) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxNetIpTunneling) deepCopy() *_KnxNetIpTunneling {
+	if m == nil {
+		return nil
+	}
+	_KnxNetIpTunnelingCopy := &_KnxNetIpTunneling{
+		m.ServiceIdContract.(*_ServiceId).deepCopy(),
+		m.Version,
+	}
+	m.ServiceIdContract.(*_ServiceId)._SubType = m
+	return _KnxNetIpTunnelingCopy
+}
+
 func (m *_KnxNetIpTunneling) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

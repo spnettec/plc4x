@@ -38,6 +38,7 @@ type NetworkGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetServerUri returns ServerUri (property field)
 	GetServerUri() PascalString
@@ -47,6 +48,8 @@ type NetworkGroupDataType interface {
 	GetNetworkPaths() []ExtensionObjectDefinition
 	// IsNetworkGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkGroupDataType()
+	// CreateBuilder creates a NetworkGroupDataTypeBuilder
+	CreateNetworkGroupDataTypeBuilder() NetworkGroupDataTypeBuilder
 }
 
 // _NetworkGroupDataType is the data-structure of this message
@@ -59,6 +62,147 @@ type _NetworkGroupDataType struct {
 
 var _ NetworkGroupDataType = (*_NetworkGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_NetworkGroupDataType)(nil)
+
+// NewNetworkGroupDataType factory function for _NetworkGroupDataType
+func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
+	if serverUri == nil {
+		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
+	}
+	_result := &_NetworkGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ServerUri:                         serverUri,
+		NoOfNetworkPaths:                  noOfNetworkPaths,
+		NetworkPaths:                      networkPaths,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NetworkGroupDataTypeBuilder is a builder for NetworkGroupDataType
+type NetworkGroupDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) NetworkGroupDataTypeBuilder
+	// WithServerUri adds ServerUri (property field)
+	WithServerUri(PascalString) NetworkGroupDataTypeBuilder
+	// WithServerUriBuilder adds ServerUri (property field) which is build by the builder
+	WithServerUriBuilder(func(PascalStringBuilder) PascalStringBuilder) NetworkGroupDataTypeBuilder
+	// WithNoOfNetworkPaths adds NoOfNetworkPaths (property field)
+	WithNoOfNetworkPaths(int32) NetworkGroupDataTypeBuilder
+	// WithNetworkPaths adds NetworkPaths (property field)
+	WithNetworkPaths(...ExtensionObjectDefinition) NetworkGroupDataTypeBuilder
+	// Build builds the NetworkGroupDataType or returns an error if something is wrong
+	Build() (NetworkGroupDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NetworkGroupDataType
+}
+
+// NewNetworkGroupDataTypeBuilder() creates a NetworkGroupDataTypeBuilder
+func NewNetworkGroupDataTypeBuilder() NetworkGroupDataTypeBuilder {
+	return &_NetworkGroupDataTypeBuilder{_NetworkGroupDataType: new(_NetworkGroupDataType)}
+}
+
+type _NetworkGroupDataTypeBuilder struct {
+	*_NetworkGroupDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NetworkGroupDataTypeBuilder) = (*_NetworkGroupDataTypeBuilder)(nil)
+
+func (b *_NetworkGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_NetworkGroupDataTypeBuilder) WithMandatoryFields(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) NetworkGroupDataTypeBuilder {
+	return b.WithServerUri(serverUri).WithNoOfNetworkPaths(noOfNetworkPaths).WithNetworkPaths(networkPaths...)
+}
+
+func (b *_NetworkGroupDataTypeBuilder) WithServerUri(serverUri PascalString) NetworkGroupDataTypeBuilder {
+	b.ServerUri = serverUri
+	return b
+}
+
+func (b *_NetworkGroupDataTypeBuilder) WithServerUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) NetworkGroupDataTypeBuilder {
+	builder := builderSupplier(b.ServerUri.CreatePascalStringBuilder())
+	var err error
+	b.ServerUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NetworkGroupDataTypeBuilder) WithNoOfNetworkPaths(noOfNetworkPaths int32) NetworkGroupDataTypeBuilder {
+	b.NoOfNetworkPaths = noOfNetworkPaths
+	return b
+}
+
+func (b *_NetworkGroupDataTypeBuilder) WithNetworkPaths(networkPaths ...ExtensionObjectDefinition) NetworkGroupDataTypeBuilder {
+	b.NetworkPaths = networkPaths
+	return b
+}
+
+func (b *_NetworkGroupDataTypeBuilder) Build() (NetworkGroupDataType, error) {
+	if b.ServerUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'serverUri' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NetworkGroupDataType.deepCopy(), nil
+}
+
+func (b *_NetworkGroupDataTypeBuilder) MustBuild() NetworkGroupDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NetworkGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NetworkGroupDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NetworkGroupDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkGroupDataTypeBuilder().(*_NetworkGroupDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNetworkGroupDataTypeBuilder creates a NetworkGroupDataTypeBuilder
+func (b *_NetworkGroupDataType) CreateNetworkGroupDataTypeBuilder() NetworkGroupDataTypeBuilder {
+	if b == nil {
+		return NewNetworkGroupDataTypeBuilder()
+	}
+	return &_NetworkGroupDataTypeBuilder{_NetworkGroupDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_NetworkGroupDataType) GetNetworkPaths() []ExtensionObjectDefinition {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkGroupDataType factory function for _NetworkGroupDataType
-func NewNetworkGroupDataType(serverUri PascalString, noOfNetworkPaths int32, networkPaths []ExtensionObjectDefinition) *_NetworkGroupDataType {
-	if serverUri == nil {
-		panic("serverUri of type PascalString for NetworkGroupDataType must not be nil")
-	}
-	_result := &_NetworkGroupDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ServerUri:                         serverUri,
-		NoOfNetworkPaths:                  noOfNetworkPaths,
-		NetworkPaths:                      networkPaths,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkGroupDataType(structType any) NetworkGroupDataType {
@@ -232,13 +361,35 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_NetworkGroupDataType) IsNetworkGroupDataType() {}
 
+func (m *_NetworkGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkGroupDataType) deepCopy() *_NetworkGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_NetworkGroupDataTypeCopy := &_NetworkGroupDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ServerUri.DeepCopy().(PascalString),
+		m.NoOfNetworkPaths,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.NetworkPaths),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _NetworkGroupDataTypeCopy
+}
+
 func (m *_NetworkGroupDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

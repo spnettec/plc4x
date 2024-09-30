@@ -38,6 +38,7 @@ type CipWriteResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CipService
 	// GetStatus returns Status (property field)
 	GetStatus() uint8
@@ -45,6 +46,8 @@ type CipWriteResponse interface {
 	GetExtStatus() uint8
 	// IsCipWriteResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCipWriteResponse()
+	// CreateBuilder creates a CipWriteResponseBuilder
+	CreateCipWriteResponseBuilder() CipWriteResponseBuilder
 }
 
 // _CipWriteResponse is the data-structure of this message
@@ -58,6 +61,115 @@ type _CipWriteResponse struct {
 
 var _ CipWriteResponse = (*_CipWriteResponse)(nil)
 var _ CipServiceRequirements = (*_CipWriteResponse)(nil)
+
+// NewCipWriteResponse factory function for _CipWriteResponse
+func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
+	_result := &_CipWriteResponse{
+		CipServiceContract: NewCipService(serviceLen),
+		Status:             status,
+		ExtStatus:          extStatus,
+	}
+	_result.CipServiceContract.(*_CipService)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CipWriteResponseBuilder is a builder for CipWriteResponse
+type CipWriteResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(status uint8, extStatus uint8) CipWriteResponseBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) CipWriteResponseBuilder
+	// WithExtStatus adds ExtStatus (property field)
+	WithExtStatus(uint8) CipWriteResponseBuilder
+	// Build builds the CipWriteResponse or returns an error if something is wrong
+	Build() (CipWriteResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CipWriteResponse
+}
+
+// NewCipWriteResponseBuilder() creates a CipWriteResponseBuilder
+func NewCipWriteResponseBuilder() CipWriteResponseBuilder {
+	return &_CipWriteResponseBuilder{_CipWriteResponse: new(_CipWriteResponse)}
+}
+
+type _CipWriteResponseBuilder struct {
+	*_CipWriteResponse
+
+	parentBuilder *_CipServiceBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CipWriteResponseBuilder) = (*_CipWriteResponseBuilder)(nil)
+
+func (b *_CipWriteResponseBuilder) setParent(contract CipServiceContract) {
+	b.CipServiceContract = contract
+}
+
+func (b *_CipWriteResponseBuilder) WithMandatoryFields(status uint8, extStatus uint8) CipWriteResponseBuilder {
+	return b.WithStatus(status).WithExtStatus(extStatus)
+}
+
+func (b *_CipWriteResponseBuilder) WithStatus(status uint8) CipWriteResponseBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_CipWriteResponseBuilder) WithExtStatus(extStatus uint8) CipWriteResponseBuilder {
+	b.ExtStatus = extStatus
+	return b
+}
+
+func (b *_CipWriteResponseBuilder) Build() (CipWriteResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CipWriteResponse.deepCopy(), nil
+}
+
+func (b *_CipWriteResponseBuilder) MustBuild() CipWriteResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CipWriteResponseBuilder) Done() CipServiceBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CipWriteResponseBuilder) buildForCipService() (CipService, error) {
+	return b.Build()
+}
+
+func (b *_CipWriteResponseBuilder) DeepCopy() any {
+	_copy := b.CreateCipWriteResponseBuilder().(*_CipWriteResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCipWriteResponseBuilder creates a CipWriteResponseBuilder
+func (b *_CipWriteResponse) CreateCipWriteResponseBuilder() CipWriteResponseBuilder {
+	if b == nil {
+		return NewCipWriteResponseBuilder()
+	}
+	return &_CipWriteResponseBuilder{_CipWriteResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,17 +214,6 @@ func (m *_CipWriteResponse) GetExtStatus() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCipWriteResponse factory function for _CipWriteResponse
-func NewCipWriteResponse(status uint8, extStatus uint8, serviceLen uint16) *_CipWriteResponse {
-	_result := &_CipWriteResponse{
-		CipServiceContract: NewCipService(serviceLen),
-		Status:             status,
-		ExtStatus:          extStatus,
-	}
-	_result.CipServiceContract.(*_CipService)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCipWriteResponse(structType any) CipWriteResponse {
@@ -224,13 +325,35 @@ func (m *_CipWriteResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_CipWriteResponse) IsCipWriteResponse() {}
 
+func (m *_CipWriteResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CipWriteResponse) deepCopy() *_CipWriteResponse {
+	if m == nil {
+		return nil
+	}
+	_CipWriteResponseCopy := &_CipWriteResponse{
+		m.CipServiceContract.(*_CipService).deepCopy(),
+		m.Status,
+		m.ExtStatus,
+		m.reservedField0,
+	}
+	m.CipServiceContract.(*_CipService)._SubType = m
+	return _CipWriteResponseCopy
+}
+
 func (m *_CipWriteResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

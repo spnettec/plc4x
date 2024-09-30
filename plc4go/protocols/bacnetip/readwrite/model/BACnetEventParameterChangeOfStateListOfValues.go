@@ -38,6 +38,7 @@ type BACnetEventParameterChangeOfStateListOfValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetListOfValues returns ListOfValues (property field)
@@ -46,6 +47,8 @@ type BACnetEventParameterChangeOfStateListOfValues interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetEventParameterChangeOfStateListOfValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterChangeOfStateListOfValues()
+	// CreateBuilder creates a BACnetEventParameterChangeOfStateListOfValuesBuilder
+	CreateBACnetEventParameterChangeOfStateListOfValuesBuilder() BACnetEventParameterChangeOfStateListOfValuesBuilder
 }
 
 // _BACnetEventParameterChangeOfStateListOfValues is the data-structure of this message
@@ -59,6 +62,149 @@ type _BACnetEventParameterChangeOfStateListOfValues struct {
 }
 
 var _ BACnetEventParameterChangeOfStateListOfValues = (*_BACnetEventParameterChangeOfStateListOfValues)(nil)
+
+// NewBACnetEventParameterChangeOfStateListOfValues factory function for _BACnetEventParameterChangeOfStateListOfValues
+func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfStateListOfValues {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
+	}
+	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterChangeOfStateListOfValuesBuilder is a builder for BACnetEventParameterChangeOfStateListOfValues
+type BACnetEventParameterChangeOfStateListOfValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// WithListOfValues adds ListOfValues (property field)
+	WithListOfValues(...BACnetPropertyStates) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfStateListOfValuesBuilder
+	// Build builds the BACnetEventParameterChangeOfStateListOfValues or returns an error if something is wrong
+	Build() (BACnetEventParameterChangeOfStateListOfValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterChangeOfStateListOfValues
+}
+
+// NewBACnetEventParameterChangeOfStateListOfValuesBuilder() creates a BACnetEventParameterChangeOfStateListOfValuesBuilder
+func NewBACnetEventParameterChangeOfStateListOfValuesBuilder() BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	return &_BACnetEventParameterChangeOfStateListOfValuesBuilder{_BACnetEventParameterChangeOfStateListOfValues: new(_BACnetEventParameterChangeOfStateListOfValues)}
+}
+
+type _BACnetEventParameterChangeOfStateListOfValuesBuilder struct {
+	*_BACnetEventParameterChangeOfStateListOfValues
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterChangeOfStateListOfValuesBuilder) = (*_BACnetEventParameterChangeOfStateListOfValuesBuilder)(nil)
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	return b.WithOpeningTag(openingTag).WithListOfValues(listOfValues...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithListOfValues(listOfValues ...BACnetPropertyStates) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	b.ListOfValues = listOfValues
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) Build() (BACnetEventParameterChangeOfStateListOfValues, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterChangeOfStateListOfValues.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) MustBuild() BACnetEventParameterChangeOfStateListOfValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterChangeOfStateListOfValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterChangeOfStateListOfValuesBuilder().(*_BACnetEventParameterChangeOfStateListOfValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventParameterChangeOfStateListOfValuesBuilder creates a BACnetEventParameterChangeOfStateListOfValuesBuilder
+func (b *_BACnetEventParameterChangeOfStateListOfValues) CreateBACnetEventParameterChangeOfStateListOfValuesBuilder() BACnetEventParameterChangeOfStateListOfValuesBuilder {
+	if b == nil {
+		return NewBACnetEventParameterChangeOfStateListOfValuesBuilder()
+	}
+	return &_BACnetEventParameterChangeOfStateListOfValuesBuilder{_BACnetEventParameterChangeOfStateListOfValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,17 +227,6 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) GetClosingTag() BACnetC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetEventParameterChangeOfStateListOfValues factory function for _BACnetEventParameterChangeOfStateListOfValues
-func NewBACnetEventParameterChangeOfStateListOfValues(openingTag BACnetOpeningTag, listOfValues []BACnetPropertyStates, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterChangeOfStateListOfValues {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterChangeOfStateListOfValues must not be nil")
-	}
-	return &_BACnetEventParameterChangeOfStateListOfValues{OpeningTag: openingTag, ListOfValues: listOfValues, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterChangeOfStateListOfValues(structType any) BACnetEventParameterChangeOfStateListOfValues {
@@ -146,7 +281,7 @@ func BACnetEventParameterChangeOfStateListOfValuesParseWithBuffer(ctx context.Co
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterChangeOfStateListOfValues) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterChangeOfStateListOfValues BACnetEventParameterChangeOfStateListOfValues, err error) {
@@ -231,13 +366,34 @@ func (m *_BACnetEventParameterChangeOfStateListOfValues) GetTagNumber() uint8 {
 func (m *_BACnetEventParameterChangeOfStateListOfValues) IsBACnetEventParameterChangeOfStateListOfValues() {
 }
 
+func (m *_BACnetEventParameterChangeOfStateListOfValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterChangeOfStateListOfValues) deepCopy() *_BACnetEventParameterChangeOfStateListOfValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterChangeOfStateListOfValuesCopy := &_BACnetEventParameterChangeOfStateListOfValues{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetPropertyStates, BACnetPropertyStates](m.ListOfValues),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterChangeOfStateListOfValuesCopy
+}
+
 func (m *_BACnetEventParameterChangeOfStateListOfValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

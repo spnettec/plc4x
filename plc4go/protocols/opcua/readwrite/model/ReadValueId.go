@@ -38,6 +38,7 @@ type ReadValueId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNodeId returns NodeId (property field)
 	GetNodeId() NodeId
@@ -49,6 +50,8 @@ type ReadValueId interface {
 	GetDataEncoding() QualifiedName
 	// IsReadValueId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsReadValueId()
+	// CreateBuilder creates a ReadValueIdBuilder
+	CreateReadValueIdBuilder() ReadValueIdBuilder
 }
 
 // _ReadValueId is the data-structure of this message
@@ -62,6 +65,203 @@ type _ReadValueId struct {
 
 var _ ReadValueId = (*_ReadValueId)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ReadValueId)(nil)
+
+// NewReadValueId factory function for _ReadValueId
+func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
+	if nodeId == nil {
+		panic("nodeId of type NodeId for ReadValueId must not be nil")
+	}
+	if indexRange == nil {
+		panic("indexRange of type PascalString for ReadValueId must not be nil")
+	}
+	if dataEncoding == nil {
+		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
+	}
+	_result := &_ReadValueId{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		NodeId:                            nodeId,
+		AttributeId:                       attributeId,
+		IndexRange:                        indexRange,
+		DataEncoding:                      dataEncoding,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ReadValueIdBuilder is a builder for ReadValueId
+type ReadValueIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder
+	// WithNodeId adds NodeId (property field)
+	WithNodeId(NodeId) ReadValueIdBuilder
+	// WithNodeIdBuilder adds NodeId (property field) which is build by the builder
+	WithNodeIdBuilder(func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder
+	// WithAttributeId adds AttributeId (property field)
+	WithAttributeId(uint32) ReadValueIdBuilder
+	// WithIndexRange adds IndexRange (property field)
+	WithIndexRange(PascalString) ReadValueIdBuilder
+	// WithIndexRangeBuilder adds IndexRange (property field) which is build by the builder
+	WithIndexRangeBuilder(func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder
+	// WithDataEncoding adds DataEncoding (property field)
+	WithDataEncoding(QualifiedName) ReadValueIdBuilder
+	// WithDataEncodingBuilder adds DataEncoding (property field) which is build by the builder
+	WithDataEncodingBuilder(func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder
+	// Build builds the ReadValueId or returns an error if something is wrong
+	Build() (ReadValueId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ReadValueId
+}
+
+// NewReadValueIdBuilder() creates a ReadValueIdBuilder
+func NewReadValueIdBuilder() ReadValueIdBuilder {
+	return &_ReadValueIdBuilder{_ReadValueId: new(_ReadValueId)}
+}
+
+type _ReadValueIdBuilder struct {
+	*_ReadValueId
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ReadValueIdBuilder) = (*_ReadValueIdBuilder)(nil)
+
+func (b *_ReadValueIdBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ReadValueIdBuilder) WithMandatoryFields(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) ReadValueIdBuilder {
+	return b.WithNodeId(nodeId).WithAttributeId(attributeId).WithIndexRange(indexRange).WithDataEncoding(dataEncoding)
+}
+
+func (b *_ReadValueIdBuilder) WithNodeId(nodeId NodeId) ReadValueIdBuilder {
+	b.NodeId = nodeId
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithNodeIdBuilder(builderSupplier func(NodeIdBuilder) NodeIdBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.NodeId.CreateNodeIdBuilder())
+	var err error
+	b.NodeId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NodeIdBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithAttributeId(attributeId uint32) ReadValueIdBuilder {
+	b.AttributeId = attributeId
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithIndexRange(indexRange PascalString) ReadValueIdBuilder {
+	b.IndexRange = indexRange
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithIndexRangeBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.IndexRange.CreatePascalStringBuilder())
+	var err error
+	b.IndexRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithDataEncoding(dataEncoding QualifiedName) ReadValueIdBuilder {
+	b.DataEncoding = dataEncoding
+	return b
+}
+
+func (b *_ReadValueIdBuilder) WithDataEncodingBuilder(builderSupplier func(QualifiedNameBuilder) QualifiedNameBuilder) ReadValueIdBuilder {
+	builder := builderSupplier(b.DataEncoding.CreateQualifiedNameBuilder())
+	var err error
+	b.DataEncoding, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "QualifiedNameBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ReadValueIdBuilder) Build() (ReadValueId, error) {
+	if b.NodeId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'nodeId' not set"))
+	}
+	if b.IndexRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'indexRange' not set"))
+	}
+	if b.DataEncoding == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dataEncoding' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ReadValueId.deepCopy(), nil
+}
+
+func (b *_ReadValueIdBuilder) MustBuild() ReadValueId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ReadValueIdBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ReadValueIdBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ReadValueIdBuilder) DeepCopy() any {
+	_copy := b.CreateReadValueIdBuilder().(*_ReadValueIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateReadValueIdBuilder creates a ReadValueIdBuilder
+func (b *_ReadValueId) CreateReadValueIdBuilder() ReadValueIdBuilder {
+	if b == nil {
+		return NewReadValueIdBuilder()
+	}
+	return &_ReadValueIdBuilder{_ReadValueId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,28 +306,6 @@ func (m *_ReadValueId) GetDataEncoding() QualifiedName {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewReadValueId factory function for _ReadValueId
-func NewReadValueId(nodeId NodeId, attributeId uint32, indexRange PascalString, dataEncoding QualifiedName) *_ReadValueId {
-	if nodeId == nil {
-		panic("nodeId of type NodeId for ReadValueId must not be nil")
-	}
-	if indexRange == nil {
-		panic("indexRange of type PascalString for ReadValueId must not be nil")
-	}
-	if dataEncoding == nil {
-		panic("dataEncoding of type QualifiedName for ReadValueId must not be nil")
-	}
-	_result := &_ReadValueId{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		NodeId:                            nodeId,
-		AttributeId:                       attributeId,
-		IndexRange:                        indexRange,
-		DataEncoding:                      dataEncoding,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastReadValueId(structType any) ReadValueId {
@@ -252,13 +430,36 @@ func (m *_ReadValueId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_ReadValueId) IsReadValueId() {}
 
+func (m *_ReadValueId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ReadValueId) deepCopy() *_ReadValueId {
+	if m == nil {
+		return nil
+	}
+	_ReadValueIdCopy := &_ReadValueId{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.NodeId.DeepCopy().(NodeId),
+		m.AttributeId,
+		m.IndexRange.DeepCopy().(PascalString),
+		m.DataEncoding.DeepCopy().(QualifiedName),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ReadValueIdCopy
+}
+
 func (m *_ReadValueId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

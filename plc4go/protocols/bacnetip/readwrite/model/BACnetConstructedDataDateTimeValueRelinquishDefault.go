@@ -38,6 +38,7 @@ type BACnetConstructedDataDateTimeValueRelinquishDefault interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetRelinquishDefault returns RelinquishDefault (property field)
 	GetRelinquishDefault() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataDateTimeValueRelinquishDefault interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataDateTimeValueRelinquishDefault is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDateTimeValueRelinquishDefault()
+	// CreateBuilder creates a BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+	CreateBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder() BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
 }
 
 // _BACnetConstructedDataDateTimeValueRelinquishDefault is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDateTimeValueRelinquishDefault struct {
 
 var _ BACnetConstructedDataDateTimeValueRelinquishDefault = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDateTimeValueRelinquishDefault)(nil)
+
+// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
+func NewBACnetConstructedDataDateTimeValueRelinquishDefault(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, relinquishDefault BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if relinquishDefault == nil {
+		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
+	}
+	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		RelinquishDefault:             relinquishDefault,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder is a builder for BACnetConstructedDataDateTimeValueRelinquishDefault
+type BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+	// WithRelinquishDefault adds RelinquishDefault (property field)
+	WithRelinquishDefault(BACnetDateTime) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+	// WithRelinquishDefaultBuilder adds RelinquishDefault (property field) which is build by the builder
+	WithRelinquishDefaultBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+	// Build builds the BACnetConstructedDataDateTimeValueRelinquishDefault or returns an error if something is wrong
+	Build() (BACnetConstructedDataDateTimeValueRelinquishDefault, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDateTimeValueRelinquishDefault
+}
+
+// NewBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder() creates a BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+func NewBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder() BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder {
+	return &_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder{_BACnetConstructedDataDateTimeValueRelinquishDefault: new(_BACnetConstructedDataDateTimeValueRelinquishDefault)}
+}
+
+type _BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder struct {
+	*_BACnetConstructedDataDateTimeValueRelinquishDefault
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) = (*_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder)(nil)
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) WithMandatoryFields(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder {
+	return b.WithRelinquishDefault(relinquishDefault)
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) WithRelinquishDefault(relinquishDefault BACnetDateTime) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder {
+	b.RelinquishDefault = relinquishDefault
+	return b
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) WithRelinquishDefaultBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder {
+	builder := builderSupplier(b.RelinquishDefault.CreateBACnetDateTimeBuilder())
+	var err error
+	b.RelinquishDefault, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) Build() (BACnetConstructedDataDateTimeValueRelinquishDefault, error) {
+	if b.RelinquishDefault == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'relinquishDefault' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDateTimeValueRelinquishDefault.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) MustBuild() BACnetConstructedDataDateTimeValueRelinquishDefault {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder().(*_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder creates a BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder
+func (b *_BACnetConstructedDataDateTimeValueRelinquishDefault) CreateBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder() BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDateTimeValueRelinquishDefaultBuilder()
+	}
+	return &_BACnetConstructedDataDateTimeValueRelinquishDefaultBuilder{_BACnetConstructedDataDateTimeValueRelinquishDefault: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) GetActualValue() 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDateTimeValueRelinquishDefault factory function for _BACnetConstructedDataDateTimeValueRelinquishDefault
-func NewBACnetConstructedDataDateTimeValueRelinquishDefault(relinquishDefault BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDateTimeValueRelinquishDefault {
-	if relinquishDefault == nil {
-		panic("relinquishDefault of type BACnetDateTime for BACnetConstructedDataDateTimeValueRelinquishDefault must not be nil")
-	}
-	_result := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		RelinquishDefault:             relinquishDefault,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDateTimeValueRelinquishDefault(structType any) BACnetConstructedDataDateTimeValueRelinquishDefault {
@@ -219,13 +334,33 @@ func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) SerializeWithWrit
 func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) IsBACnetConstructedDataDateTimeValueRelinquishDefault() {
 }
 
+func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) deepCopy() *_BACnetConstructedDataDateTimeValueRelinquishDefault {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDateTimeValueRelinquishDefaultCopy := &_BACnetConstructedDataDateTimeValueRelinquishDefault{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.RelinquishDefault.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDateTimeValueRelinquishDefaultCopy
+}
+
 func (m *_BACnetConstructedDataDateTimeValueRelinquishDefault) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

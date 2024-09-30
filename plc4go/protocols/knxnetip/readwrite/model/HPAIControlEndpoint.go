@@ -38,6 +38,7 @@ type HPAIControlEndpoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHostProtocolCode returns HostProtocolCode (property field)
 	GetHostProtocolCode() HostProtocolCode
 	// GetIpAddress returns IpAddress (property field)
@@ -46,6 +47,8 @@ type HPAIControlEndpoint interface {
 	GetIpPort() uint16
 	// IsHPAIControlEndpoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHPAIControlEndpoint()
+	// CreateBuilder creates a HPAIControlEndpointBuilder
+	CreateHPAIControlEndpointBuilder() HPAIControlEndpointBuilder
 }
 
 // _HPAIControlEndpoint is the data-structure of this message
@@ -56,6 +59,125 @@ type _HPAIControlEndpoint struct {
 }
 
 var _ HPAIControlEndpoint = (*_HPAIControlEndpoint)(nil)
+
+// NewHPAIControlEndpoint factory function for _HPAIControlEndpoint
+func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIControlEndpoint {
+	if ipAddress == nil {
+		panic("ipAddress of type IPAddress for HPAIControlEndpoint must not be nil")
+	}
+	return &_HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HPAIControlEndpointBuilder is a builder for HPAIControlEndpoint
+type HPAIControlEndpointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIControlEndpointBuilder
+	// WithHostProtocolCode adds HostProtocolCode (property field)
+	WithHostProtocolCode(HostProtocolCode) HPAIControlEndpointBuilder
+	// WithIpAddress adds IpAddress (property field)
+	WithIpAddress(IPAddress) HPAIControlEndpointBuilder
+	// WithIpAddressBuilder adds IpAddress (property field) which is build by the builder
+	WithIpAddressBuilder(func(IPAddressBuilder) IPAddressBuilder) HPAIControlEndpointBuilder
+	// WithIpPort adds IpPort (property field)
+	WithIpPort(uint16) HPAIControlEndpointBuilder
+	// Build builds the HPAIControlEndpoint or returns an error if something is wrong
+	Build() (HPAIControlEndpoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HPAIControlEndpoint
+}
+
+// NewHPAIControlEndpointBuilder() creates a HPAIControlEndpointBuilder
+func NewHPAIControlEndpointBuilder() HPAIControlEndpointBuilder {
+	return &_HPAIControlEndpointBuilder{_HPAIControlEndpoint: new(_HPAIControlEndpoint)}
+}
+
+type _HPAIControlEndpointBuilder struct {
+	*_HPAIControlEndpoint
+
+	err *utils.MultiError
+}
+
+var _ (HPAIControlEndpointBuilder) = (*_HPAIControlEndpointBuilder)(nil)
+
+func (b *_HPAIControlEndpointBuilder) WithMandatoryFields(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) HPAIControlEndpointBuilder {
+	return b.WithHostProtocolCode(hostProtocolCode).WithIpAddress(ipAddress).WithIpPort(ipPort)
+}
+
+func (b *_HPAIControlEndpointBuilder) WithHostProtocolCode(hostProtocolCode HostProtocolCode) HPAIControlEndpointBuilder {
+	b.HostProtocolCode = hostProtocolCode
+	return b
+}
+
+func (b *_HPAIControlEndpointBuilder) WithIpAddress(ipAddress IPAddress) HPAIControlEndpointBuilder {
+	b.IpAddress = ipAddress
+	return b
+}
+
+func (b *_HPAIControlEndpointBuilder) WithIpAddressBuilder(builderSupplier func(IPAddressBuilder) IPAddressBuilder) HPAIControlEndpointBuilder {
+	builder := builderSupplier(b.IpAddress.CreateIPAddressBuilder())
+	var err error
+	b.IpAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "IPAddressBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HPAIControlEndpointBuilder) WithIpPort(ipPort uint16) HPAIControlEndpointBuilder {
+	b.IpPort = ipPort
+	return b
+}
+
+func (b *_HPAIControlEndpointBuilder) Build() (HPAIControlEndpoint, error) {
+	if b.IpAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'ipAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HPAIControlEndpoint.deepCopy(), nil
+}
+
+func (b *_HPAIControlEndpointBuilder) MustBuild() HPAIControlEndpoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HPAIControlEndpointBuilder) DeepCopy() any {
+	_copy := b.CreateHPAIControlEndpointBuilder().(*_HPAIControlEndpointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHPAIControlEndpointBuilder creates a HPAIControlEndpointBuilder
+func (b *_HPAIControlEndpoint) CreateHPAIControlEndpointBuilder() HPAIControlEndpointBuilder {
+	if b == nil {
+		return NewHPAIControlEndpointBuilder()
+	}
+	return &_HPAIControlEndpointBuilder{_HPAIControlEndpoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,14 +200,6 @@ func (m *_HPAIControlEndpoint) GetIpPort() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHPAIControlEndpoint factory function for _HPAIControlEndpoint
-func NewHPAIControlEndpoint(hostProtocolCode HostProtocolCode, ipAddress IPAddress, ipPort uint16) *_HPAIControlEndpoint {
-	if ipAddress == nil {
-		panic("ipAddress of type IPAddress for HPAIControlEndpoint must not be nil")
-	}
-	return &_HPAIControlEndpoint{HostProtocolCode: hostProtocolCode, IpAddress: ipAddress, IpPort: ipPort}
-}
 
 // Deprecated: use the interface for direct cast
 func CastHPAIControlEndpoint(structType any) HPAIControlEndpoint {
@@ -139,7 +253,7 @@ func HPAIControlEndpointParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HPAIControlEndpoint) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hPAIControlEndpoint HPAIControlEndpoint, err error) {
@@ -223,13 +337,33 @@ func (m *_HPAIControlEndpoint) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_HPAIControlEndpoint) IsHPAIControlEndpoint() {}
 
+func (m *_HPAIControlEndpoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HPAIControlEndpoint) deepCopy() *_HPAIControlEndpoint {
+	if m == nil {
+		return nil
+	}
+	_HPAIControlEndpointCopy := &_HPAIControlEndpoint{
+		m.HostProtocolCode,
+		m.IpAddress.DeepCopy().(IPAddress),
+		m.IpPort,
+	}
+	return _HPAIControlEndpointCopy
+}
+
 func (m *_HPAIControlEndpoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFDBBMDAddress returns FDBBMDAddress (property field)
 	GetFDBBMDAddress() BACnetHostNPort
@@ -45,6 +46,8 @@ type BACnetConstructedDataFDBBMDAddress interface {
 	GetActualValue() BACnetHostNPort
 	// IsBACnetConstructedDataFDBBMDAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFDBBMDAddress()
+	// CreateBuilder creates a BACnetConstructedDataFDBBMDAddressBuilder
+	CreateBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDAddressBuilder
 }
 
 // _BACnetConstructedDataFDBBMDAddress is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataFDBBMDAddress struct {
 
 var _ BACnetConstructedDataFDBBMDAddress = (*_BACnetConstructedDataFDBBMDAddress)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFDBBMDAddress)(nil)
+
+// NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
+func NewBACnetConstructedDataFDBBMDAddress(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, fDBBMDAddress BACnetHostNPort, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
+	if fDBBMDAddress == nil {
+		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
+	}
+	_result := &_BACnetConstructedDataFDBBMDAddress{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FDBBMDAddress:                 fDBBMDAddress,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFDBBMDAddressBuilder is a builder for BACnetConstructedDataFDBBMDAddress
+type BACnetConstructedDataFDBBMDAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder
+	// WithFDBBMDAddress adds FDBBMDAddress (property field)
+	WithFDBBMDAddress(BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder
+	// WithFDBBMDAddressBuilder adds FDBBMDAddress (property field) which is build by the builder
+	WithFDBBMDAddressBuilder(func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataFDBBMDAddressBuilder
+	// Build builds the BACnetConstructedDataFDBBMDAddress or returns an error if something is wrong
+	Build() (BACnetConstructedDataFDBBMDAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFDBBMDAddress
+}
+
+// NewBACnetConstructedDataFDBBMDAddressBuilder() creates a BACnetConstructedDataFDBBMDAddressBuilder
+func NewBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDAddressBuilder {
+	return &_BACnetConstructedDataFDBBMDAddressBuilder{_BACnetConstructedDataFDBBMDAddress: new(_BACnetConstructedDataFDBBMDAddress)}
+}
+
+type _BACnetConstructedDataFDBBMDAddressBuilder struct {
+	*_BACnetConstructedDataFDBBMDAddress
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFDBBMDAddressBuilder) = (*_BACnetConstructedDataFDBBMDAddressBuilder)(nil)
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithMandatoryFields(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
+	return b.WithFDBBMDAddress(fDBBMDAddress)
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddress(fDBBMDAddress BACnetHostNPort) BACnetConstructedDataFDBBMDAddressBuilder {
+	b.FDBBMDAddress = fDBBMDAddress
+	return b
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) WithFDBBMDAddressBuilder(builderSupplier func(BACnetHostNPortBuilder) BACnetHostNPortBuilder) BACnetConstructedDataFDBBMDAddressBuilder {
+	builder := builderSupplier(b.FDBBMDAddress.CreateBACnetHostNPortBuilder())
+	var err error
+	b.FDBBMDAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetHostNPortBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) Build() (BACnetConstructedDataFDBBMDAddress, error) {
+	if b.FDBBMDAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'fDBBMDAddress' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFDBBMDAddress.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) MustBuild() BACnetConstructedDataFDBBMDAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFDBBMDAddressBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFDBBMDAddressBuilder().(*_BACnetConstructedDataFDBBMDAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFDBBMDAddressBuilder creates a BACnetConstructedDataFDBBMDAddressBuilder
+func (b *_BACnetConstructedDataFDBBMDAddress) CreateBACnetConstructedDataFDBBMDAddressBuilder() BACnetConstructedDataFDBBMDAddressBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFDBBMDAddressBuilder()
+	}
+	return &_BACnetConstructedDataFDBBMDAddressBuilder{_BACnetConstructedDataFDBBMDAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataFDBBMDAddress) GetActualValue() BACnetHostNPort {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFDBBMDAddress factory function for _BACnetConstructedDataFDBBMDAddress
-func NewBACnetConstructedDataFDBBMDAddress(fDBBMDAddress BACnetHostNPort, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFDBBMDAddress {
-	if fDBBMDAddress == nil {
-		panic("fDBBMDAddress of type BACnetHostNPort for BACnetConstructedDataFDBBMDAddress must not be nil")
-	}
-	_result := &_BACnetConstructedDataFDBBMDAddress{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FDBBMDAddress:                 fDBBMDAddress,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFDBBMDAddress(structType any) BACnetConstructedDataFDBBMDAddress {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataFDBBMDAddress) SerializeWithWriteBuffer(ctx conte
 
 func (m *_BACnetConstructedDataFDBBMDAddress) IsBACnetConstructedDataFDBBMDAddress() {}
 
+func (m *_BACnetConstructedDataFDBBMDAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFDBBMDAddress) deepCopy() *_BACnetConstructedDataFDBBMDAddress {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFDBBMDAddressCopy := &_BACnetConstructedDataFDBBMDAddress{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FDBBMDAddress.DeepCopy().(BACnetHostNPort),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFDBBMDAddressCopy
+}
+
 func (m *_BACnetConstructedDataFDBBMDAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

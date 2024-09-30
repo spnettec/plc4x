@@ -38,11 +38,14 @@ type NLMRouterBusyToNetwork interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NLM
 	// GetDestinationNetworkAddresses returns DestinationNetworkAddresses (property field)
 	GetDestinationNetworkAddresses() []uint16
 	// IsNLMRouterBusyToNetwork is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNLMRouterBusyToNetwork()
+	// CreateBuilder creates a NLMRouterBusyToNetworkBuilder
+	CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder
 }
 
 // _NLMRouterBusyToNetwork is the data-structure of this message
@@ -53,6 +56,107 @@ type _NLMRouterBusyToNetwork struct {
 
 var _ NLMRouterBusyToNetwork = (*_NLMRouterBusyToNetwork)(nil)
 var _ NLMRequirements = (*_NLMRouterBusyToNetwork)(nil)
+
+// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
+func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
+	_result := &_NLMRouterBusyToNetwork{
+		NLMContract:                 NewNLM(apduLength),
+		DestinationNetworkAddresses: destinationNetworkAddresses,
+	}
+	_result.NLMContract.(*_NLM)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NLMRouterBusyToNetworkBuilder is a builder for NLMRouterBusyToNetwork
+type NLMRouterBusyToNetworkBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder
+	// WithDestinationNetworkAddresses adds DestinationNetworkAddresses (property field)
+	WithDestinationNetworkAddresses(...uint16) NLMRouterBusyToNetworkBuilder
+	// Build builds the NLMRouterBusyToNetwork or returns an error if something is wrong
+	Build() (NLMRouterBusyToNetwork, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NLMRouterBusyToNetwork
+}
+
+// NewNLMRouterBusyToNetworkBuilder() creates a NLMRouterBusyToNetworkBuilder
+func NewNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
+	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: new(_NLMRouterBusyToNetwork)}
+}
+
+type _NLMRouterBusyToNetworkBuilder struct {
+	*_NLMRouterBusyToNetwork
+
+	parentBuilder *_NLMBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NLMRouterBusyToNetworkBuilder) = (*_NLMRouterBusyToNetworkBuilder)(nil)
+
+func (b *_NLMRouterBusyToNetworkBuilder) setParent(contract NLMContract) {
+	b.NLMContract = contract
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) WithMandatoryFields(destinationNetworkAddresses []uint16) NLMRouterBusyToNetworkBuilder {
+	return b.WithDestinationNetworkAddresses(destinationNetworkAddresses...)
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) WithDestinationNetworkAddresses(destinationNetworkAddresses ...uint16) NLMRouterBusyToNetworkBuilder {
+	b.DestinationNetworkAddresses = destinationNetworkAddresses
+	return b
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) Build() (NLMRouterBusyToNetwork, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NLMRouterBusyToNetwork.deepCopy(), nil
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) MustBuild() NLMRouterBusyToNetwork {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NLMRouterBusyToNetworkBuilder) Done() NLMBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) buildForNLM() (NLM, error) {
+	return b.Build()
+}
+
+func (b *_NLMRouterBusyToNetworkBuilder) DeepCopy() any {
+	_copy := b.CreateNLMRouterBusyToNetworkBuilder().(*_NLMRouterBusyToNetworkBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNLMRouterBusyToNetworkBuilder creates a NLMRouterBusyToNetworkBuilder
+func (b *_NLMRouterBusyToNetwork) CreateNLMRouterBusyToNetworkBuilder() NLMRouterBusyToNetworkBuilder {
+	if b == nil {
+		return NewNLMRouterBusyToNetworkBuilder()
+	}
+	return &_NLMRouterBusyToNetworkBuilder{_NLMRouterBusyToNetwork: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_NLMRouterBusyToNetwork) GetDestinationNetworkAddresses() []uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNLMRouterBusyToNetwork factory function for _NLMRouterBusyToNetwork
-func NewNLMRouterBusyToNetwork(destinationNetworkAddresses []uint16, apduLength uint16) *_NLMRouterBusyToNetwork {
-	_result := &_NLMRouterBusyToNetwork{
-		NLMContract:                 NewNLM(apduLength),
-		DestinationNetworkAddresses: destinationNetworkAddresses,
-	}
-	_result.NLMContract.(*_NLM)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNLMRouterBusyToNetwork(structType any) NLMRouterBusyToNetwork {
@@ -182,13 +276,33 @@ func (m *_NLMRouterBusyToNetwork) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_NLMRouterBusyToNetwork) IsNLMRouterBusyToNetwork() {}
 
+func (m *_NLMRouterBusyToNetwork) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NLMRouterBusyToNetwork) deepCopy() *_NLMRouterBusyToNetwork {
+	if m == nil {
+		return nil
+	}
+	_NLMRouterBusyToNetworkCopy := &_NLMRouterBusyToNetwork{
+		m.NLMContract.(*_NLM).deepCopy(),
+		utils.DeepCopySlice[uint16, uint16](m.DestinationNetworkAddresses),
+	}
+	m.NLMContract.(*_NLM)._SubType = m
+	return _NLMRouterBusyToNetworkCopy
+}
+
 func (m *_NLMRouterBusyToNetwork) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

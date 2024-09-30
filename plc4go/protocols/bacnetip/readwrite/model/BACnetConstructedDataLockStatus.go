@@ -38,6 +38,7 @@ type BACnetConstructedDataLockStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLockStatus returns LockStatus (property field)
 	GetLockStatus() BACnetLockStatusTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataLockStatus interface {
 	GetActualValue() BACnetLockStatusTagged
 	// IsBACnetConstructedDataLockStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLockStatus()
+	// CreateBuilder creates a BACnetConstructedDataLockStatusBuilder
+	CreateBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatusBuilder
 }
 
 // _BACnetConstructedDataLockStatus is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLockStatus struct {
 
 var _ BACnetConstructedDataLockStatus = (*_BACnetConstructedDataLockStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLockStatus)(nil)
+
+// NewBACnetConstructedDataLockStatus factory function for _BACnetConstructedDataLockStatus
+func NewBACnetConstructedDataLockStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, lockStatus BACnetLockStatusTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockStatus {
+	if lockStatus == nil {
+		panic("lockStatus of type BACnetLockStatusTagged for BACnetConstructedDataLockStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataLockStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LockStatus:                    lockStatus,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLockStatusBuilder is a builder for BACnetConstructedDataLockStatus
+type BACnetConstructedDataLockStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder
+	// WithLockStatus adds LockStatus (property field)
+	WithLockStatus(BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder
+	// WithLockStatusBuilder adds LockStatus (property field) which is build by the builder
+	WithLockStatusBuilder(func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetConstructedDataLockStatusBuilder
+	// Build builds the BACnetConstructedDataLockStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataLockStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLockStatus
+}
+
+// NewBACnetConstructedDataLockStatusBuilder() creates a BACnetConstructedDataLockStatusBuilder
+func NewBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatusBuilder {
+	return &_BACnetConstructedDataLockStatusBuilder{_BACnetConstructedDataLockStatus: new(_BACnetConstructedDataLockStatus)}
+}
+
+type _BACnetConstructedDataLockStatusBuilder struct {
+	*_BACnetConstructedDataLockStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLockStatusBuilder) = (*_BACnetConstructedDataLockStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataLockStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) WithMandatoryFields(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
+	return b.WithLockStatus(lockStatus)
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) WithLockStatus(lockStatus BACnetLockStatusTagged) BACnetConstructedDataLockStatusBuilder {
+	b.LockStatus = lockStatus
+	return b
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) WithLockStatusBuilder(builderSupplier func(BACnetLockStatusTaggedBuilder) BACnetLockStatusTaggedBuilder) BACnetConstructedDataLockStatusBuilder {
+	builder := builderSupplier(b.LockStatus.CreateBACnetLockStatusTaggedBuilder())
+	var err error
+	b.LockStatus, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLockStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) Build() (BACnetConstructedDataLockStatus, error) {
+	if b.LockStatus == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'lockStatus' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLockStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) MustBuild() BACnetConstructedDataLockStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLockStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLockStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLockStatusBuilder().(*_BACnetConstructedDataLockStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLockStatusBuilder creates a BACnetConstructedDataLockStatusBuilder
+func (b *_BACnetConstructedDataLockStatus) CreateBACnetConstructedDataLockStatusBuilder() BACnetConstructedDataLockStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLockStatusBuilder()
+	}
+	return &_BACnetConstructedDataLockStatusBuilder{_BACnetConstructedDataLockStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLockStatus) GetActualValue() BACnetLockStatusTagg
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLockStatus factory function for _BACnetConstructedDataLockStatus
-func NewBACnetConstructedDataLockStatus(lockStatus BACnetLockStatusTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLockStatus {
-	if lockStatus == nil {
-		panic("lockStatus of type BACnetLockStatusTagged for BACnetConstructedDataLockStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataLockStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LockStatus:                    lockStatus,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLockStatus(structType any) BACnetConstructedDataLockStatus {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLockStatus) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataLockStatus) IsBACnetConstructedDataLockStatus() {}
 
+func (m *_BACnetConstructedDataLockStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLockStatus) deepCopy() *_BACnetConstructedDataLockStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLockStatusCopy := &_BACnetConstructedDataLockStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LockStatus.DeepCopy().(BACnetLockStatusTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLockStatusCopy
+}
+
 func (m *_BACnetConstructedDataLockStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

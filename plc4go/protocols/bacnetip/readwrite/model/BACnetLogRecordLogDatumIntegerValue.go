@@ -38,11 +38,14 @@ type BACnetLogRecordLogDatumIntegerValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetIntegerValue returns IntegerValue (property field)
 	GetIntegerValue() BACnetContextTagSignedInteger
 	// IsBACnetLogRecordLogDatumIntegerValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumIntegerValue()
+	// CreateBuilder creates a BACnetLogRecordLogDatumIntegerValueBuilder
+	CreateBACnetLogRecordLogDatumIntegerValueBuilder() BACnetLogRecordLogDatumIntegerValueBuilder
 }
 
 // _BACnetLogRecordLogDatumIntegerValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogRecordLogDatumIntegerValue struct {
 
 var _ BACnetLogRecordLogDatumIntegerValue = (*_BACnetLogRecordLogDatumIntegerValue)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumIntegerValue)(nil)
+
+// NewBACnetLogRecordLogDatumIntegerValue factory function for _BACnetLogRecordLogDatumIntegerValue
+func NewBACnetLogRecordLogDatumIntegerValue(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, integerValue BACnetContextTagSignedInteger, tagNumber uint8) *_BACnetLogRecordLogDatumIntegerValue {
+	if integerValue == nil {
+		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogRecordLogDatumIntegerValue must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumIntegerValue{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		IntegerValue:                    integerValue,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumIntegerValueBuilder is a builder for BACnetLogRecordLogDatumIntegerValue
+type BACnetLogRecordLogDatumIntegerValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithIntegerValue(BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder
+	// WithIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithIntegerValueBuilder(func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetLogRecordLogDatumIntegerValueBuilder
+	// Build builds the BACnetLogRecordLogDatumIntegerValue or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumIntegerValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumIntegerValue
+}
+
+// NewBACnetLogRecordLogDatumIntegerValueBuilder() creates a BACnetLogRecordLogDatumIntegerValueBuilder
+func NewBACnetLogRecordLogDatumIntegerValueBuilder() BACnetLogRecordLogDatumIntegerValueBuilder {
+	return &_BACnetLogRecordLogDatumIntegerValueBuilder{_BACnetLogRecordLogDatumIntegerValue: new(_BACnetLogRecordLogDatumIntegerValue)}
+}
+
+type _BACnetLogRecordLogDatumIntegerValueBuilder struct {
+	*_BACnetLogRecordLogDatumIntegerValue
+
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumIntegerValueBuilder) = (*_BACnetLogRecordLogDatumIntegerValueBuilder)(nil)
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) WithMandatoryFields(integerValue BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder {
+	return b.WithIntegerValue(integerValue)
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) WithIntegerValue(integerValue BACnetContextTagSignedInteger) BACnetLogRecordLogDatumIntegerValueBuilder {
+	b.IntegerValue = integerValue
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) WithIntegerValueBuilder(builderSupplier func(BACnetContextTagSignedIntegerBuilder) BACnetContextTagSignedIntegerBuilder) BACnetLogRecordLogDatumIntegerValueBuilder {
+	builder := builderSupplier(b.IntegerValue.CreateBACnetContextTagSignedIntegerBuilder())
+	var err error
+	b.IntegerValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) Build() (BACnetLogRecordLogDatumIntegerValue, error) {
+	if b.IntegerValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'integerValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumIntegerValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) MustBuild() BACnetLogRecordLogDatumIntegerValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumIntegerValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumIntegerValueBuilder().(*_BACnetLogRecordLogDatumIntegerValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogRecordLogDatumIntegerValueBuilder creates a BACnetLogRecordLogDatumIntegerValueBuilder
+func (b *_BACnetLogRecordLogDatumIntegerValue) CreateBACnetLogRecordLogDatumIntegerValueBuilder() BACnetLogRecordLogDatumIntegerValueBuilder {
+	if b == nil {
+		return NewBACnetLogRecordLogDatumIntegerValueBuilder()
+	}
+	return &_BACnetLogRecordLogDatumIntegerValueBuilder{_BACnetLogRecordLogDatumIntegerValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) GetIntegerValue() BACnetContextTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumIntegerValue factory function for _BACnetLogRecordLogDatumIntegerValue
-func NewBACnetLogRecordLogDatumIntegerValue(integerValue BACnetContextTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumIntegerValue {
-	if integerValue == nil {
-		panic("integerValue of type BACnetContextTagSignedInteger for BACnetLogRecordLogDatumIntegerValue must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumIntegerValue{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		IntegerValue:                    integerValue,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumIntegerValue(structType any) BACnetLogRecordLogDatumIntegerValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogRecordLogDatumIntegerValue) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetLogRecordLogDatumIntegerValue) IsBACnetLogRecordLogDatumIntegerValue() {}
 
+func (m *_BACnetLogRecordLogDatumIntegerValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumIntegerValue) deepCopy() *_BACnetLogRecordLogDatumIntegerValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumIntegerValueCopy := &_BACnetLogRecordLogDatumIntegerValue{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.IntegerValue.DeepCopy().(BACnetContextTagSignedInteger),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumIntegerValueCopy
+}
+
 func (m *_BACnetLogRecordLogDatumIntegerValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

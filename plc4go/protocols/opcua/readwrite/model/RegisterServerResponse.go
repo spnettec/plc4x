@@ -38,11 +38,14 @@ type RegisterServerResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
 	// IsRegisterServerResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterServerResponse()
+	// CreateBuilder creates a RegisterServerResponseBuilder
+	CreateRegisterServerResponseBuilder() RegisterServerResponseBuilder
 }
 
 // _RegisterServerResponse is the data-structure of this message
@@ -53,6 +56,131 @@ type _RegisterServerResponse struct {
 
 var _ RegisterServerResponse = (*_RegisterServerResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterServerResponse)(nil)
+
+// NewRegisterServerResponse factory function for _RegisterServerResponse
+func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
+	}
+	_result := &_RegisterServerResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterServerResponseBuilder is a builder for RegisterServerResponse
+type RegisterServerResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) RegisterServerResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder
+	// Build builds the RegisterServerResponse or returns an error if something is wrong
+	Build() (RegisterServerResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterServerResponse
+}
+
+// NewRegisterServerResponseBuilder() creates a RegisterServerResponseBuilder
+func NewRegisterServerResponseBuilder() RegisterServerResponseBuilder {
+	return &_RegisterServerResponseBuilder{_RegisterServerResponse: new(_RegisterServerResponse)}
+}
+
+type _RegisterServerResponseBuilder struct {
+	*_RegisterServerResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RegisterServerResponseBuilder) = (*_RegisterServerResponseBuilder)(nil)
+
+func (b *_RegisterServerResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_RegisterServerResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+	return b.WithResponseHeader(responseHeader)
+}
+
+func (b *_RegisterServerResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) RegisterServerResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_RegisterServerResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterServerResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RegisterServerResponseBuilder) Build() (RegisterServerResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RegisterServerResponse.deepCopy(), nil
+}
+
+func (b *_RegisterServerResponseBuilder) MustBuild() RegisterServerResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RegisterServerResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RegisterServerResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RegisterServerResponseBuilder) DeepCopy() any {
+	_copy := b.CreateRegisterServerResponseBuilder().(*_RegisterServerResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRegisterServerResponseBuilder creates a RegisterServerResponseBuilder
+func (b *_RegisterServerResponse) CreateRegisterServerResponseBuilder() RegisterServerResponseBuilder {
+	if b == nil {
+		return NewRegisterServerResponseBuilder()
+	}
+	return &_RegisterServerResponseBuilder{_RegisterServerResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_RegisterServerResponse) GetResponseHeader() ExtensionObjectDefinition 
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterServerResponse factory function for _RegisterServerResponse
-func NewRegisterServerResponse(responseHeader ExtensionObjectDefinition) *_RegisterServerResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for RegisterServerResponse must not be nil")
-	}
-	_result := &_RegisterServerResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterServerResponse(structType any) RegisterServerResponse {
@@ -183,13 +298,33 @@ func (m *_RegisterServerResponse) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_RegisterServerResponse) IsRegisterServerResponse() {}
 
+func (m *_RegisterServerResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterServerResponse) deepCopy() *_RegisterServerResponse {
+	if m == nil {
+		return nil
+	}
+	_RegisterServerResponseCopy := &_RegisterServerResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterServerResponseCopy
+}
+
 func (m *_RegisterServerResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

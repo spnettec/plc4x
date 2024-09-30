@@ -38,6 +38,7 @@ type LightingDataLabel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
@@ -49,6 +50,8 @@ type LightingDataLabel interface {
 	GetData() []byte
 	// IsLightingDataLabel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingDataLabel()
+	// CreateBuilder creates a LightingDataLabelBuilder
+	CreateLightingDataLabelBuilder() LightingDataLabelBuilder
 }
 
 // _LightingDataLabel is the data-structure of this message
@@ -62,6 +65,155 @@ type _LightingDataLabel struct {
 
 var _ LightingDataLabel = (*_LightingDataLabel)(nil)
 var _ LightingDataRequirements = (*_LightingDataLabel)(nil)
+
+// NewLightingDataLabel factory function for _LightingDataLabel
+func NewLightingDataLabel(commandTypeContainer LightingCommandTypeContainer, group byte, labelOptions LightingLabelOptions, language *Language, data []byte) *_LightingDataLabel {
+	if labelOptions == nil {
+		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
+	}
+	_result := &_LightingDataLabel{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+		LabelOptions:         labelOptions,
+		Language:             language,
+		Data:                 data,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingDataLabelBuilder is a builder for LightingDataLabel
+type LightingDataLabelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(group byte, labelOptions LightingLabelOptions, data []byte) LightingDataLabelBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(byte) LightingDataLabelBuilder
+	// WithLabelOptions adds LabelOptions (property field)
+	WithLabelOptions(LightingLabelOptions) LightingDataLabelBuilder
+	// WithLabelOptionsBuilder adds LabelOptions (property field) which is build by the builder
+	WithLabelOptionsBuilder(func(LightingLabelOptionsBuilder) LightingLabelOptionsBuilder) LightingDataLabelBuilder
+	// WithLanguage adds Language (property field)
+	WithOptionalLanguage(Language) LightingDataLabelBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) LightingDataLabelBuilder
+	// Build builds the LightingDataLabel or returns an error if something is wrong
+	Build() (LightingDataLabel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingDataLabel
+}
+
+// NewLightingDataLabelBuilder() creates a LightingDataLabelBuilder
+func NewLightingDataLabelBuilder() LightingDataLabelBuilder {
+	return &_LightingDataLabelBuilder{_LightingDataLabel: new(_LightingDataLabel)}
+}
+
+type _LightingDataLabelBuilder struct {
+	*_LightingDataLabel
+
+	parentBuilder *_LightingDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LightingDataLabelBuilder) = (*_LightingDataLabelBuilder)(nil)
+
+func (b *_LightingDataLabelBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
+}
+
+func (b *_LightingDataLabelBuilder) WithMandatoryFields(group byte, labelOptions LightingLabelOptions, data []byte) LightingDataLabelBuilder {
+	return b.WithGroup(group).WithLabelOptions(labelOptions).WithData(data...)
+}
+
+func (b *_LightingDataLabelBuilder) WithGroup(group byte) LightingDataLabelBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) WithLabelOptions(labelOptions LightingLabelOptions) LightingDataLabelBuilder {
+	b.LabelOptions = labelOptions
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) WithLabelOptionsBuilder(builderSupplier func(LightingLabelOptionsBuilder) LightingLabelOptionsBuilder) LightingDataLabelBuilder {
+	builder := builderSupplier(b.LabelOptions.CreateLightingLabelOptionsBuilder())
+	var err error
+	b.LabelOptions, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LightingLabelOptionsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) WithOptionalLanguage(language Language) LightingDataLabelBuilder {
+	b.Language = &language
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) WithData(data ...byte) LightingDataLabelBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_LightingDataLabelBuilder) Build() (LightingDataLabel, error) {
+	if b.LabelOptions == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'labelOptions' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LightingDataLabel.deepCopy(), nil
+}
+
+func (b *_LightingDataLabelBuilder) MustBuild() LightingDataLabel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataLabelBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataLabelBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataLabelBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataLabelBuilder().(*_LightingDataLabelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLightingDataLabelBuilder creates a LightingDataLabelBuilder
+func (b *_LightingDataLabel) CreateLightingDataLabelBuilder() LightingDataLabelBuilder {
+	if b == nil {
+		return NewLightingDataLabelBuilder()
+	}
+	return &_LightingDataLabelBuilder{_LightingDataLabel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,22 +254,6 @@ func (m *_LightingDataLabel) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataLabel factory function for _LightingDataLabel
-func NewLightingDataLabel(group byte, labelOptions LightingLabelOptions, language *Language, data []byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataLabel {
-	if labelOptions == nil {
-		panic("labelOptions of type LightingLabelOptions for LightingDataLabel must not be nil")
-	}
-	_result := &_LightingDataLabel{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-		LabelOptions:         labelOptions,
-		Language:             language,
-		Data:                 data,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataLabel(structType any) LightingDataLabel {
@@ -247,13 +383,36 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_LightingDataLabel) IsLightingDataLabel() {}
 
+func (m *_LightingDataLabel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataLabel) deepCopy() *_LightingDataLabel {
+	if m == nil {
+		return nil
+	}
+	_LightingDataLabelCopy := &_LightingDataLabel{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+		m.LabelOptions.DeepCopy().(LightingLabelOptions),
+		utils.CopyPtr[Language](m.Language),
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataLabelCopy
+}
+
 func (m *_LightingDataLabel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

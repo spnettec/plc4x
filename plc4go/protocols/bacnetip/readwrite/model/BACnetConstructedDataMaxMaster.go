@@ -38,6 +38,7 @@ type BACnetConstructedDataMaxMaster interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetMaxMaster returns MaxMaster (property field)
 	GetMaxMaster() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataMaxMaster interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataMaxMaster is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMaxMaster()
+	// CreateBuilder creates a BACnetConstructedDataMaxMasterBuilder
+	CreateBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBuilder
 }
 
 // _BACnetConstructedDataMaxMaster is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataMaxMaster struct {
 
 var _ BACnetConstructedDataMaxMaster = (*_BACnetConstructedDataMaxMaster)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMaxMaster)(nil)
+
+// NewBACnetConstructedDataMaxMaster factory function for _BACnetConstructedDataMaxMaster
+func NewBACnetConstructedDataMaxMaster(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, maxMaster BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxMaster {
+	if maxMaster == nil {
+		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxMaster must not be nil")
+	}
+	_result := &_BACnetConstructedDataMaxMaster{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		MaxMaster:                     maxMaster,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMaxMasterBuilder is a builder for BACnetConstructedDataMaxMaster
+type BACnetConstructedDataMaxMasterBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder
+	// WithMaxMaster adds MaxMaster (property field)
+	WithMaxMaster(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder
+	// WithMaxMasterBuilder adds MaxMaster (property field) which is build by the builder
+	WithMaxMasterBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxMasterBuilder
+	// Build builds the BACnetConstructedDataMaxMaster or returns an error if something is wrong
+	Build() (BACnetConstructedDataMaxMaster, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMaxMaster
+}
+
+// NewBACnetConstructedDataMaxMasterBuilder() creates a BACnetConstructedDataMaxMasterBuilder
+func NewBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBuilder {
+	return &_BACnetConstructedDataMaxMasterBuilder{_BACnetConstructedDataMaxMaster: new(_BACnetConstructedDataMaxMaster)}
+}
+
+type _BACnetConstructedDataMaxMasterBuilder struct {
+	*_BACnetConstructedDataMaxMaster
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMaxMasterBuilder) = (*_BACnetConstructedDataMaxMasterBuilder)(nil)
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMandatoryFields(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
+	return b.WithMaxMaster(maxMaster)
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger) BACnetConstructedDataMaxMasterBuilder {
+	b.MaxMaster = maxMaster
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) WithMaxMasterBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataMaxMasterBuilder {
+	builder := builderSupplier(b.MaxMaster.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.MaxMaster, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) Build() (BACnetConstructedDataMaxMaster, error) {
+	if b.MaxMaster == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'maxMaster' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMaxMaster.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) MustBuild() BACnetConstructedDataMaxMaster {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMaxMasterBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMaxMasterBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMaxMasterBuilder().(*_BACnetConstructedDataMaxMasterBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMaxMasterBuilder creates a BACnetConstructedDataMaxMasterBuilder
+func (b *_BACnetConstructedDataMaxMaster) CreateBACnetConstructedDataMaxMasterBuilder() BACnetConstructedDataMaxMasterBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMaxMasterBuilder()
+	}
+	return &_BACnetConstructedDataMaxMasterBuilder{_BACnetConstructedDataMaxMaster: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataMaxMaster) GetActualValue() BACnetApplicationTagU
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMaxMaster factory function for _BACnetConstructedDataMaxMaster
-func NewBACnetConstructedDataMaxMaster(maxMaster BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMaxMaster {
-	if maxMaster == nil {
-		panic("maxMaster of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataMaxMaster must not be nil")
-	}
-	_result := &_BACnetConstructedDataMaxMaster{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		MaxMaster:                     maxMaster,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMaxMaster(structType any) BACnetConstructedDataMaxMaster {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataMaxMaster) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetConstructedDataMaxMaster) IsBACnetConstructedDataMaxMaster() {}
 
+func (m *_BACnetConstructedDataMaxMaster) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMaxMaster) deepCopy() *_BACnetConstructedDataMaxMaster {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMaxMasterCopy := &_BACnetConstructedDataMaxMaster{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.MaxMaster.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMaxMasterCopy
+}
+
 func (m *_BACnetConstructedDataMaxMaster) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

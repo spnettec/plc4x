@@ -38,6 +38,7 @@ type ApduDataExtPropertyValueResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ApduDataExt
 	// GetObjectIndex returns ObjectIndex (property field)
 	GetObjectIndex() uint8
@@ -51,6 +52,8 @@ type ApduDataExtPropertyValueResponse interface {
 	GetData() []byte
 	// IsApduDataExtPropertyValueResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduDataExtPropertyValueResponse()
+	// CreateBuilder creates a ApduDataExtPropertyValueResponseBuilder
+	CreateApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder
 }
 
 // _ApduDataExtPropertyValueResponse is the data-structure of this message
@@ -65,6 +68,139 @@ type _ApduDataExtPropertyValueResponse struct {
 
 var _ ApduDataExtPropertyValueResponse = (*_ApduDataExtPropertyValueResponse)(nil)
 var _ ApduDataExtRequirements = (*_ApduDataExtPropertyValueResponse)(nil)
+
+// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
+func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
+	_result := &_ApduDataExtPropertyValueResponse{
+		ApduDataExtContract: NewApduDataExt(length),
+		ObjectIndex:         objectIndex,
+		PropertyId:          propertyId,
+		Count:               count,
+		Index:               index,
+		Data:                data,
+	}
+	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduDataExtPropertyValueResponseBuilder is a builder for ApduDataExtPropertyValueResponse
+type ApduDataExtPropertyValueResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueResponseBuilder
+	// WithObjectIndex adds ObjectIndex (property field)
+	WithObjectIndex(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithPropertyId adds PropertyId (property field)
+	WithPropertyId(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithCount adds Count (property field)
+	WithCount(uint8) ApduDataExtPropertyValueResponseBuilder
+	// WithIndex adds Index (property field)
+	WithIndex(uint16) ApduDataExtPropertyValueResponseBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) ApduDataExtPropertyValueResponseBuilder
+	// Build builds the ApduDataExtPropertyValueResponse or returns an error if something is wrong
+	Build() (ApduDataExtPropertyValueResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduDataExtPropertyValueResponse
+}
+
+// NewApduDataExtPropertyValueResponseBuilder() creates a ApduDataExtPropertyValueResponseBuilder
+func NewApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder {
+	return &_ApduDataExtPropertyValueResponseBuilder{_ApduDataExtPropertyValueResponse: new(_ApduDataExtPropertyValueResponse)}
+}
+
+type _ApduDataExtPropertyValueResponseBuilder struct {
+	*_ApduDataExtPropertyValueResponse
+
+	parentBuilder *_ApduDataExtBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduDataExtPropertyValueResponseBuilder) = (*_ApduDataExtPropertyValueResponseBuilder)(nil)
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) setParent(contract ApduDataExtContract) {
+	b.ApduDataExtContract = contract
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithMandatoryFields(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte) ApduDataExtPropertyValueResponseBuilder {
+	return b.WithObjectIndex(objectIndex).WithPropertyId(propertyId).WithCount(count).WithIndex(index).WithData(data...)
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithObjectIndex(objectIndex uint8) ApduDataExtPropertyValueResponseBuilder {
+	b.ObjectIndex = objectIndex
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithPropertyId(propertyId uint8) ApduDataExtPropertyValueResponseBuilder {
+	b.PropertyId = propertyId
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithCount(count uint8) ApduDataExtPropertyValueResponseBuilder {
+	b.Count = count
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithIndex(index uint16) ApduDataExtPropertyValueResponseBuilder {
+	b.Index = index
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) WithData(data ...byte) ApduDataExtPropertyValueResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) Build() (ApduDataExtPropertyValueResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduDataExtPropertyValueResponse.deepCopy(), nil
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) MustBuild() ApduDataExtPropertyValueResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ApduDataExtPropertyValueResponseBuilder) Done() ApduDataExtBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) buildForApduDataExt() (ApduDataExt, error) {
+	return b.Build()
+}
+
+func (b *_ApduDataExtPropertyValueResponseBuilder) DeepCopy() any {
+	_copy := b.CreateApduDataExtPropertyValueResponseBuilder().(*_ApduDataExtPropertyValueResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduDataExtPropertyValueResponseBuilder creates a ApduDataExtPropertyValueResponseBuilder
+func (b *_ApduDataExtPropertyValueResponse) CreateApduDataExtPropertyValueResponseBuilder() ApduDataExtPropertyValueResponseBuilder {
+	if b == nil {
+		return NewApduDataExtPropertyValueResponseBuilder()
+	}
+	return &_ApduDataExtPropertyValueResponseBuilder{_ApduDataExtPropertyValueResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,20 +249,6 @@ func (m *_ApduDataExtPropertyValueResponse) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewApduDataExtPropertyValueResponse factory function for _ApduDataExtPropertyValueResponse
-func NewApduDataExtPropertyValueResponse(objectIndex uint8, propertyId uint8, count uint8, index uint16, data []byte, length uint8) *_ApduDataExtPropertyValueResponse {
-	_result := &_ApduDataExtPropertyValueResponse{
-		ApduDataExtContract: NewApduDataExt(length),
-		ObjectIndex:         objectIndex,
-		PropertyId:          propertyId,
-		Count:               count,
-		Index:               index,
-		Data:                data,
-	}
-	_result.ApduDataExtContract.(*_ApduDataExt)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastApduDataExtPropertyValueResponse(structType any) ApduDataExtPropertyValueResponse {
@@ -266,13 +388,37 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context
 
 func (m *_ApduDataExtPropertyValueResponse) IsApduDataExtPropertyValueResponse() {}
 
+func (m *_ApduDataExtPropertyValueResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduDataExtPropertyValueResponse) deepCopy() *_ApduDataExtPropertyValueResponse {
+	if m == nil {
+		return nil
+	}
+	_ApduDataExtPropertyValueResponseCopy := &_ApduDataExtPropertyValueResponse{
+		m.ApduDataExtContract.(*_ApduDataExt).deepCopy(),
+		m.ObjectIndex,
+		m.PropertyId,
+		m.Count,
+		m.Index,
+		utils.DeepCopySlice[byte, byte](m.Data),
+	}
+	m.ApduDataExtContract.(*_ApduDataExt)._SubType = m
+	return _ApduDataExtPropertyValueResponseCopy
+}
+
 func (m *_ApduDataExtPropertyValueResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

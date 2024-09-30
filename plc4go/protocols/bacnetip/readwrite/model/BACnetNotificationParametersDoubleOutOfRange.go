@@ -38,6 +38,7 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetNotificationParameters
 	// GetInnerOpeningTag returns InnerOpeningTag (property field)
 	GetInnerOpeningTag() BACnetOpeningTag
@@ -53,6 +54,8 @@ type BACnetNotificationParametersDoubleOutOfRange interface {
 	GetInnerClosingTag() BACnetClosingTag
 	// IsBACnetNotificationParametersDoubleOutOfRange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNotificationParametersDoubleOutOfRange()
+	// CreateBuilder creates a BACnetNotificationParametersDoubleOutOfRangeBuilder
+	CreateBACnetNotificationParametersDoubleOutOfRangeBuilder() BACnetNotificationParametersDoubleOutOfRangeBuilder
 }
 
 // _BACnetNotificationParametersDoubleOutOfRange is the data-structure of this message
@@ -68,6 +71,291 @@ type _BACnetNotificationParametersDoubleOutOfRange struct {
 
 var _ BACnetNotificationParametersDoubleOutOfRange = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
 var _ BACnetNotificationParametersRequirements = (*_BACnetNotificationParametersDoubleOutOfRange)(nil)
+
+// NewBACnetNotificationParametersDoubleOutOfRange factory function for _BACnetNotificationParametersDoubleOutOfRange
+func NewBACnetNotificationParametersDoubleOutOfRange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersDoubleOutOfRange {
+	if innerOpeningTag == nil {
+		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if exceedingValue == nil {
+		panic("exceedingValue of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if statusFlags == nil {
+		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if deadband == nil {
+		panic("deadband of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if exceededLimit == nil {
+		panic("exceededLimit of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	if innerClosingTag == nil {
+		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
+	}
+	_result := &_BACnetNotificationParametersDoubleOutOfRange{
+		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
+		InnerOpeningTag:                      innerOpeningTag,
+		ExceedingValue:                       exceedingValue,
+		StatusFlags:                          statusFlags,
+		Deadband:                             deadband,
+		ExceededLimit:                        exceededLimit,
+		InnerClosingTag:                      innerClosingTag,
+	}
+	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNotificationParametersDoubleOutOfRangeBuilder is a builder for BACnetNotificationParametersDoubleOutOfRange
+type BACnetNotificationParametersDoubleOutOfRangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithInnerOpeningTag adds InnerOpeningTag (property field)
+	WithInnerOpeningTag(BACnetOpeningTag) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithInnerOpeningTagBuilder adds InnerOpeningTag (property field) which is build by the builder
+	WithInnerOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithExceedingValue adds ExceedingValue (property field)
+	WithExceedingValue(BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithExceedingValueBuilder adds ExceedingValue (property field) which is build by the builder
+	WithExceedingValueBuilder(func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithStatusFlags adds StatusFlags (property field)
+	WithStatusFlags(BACnetStatusFlagsTagged) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithStatusFlagsBuilder adds StatusFlags (property field) which is build by the builder
+	WithStatusFlagsBuilder(func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithDeadband adds Deadband (property field)
+	WithDeadband(BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
+	WithDeadbandBuilder(func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithExceededLimit adds ExceededLimit (property field)
+	WithExceededLimit(BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithExceededLimitBuilder adds ExceededLimit (property field) which is build by the builder
+	WithExceededLimitBuilder(func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithInnerClosingTag adds InnerClosingTag (property field)
+	WithInnerClosingTag(BACnetClosingTag) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// WithInnerClosingTagBuilder adds InnerClosingTag (property field) which is build by the builder
+	WithInnerClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder
+	// Build builds the BACnetNotificationParametersDoubleOutOfRange or returns an error if something is wrong
+	Build() (BACnetNotificationParametersDoubleOutOfRange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNotificationParametersDoubleOutOfRange
+}
+
+// NewBACnetNotificationParametersDoubleOutOfRangeBuilder() creates a BACnetNotificationParametersDoubleOutOfRangeBuilder
+func NewBACnetNotificationParametersDoubleOutOfRangeBuilder() BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	return &_BACnetNotificationParametersDoubleOutOfRangeBuilder{_BACnetNotificationParametersDoubleOutOfRange: new(_BACnetNotificationParametersDoubleOutOfRange)}
+}
+
+type _BACnetNotificationParametersDoubleOutOfRangeBuilder struct {
+	*_BACnetNotificationParametersDoubleOutOfRange
+
+	parentBuilder *_BACnetNotificationParametersBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNotificationParametersDoubleOutOfRangeBuilder) = (*_BACnetNotificationParametersDoubleOutOfRangeBuilder)(nil)
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) setParent(contract BACnetNotificationParametersContract) {
+	b.BACnetNotificationParametersContract = contract
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithMandatoryFields(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	return b.WithInnerOpeningTag(innerOpeningTag).WithExceedingValue(exceedingValue).WithStatusFlags(statusFlags).WithDeadband(deadband).WithExceededLimit(exceededLimit).WithInnerClosingTag(innerClosingTag)
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithInnerOpeningTag(innerOpeningTag BACnetOpeningTag) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.InnerOpeningTag = innerOpeningTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithInnerOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.InnerOpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.InnerOpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithExceedingValue(exceedingValue BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.ExceedingValue = exceedingValue
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithExceedingValueBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.ExceedingValue.CreateBACnetContextTagDoubleBuilder())
+	var err error
+	b.ExceedingValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithStatusFlags(statusFlags BACnetStatusFlagsTagged) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.StatusFlags = statusFlags
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithStatusFlagsBuilder(builderSupplier func(BACnetStatusFlagsTaggedBuilder) BACnetStatusFlagsTaggedBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.StatusFlags.CreateBACnetStatusFlagsTaggedBuilder())
+	var err error
+	b.StatusFlags, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetStatusFlagsTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithDeadband(deadband BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.Deadband = deadband
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithDeadbandBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetContextTagDoubleBuilder())
+	var err error
+	b.Deadband, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithExceededLimit(exceededLimit BACnetContextTagDouble) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.ExceededLimit = exceededLimit
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithExceededLimitBuilder(builderSupplier func(BACnetContextTagDoubleBuilder) BACnetContextTagDoubleBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.ExceededLimit.CreateBACnetContextTagDoubleBuilder())
+	var err error
+	b.ExceededLimit, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithInnerClosingTag(innerClosingTag BACnetClosingTag) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	b.InnerClosingTag = innerClosingTag
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) WithInnerClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	builder := builderSupplier(b.InnerClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.InnerClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) Build() (BACnetNotificationParametersDoubleOutOfRange, error) {
+	if b.InnerOpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerOpeningTag' not set"))
+	}
+	if b.ExceedingValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'exceedingValue' not set"))
+	}
+	if b.StatusFlags == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'statusFlags' not set"))
+	}
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
+	}
+	if b.ExceededLimit == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'exceededLimit' not set"))
+	}
+	if b.InnerClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'innerClosingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNotificationParametersDoubleOutOfRange.deepCopy(), nil
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) MustBuild() BACnetNotificationParametersDoubleOutOfRange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) Done() BACnetNotificationParametersBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) buildForBACnetNotificationParameters() (BACnetNotificationParameters, error) {
+	return b.Build()
+}
+
+func (b *_BACnetNotificationParametersDoubleOutOfRangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNotificationParametersDoubleOutOfRangeBuilder().(*_BACnetNotificationParametersDoubleOutOfRangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNotificationParametersDoubleOutOfRangeBuilder creates a BACnetNotificationParametersDoubleOutOfRangeBuilder
+func (b *_BACnetNotificationParametersDoubleOutOfRange) CreateBACnetNotificationParametersDoubleOutOfRangeBuilder() BACnetNotificationParametersDoubleOutOfRangeBuilder {
+	if b == nil {
+		return NewBACnetNotificationParametersDoubleOutOfRangeBuilder()
+	}
+	return &_BACnetNotificationParametersDoubleOutOfRangeBuilder{_BACnetNotificationParametersDoubleOutOfRange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -116,39 +404,6 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) GetInnerClosingTag() BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNotificationParametersDoubleOutOfRange factory function for _BACnetNotificationParametersDoubleOutOfRange
-func NewBACnetNotificationParametersDoubleOutOfRange(innerOpeningTag BACnetOpeningTag, exceedingValue BACnetContextTagDouble, statusFlags BACnetStatusFlagsTagged, deadband BACnetContextTagDouble, exceededLimit BACnetContextTagDouble, innerClosingTag BACnetClosingTag, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, objectTypeArgument BACnetObjectType) *_BACnetNotificationParametersDoubleOutOfRange {
-	if innerOpeningTag == nil {
-		panic("innerOpeningTag of type BACnetOpeningTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if exceedingValue == nil {
-		panic("exceedingValue of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if statusFlags == nil {
-		panic("statusFlags of type BACnetStatusFlagsTagged for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if deadband == nil {
-		panic("deadband of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if exceededLimit == nil {
-		panic("exceededLimit of type BACnetContextTagDouble for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	if innerClosingTag == nil {
-		panic("innerClosingTag of type BACnetClosingTag for BACnetNotificationParametersDoubleOutOfRange must not be nil")
-	}
-	_result := &_BACnetNotificationParametersDoubleOutOfRange{
-		BACnetNotificationParametersContract: NewBACnetNotificationParameters(openingTag, peekedTagHeader, closingTag, tagNumber, objectTypeArgument),
-		InnerOpeningTag:                      innerOpeningTag,
-		ExceedingValue:                       exceedingValue,
-		StatusFlags:                          statusFlags,
-		Deadband:                             deadband,
-		ExceededLimit:                        exceededLimit,
-		InnerClosingTag:                      innerClosingTag,
-	}
-	_result.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNotificationParametersDoubleOutOfRange(structType any) BACnetNotificationParametersDoubleOutOfRange {
@@ -300,13 +555,38 @@ func (m *_BACnetNotificationParametersDoubleOutOfRange) SerializeWithWriteBuffer
 func (m *_BACnetNotificationParametersDoubleOutOfRange) IsBACnetNotificationParametersDoubleOutOfRange() {
 }
 
+func (m *_BACnetNotificationParametersDoubleOutOfRange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNotificationParametersDoubleOutOfRange) deepCopy() *_BACnetNotificationParametersDoubleOutOfRange {
+	if m == nil {
+		return nil
+	}
+	_BACnetNotificationParametersDoubleOutOfRangeCopy := &_BACnetNotificationParametersDoubleOutOfRange{
+		m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters).deepCopy(),
+		m.InnerOpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.ExceedingValue.DeepCopy().(BACnetContextTagDouble),
+		m.StatusFlags.DeepCopy().(BACnetStatusFlagsTagged),
+		m.Deadband.DeepCopy().(BACnetContextTagDouble),
+		m.ExceededLimit.DeepCopy().(BACnetContextTagDouble),
+		m.InnerClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	m.BACnetNotificationParametersContract.(*_BACnetNotificationParameters)._SubType = m
+	return _BACnetNotificationParametersDoubleOutOfRangeCopy
+}
+
 func (m *_BACnetNotificationParametersDoubleOutOfRange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

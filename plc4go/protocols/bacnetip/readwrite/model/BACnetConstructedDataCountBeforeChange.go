@@ -38,6 +38,7 @@ type BACnetConstructedDataCountBeforeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCountBeforeChange returns CountBeforeChange (property field)
 	GetCountBeforeChange() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataCountBeforeChange interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataCountBeforeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCountBeforeChange()
+	// CreateBuilder creates a BACnetConstructedDataCountBeforeChangeBuilder
+	CreateBACnetConstructedDataCountBeforeChangeBuilder() BACnetConstructedDataCountBeforeChangeBuilder
 }
 
 // _BACnetConstructedDataCountBeforeChange is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCountBeforeChange struct {
 
 var _ BACnetConstructedDataCountBeforeChange = (*_BACnetConstructedDataCountBeforeChange)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCountBeforeChange)(nil)
+
+// NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
+func NewBACnetConstructedDataCountBeforeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, countBeforeChange BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
+	if countBeforeChange == nil {
+		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
+	}
+	_result := &_BACnetConstructedDataCountBeforeChange{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CountBeforeChange:             countBeforeChange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCountBeforeChangeBuilder is a builder for BACnetConstructedDataCountBeforeChange
+type BACnetConstructedDataCountBeforeChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(countBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder
+	// WithCountBeforeChange adds CountBeforeChange (property field)
+	WithCountBeforeChange(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder
+	// WithCountBeforeChangeBuilder adds CountBeforeChange (property field) which is build by the builder
+	WithCountBeforeChangeBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBeforeChangeBuilder
+	// Build builds the BACnetConstructedDataCountBeforeChange or returns an error if something is wrong
+	Build() (BACnetConstructedDataCountBeforeChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCountBeforeChange
+}
+
+// NewBACnetConstructedDataCountBeforeChangeBuilder() creates a BACnetConstructedDataCountBeforeChangeBuilder
+func NewBACnetConstructedDataCountBeforeChangeBuilder() BACnetConstructedDataCountBeforeChangeBuilder {
+	return &_BACnetConstructedDataCountBeforeChangeBuilder{_BACnetConstructedDataCountBeforeChange: new(_BACnetConstructedDataCountBeforeChange)}
+}
+
+type _BACnetConstructedDataCountBeforeChangeBuilder struct {
+	*_BACnetConstructedDataCountBeforeChange
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCountBeforeChangeBuilder) = (*_BACnetConstructedDataCountBeforeChangeBuilder)(nil)
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) WithMandatoryFields(countBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder {
+	return b.WithCountBeforeChange(countBeforeChange)
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) WithCountBeforeChange(countBeforeChange BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCountBeforeChangeBuilder {
+	b.CountBeforeChange = countBeforeChange
+	return b
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) WithCountBeforeChangeBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCountBeforeChangeBuilder {
+	builder := builderSupplier(b.CountBeforeChange.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.CountBeforeChange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) Build() (BACnetConstructedDataCountBeforeChange, error) {
+	if b.CountBeforeChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'countBeforeChange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCountBeforeChange.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) MustBuild() BACnetConstructedDataCountBeforeChange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCountBeforeChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCountBeforeChangeBuilder().(*_BACnetConstructedDataCountBeforeChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCountBeforeChangeBuilder creates a BACnetConstructedDataCountBeforeChangeBuilder
+func (b *_BACnetConstructedDataCountBeforeChange) CreateBACnetConstructedDataCountBeforeChangeBuilder() BACnetConstructedDataCountBeforeChangeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCountBeforeChangeBuilder()
+	}
+	return &_BACnetConstructedDataCountBeforeChangeBuilder{_BACnetConstructedDataCountBeforeChange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCountBeforeChange) GetActualValue() BACnetApplica
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCountBeforeChange factory function for _BACnetConstructedDataCountBeforeChange
-func NewBACnetConstructedDataCountBeforeChange(countBeforeChange BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCountBeforeChange {
-	if countBeforeChange == nil {
-		panic("countBeforeChange of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCountBeforeChange must not be nil")
-	}
-	_result := &_BACnetConstructedDataCountBeforeChange{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CountBeforeChange:             countBeforeChange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCountBeforeChange(structType any) BACnetConstructedDataCountBeforeChange {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCountBeforeChange) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataCountBeforeChange) IsBACnetConstructedDataCountBeforeChange() {}
 
+func (m *_BACnetConstructedDataCountBeforeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCountBeforeChange) deepCopy() *_BACnetConstructedDataCountBeforeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCountBeforeChangeCopy := &_BACnetConstructedDataCountBeforeChange{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CountBeforeChange.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCountBeforeChangeCopy
+}
+
 func (m *_BACnetConstructedDataCountBeforeChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

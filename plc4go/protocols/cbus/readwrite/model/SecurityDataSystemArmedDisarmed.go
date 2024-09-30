@@ -38,11 +38,14 @@ type SecurityDataSystemArmedDisarmed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// GetArmCodeType returns ArmCodeType (property field)
 	GetArmCodeType() SecurityArmCode
 	// IsSecurityDataSystemArmedDisarmed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataSystemArmedDisarmed()
+	// CreateBuilder creates a SecurityDataSystemArmedDisarmedBuilder
+	CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder
 }
 
 // _SecurityDataSystemArmedDisarmed is the data-structure of this message
@@ -53,6 +56,131 @@ type _SecurityDataSystemArmedDisarmed struct {
 
 var _ SecurityDataSystemArmedDisarmed = (*_SecurityDataSystemArmedDisarmed)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataSystemArmedDisarmed)(nil)
+
+// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
+func NewSecurityDataSystemArmedDisarmed(commandTypeContainer SecurityCommandTypeContainer, argument byte, armCodeType SecurityArmCode) *_SecurityDataSystemArmedDisarmed {
+	if armCodeType == nil {
+		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
+	}
+	_result := &_SecurityDataSystemArmedDisarmed{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+		ArmCodeType:          armCodeType,
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataSystemArmedDisarmedBuilder is a builder for SecurityDataSystemArmedDisarmed
+type SecurityDataSystemArmedDisarmedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder
+	// WithArmCodeType adds ArmCodeType (property field)
+	WithArmCodeType(SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder
+	// WithArmCodeTypeBuilder adds ArmCodeType (property field) which is build by the builder
+	WithArmCodeTypeBuilder(func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder
+	// Build builds the SecurityDataSystemArmedDisarmed or returns an error if something is wrong
+	Build() (SecurityDataSystemArmedDisarmed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataSystemArmedDisarmed
+}
+
+// NewSecurityDataSystemArmedDisarmedBuilder() creates a SecurityDataSystemArmedDisarmedBuilder
+func NewSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
+	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: new(_SecurityDataSystemArmedDisarmed)}
+}
+
+type _SecurityDataSystemArmedDisarmedBuilder struct {
+	*_SecurityDataSystemArmedDisarmed
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataSystemArmedDisarmedBuilder) = (*_SecurityDataSystemArmedDisarmedBuilder)(nil)
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithMandatoryFields(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	return b.WithArmCodeType(armCodeType)
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeType(armCodeType SecurityArmCode) SecurityDataSystemArmedDisarmedBuilder {
+	b.ArmCodeType = armCodeType
+	return b
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) WithArmCodeTypeBuilder(builderSupplier func(SecurityArmCodeBuilder) SecurityArmCodeBuilder) SecurityDataSystemArmedDisarmedBuilder {
+	builder := builderSupplier(b.ArmCodeType.CreateSecurityArmCodeBuilder())
+	var err error
+	b.ArmCodeType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SecurityArmCodeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) Build() (SecurityDataSystemArmedDisarmed, error) {
+	if b.ArmCodeType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'armCodeType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataSystemArmedDisarmed.deepCopy(), nil
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) MustBuild() SecurityDataSystemArmedDisarmed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataSystemArmedDisarmedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataSystemArmedDisarmedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataSystemArmedDisarmedBuilder().(*_SecurityDataSystemArmedDisarmedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataSystemArmedDisarmedBuilder creates a SecurityDataSystemArmedDisarmedBuilder
+func (b *_SecurityDataSystemArmedDisarmed) CreateSecurityDataSystemArmedDisarmedBuilder() SecurityDataSystemArmedDisarmedBuilder {
+	if b == nil {
+		return NewSecurityDataSystemArmedDisarmedBuilder()
+	}
+	return &_SecurityDataSystemArmedDisarmedBuilder{_SecurityDataSystemArmedDisarmed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_SecurityDataSystemArmedDisarmed) GetArmCodeType() SecurityArmCode {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityDataSystemArmedDisarmed factory function for _SecurityDataSystemArmedDisarmed
-func NewSecurityDataSystemArmedDisarmed(armCodeType SecurityArmCode, commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataSystemArmedDisarmed {
-	if armCodeType == nil {
-		panic("armCodeType of type SecurityArmCode for SecurityDataSystemArmedDisarmed must not be nil")
-	}
-	_result := &_SecurityDataSystemArmedDisarmed{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-		ArmCodeType:          armCodeType,
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityDataSystemArmedDisarmed(structType any) SecurityDataSystemArmedDisarmed {
@@ -179,13 +294,33 @@ func (m *_SecurityDataSystemArmedDisarmed) SerializeWithWriteBuffer(ctx context.
 
 func (m *_SecurityDataSystemArmedDisarmed) IsSecurityDataSystemArmedDisarmed() {}
 
+func (m *_SecurityDataSystemArmedDisarmed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataSystemArmedDisarmed) deepCopy() *_SecurityDataSystemArmedDisarmed {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataSystemArmedDisarmedCopy := &_SecurityDataSystemArmedDisarmed{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+		m.ArmCodeType.DeepCopy().(SecurityArmCode),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataSystemArmedDisarmedCopy
+}
+
 func (m *_SecurityDataSystemArmedDisarmed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

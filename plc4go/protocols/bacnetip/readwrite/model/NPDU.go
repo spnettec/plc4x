@@ -38,6 +38,7 @@ type NPDU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetProtocolVersionNumber returns ProtocolVersionNumber (property field)
 	GetProtocolVersionNumber() uint8
 	// GetControl returns Control (property field)
@@ -68,6 +69,8 @@ type NPDU interface {
 	GetPayloadSubtraction() uint16
 	// IsNPDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNPDU()
+	// CreateBuilder creates a NPDUBuilder
+	CreateNPDUBuilder() NPDUBuilder
 }
 
 // _NPDU is the data-structure of this message
@@ -89,6 +92,211 @@ type _NPDU struct {
 }
 
 var _ NPDU = (*_NPDU)(nil)
+
+// NewNPDU factory function for _NPDU
+func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm NLM, apdu APDU, npduLength uint16) *_NPDU {
+	if control == nil {
+		panic("control of type NPDUControl for NPDU must not be nil")
+	}
+	return &_NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NPDUBuilder is a builder for NPDU
+type NPDUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder
+	// WithProtocolVersionNumber adds ProtocolVersionNumber (property field)
+	WithProtocolVersionNumber(uint8) NPDUBuilder
+	// WithControl adds Control (property field)
+	WithControl(NPDUControl) NPDUBuilder
+	// WithControlBuilder adds Control (property field) which is build by the builder
+	WithControlBuilder(func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder
+	// WithDestinationNetworkAddress adds DestinationNetworkAddress (property field)
+	WithOptionalDestinationNetworkAddress(uint16) NPDUBuilder
+	// WithDestinationLength adds DestinationLength (property field)
+	WithOptionalDestinationLength(uint8) NPDUBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(...uint8) NPDUBuilder
+	// WithSourceNetworkAddress adds SourceNetworkAddress (property field)
+	WithOptionalSourceNetworkAddress(uint16) NPDUBuilder
+	// WithSourceLength adds SourceLength (property field)
+	WithOptionalSourceLength(uint8) NPDUBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(...uint8) NPDUBuilder
+	// WithHopCount adds HopCount (property field)
+	WithOptionalHopCount(uint8) NPDUBuilder
+	// WithNlm adds Nlm (property field)
+	WithOptionalNlm(NLM) NPDUBuilder
+	// WithOptionalNlmBuilder adds Nlm (property field) which is build by the builder
+	WithOptionalNlmBuilder(func(NLMBuilder) NLMBuilder) NPDUBuilder
+	// WithApdu adds Apdu (property field)
+	WithOptionalApdu(APDU) NPDUBuilder
+	// WithOptionalApduBuilder adds Apdu (property field) which is build by the builder
+	WithOptionalApduBuilder(func(APDUBuilder) APDUBuilder) NPDUBuilder
+	// Build builds the NPDU or returns an error if something is wrong
+	Build() (NPDU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NPDU
+}
+
+// NewNPDUBuilder() creates a NPDUBuilder
+func NewNPDUBuilder() NPDUBuilder {
+	return &_NPDUBuilder{_NPDU: new(_NPDU)}
+}
+
+type _NPDUBuilder struct {
+	*_NPDU
+
+	err *utils.MultiError
+}
+
+var _ (NPDUBuilder) = (*_NPDUBuilder)(nil)
+
+func (b *_NPDUBuilder) WithMandatoryFields(protocolVersionNumber uint8, control NPDUControl, destinationAddress []uint8, sourceAddress []uint8) NPDUBuilder {
+	return b.WithProtocolVersionNumber(protocolVersionNumber).WithControl(control).WithDestinationAddress(destinationAddress...).WithSourceAddress(sourceAddress...)
+}
+
+func (b *_NPDUBuilder) WithProtocolVersionNumber(protocolVersionNumber uint8) NPDUBuilder {
+	b.ProtocolVersionNumber = protocolVersionNumber
+	return b
+}
+
+func (b *_NPDUBuilder) WithControl(control NPDUControl) NPDUBuilder {
+	b.Control = control
+	return b
+}
+
+func (b *_NPDUBuilder) WithControlBuilder(builderSupplier func(NPDUControlBuilder) NPDUControlBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Control.CreateNPDUControlBuilder())
+	var err error
+	b.Control, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NPDUControlBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalDestinationNetworkAddress(destinationNetworkAddress uint16) NPDUBuilder {
+	b.DestinationNetworkAddress = &destinationNetworkAddress
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalDestinationLength(destinationLength uint8) NPDUBuilder {
+	b.DestinationLength = &destinationLength
+	return b
+}
+
+func (b *_NPDUBuilder) WithDestinationAddress(destinationAddress ...uint8) NPDUBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalSourceNetworkAddress(sourceNetworkAddress uint16) NPDUBuilder {
+	b.SourceNetworkAddress = &sourceNetworkAddress
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalSourceLength(sourceLength uint8) NPDUBuilder {
+	b.SourceLength = &sourceLength
+	return b
+}
+
+func (b *_NPDUBuilder) WithSourceAddress(sourceAddress ...uint8) NPDUBuilder {
+	b.SourceAddress = sourceAddress
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalHopCount(hopCount uint8) NPDUBuilder {
+	b.HopCount = &hopCount
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalNlm(nlm NLM) NPDUBuilder {
+	b.Nlm = nlm
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalNlmBuilder(builderSupplier func(NLMBuilder) NLMBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Nlm.CreateNLMBuilder())
+	var err error
+	b.Nlm, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "NLMBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalApdu(apdu APDU) NPDUBuilder {
+	b.Apdu = apdu
+	return b
+}
+
+func (b *_NPDUBuilder) WithOptionalApduBuilder(builderSupplier func(APDUBuilder) APDUBuilder) NPDUBuilder {
+	builder := builderSupplier(b.Apdu.CreateAPDUBuilder())
+	var err error
+	b.Apdu, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "APDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NPDUBuilder) Build() (NPDU, error) {
+	if b.Control == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'control' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NPDU.deepCopy(), nil
+}
+
+func (b *_NPDUBuilder) MustBuild() NPDU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NPDUBuilder) DeepCopy() any {
+	_copy := b.CreateNPDUBuilder().(*_NPDUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNPDUBuilder creates a NPDUBuilder
+func (b *_NPDU) CreateNPDUBuilder() NPDUBuilder {
+	if b == nil {
+		return NewNPDUBuilder()
+	}
+	return &_NPDUBuilder{_NPDU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -213,14 +421,6 @@ func (m *_NPDU) GetPayloadSubtraction() uint16 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewNPDU factory function for _NPDU
-func NewNPDU(protocolVersionNumber uint8, control NPDUControl, destinationNetworkAddress *uint16, destinationLength *uint8, destinationAddress []uint8, sourceNetworkAddress *uint16, sourceLength *uint8, sourceAddress []uint8, hopCount *uint8, nlm NLM, apdu APDU, npduLength uint16) *_NPDU {
-	if control == nil {
-		panic("control of type NPDUControl for NPDU must not be nil")
-	}
-	return &_NPDU{ProtocolVersionNumber: protocolVersionNumber, Control: control, DestinationNetworkAddress: destinationNetworkAddress, DestinationLength: destinationLength, DestinationAddress: destinationAddress, SourceNetworkAddress: sourceNetworkAddress, SourceLength: sourceLength, SourceAddress: sourceAddress, HopCount: hopCount, Nlm: nlm, Apdu: apdu, NpduLength: npduLength}
-}
-
 // Deprecated: use the interface for direct cast
 func CastNPDU(structType any) NPDU {
 	if casted, ok := structType.(NPDU); ok {
@@ -318,7 +518,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NPDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (__nPDU NPDU, err error) {
@@ -546,13 +746,42 @@ func (m *_NPDU) GetNpduLength() uint16 {
 
 func (m *_NPDU) IsNPDU() {}
 
+func (m *_NPDU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDU) deepCopy() *_NPDU {
+	if m == nil {
+		return nil
+	}
+	_NPDUCopy := &_NPDU{
+		m.ProtocolVersionNumber,
+		m.Control.DeepCopy().(NPDUControl),
+		utils.CopyPtr[uint16](m.DestinationNetworkAddress),
+		utils.CopyPtr[uint8](m.DestinationLength),
+		utils.DeepCopySlice[uint8, uint8](m.DestinationAddress),
+		utils.CopyPtr[uint16](m.SourceNetworkAddress),
+		utils.CopyPtr[uint8](m.SourceLength),
+		utils.DeepCopySlice[uint8, uint8](m.SourceAddress),
+		utils.CopyPtr[uint8](m.HopCount),
+		m.Nlm.DeepCopy().(NLM),
+		m.Apdu.DeepCopy().(APDU),
+		m.NpduLength,
+	}
+	return _NPDUCopy
+}
+
 func (m *_NPDU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

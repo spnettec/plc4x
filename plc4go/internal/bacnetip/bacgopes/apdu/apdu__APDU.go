@@ -26,9 +26,8 @@ import (
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 // _APDU masks the Encode() and Decode() functions of the APDU
@@ -40,17 +39,19 @@ type _APDU interface {
 
 type ___APDU struct {
 	*__APDU
+
+	_leafName string
 }
 
 var _ _APDU = (*___APDU)(nil)
 
-func new_APDU(rootMessage readWriteModel.APDU, opts ...func(*___APDU)) (_APDU, error) {
-	i := &___APDU{}
-	for _, opt := range opts {
-		opt(i)
+func New_APDU(args Args, kwArgs KWArgs, options ...Option) (_APDU, error) {
+	i := &___APDU{
+		_leafName: ExtractLeafName(options, StructName()),
 	}
+	options = AddLeafTypeIfAbundant(options, i)
 	var err error
-	apdu, err := NewAPDU(rootMessage)
+	apdu, err := NewAPDU(args, kwArgs, options...)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating APDU")
 	}
@@ -59,8 +60,11 @@ func new_APDU(rootMessage readWriteModel.APDU, opts ...func(*___APDU)) (_APDU, e
 }
 
 func (a *___APDU) Encode(pdu Arg) error {
+	if _debug != nil {
+		_debug("encode %r", pdu)
+	}
 	switch pdu := pdu.(type) {
-	case APCI:
+	case PCI:
 		if err := pdu.Update(a); err != nil {
 			return errors.Wrap(err, "error updating PDU")
 		}
@@ -73,18 +77,38 @@ func (a *___APDU) Encode(pdu Arg) error {
 }
 
 func (a *___APDU) Decode(pdu Arg) error {
+	if _debug != nil {
+		_debug("decode %r", pdu)
+	}
 	if err := a._APCI.Update(pdu); err != nil {
 		return errors.Wrap(err, "error updating pdu")
 	}
-	a.SetPduData(pdu.(PDUData).GetPduData())
+	switch pdu := pdu.(type) {
+	case PDUData:
+		data, err := pdu.GetData(len(pdu.GetPduData()))
+		if err != nil {
+			return errors.Wrap(err, "error getting data")
+		}
+		a.SetPduData(data)
+	}
 	return nil
 }
 
-func (a *___APDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("_APDU{%s}", a.__APDU)
-	} else {
-		sname := fmt.Sprintf("%T", a)
+func (a *___APDU) SetContext(context APDU) {
+	if _debug != nil {
+		_debug("set_context %r", context)
+	}
+	a.SetPDUUserData(context.GetPDUUserData())
+	a.SetPDUDestination(context.GetPDUSource())
+	a.SetExpectingReply(false)
+	a.SetNetworkPriority(context.GetNetworkPriority())
+	a.apduInvokeID = context.GetApduInvokeID()
+}
+
+func (a *___APDU) Format(s fmt.State, v rune) {
+	switch v {
+	case 'v', 's', 'r':
+		sname := a._leafName
 
 		// the type is the service
 		stype := ""
@@ -99,6 +123,7 @@ func (a *___APDU) String() string {
 			stype += ", " + strconv.Itoa(int(*a.apduInvokeID))
 		}
 		// put it together
-		return fmt.Sprintf("<%s(%s) instance at %p>", sname, stype, a)
+		_, _ = fmt.Fprintf(s, "<%s(%s) instance at %p>\n", sname, stype, a)
 	}
+	a.PrintDebugContents(2, s, nil)
 }

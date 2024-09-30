@@ -40,8 +40,11 @@ type BACnetClientCOV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetClientCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClientCOV()
+	// CreateBuilder creates a BACnetClientCOVBuilder
+	CreateBACnetClientCOVBuilder() BACnetClientCOVBuilder
 }
 
 // BACnetClientCOVContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetClientCOVContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetClientCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClientCOV()
+	// CreateBuilder creates a BACnetClientCOVBuilder
+	CreateBACnetClientCOVBuilder() BACnetClientCOVBuilder
 }
 
 // BACnetClientCOVRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,187 @@ type _BACnetClientCOV struct {
 }
 
 var _ BACnetClientCOVContract = (*_BACnetClientCOV)(nil)
+
+// NewBACnetClientCOV factory function for _BACnetClientCOV
+func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
+	}
+	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetClientCOVBuilder is a builder for BACnetClientCOV
+type BACnetClientCOVBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetClientCOVBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetClientCOVBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClientCOVBuilder
+	// AsBACnetClientCOVObject converts this build to a subType of BACnetClientCOV. It is always possible to return to current builder using Done()
+	AsBACnetClientCOVObject() interface {
+		BACnetClientCOVObjectBuilder
+		Done() BACnetClientCOVBuilder
+	}
+	// AsBACnetClientCOVNone converts this build to a subType of BACnetClientCOV. It is always possible to return to current builder using Done()
+	AsBACnetClientCOVNone() interface {
+		BACnetClientCOVNoneBuilder
+		Done() BACnetClientCOVBuilder
+	}
+	// Build builds the BACnetClientCOV or returns an error if something is wrong
+	PartialBuild() (BACnetClientCOVContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetClientCOVContract
+	// Build builds the BACnetClientCOV or returns an error if something is wrong
+	Build() (BACnetClientCOV, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetClientCOV
+}
+
+// NewBACnetClientCOVBuilder() creates a BACnetClientCOVBuilder
+func NewBACnetClientCOVBuilder() BACnetClientCOVBuilder {
+	return &_BACnetClientCOVBuilder{_BACnetClientCOV: new(_BACnetClientCOV)}
+}
+
+type _BACnetClientCOVChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetClientCOVContract)
+	buildForBACnetClientCOV() (BACnetClientCOV, error)
+}
+
+type _BACnetClientCOVBuilder struct {
+	*_BACnetClientCOV
+
+	childBuilder _BACnetClientCOVChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetClientCOVBuilder) = (*_BACnetClientCOVBuilder)(nil)
+
+func (b *_BACnetClientCOVBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetClientCOVBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetClientCOVBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetClientCOVBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetClientCOVBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClientCOVBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetClientCOVBuilder) PartialBuild() (BACnetClientCOVContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetClientCOV.deepCopy(), nil
+}
+
+func (b *_BACnetClientCOVBuilder) PartialMustBuild() BACnetClientCOVContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVObject() interface {
+	BACnetClientCOVObjectBuilder
+	Done() BACnetClientCOVBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetClientCOVObjectBuilder
+		Done() BACnetClientCOVBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetClientCOVObjectBuilder().(*_BACnetClientCOVObjectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetClientCOVBuilder) AsBACnetClientCOVNone() interface {
+	BACnetClientCOVNoneBuilder
+	Done() BACnetClientCOVBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetClientCOVNoneBuilder
+		Done() BACnetClientCOVBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetClientCOVNoneBuilder().(*_BACnetClientCOVNoneBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetClientCOVBuilder) Build() (BACnetClientCOV, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetClientCOV()
+}
+
+func (b *_BACnetClientCOVBuilder) MustBuild() BACnetClientCOV {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetClientCOVBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetClientCOVBuilder().(*_BACnetClientCOVBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetClientCOVChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetClientCOVBuilder creates a BACnetClientCOVBuilder
+func (b *_BACnetClientCOV) CreateBACnetClientCOVBuilder() BACnetClientCOVBuilder {
+	if b == nil {
+		return NewBACnetClientCOVBuilder()
+	}
+	return &_BACnetClientCOVBuilder{_BACnetClientCOV: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +285,6 @@ func (pm *_BACnetClientCOV) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClientCOV factory function for _BACnetClientCOV
-func NewBACnetClientCOV(peekedTagHeader BACnetTagHeader) *_BACnetClientCOV {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetClientCOV must not be nil")
-	}
-	return &_BACnetClientCOV{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClientCOV(structType any) BACnetClientCOV {
@@ -146,7 +324,7 @@ func BACnetClientCOVParseWithBufferProducer[T BACnetClientCOV]() func(ctx contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +334,12 @@ func BACnetClientCOVParseWithBuffer[T BACnetClientCOV](ctx context.Context, read
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetClientCOV) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetClientCOV BACnetClientCOV, err error) {
@@ -184,11 +367,11 @@ func (m *_BACnetClientCOV) parse(ctx context.Context, readBuffer utils.ReadBuffe
 	var _child BACnetClientCOV
 	switch {
 	case peekedTagNumber == 0x4: // BACnetClientCOVObject
-		if _child, err = (&_BACnetClientCOVObject{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVObject).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVObject for type-switch of BACnetClientCOV")
 		}
 	case peekedTagNumber == 0x0: // BACnetClientCOVNone
-		if _child, err = (&_BACnetClientCOVNone{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetClientCOVNone).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetClientCOVNone for type-switch of BACnetClientCOV")
 		}
 	default:
@@ -232,3 +415,18 @@ func (pm *_BACnetClientCOV) serializeParent(ctx context.Context, writeBuffer uti
 }
 
 func (m *_BACnetClientCOV) IsBACnetClientCOV() {}
+
+func (m *_BACnetClientCOV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClientCOV) deepCopy() *_BACnetClientCOV {
+	if m == nil {
+		return nil
+	}
+	_BACnetClientCOVCopy := &_BACnetClientCOV{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetClientCOVCopy
+}

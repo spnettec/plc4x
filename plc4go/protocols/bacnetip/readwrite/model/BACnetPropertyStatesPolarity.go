@@ -38,11 +38,14 @@ type BACnetPropertyStatesPolarity interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetPropertyStates
 	// GetPolarity returns Polarity (property field)
 	GetPolarity() BACnetPolarityTagged
 	// IsBACnetPropertyStatesPolarity is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetPropertyStatesPolarity()
+	// CreateBuilder creates a BACnetPropertyStatesPolarityBuilder
+	CreateBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilder
 }
 
 // _BACnetPropertyStatesPolarity is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetPropertyStatesPolarity struct {
 
 var _ BACnetPropertyStatesPolarity = (*_BACnetPropertyStatesPolarity)(nil)
 var _ BACnetPropertyStatesRequirements = (*_BACnetPropertyStatesPolarity)(nil)
+
+// NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
+func NewBACnetPropertyStatesPolarity(peekedTagHeader BACnetTagHeader, polarity BACnetPolarityTagged) *_BACnetPropertyStatesPolarity {
+	if polarity == nil {
+		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
+	}
+	_result := &_BACnetPropertyStatesPolarity{
+		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
+		Polarity:                     polarity,
+	}
+	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetPropertyStatesPolarityBuilder is a builder for BACnetPropertyStatesPolarity
+type BACnetPropertyStatesPolarityBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder
+	// WithPolarity adds Polarity (property field)
+	WithPolarity(BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder
+	// WithPolarityBuilder adds Polarity (property field) which is build by the builder
+	WithPolarityBuilder(func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetPropertyStatesPolarityBuilder
+	// Build builds the BACnetPropertyStatesPolarity or returns an error if something is wrong
+	Build() (BACnetPropertyStatesPolarity, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetPropertyStatesPolarity
+}
+
+// NewBACnetPropertyStatesPolarityBuilder() creates a BACnetPropertyStatesPolarityBuilder
+func NewBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilder {
+	return &_BACnetPropertyStatesPolarityBuilder{_BACnetPropertyStatesPolarity: new(_BACnetPropertyStatesPolarity)}
+}
+
+type _BACnetPropertyStatesPolarityBuilder struct {
+	*_BACnetPropertyStatesPolarity
+
+	parentBuilder *_BACnetPropertyStatesBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetPropertyStatesPolarityBuilder) = (*_BACnetPropertyStatesPolarityBuilder)(nil)
+
+func (b *_BACnetPropertyStatesPolarityBuilder) setParent(contract BACnetPropertyStatesContract) {
+	b.BACnetPropertyStatesContract = contract
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) WithMandatoryFields(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
+	return b.WithPolarity(polarity)
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) WithPolarity(polarity BACnetPolarityTagged) BACnetPropertyStatesPolarityBuilder {
+	b.Polarity = polarity
+	return b
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) WithPolarityBuilder(builderSupplier func(BACnetPolarityTaggedBuilder) BACnetPolarityTaggedBuilder) BACnetPropertyStatesPolarityBuilder {
+	builder := builderSupplier(b.Polarity.CreateBACnetPolarityTaggedBuilder())
+	var err error
+	b.Polarity, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetPolarityTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) Build() (BACnetPropertyStatesPolarity, error) {
+	if b.Polarity == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'polarity' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetPropertyStatesPolarity.deepCopy(), nil
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) MustBuild() BACnetPropertyStatesPolarity {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetPropertyStatesPolarityBuilder) Done() BACnetPropertyStatesBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) buildForBACnetPropertyStates() (BACnetPropertyStates, error) {
+	return b.Build()
+}
+
+func (b *_BACnetPropertyStatesPolarityBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetPropertyStatesPolarityBuilder().(*_BACnetPropertyStatesPolarityBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetPropertyStatesPolarityBuilder creates a BACnetPropertyStatesPolarityBuilder
+func (b *_BACnetPropertyStatesPolarity) CreateBACnetPropertyStatesPolarityBuilder() BACnetPropertyStatesPolarityBuilder {
+	if b == nil {
+		return NewBACnetPropertyStatesPolarityBuilder()
+	}
+	return &_BACnetPropertyStatesPolarityBuilder{_BACnetPropertyStatesPolarity: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetPropertyStatesPolarity) GetPolarity() BACnetPolarityTagged {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetPropertyStatesPolarity factory function for _BACnetPropertyStatesPolarity
-func NewBACnetPropertyStatesPolarity(polarity BACnetPolarityTagged, peekedTagHeader BACnetTagHeader) *_BACnetPropertyStatesPolarity {
-	if polarity == nil {
-		panic("polarity of type BACnetPolarityTagged for BACnetPropertyStatesPolarity must not be nil")
-	}
-	_result := &_BACnetPropertyStatesPolarity{
-		BACnetPropertyStatesContract: NewBACnetPropertyStates(peekedTagHeader),
-		Polarity:                     polarity,
-	}
-	_result.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetPropertyStatesPolarity(structType any) BACnetPropertyStatesPolarity {
@@ -179,13 +294,33 @@ func (m *_BACnetPropertyStatesPolarity) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_BACnetPropertyStatesPolarity) IsBACnetPropertyStatesPolarity() {}
 
+func (m *_BACnetPropertyStatesPolarity) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetPropertyStatesPolarity) deepCopy() *_BACnetPropertyStatesPolarity {
+	if m == nil {
+		return nil
+	}
+	_BACnetPropertyStatesPolarityCopy := &_BACnetPropertyStatesPolarity{
+		m.BACnetPropertyStatesContract.(*_BACnetPropertyStates).deepCopy(),
+		m.Polarity.DeepCopy().(BACnetPolarityTagged),
+	}
+	m.BACnetPropertyStatesContract.(*_BACnetPropertyStates)._SubType = m
+	return _BACnetPropertyStatesPolarityCopy
+}
+
 func (m *_BACnetPropertyStatesPolarity) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

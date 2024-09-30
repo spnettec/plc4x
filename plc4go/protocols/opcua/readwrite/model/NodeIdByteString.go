@@ -38,6 +38,7 @@ type NodeIdByteString interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -47,6 +48,8 @@ type NodeIdByteString interface {
 	GetIdentifier() string
 	// IsNodeIdByteString is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdByteString()
+	// CreateBuilder creates a NodeIdByteStringBuilder
+	CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder
 }
 
 // _NodeIdByteString is the data-structure of this message
@@ -58,6 +61,139 @@ type _NodeIdByteString struct {
 
 var _ NodeIdByteString = (*_NodeIdByteString)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdByteString)(nil)
+
+// NewNodeIdByteString factory function for _NodeIdByteString
+func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByteString {
+	if id == nil {
+		panic("id of type PascalByteString for NodeIdByteString must not be nil")
+	}
+	_result := &_NodeIdByteString{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdByteStringBuilder is a builder for NodeIdByteString
+type NodeIdByteStringBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) NodeIdByteStringBuilder
+	// WithId adds Id (property field)
+	WithId(PascalByteString) NodeIdByteStringBuilder
+	// WithIdBuilder adds Id (property field) which is build by the builder
+	WithIdBuilder(func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder
+	// Build builds the NodeIdByteString or returns an error if something is wrong
+	Build() (NodeIdByteString, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdByteString
+}
+
+// NewNodeIdByteStringBuilder() creates a NodeIdByteStringBuilder
+func NewNodeIdByteStringBuilder() NodeIdByteStringBuilder {
+	return &_NodeIdByteStringBuilder{_NodeIdByteString: new(_NodeIdByteString)}
+}
+
+type _NodeIdByteStringBuilder struct {
+	*_NodeIdByteString
+
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdByteStringBuilder) = (*_NodeIdByteStringBuilder)(nil)
+
+func (b *_NodeIdByteStringBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
+}
+
+func (b *_NodeIdByteStringBuilder) WithMandatoryFields(namespaceIndex uint16, id PascalByteString) NodeIdByteStringBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id)
+}
+
+func (b *_NodeIdByteStringBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdByteStringBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_NodeIdByteStringBuilder) WithId(id PascalByteString) NodeIdByteStringBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdByteStringBuilder) WithIdBuilder(builderSupplier func(PascalByteStringBuilder) PascalByteStringBuilder) NodeIdByteStringBuilder {
+	builder := builderSupplier(b.Id.CreatePascalByteStringBuilder())
+	var err error
+	b.Id, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalByteStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_NodeIdByteStringBuilder) Build() (NodeIdByteString, error) {
+	if b.Id == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'id' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NodeIdByteString.deepCopy(), nil
+}
+
+func (b *_NodeIdByteStringBuilder) MustBuild() NodeIdByteString {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdByteStringBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdByteStringBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdByteStringBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdByteStringBuilder().(*_NodeIdByteStringBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNodeIdByteStringBuilder creates a NodeIdByteStringBuilder
+func (b *_NodeIdByteString) CreateNodeIdByteStringBuilder() NodeIdByteStringBuilder {
+	if b == nil {
+		return NewNodeIdByteStringBuilder()
+	}
+	return &_NodeIdByteStringBuilder{_NodeIdByteString: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,20 +245,6 @@ func (m *_NodeIdByteString) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdByteString factory function for _NodeIdByteString
-func NewNodeIdByteString(namespaceIndex uint16, id PascalByteString) *_NodeIdByteString {
-	if id == nil {
-		panic("id of type PascalByteString for NodeIdByteString must not be nil")
-	}
-	_result := &_NodeIdByteString{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdByteString(structType any) NodeIdByteString {
@@ -235,13 +357,34 @@ func (m *_NodeIdByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_NodeIdByteString) IsNodeIdByteString() {}
 
+func (m *_NodeIdByteString) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdByteString) deepCopy() *_NodeIdByteString {
+	if m == nil {
+		return nil
+	}
+	_NodeIdByteStringCopy := &_NodeIdByteString{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		m.Id.DeepCopy().(PascalByteString),
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdByteStringCopy
+}
+
 func (m *_NodeIdByteString) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type ModbusPDUDiagnosticResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ModbusPDU
 	// GetSubFunction returns SubFunction (property field)
 	GetSubFunction() uint16
@@ -45,6 +46,8 @@ type ModbusPDUDiagnosticResponse interface {
 	GetData() uint16
 	// IsModbusPDUDiagnosticResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModbusPDUDiagnosticResponse()
+	// CreateBuilder creates a ModbusPDUDiagnosticResponseBuilder
+	CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder
 }
 
 // _ModbusPDUDiagnosticResponse is the data-structure of this message
@@ -56,6 +59,115 @@ type _ModbusPDUDiagnosticResponse struct {
 
 var _ ModbusPDUDiagnosticResponse = (*_ModbusPDUDiagnosticResponse)(nil)
 var _ ModbusPDURequirements = (*_ModbusPDUDiagnosticResponse)(nil)
+
+// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
+func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
+	_result := &_ModbusPDUDiagnosticResponse{
+		ModbusPDUContract: NewModbusPDU(),
+		SubFunction:       subFunction,
+		Data:              data,
+	}
+	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModbusPDUDiagnosticResponseBuilder is a builder for ModbusPDUDiagnosticResponse
+type ModbusPDUDiagnosticResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder
+	// WithSubFunction adds SubFunction (property field)
+	WithSubFunction(uint16) ModbusPDUDiagnosticResponseBuilder
+	// WithData adds Data (property field)
+	WithData(uint16) ModbusPDUDiagnosticResponseBuilder
+	// Build builds the ModbusPDUDiagnosticResponse or returns an error if something is wrong
+	Build() (ModbusPDUDiagnosticResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModbusPDUDiagnosticResponse
+}
+
+// NewModbusPDUDiagnosticResponseBuilder() creates a ModbusPDUDiagnosticResponseBuilder
+func NewModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
+	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: new(_ModbusPDUDiagnosticResponse)}
+}
+
+type _ModbusPDUDiagnosticResponseBuilder struct {
+	*_ModbusPDUDiagnosticResponse
+
+	parentBuilder *_ModbusPDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModbusPDUDiagnosticResponseBuilder) = (*_ModbusPDUDiagnosticResponseBuilder)(nil)
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) setParent(contract ModbusPDUContract) {
+	b.ModbusPDUContract = contract
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithMandatoryFields(subFunction uint16, data uint16) ModbusPDUDiagnosticResponseBuilder {
+	return b.WithSubFunction(subFunction).WithData(data)
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithSubFunction(subFunction uint16) ModbusPDUDiagnosticResponseBuilder {
+	b.SubFunction = subFunction
+	return b
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) WithData(data uint16) ModbusPDUDiagnosticResponseBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) Build() (ModbusPDUDiagnosticResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModbusPDUDiagnosticResponse.deepCopy(), nil
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) MustBuild() ModbusPDUDiagnosticResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModbusPDUDiagnosticResponseBuilder) Done() ModbusPDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) buildForModbusPDU() (ModbusPDU, error) {
+	return b.Build()
+}
+
+func (b *_ModbusPDUDiagnosticResponseBuilder) DeepCopy() any {
+	_copy := b.CreateModbusPDUDiagnosticResponseBuilder().(*_ModbusPDUDiagnosticResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModbusPDUDiagnosticResponseBuilder creates a ModbusPDUDiagnosticResponseBuilder
+func (b *_ModbusPDUDiagnosticResponse) CreateModbusPDUDiagnosticResponseBuilder() ModbusPDUDiagnosticResponseBuilder {
+	if b == nil {
+		return NewModbusPDUDiagnosticResponseBuilder()
+	}
+	return &_ModbusPDUDiagnosticResponseBuilder{_ModbusPDUDiagnosticResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -100,17 +212,6 @@ func (m *_ModbusPDUDiagnosticResponse) GetData() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModbusPDUDiagnosticResponse factory function for _ModbusPDUDiagnosticResponse
-func NewModbusPDUDiagnosticResponse(subFunction uint16, data uint16) *_ModbusPDUDiagnosticResponse {
-	_result := &_ModbusPDUDiagnosticResponse{
-		ModbusPDUContract: NewModbusPDU(),
-		SubFunction:       subFunction,
-		Data:              data,
-	}
-	_result.ModbusPDUContract.(*_ModbusPDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModbusPDUDiagnosticResponse(structType any) ModbusPDUDiagnosticResponse {
@@ -209,13 +310,34 @@ func (m *_ModbusPDUDiagnosticResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_ModbusPDUDiagnosticResponse) IsModbusPDUDiagnosticResponse() {}
 
+func (m *_ModbusPDUDiagnosticResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModbusPDUDiagnosticResponse) deepCopy() *_ModbusPDUDiagnosticResponse {
+	if m == nil {
+		return nil
+	}
+	_ModbusPDUDiagnosticResponseCopy := &_ModbusPDUDiagnosticResponse{
+		m.ModbusPDUContract.(*_ModbusPDU).deepCopy(),
+		m.SubFunction,
+		m.Data,
+	}
+	m.ModbusPDUContract.(*_ModbusPDU)._SubType = m
+	return _ModbusPDUDiagnosticResponseCopy
+}
+
 func (m *_ModbusPDUDiagnosticResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

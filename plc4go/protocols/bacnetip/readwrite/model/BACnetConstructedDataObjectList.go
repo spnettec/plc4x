@@ -38,6 +38,7 @@ type BACnetConstructedDataObjectList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataObjectList interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataObjectList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataObjectList()
+	// CreateBuilder creates a BACnetConstructedDataObjectListBuilder
+	CreateBACnetConstructedDataObjectListBuilder() BACnetConstructedDataObjectListBuilder
 }
 
 // _BACnetConstructedDataObjectList is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataObjectList struct {
 
 var _ BACnetConstructedDataObjectList = (*_BACnetConstructedDataObjectList)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataObjectList)(nil)
+
+// NewBACnetConstructedDataObjectList factory function for _BACnetConstructedDataObjectList
+func NewBACnetConstructedDataObjectList(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, objectList []BACnetApplicationTagObjectIdentifier, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectList {
+	_result := &_BACnetConstructedDataObjectList{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		ObjectList:                    objectList,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataObjectListBuilder is a builder for BACnetConstructedDataObjectList
+type BACnetConstructedDataObjectListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(objectList []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectListBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataObjectListBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataObjectListBuilder
+	// WithObjectList adds ObjectList (property field)
+	WithObjectList(...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectListBuilder
+	// Build builds the BACnetConstructedDataObjectList or returns an error if something is wrong
+	Build() (BACnetConstructedDataObjectList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataObjectList
+}
+
+// NewBACnetConstructedDataObjectListBuilder() creates a BACnetConstructedDataObjectListBuilder
+func NewBACnetConstructedDataObjectListBuilder() BACnetConstructedDataObjectListBuilder {
+	return &_BACnetConstructedDataObjectListBuilder{_BACnetConstructedDataObjectList: new(_BACnetConstructedDataObjectList)}
+}
+
+type _BACnetConstructedDataObjectListBuilder struct {
+	*_BACnetConstructedDataObjectList
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataObjectListBuilder) = (*_BACnetConstructedDataObjectListBuilder)(nil)
+
+func (b *_BACnetConstructedDataObjectListBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) WithMandatoryFields(objectList []BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectListBuilder {
+	return b.WithObjectList(objectList...)
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataObjectListBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataObjectListBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) WithObjectList(objectList ...BACnetApplicationTagObjectIdentifier) BACnetConstructedDataObjectListBuilder {
+	b.ObjectList = objectList
+	return b
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) Build() (BACnetConstructedDataObjectList, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataObjectList.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) MustBuild() BACnetConstructedDataObjectList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataObjectListBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataObjectListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataObjectListBuilder().(*_BACnetConstructedDataObjectListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataObjectListBuilder creates a BACnetConstructedDataObjectListBuilder
+func (b *_BACnetConstructedDataObjectList) CreateBACnetConstructedDataObjectListBuilder() BACnetConstructedDataObjectListBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataObjectListBuilder()
+	}
+	return &_BACnetConstructedDataObjectListBuilder{_BACnetConstructedDataObjectList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataObjectList) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataObjectList factory function for _BACnetConstructedDataObjectList
-func NewBACnetConstructedDataObjectList(numberOfDataElements BACnetApplicationTagUnsignedInteger, objectList []BACnetApplicationTagObjectIdentifier, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataObjectList {
-	_result := &_BACnetConstructedDataObjectList{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		ObjectList:                    objectList,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataObjectList(structType any) BACnetConstructedDataObjectList {
@@ -248,13 +364,34 @@ func (m *_BACnetConstructedDataObjectList) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataObjectList) IsBACnetConstructedDataObjectList() {}
 
+func (m *_BACnetConstructedDataObjectList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataObjectList) deepCopy() *_BACnetConstructedDataObjectList {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataObjectListCopy := &_BACnetConstructedDataObjectList{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagObjectIdentifier, BACnetApplicationTagObjectIdentifier](m.ObjectList),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataObjectListCopy
+}
+
 func (m *_BACnetConstructedDataObjectList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

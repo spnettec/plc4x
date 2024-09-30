@@ -38,6 +38,7 @@ type OpcuaAcknowledgeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -45,6 +46,8 @@ type OpcuaAcknowledgeResponse interface {
 	GetLimits() OpcuaProtocolLimits
 	// IsOpcuaAcknowledgeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaAcknowledgeResponse()
+	// CreateBuilder creates a OpcuaAcknowledgeResponseBuilder
+	CreateOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder
 }
 
 // _OpcuaAcknowledgeResponse is the data-structure of this message
@@ -56,6 +59,139 @@ type _OpcuaAcknowledgeResponse struct {
 
 var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaAcknowledgeResponse)(nil)
+
+// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
+	}
+	_result := &_OpcuaAcknowledgeResponse{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaAcknowledgeResponseBuilder is a builder for OpcuaAcknowledgeResponse
+type OpcuaAcknowledgeResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint32, limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint32) OpcuaAcknowledgeResponseBuilder
+	// WithLimits adds Limits (property field)
+	WithLimits(OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder
+	// WithLimitsBuilder adds Limits (property field) which is build by the builder
+	WithLimitsBuilder(func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaAcknowledgeResponseBuilder
+	// Build builds the OpcuaAcknowledgeResponse or returns an error if something is wrong
+	Build() (OpcuaAcknowledgeResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaAcknowledgeResponse
+}
+
+// NewOpcuaAcknowledgeResponseBuilder() creates a OpcuaAcknowledgeResponseBuilder
+func NewOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder {
+	return &_OpcuaAcknowledgeResponseBuilder{_OpcuaAcknowledgeResponse: new(_OpcuaAcknowledgeResponse)}
+}
+
+type _OpcuaAcknowledgeResponseBuilder struct {
+	*_OpcuaAcknowledgeResponse
+
+	parentBuilder *_MessagePDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaAcknowledgeResponseBuilder) = (*_OpcuaAcknowledgeResponseBuilder)(nil)
+
+func (b *_OpcuaAcknowledgeResponseBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) WithMandatoryFields(version uint32, limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
+	return b.WithVersion(version).WithLimits(limits)
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) WithVersion(version uint32) OpcuaAcknowledgeResponseBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) WithLimits(limits OpcuaProtocolLimits) OpcuaAcknowledgeResponseBuilder {
+	b.Limits = limits
+	return b
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) WithLimitsBuilder(builderSupplier func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaAcknowledgeResponseBuilder {
+	builder := builderSupplier(b.Limits.CreateOpcuaProtocolLimitsBuilder())
+	var err error
+	b.Limits, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "OpcuaProtocolLimitsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) Build() (OpcuaAcknowledgeResponse, error) {
+	if b.Limits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'limits' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaAcknowledgeResponse.deepCopy(), nil
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) MustBuild() OpcuaAcknowledgeResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaAcknowledgeResponseBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaAcknowledgeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaAcknowledgeResponseBuilder().(*_OpcuaAcknowledgeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaAcknowledgeResponseBuilder creates a OpcuaAcknowledgeResponseBuilder
+func (b *_OpcuaAcknowledgeResponse) CreateOpcuaAcknowledgeResponseBuilder() OpcuaAcknowledgeResponseBuilder {
+	if b == nil {
+		return NewOpcuaAcknowledgeResponseBuilder()
+	}
+	return &_OpcuaAcknowledgeResponseBuilder{_OpcuaAcknowledgeResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,20 +232,6 @@ func (m *_OpcuaAcknowledgeResponse) GetLimits() OpcuaProtocolLimits {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(version uint32, limits OpcuaProtocolLimits, chunk ChunkType) *_OpcuaAcknowledgeResponse {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
-	}
-	_result := &_OpcuaAcknowledgeResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaAcknowledgeResponse(structType any) OpcuaAcknowledgeResponse {
@@ -208,13 +330,34 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_OpcuaAcknowledgeResponse) IsOpcuaAcknowledgeResponse() {}
 
+func (m *_OpcuaAcknowledgeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaAcknowledgeResponse) deepCopy() *_OpcuaAcknowledgeResponse {
+	if m == nil {
+		return nil
+	}
+	_OpcuaAcknowledgeResponseCopy := &_OpcuaAcknowledgeResponse{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaAcknowledgeResponseCopy
+}
+
 func (m *_OpcuaAcknowledgeResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

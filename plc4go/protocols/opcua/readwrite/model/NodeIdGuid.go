@@ -38,6 +38,7 @@ type NodeIdGuid interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	NodeIdTypeDefinition
 	// GetNamespaceIndex returns NamespaceIndex (property field)
 	GetNamespaceIndex() uint16
@@ -47,6 +48,8 @@ type NodeIdGuid interface {
 	GetIdentifier() string
 	// IsNodeIdGuid is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNodeIdGuid()
+	// CreateBuilder creates a NodeIdGuidBuilder
+	CreateNodeIdGuidBuilder() NodeIdGuidBuilder
 }
 
 // _NodeIdGuid is the data-structure of this message
@@ -58,6 +61,115 @@ type _NodeIdGuid struct {
 
 var _ NodeIdGuid = (*_NodeIdGuid)(nil)
 var _ NodeIdTypeDefinitionRequirements = (*_NodeIdGuid)(nil)
+
+// NewNodeIdGuid factory function for _NodeIdGuid
+func NewNodeIdGuid(namespaceIndex uint16, id []byte) *_NodeIdGuid {
+	_result := &_NodeIdGuid{
+		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
+		NamespaceIndex:               namespaceIndex,
+		Id:                           id,
+	}
+	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NodeIdGuidBuilder is a builder for NodeIdGuid
+type NodeIdGuidBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder
+	// WithNamespaceIndex adds NamespaceIndex (property field)
+	WithNamespaceIndex(uint16) NodeIdGuidBuilder
+	// WithId adds Id (property field)
+	WithId(...byte) NodeIdGuidBuilder
+	// Build builds the NodeIdGuid or returns an error if something is wrong
+	Build() (NodeIdGuid, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NodeIdGuid
+}
+
+// NewNodeIdGuidBuilder() creates a NodeIdGuidBuilder
+func NewNodeIdGuidBuilder() NodeIdGuidBuilder {
+	return &_NodeIdGuidBuilder{_NodeIdGuid: new(_NodeIdGuid)}
+}
+
+type _NodeIdGuidBuilder struct {
+	*_NodeIdGuid
+
+	parentBuilder *_NodeIdTypeDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (NodeIdGuidBuilder) = (*_NodeIdGuidBuilder)(nil)
+
+func (b *_NodeIdGuidBuilder) setParent(contract NodeIdTypeDefinitionContract) {
+	b.NodeIdTypeDefinitionContract = contract
+}
+
+func (b *_NodeIdGuidBuilder) WithMandatoryFields(namespaceIndex uint16, id []byte) NodeIdGuidBuilder {
+	return b.WithNamespaceIndex(namespaceIndex).WithId(id...)
+}
+
+func (b *_NodeIdGuidBuilder) WithNamespaceIndex(namespaceIndex uint16) NodeIdGuidBuilder {
+	b.NamespaceIndex = namespaceIndex
+	return b
+}
+
+func (b *_NodeIdGuidBuilder) WithId(id ...byte) NodeIdGuidBuilder {
+	b.Id = id
+	return b
+}
+
+func (b *_NodeIdGuidBuilder) Build() (NodeIdGuid, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NodeIdGuid.deepCopy(), nil
+}
+
+func (b *_NodeIdGuidBuilder) MustBuild() NodeIdGuid {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_NodeIdGuidBuilder) Done() NodeIdTypeDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_NodeIdGuidBuilder) buildForNodeIdTypeDefinition() (NodeIdTypeDefinition, error) {
+	return b.Build()
+}
+
+func (b *_NodeIdGuidBuilder) DeepCopy() any {
+	_copy := b.CreateNodeIdGuidBuilder().(*_NodeIdGuidBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNodeIdGuidBuilder creates a NodeIdGuidBuilder
+func (b *_NodeIdGuid) CreateNodeIdGuidBuilder() NodeIdGuidBuilder {
+	if b == nil {
+		return NewNodeIdGuidBuilder()
+	}
+	return &_NodeIdGuidBuilder{_NodeIdGuid: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -109,17 +221,6 @@ func (m *_NodeIdGuid) GetIdentifier() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNodeIdGuid factory function for _NodeIdGuid
-func NewNodeIdGuid(namespaceIndex uint16, id []byte) *_NodeIdGuid {
-	_result := &_NodeIdGuid{
-		NodeIdTypeDefinitionContract: NewNodeIdTypeDefinition(),
-		NamespaceIndex:               namespaceIndex,
-		Id:                           id,
-	}
-	_result.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastNodeIdGuid(structType any) NodeIdGuid {
@@ -234,13 +335,34 @@ func (m *_NodeIdGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_NodeIdGuid) IsNodeIdGuid() {}
 
+func (m *_NodeIdGuid) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NodeIdGuid) deepCopy() *_NodeIdGuid {
+	if m == nil {
+		return nil
+	}
+	_NodeIdGuidCopy := &_NodeIdGuid{
+		m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition).deepCopy(),
+		m.NamespaceIndex,
+		utils.DeepCopySlice[byte, byte](m.Id),
+	}
+	m.NodeIdTypeDefinitionContract.(*_NodeIdTypeDefinition)._SubType = m
+	return _NodeIdGuidCopy
+}
+
 func (m *_NodeIdGuid) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

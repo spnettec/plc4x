@@ -38,6 +38,7 @@ type MediaTransportControlDataNextPreviousSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetOperation returns Operation (property field)
 	GetOperation() byte
@@ -47,6 +48,8 @@ type MediaTransportControlDataNextPreviousSelection interface {
 	GetIsSetTheNextSelection() bool
 	// IsMediaTransportControlDataNextPreviousSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataNextPreviousSelection()
+	// CreateBuilder creates a MediaTransportControlDataNextPreviousSelectionBuilder
+	CreateMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportControlDataNextPreviousSelectionBuilder
 }
 
 // _MediaTransportControlDataNextPreviousSelection is the data-structure of this message
@@ -57,6 +60,107 @@ type _MediaTransportControlDataNextPreviousSelection struct {
 
 var _ MediaTransportControlDataNextPreviousSelection = (*_MediaTransportControlDataNextPreviousSelection)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataNextPreviousSelection)(nil)
+
+// NewMediaTransportControlDataNextPreviousSelection factory function for _MediaTransportControlDataNextPreviousSelection
+func NewMediaTransportControlDataNextPreviousSelection(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, operation byte) *_MediaTransportControlDataNextPreviousSelection {
+	_result := &_MediaTransportControlDataNextPreviousSelection{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		Operation:                         operation,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataNextPreviousSelectionBuilder is a builder for MediaTransportControlDataNextPreviousSelection
+type MediaTransportControlDataNextPreviousSelectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder
+	// WithOperation adds Operation (property field)
+	WithOperation(byte) MediaTransportControlDataNextPreviousSelectionBuilder
+	// Build builds the MediaTransportControlDataNextPreviousSelection or returns an error if something is wrong
+	Build() (MediaTransportControlDataNextPreviousSelection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataNextPreviousSelection
+}
+
+// NewMediaTransportControlDataNextPreviousSelectionBuilder() creates a MediaTransportControlDataNextPreviousSelectionBuilder
+func NewMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportControlDataNextPreviousSelectionBuilder {
+	return &_MediaTransportControlDataNextPreviousSelectionBuilder{_MediaTransportControlDataNextPreviousSelection: new(_MediaTransportControlDataNextPreviousSelection)}
+}
+
+type _MediaTransportControlDataNextPreviousSelectionBuilder struct {
+	*_MediaTransportControlDataNextPreviousSelection
+
+	parentBuilder *_MediaTransportControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataNextPreviousSelectionBuilder) = (*_MediaTransportControlDataNextPreviousSelectionBuilder)(nil)
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) WithMandatoryFields(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
+	return b.WithOperation(operation)
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) WithOperation(operation byte) MediaTransportControlDataNextPreviousSelectionBuilder {
+	b.Operation = operation
+	return b
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) Build() (MediaTransportControlDataNextPreviousSelection, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MediaTransportControlDataNextPreviousSelection.deepCopy(), nil
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) MustBuild() MediaTransportControlDataNextPreviousSelection {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataNextPreviousSelectionBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataNextPreviousSelectionBuilder().(*_MediaTransportControlDataNextPreviousSelectionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMediaTransportControlDataNextPreviousSelectionBuilder creates a MediaTransportControlDataNextPreviousSelectionBuilder
+func (b *_MediaTransportControlDataNextPreviousSelection) CreateMediaTransportControlDataNextPreviousSelectionBuilder() MediaTransportControlDataNextPreviousSelectionBuilder {
+	if b == nil {
+		return NewMediaTransportControlDataNextPreviousSelectionBuilder()
+	}
+	return &_MediaTransportControlDataNextPreviousSelectionBuilder{_MediaTransportControlDataNextPreviousSelection: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,16 +210,6 @@ func (m *_MediaTransportControlDataNextPreviousSelection) GetIsSetTheNextSelecti
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataNextPreviousSelection factory function for _MediaTransportControlDataNextPreviousSelection
-func NewMediaTransportControlDataNextPreviousSelection(operation byte, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataNextPreviousSelection {
-	_result := &_MediaTransportControlDataNextPreviousSelection{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		Operation:                         operation,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataNextPreviousSelection(structType any) MediaTransportControlDataNextPreviousSelection {
@@ -230,13 +324,33 @@ func (m *_MediaTransportControlDataNextPreviousSelection) SerializeWithWriteBuff
 func (m *_MediaTransportControlDataNextPreviousSelection) IsMediaTransportControlDataNextPreviousSelection() {
 }
 
+func (m *_MediaTransportControlDataNextPreviousSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataNextPreviousSelection) deepCopy() *_MediaTransportControlDataNextPreviousSelection {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataNextPreviousSelectionCopy := &_MediaTransportControlDataNextPreviousSelection{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.Operation,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataNextPreviousSelectionCopy
+}
+
 func (m *_MediaTransportControlDataNextPreviousSelection) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

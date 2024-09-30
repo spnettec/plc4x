@@ -38,12 +38,15 @@ type Services interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOffsets returns Offsets (property field)
 	GetOffsets() []uint16
 	// GetServices returns Services (property field)
 	GetServices() []CipService
 	// IsServices is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsServices()
+	// CreateBuilder creates a ServicesBuilder
+	CreateServicesBuilder() ServicesBuilder
 }
 
 // _Services is the data-structure of this message
@@ -56,6 +59,94 @@ type _Services struct {
 }
 
 var _ Services = (*_Services)(nil)
+
+// NewServices factory function for _Services
+func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
+	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ServicesBuilder is a builder for Services
+type ServicesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder
+	// WithOffsets adds Offsets (property field)
+	WithOffsets(...uint16) ServicesBuilder
+	// WithServices adds Services (property field)
+	WithServices(...CipService) ServicesBuilder
+	// Build builds the Services or returns an error if something is wrong
+	Build() (Services, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Services
+}
+
+// NewServicesBuilder() creates a ServicesBuilder
+func NewServicesBuilder() ServicesBuilder {
+	return &_ServicesBuilder{_Services: new(_Services)}
+}
+
+type _ServicesBuilder struct {
+	*_Services
+
+	err *utils.MultiError
+}
+
+var _ (ServicesBuilder) = (*_ServicesBuilder)(nil)
+
+func (b *_ServicesBuilder) WithMandatoryFields(offsets []uint16, services []CipService) ServicesBuilder {
+	return b.WithOffsets(offsets...).WithServices(services...)
+}
+
+func (b *_ServicesBuilder) WithOffsets(offsets ...uint16) ServicesBuilder {
+	b.Offsets = offsets
+	return b
+}
+
+func (b *_ServicesBuilder) WithServices(services ...CipService) ServicesBuilder {
+	b.Services = services
+	return b
+}
+
+func (b *_ServicesBuilder) Build() (Services, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Services.deepCopy(), nil
+}
+
+func (b *_ServicesBuilder) MustBuild() Services {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ServicesBuilder) DeepCopy() any {
+	_copy := b.CreateServicesBuilder().(*_ServicesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateServicesBuilder creates a ServicesBuilder
+func (b *_Services) CreateServicesBuilder() ServicesBuilder {
+	if b == nil {
+		return NewServicesBuilder()
+	}
+	return &_ServicesBuilder{_Services: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,11 +165,6 @@ func (m *_Services) GetServices() []CipService {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewServices factory function for _Services
-func NewServices(offsets []uint16, services []CipService, servicesLen uint16) *_Services {
-	return &_Services{Offsets: offsets, Services: services, ServicesLen: servicesLen}
-}
 
 // Deprecated: use the interface for direct cast
 func CastServices(structType any) Services {
@@ -138,7 +224,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Services) parse(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (__services Services, err error) {
@@ -222,13 +308,33 @@ func (m *_Services) GetServicesLen() uint16 {
 
 func (m *_Services) IsServices() {}
 
+func (m *_Services) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Services) deepCopy() *_Services {
+	if m == nil {
+		return nil
+	}
+	_ServicesCopy := &_Services{
+		utils.DeepCopySlice[uint16, uint16](m.Offsets),
+		utils.DeepCopySlice[CipService, CipService](m.Services),
+		m.ServicesLen,
+	}
+	return _ServicesCopy
+}
+
 func (m *_Services) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

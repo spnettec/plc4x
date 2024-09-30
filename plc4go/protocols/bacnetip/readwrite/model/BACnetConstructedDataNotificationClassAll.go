@@ -36,9 +36,12 @@ type BACnetConstructedDataNotificationClassAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataNotificationClassAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataNotificationClassAll()
+	// CreateBuilder creates a BACnetConstructedDataNotificationClassAllBuilder
+	CreateBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedDataNotificationClassAllBuilder
 }
 
 // _BACnetConstructedDataNotificationClassAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataNotificationClassAll struct {
 
 var _ BACnetConstructedDataNotificationClassAll = (*_BACnetConstructedDataNotificationClassAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataNotificationClassAll)(nil)
+
+// NewBACnetConstructedDataNotificationClassAll factory function for _BACnetConstructedDataNotificationClassAll
+func NewBACnetConstructedDataNotificationClassAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClassAll {
+	_result := &_BACnetConstructedDataNotificationClassAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataNotificationClassAllBuilder is a builder for BACnetConstructedDataNotificationClassAll
+type BACnetConstructedDataNotificationClassAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder
+	// Build builds the BACnetConstructedDataNotificationClassAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataNotificationClassAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataNotificationClassAll
+}
+
+// NewBACnetConstructedDataNotificationClassAllBuilder() creates a BACnetConstructedDataNotificationClassAllBuilder
+func NewBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedDataNotificationClassAllBuilder {
+	return &_BACnetConstructedDataNotificationClassAllBuilder{_BACnetConstructedDataNotificationClassAll: new(_BACnetConstructedDataNotificationClassAll)}
+}
+
+type _BACnetConstructedDataNotificationClassAllBuilder struct {
+	*_BACnetConstructedDataNotificationClassAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataNotificationClassAllBuilder) = (*_BACnetConstructedDataNotificationClassAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) WithMandatoryFields() BACnetConstructedDataNotificationClassAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) Build() (BACnetConstructedDataNotificationClassAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataNotificationClassAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) MustBuild() BACnetConstructedDataNotificationClassAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataNotificationClassAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataNotificationClassAllBuilder().(*_BACnetConstructedDataNotificationClassAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataNotificationClassAllBuilder creates a BACnetConstructedDataNotificationClassAllBuilder
+func (b *_BACnetConstructedDataNotificationClassAll) CreateBACnetConstructedDataNotificationClassAllBuilder() BACnetConstructedDataNotificationClassAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataNotificationClassAllBuilder()
+	}
+	return &_BACnetConstructedDataNotificationClassAllBuilder{_BACnetConstructedDataNotificationClassAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataNotificationClassAll) GetPropertyIdentifierArgume
 
 func (m *_BACnetConstructedDataNotificationClassAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataNotificationClassAll factory function for _BACnetConstructedDataNotificationClassAll
-func NewBACnetConstructedDataNotificationClassAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataNotificationClassAll {
-	_result := &_BACnetConstructedDataNotificationClassAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataNotificationClassAll) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConstructedDataNotificationClassAll) IsBACnetConstructedDataNotificationClassAll() {}
 
+func (m *_BACnetConstructedDataNotificationClassAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataNotificationClassAll) deepCopy() *_BACnetConstructedDataNotificationClassAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataNotificationClassAllCopy := &_BACnetConstructedDataNotificationClassAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataNotificationClassAllCopy
+}
+
 func (m *_BACnetConstructedDataNotificationClassAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

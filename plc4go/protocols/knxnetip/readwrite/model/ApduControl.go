@@ -40,14 +40,19 @@ type ApduControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
+	// CreateBuilder creates a ApduControlBuilder
+	CreateApduControlBuilder() ApduControlBuilder
 }
 
 // ApduControlContract provides a set of functions which can be overwritten by a sub struct
 type ApduControlContract interface {
 	// IsApduControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsApduControl()
+	// CreateBuilder creates a ApduControlBuilder
+	CreateApduControlBuilder() ApduControlBuilder
 }
 
 // ApduControlRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,193 @@ var _ ApduControlContract = (*_ApduControl)(nil)
 func NewApduControl() *_ApduControl {
 	return &_ApduControl{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ApduControlBuilder is a builder for ApduControl
+type ApduControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ApduControlBuilder
+	// AsApduControlConnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlConnect() interface {
+		ApduControlConnectBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlDisconnect converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlDisconnect() interface {
+		ApduControlDisconnectBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlAck converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlAck() interface {
+		ApduControlAckBuilder
+		Done() ApduControlBuilder
+	}
+	// AsApduControlNack converts this build to a subType of ApduControl. It is always possible to return to current builder using Done()
+	AsApduControlNack() interface {
+		ApduControlNackBuilder
+		Done() ApduControlBuilder
+	}
+	// Build builds the ApduControl or returns an error if something is wrong
+	PartialBuild() (ApduControlContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ApduControlContract
+	// Build builds the ApduControl or returns an error if something is wrong
+	Build() (ApduControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ApduControl
+}
+
+// NewApduControlBuilder() creates a ApduControlBuilder
+func NewApduControlBuilder() ApduControlBuilder {
+	return &_ApduControlBuilder{_ApduControl: new(_ApduControl)}
+}
+
+type _ApduControlChildBuilder interface {
+	utils.Copyable
+	setParent(ApduControlContract)
+	buildForApduControl() (ApduControl, error)
+}
+
+type _ApduControlBuilder struct {
+	*_ApduControl
+
+	childBuilder _ApduControlChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ApduControlBuilder) = (*_ApduControlBuilder)(nil)
+
+func (b *_ApduControlBuilder) WithMandatoryFields() ApduControlBuilder {
+	return b
+}
+
+func (b *_ApduControlBuilder) PartialBuild() (ApduControlContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ApduControl.deepCopy(), nil
+}
+
+func (b *_ApduControlBuilder) PartialMustBuild() ApduControlContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduControlBuilder) AsApduControlConnect() interface {
+	ApduControlConnectBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlConnectBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlConnectBuilder().(*_ApduControlConnectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlDisconnect() interface {
+	ApduControlDisconnectBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlDisconnectBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlDisconnectBuilder().(*_ApduControlDisconnectBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlAck() interface {
+	ApduControlAckBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlAckBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlAckBuilder().(*_ApduControlAckBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) AsApduControlNack() interface {
+	ApduControlNackBuilder
+	Done() ApduControlBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ApduControlNackBuilder
+		Done() ApduControlBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewApduControlNackBuilder().(*_ApduControlNackBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ApduControlBuilder) Build() (ApduControl, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForApduControl()
+}
+
+func (b *_ApduControlBuilder) MustBuild() ApduControl {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ApduControlBuilder) DeepCopy() any {
+	_copy := b.CreateApduControlBuilder().(*_ApduControlBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ApduControlChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateApduControlBuilder creates a ApduControlBuilder
+func (b *_ApduControl) CreateApduControlBuilder() ApduControlBuilder {
+	if b == nil {
+		return NewApduControlBuilder()
+	}
+	return &_ApduControlBuilder{_ApduControl: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastApduControl(structType any) ApduControl {
@@ -108,7 +300,7 @@ func ApduControlParseWithBufferProducer[T ApduControl]() func(ctx context.Contex
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -118,7 +310,12 @@ func ApduControlParseWithBuffer[T ApduControl](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ApduControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__apduControl ApduControl, err error) {
@@ -139,19 +336,19 @@ func (m *_ApduControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (
 	var _child ApduControl
 	switch {
 	case controlType == 0x0: // ApduControlConnect
-		if _child, err = (&_ApduControlConnect{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlConnect).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlConnect for type-switch of ApduControl")
 		}
 	case controlType == 0x1: // ApduControlDisconnect
-		if _child, err = (&_ApduControlDisconnect{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlDisconnect).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlDisconnect for type-switch of ApduControl")
 		}
 	case controlType == 0x2: // ApduControlAck
-		if _child, err = (&_ApduControlAck{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlAck).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlAck for type-switch of ApduControl")
 		}
 	case controlType == 0x3: // ApduControlNack
-		if _child, err = (&_ApduControlNack{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_ApduControlNack).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ApduControlNack for type-switch of ApduControl")
 		}
 	default:
@@ -193,3 +390,17 @@ func (pm *_ApduControl) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_ApduControl) IsApduControl() {}
+
+func (m *_ApduControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ApduControl) deepCopy() *_ApduControl {
+	if m == nil {
+		return nil
+	}
+	_ApduControlCopy := &_ApduControl{
+		nil, // will be set by child
+	}
+	return _ApduControlCopy
+}

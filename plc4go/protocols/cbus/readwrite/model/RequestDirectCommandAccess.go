@@ -41,6 +41,7 @@ type RequestDirectCommandAccess interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// GetCalData returns CalData (property field)
 	GetCalData() CALData
@@ -50,6 +51,8 @@ type RequestDirectCommandAccess interface {
 	GetCalDataDecoded() CALData
 	// IsRequestDirectCommandAccess is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestDirectCommandAccess()
+	// CreateBuilder creates a RequestDirectCommandAccessBuilder
+	CreateRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder
 }
 
 // _RequestDirectCommandAccess is the data-structure of this message
@@ -61,6 +64,151 @@ type _RequestDirectCommandAccess struct {
 
 var _ RequestDirectCommandAccess = (*_RequestDirectCommandAccess)(nil)
 var _ RequestRequirements = (*_RequestDirectCommandAccess)(nil)
+
+// NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
+func NewRequestDirectCommandAccess(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, calData CALData, alpha Alpha, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
+	_result := &_RequestDirectCommandAccess{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+		CalData:         calData,
+		Alpha:           alpha,
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestDirectCommandAccessBuilder is a builder for RequestDirectCommandAccess
+type RequestDirectCommandAccessBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder
+	// WithCalData adds CalData (property field)
+	WithCalData(CALData) RequestDirectCommandAccessBuilder
+	// WithCalDataBuilder adds CalData (property field) which is build by the builder
+	WithCalDataBuilder(func(CALDataBuilder) CALDataBuilder) RequestDirectCommandAccessBuilder
+	// WithAlpha adds Alpha (property field)
+	WithOptionalAlpha(Alpha) RequestDirectCommandAccessBuilder
+	// WithOptionalAlphaBuilder adds Alpha (property field) which is build by the builder
+	WithOptionalAlphaBuilder(func(AlphaBuilder) AlphaBuilder) RequestDirectCommandAccessBuilder
+	// Build builds the RequestDirectCommandAccess or returns an error if something is wrong
+	Build() (RequestDirectCommandAccess, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestDirectCommandAccess
+}
+
+// NewRequestDirectCommandAccessBuilder() creates a RequestDirectCommandAccessBuilder
+func NewRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder {
+	return &_RequestDirectCommandAccessBuilder{_RequestDirectCommandAccess: new(_RequestDirectCommandAccess)}
+}
+
+type _RequestDirectCommandAccessBuilder struct {
+	*_RequestDirectCommandAccess
+
+	parentBuilder *_RequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RequestDirectCommandAccessBuilder) = (*_RequestDirectCommandAccessBuilder)(nil)
+
+func (b *_RequestDirectCommandAccessBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
+}
+
+func (b *_RequestDirectCommandAccessBuilder) WithMandatoryFields(calData CALData) RequestDirectCommandAccessBuilder {
+	return b.WithCalData(calData)
+}
+
+func (b *_RequestDirectCommandAccessBuilder) WithCalData(calData CALData) RequestDirectCommandAccessBuilder {
+	b.CalData = calData
+	return b
+}
+
+func (b *_RequestDirectCommandAccessBuilder) WithCalDataBuilder(builderSupplier func(CALDataBuilder) CALDataBuilder) RequestDirectCommandAccessBuilder {
+	builder := builderSupplier(b.CalData.CreateCALDataBuilder())
+	var err error
+	b.CalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestDirectCommandAccessBuilder) WithOptionalAlpha(alpha Alpha) RequestDirectCommandAccessBuilder {
+	b.Alpha = alpha
+	return b
+}
+
+func (b *_RequestDirectCommandAccessBuilder) WithOptionalAlphaBuilder(builderSupplier func(AlphaBuilder) AlphaBuilder) RequestDirectCommandAccessBuilder {
+	builder := builderSupplier(b.Alpha.CreateAlphaBuilder())
+	var err error
+	b.Alpha, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AlphaBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RequestDirectCommandAccessBuilder) Build() (RequestDirectCommandAccess, error) {
+	if b.CalData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'calData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestDirectCommandAccess.deepCopy(), nil
+}
+
+func (b *_RequestDirectCommandAccessBuilder) MustBuild() RequestDirectCommandAccess {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestDirectCommandAccessBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestDirectCommandAccessBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestDirectCommandAccessBuilder) DeepCopy() any {
+	_copy := b.CreateRequestDirectCommandAccessBuilder().(*_RequestDirectCommandAccessBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestDirectCommandAccessBuilder creates a RequestDirectCommandAccessBuilder
+func (b *_RequestDirectCommandAccess) CreateRequestDirectCommandAccessBuilder() RequestDirectCommandAccessBuilder {
+	if b == nil {
+		return NewRequestDirectCommandAccessBuilder()
+	}
+	return &_RequestDirectCommandAccessBuilder{_RequestDirectCommandAccess: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -123,17 +271,6 @@ func (m *_RequestDirectCommandAccess) GetAt() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestDirectCommandAccess factory function for _RequestDirectCommandAccess
-func NewRequestDirectCommandAccess(calData CALData, alpha Alpha, peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestDirectCommandAccess {
-	_result := &_RequestDirectCommandAccess{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-		CalData:         calData,
-		Alpha:           alpha,
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestDirectCommandAccess(structType any) RequestDirectCommandAccess {
@@ -265,13 +402,34 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_RequestDirectCommandAccess) IsRequestDirectCommandAccess() {}
 
+func (m *_RequestDirectCommandAccess) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestDirectCommandAccess) deepCopy() *_RequestDirectCommandAccess {
+	if m == nil {
+		return nil
+	}
+	_RequestDirectCommandAccessCopy := &_RequestDirectCommandAccess{
+		m.RequestContract.(*_Request).deepCopy(),
+		m.CalData.DeepCopy().(CALData),
+		m.Alpha.DeepCopy().(Alpha),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestDirectCommandAccessCopy
+}
+
 func (m *_RequestDirectCommandAccess) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

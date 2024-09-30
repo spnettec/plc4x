@@ -38,6 +38,7 @@ type UnsignedRationalNumber interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetNumerator returns Numerator (property field)
 	GetNumerator() uint32
@@ -45,6 +46,8 @@ type UnsignedRationalNumber interface {
 	GetDenominator() uint32
 	// IsUnsignedRationalNumber is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsUnsignedRationalNumber()
+	// CreateBuilder creates a UnsignedRationalNumberBuilder
+	CreateUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder
 }
 
 // _UnsignedRationalNumber is the data-structure of this message
@@ -56,6 +59,115 @@ type _UnsignedRationalNumber struct {
 
 var _ UnsignedRationalNumber = (*_UnsignedRationalNumber)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_UnsignedRationalNumber)(nil)
+
+// NewUnsignedRationalNumber factory function for _UnsignedRationalNumber
+func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedRationalNumber {
+	_result := &_UnsignedRationalNumber{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Numerator:                         numerator,
+		Denominator:                       denominator,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// UnsignedRationalNumberBuilder is a builder for UnsignedRationalNumber
+type UnsignedRationalNumberBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(numerator uint32, denominator uint32) UnsignedRationalNumberBuilder
+	// WithNumerator adds Numerator (property field)
+	WithNumerator(uint32) UnsignedRationalNumberBuilder
+	// WithDenominator adds Denominator (property field)
+	WithDenominator(uint32) UnsignedRationalNumberBuilder
+	// Build builds the UnsignedRationalNumber or returns an error if something is wrong
+	Build() (UnsignedRationalNumber, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() UnsignedRationalNumber
+}
+
+// NewUnsignedRationalNumberBuilder() creates a UnsignedRationalNumberBuilder
+func NewUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder {
+	return &_UnsignedRationalNumberBuilder{_UnsignedRationalNumber: new(_UnsignedRationalNumber)}
+}
+
+type _UnsignedRationalNumberBuilder struct {
+	*_UnsignedRationalNumber
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (UnsignedRationalNumberBuilder) = (*_UnsignedRationalNumberBuilder)(nil)
+
+func (b *_UnsignedRationalNumberBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_UnsignedRationalNumberBuilder) WithMandatoryFields(numerator uint32, denominator uint32) UnsignedRationalNumberBuilder {
+	return b.WithNumerator(numerator).WithDenominator(denominator)
+}
+
+func (b *_UnsignedRationalNumberBuilder) WithNumerator(numerator uint32) UnsignedRationalNumberBuilder {
+	b.Numerator = numerator
+	return b
+}
+
+func (b *_UnsignedRationalNumberBuilder) WithDenominator(denominator uint32) UnsignedRationalNumberBuilder {
+	b.Denominator = denominator
+	return b
+}
+
+func (b *_UnsignedRationalNumberBuilder) Build() (UnsignedRationalNumber, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._UnsignedRationalNumber.deepCopy(), nil
+}
+
+func (b *_UnsignedRationalNumberBuilder) MustBuild() UnsignedRationalNumber {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_UnsignedRationalNumberBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_UnsignedRationalNumberBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_UnsignedRationalNumberBuilder) DeepCopy() any {
+	_copy := b.CreateUnsignedRationalNumberBuilder().(*_UnsignedRationalNumberBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateUnsignedRationalNumberBuilder creates a UnsignedRationalNumberBuilder
+func (b *_UnsignedRationalNumber) CreateUnsignedRationalNumberBuilder() UnsignedRationalNumberBuilder {
+	if b == nil {
+		return NewUnsignedRationalNumberBuilder()
+	}
+	return &_UnsignedRationalNumberBuilder{_UnsignedRationalNumber: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_UnsignedRationalNumber) GetDenominator() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewUnsignedRationalNumber factory function for _UnsignedRationalNumber
-func NewUnsignedRationalNumber(numerator uint32, denominator uint32) *_UnsignedRationalNumber {
-	_result := &_UnsignedRationalNumber{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Numerator:                         numerator,
-		Denominator:                       denominator,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastUnsignedRationalNumber(structType any) UnsignedRationalNumber {
@@ -201,13 +302,34 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 
 func (m *_UnsignedRationalNumber) IsUnsignedRationalNumber() {}
 
+func (m *_UnsignedRationalNumber) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_UnsignedRationalNumber) deepCopy() *_UnsignedRationalNumber {
+	if m == nil {
+		return nil
+	}
+	_UnsignedRationalNumberCopy := &_UnsignedRationalNumber{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Numerator,
+		m.Denominator,
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _UnsignedRationalNumberCopy
+}
+
 func (m *_UnsignedRationalNumber) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

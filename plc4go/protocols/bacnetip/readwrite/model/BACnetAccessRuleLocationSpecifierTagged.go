@@ -38,12 +38,15 @@ type BACnetAccessRuleLocationSpecifierTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetAccessRuleLocationSpecifier
 	// IsBACnetAccessRuleLocationSpecifierTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAccessRuleLocationSpecifierTagged()
+	// CreateBuilder creates a BACnetAccessRuleLocationSpecifierTaggedBuilder
+	CreateBACnetAccessRuleLocationSpecifierTaggedBuilder() BACnetAccessRuleLocationSpecifierTaggedBuilder
 }
 
 // _BACnetAccessRuleLocationSpecifierTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetAccessRuleLocationSpecifierTagged struct {
 }
 
 var _ BACnetAccessRuleLocationSpecifierTagged = (*_BACnetAccessRuleLocationSpecifierTagged)(nil)
+
+// NewBACnetAccessRuleLocationSpecifierTagged factory function for _BACnetAccessRuleLocationSpecifierTagged
+func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleLocationSpecifierTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAccessRuleLocationSpecifierTagged must not be nil")
+	}
+	return &_BACnetAccessRuleLocationSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAccessRuleLocationSpecifierTaggedBuilder is a builder for BACnetAccessRuleLocationSpecifierTagged
+type BACnetAccessRuleLocationSpecifierTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder
+	// Build builds the BACnetAccessRuleLocationSpecifierTagged or returns an error if something is wrong
+	Build() (BACnetAccessRuleLocationSpecifierTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAccessRuleLocationSpecifierTagged
+}
+
+// NewBACnetAccessRuleLocationSpecifierTaggedBuilder() creates a BACnetAccessRuleLocationSpecifierTaggedBuilder
+func NewBACnetAccessRuleLocationSpecifierTaggedBuilder() BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	return &_BACnetAccessRuleLocationSpecifierTaggedBuilder{_BACnetAccessRuleLocationSpecifierTagged: new(_BACnetAccessRuleLocationSpecifierTagged)}
+}
+
+type _BACnetAccessRuleLocationSpecifierTaggedBuilder struct {
+	*_BACnetAccessRuleLocationSpecifierTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAccessRuleLocationSpecifierTaggedBuilder) = (*_BACnetAccessRuleLocationSpecifierTaggedBuilder)(nil)
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) WithValue(value BACnetAccessRuleLocationSpecifier) BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) Build() (BACnetAccessRuleLocationSpecifierTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAccessRuleLocationSpecifierTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) MustBuild() BACnetAccessRuleLocationSpecifierTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAccessRuleLocationSpecifierTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAccessRuleLocationSpecifierTaggedBuilder().(*_BACnetAccessRuleLocationSpecifierTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAccessRuleLocationSpecifierTaggedBuilder creates a BACnetAccessRuleLocationSpecifierTaggedBuilder
+func (b *_BACnetAccessRuleLocationSpecifierTagged) CreateBACnetAccessRuleLocationSpecifierTaggedBuilder() BACnetAccessRuleLocationSpecifierTaggedBuilder {
+	if b == nil {
+		return NewBACnetAccessRuleLocationSpecifierTaggedBuilder()
+	}
+	return &_BACnetAccessRuleLocationSpecifierTaggedBuilder{_BACnetAccessRuleLocationSpecifierTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) GetValue() BACnetAccessRuleLo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAccessRuleLocationSpecifierTagged factory function for _BACnetAccessRuleLocationSpecifierTagged
-func NewBACnetAccessRuleLocationSpecifierTagged(header BACnetTagHeader, value BACnetAccessRuleLocationSpecifier, tagNumber uint8, tagClass TagClass) *_BACnetAccessRuleLocationSpecifierTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAccessRuleLocationSpecifierTagged must not be nil")
-	}
-	return &_BACnetAccessRuleLocationSpecifierTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAccessRuleLocationSpecifierTagged(structType any) BACnetAccessRuleLocationSpecifierTagged {
@@ -130,7 +237,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx context.Context,
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAccessRuleLocationSpecifierTagged BACnetAccessRuleLocationSpecifierTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetAccessRuleLocationSpecifierTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAccessRuleLocationSpecifierTagged) IsBACnetAccessRuleLocationSpecifierTagged() {}
 
+func (m *_BACnetAccessRuleLocationSpecifierTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAccessRuleLocationSpecifierTagged) deepCopy() *_BACnetAccessRuleLocationSpecifierTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAccessRuleLocationSpecifierTaggedCopy := &_BACnetAccessRuleLocationSpecifierTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAccessRuleLocationSpecifierTaggedCopy
+}
+
 func (m *_BACnetAccessRuleLocationSpecifierTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

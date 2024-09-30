@@ -38,10 +38,13 @@ type BACnetClosingTag interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// IsBACnetClosingTag is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetClosingTag()
+	// CreateBuilder creates a BACnetClosingTagBuilder
+	CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder
 }
 
 // _BACnetClosingTag is the data-structure of this message
@@ -53,6 +56,111 @@ type _BACnetClosingTag struct {
 }
 
 var _ BACnetClosingTag = (*_BACnetClosingTag)(nil)
+
+// NewBACnetClosingTag factory function for _BACnetClosingTag
+func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
+	}
+	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetClosingTagBuilder is a builder for BACnetClosingTag
+type BACnetClosingTagBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetClosingTagBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder
+	// Build builds the BACnetClosingTag or returns an error if something is wrong
+	Build() (BACnetClosingTag, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetClosingTag
+}
+
+// NewBACnetClosingTagBuilder() creates a BACnetClosingTagBuilder
+func NewBACnetClosingTagBuilder() BACnetClosingTagBuilder {
+	return &_BACnetClosingTagBuilder{_BACnetClosingTag: new(_BACnetClosingTag)}
+}
+
+type _BACnetClosingTagBuilder struct {
+	*_BACnetClosingTag
+
+	err *utils.MultiError
+}
+
+var _ (BACnetClosingTagBuilder) = (*_BACnetClosingTagBuilder)(nil)
+
+func (b *_BACnetClosingTagBuilder) WithMandatoryFields(header BACnetTagHeader) BACnetClosingTagBuilder {
+	return b.WithHeader(header)
+}
+
+func (b *_BACnetClosingTagBuilder) WithHeader(header BACnetTagHeader) BACnetClosingTagBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetClosingTagBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetClosingTagBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetClosingTagBuilder) Build() (BACnetClosingTag, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetClosingTag.deepCopy(), nil
+}
+
+func (b *_BACnetClosingTagBuilder) MustBuild() BACnetClosingTag {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetClosingTagBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetClosingTagBuilder().(*_BACnetClosingTagBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetClosingTagBuilder creates a BACnetClosingTagBuilder
+func (b *_BACnetClosingTag) CreateBACnetClosingTagBuilder() BACnetClosingTagBuilder {
+	if b == nil {
+		return NewBACnetClosingTagBuilder()
+	}
+	return &_BACnetClosingTagBuilder{_BACnetClosingTag: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,14 +175,6 @@ func (m *_BACnetClosingTag) GetHeader() BACnetTagHeader {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetClosingTag factory function for _BACnetClosingTag
-func NewBACnetClosingTag(header BACnetTagHeader, tagNumberArgument uint8) *_BACnetClosingTag {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetClosingTag must not be nil")
-	}
-	return &_BACnetClosingTag{Header: header, TagNumberArgument: tagNumberArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetClosingTag(structType any) BACnetClosingTag {
@@ -119,7 +219,7 @@ func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetClosingTag) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (__bACnetClosingTag BACnetClosingTag, err error) {
@@ -198,13 +298,32 @@ func (m *_BACnetClosingTag) GetTagNumberArgument() uint8 {
 
 func (m *_BACnetClosingTag) IsBACnetClosingTag() {}
 
+func (m *_BACnetClosingTag) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetClosingTag) deepCopy() *_BACnetClosingTag {
+	if m == nil {
+		return nil
+	}
+	_BACnetClosingTagCopy := &_BACnetClosingTag{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.TagNumberArgument,
+	}
+	return _BACnetClosingTagCopy
+}
+
 func (m *_BACnetClosingTag) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

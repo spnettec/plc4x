@@ -36,8 +36,11 @@ type BitFieldMaskDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBitFieldMaskDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBitFieldMaskDataType()
+	// CreateBuilder creates a BitFieldMaskDataTypeBuilder
+	CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder
 }
 
 // _BitFieldMaskDataType is the data-structure of this message
@@ -50,6 +53,75 @@ var _ BitFieldMaskDataType = (*_BitFieldMaskDataType)(nil)
 func NewBitFieldMaskDataType() *_BitFieldMaskDataType {
 	return &_BitFieldMaskDataType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BitFieldMaskDataTypeBuilder is a builder for BitFieldMaskDataType
+type BitFieldMaskDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BitFieldMaskDataTypeBuilder
+	// Build builds the BitFieldMaskDataType or returns an error if something is wrong
+	Build() (BitFieldMaskDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BitFieldMaskDataType
+}
+
+// NewBitFieldMaskDataTypeBuilder() creates a BitFieldMaskDataTypeBuilder
+func NewBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
+	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: new(_BitFieldMaskDataType)}
+}
+
+type _BitFieldMaskDataTypeBuilder struct {
+	*_BitFieldMaskDataType
+
+	err *utils.MultiError
+}
+
+var _ (BitFieldMaskDataTypeBuilder) = (*_BitFieldMaskDataTypeBuilder)(nil)
+
+func (b *_BitFieldMaskDataTypeBuilder) WithMandatoryFields() BitFieldMaskDataTypeBuilder {
+	return b
+}
+
+func (b *_BitFieldMaskDataTypeBuilder) Build() (BitFieldMaskDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BitFieldMaskDataType.deepCopy(), nil
+}
+
+func (b *_BitFieldMaskDataTypeBuilder) MustBuild() BitFieldMaskDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BitFieldMaskDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateBitFieldMaskDataTypeBuilder().(*_BitFieldMaskDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBitFieldMaskDataTypeBuilder creates a BitFieldMaskDataTypeBuilder
+func (b *_BitFieldMaskDataType) CreateBitFieldMaskDataTypeBuilder() BitFieldMaskDataTypeBuilder {
+	if b == nil {
+		return NewBitFieldMaskDataTypeBuilder()
+	}
+	return &_BitFieldMaskDataTypeBuilder{_BitFieldMaskDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBitFieldMaskDataType(structType any) BitFieldMaskDataType {
@@ -91,7 +163,7 @@ func BitFieldMaskDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BitFieldMaskDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bitFieldMaskDataType BitFieldMaskDataType, err error) {
@@ -135,13 +207,29 @@ func (m *_BitFieldMaskDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BitFieldMaskDataType) IsBitFieldMaskDataType() {}
 
+func (m *_BitFieldMaskDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BitFieldMaskDataType) deepCopy() *_BitFieldMaskDataType {
+	if m == nil {
+		return nil
+	}
+	_BitFieldMaskDataTypeCopy := &_BitFieldMaskDataType{}
+	return _BitFieldMaskDataTypeCopy
+}
+
 func (m *_BitFieldMaskDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

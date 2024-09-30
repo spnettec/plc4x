@@ -36,9 +36,12 @@ type TriggerControlDataTriggerMin interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TriggerControlData
 	// IsTriggerControlDataTriggerMin is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlDataTriggerMin()
+	// CreateBuilder creates a TriggerControlDataTriggerMinBuilder
+	CreateTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder
 }
 
 // _TriggerControlDataTriggerMin is the data-structure of this message
@@ -48,6 +51,99 @@ type _TriggerControlDataTriggerMin struct {
 
 var _ TriggerControlDataTriggerMin = (*_TriggerControlDataTriggerMin)(nil)
 var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMin)(nil)
+
+// NewTriggerControlDataTriggerMin factory function for _TriggerControlDataTriggerMin
+func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMin {
+	_result := &_TriggerControlDataTriggerMin{
+		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
+	}
+	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlDataTriggerMinBuilder is a builder for TriggerControlDataTriggerMin
+type TriggerControlDataTriggerMinBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() TriggerControlDataTriggerMinBuilder
+	// Build builds the TriggerControlDataTriggerMin or returns an error if something is wrong
+	Build() (TriggerControlDataTriggerMin, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlDataTriggerMin
+}
+
+// NewTriggerControlDataTriggerMinBuilder() creates a TriggerControlDataTriggerMinBuilder
+func NewTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder {
+	return &_TriggerControlDataTriggerMinBuilder{_TriggerControlDataTriggerMin: new(_TriggerControlDataTriggerMin)}
+}
+
+type _TriggerControlDataTriggerMinBuilder struct {
+	*_TriggerControlDataTriggerMin
+
+	parentBuilder *_TriggerControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlDataTriggerMinBuilder) = (*_TriggerControlDataTriggerMinBuilder)(nil)
+
+func (b *_TriggerControlDataTriggerMinBuilder) setParent(contract TriggerControlDataContract) {
+	b.TriggerControlDataContract = contract
+}
+
+func (b *_TriggerControlDataTriggerMinBuilder) WithMandatoryFields() TriggerControlDataTriggerMinBuilder {
+	return b
+}
+
+func (b *_TriggerControlDataTriggerMinBuilder) Build() (TriggerControlDataTriggerMin, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TriggerControlDataTriggerMin.deepCopy(), nil
+}
+
+func (b *_TriggerControlDataTriggerMinBuilder) MustBuild() TriggerControlDataTriggerMin {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_TriggerControlDataTriggerMinBuilder) Done() TriggerControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_TriggerControlDataTriggerMinBuilder) buildForTriggerControlData() (TriggerControlData, error) {
+	return b.Build()
+}
+
+func (b *_TriggerControlDataTriggerMinBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlDataTriggerMinBuilder().(*_TriggerControlDataTriggerMinBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTriggerControlDataTriggerMinBuilder creates a TriggerControlDataTriggerMinBuilder
+func (b *_TriggerControlDataTriggerMin) CreateTriggerControlDataTriggerMinBuilder() TriggerControlDataTriggerMinBuilder {
+	if b == nil {
+		return NewTriggerControlDataTriggerMinBuilder()
+	}
+	return &_TriggerControlDataTriggerMinBuilder{_TriggerControlDataTriggerMin: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ TriggerControlDataRequirements = (*_TriggerControlDataTriggerMin)(nil)
 
 func (m *_TriggerControlDataTriggerMin) GetParent() TriggerControlDataContract {
 	return m.TriggerControlDataContract
-}
-
-// NewTriggerControlDataTriggerMin factory function for _TriggerControlDataTriggerMin
-func NewTriggerControlDataTriggerMin(commandTypeContainer TriggerControlCommandTypeContainer, triggerGroup byte) *_TriggerControlDataTriggerMin {
-	_result := &_TriggerControlDataTriggerMin{
-		TriggerControlDataContract: NewTriggerControlData(commandTypeContainer, triggerGroup),
-	}
-	_result.TriggerControlDataContract.(*_TriggerControlData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_TriggerControlDataTriggerMin) SerializeWithWriteBuffer(ctx context.Con
 
 func (m *_TriggerControlDataTriggerMin) IsTriggerControlDataTriggerMin() {}
 
+func (m *_TriggerControlDataTriggerMin) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlDataTriggerMin) deepCopy() *_TriggerControlDataTriggerMin {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlDataTriggerMinCopy := &_TriggerControlDataTriggerMin{
+		m.TriggerControlDataContract.(*_TriggerControlData).deepCopy(),
+	}
+	m.TriggerControlDataContract.(*_TriggerControlData)._SubType = m
+	return _TriggerControlDataTriggerMinCopy
+}
+
 func (m *_TriggerControlDataTriggerMin) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

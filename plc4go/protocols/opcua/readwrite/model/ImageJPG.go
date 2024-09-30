@@ -36,8 +36,11 @@ type ImageJPG interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsImageJPG is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsImageJPG()
+	// CreateBuilder creates a ImageJPGBuilder
+	CreateImageJPGBuilder() ImageJPGBuilder
 }
 
 // _ImageJPG is the data-structure of this message
@@ -50,6 +53,75 @@ var _ ImageJPG = (*_ImageJPG)(nil)
 func NewImageJPG() *_ImageJPG {
 	return &_ImageJPG{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ImageJPGBuilder is a builder for ImageJPG
+type ImageJPGBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ImageJPGBuilder
+	// Build builds the ImageJPG or returns an error if something is wrong
+	Build() (ImageJPG, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ImageJPG
+}
+
+// NewImageJPGBuilder() creates a ImageJPGBuilder
+func NewImageJPGBuilder() ImageJPGBuilder {
+	return &_ImageJPGBuilder{_ImageJPG: new(_ImageJPG)}
+}
+
+type _ImageJPGBuilder struct {
+	*_ImageJPG
+
+	err *utils.MultiError
+}
+
+var _ (ImageJPGBuilder) = (*_ImageJPGBuilder)(nil)
+
+func (b *_ImageJPGBuilder) WithMandatoryFields() ImageJPGBuilder {
+	return b
+}
+
+func (b *_ImageJPGBuilder) Build() (ImageJPG, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ImageJPG.deepCopy(), nil
+}
+
+func (b *_ImageJPGBuilder) MustBuild() ImageJPG {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ImageJPGBuilder) DeepCopy() any {
+	_copy := b.CreateImageJPGBuilder().(*_ImageJPGBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateImageJPGBuilder creates a ImageJPGBuilder
+func (b *_ImageJPG) CreateImageJPGBuilder() ImageJPGBuilder {
+	if b == nil {
+		return NewImageJPGBuilder()
+	}
+	return &_ImageJPGBuilder{_ImageJPG: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastImageJPG(structType any) ImageJPG {
@@ -91,7 +163,7 @@ func ImageJPGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_ImageJPG) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__imageJPG ImageJPG, err error) {
@@ -135,13 +207,29 @@ func (m *_ImageJPG) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 func (m *_ImageJPG) IsImageJPG() {}
 
+func (m *_ImageJPG) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ImageJPG) deepCopy() *_ImageJPG {
+	if m == nil {
+		return nil
+	}
+	_ImageJPGCopy := &_ImageJPG{}
+	return _ImageJPGCopy
+}
+
 func (m *_ImageJPG) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type OpcuaHelloRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MessagePDU
 	// GetVersion returns Version (property field)
 	GetVersion() uint32
@@ -47,6 +48,8 @@ type OpcuaHelloRequest interface {
 	GetEndpoint() PascalString
 	// IsOpcuaHelloRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaHelloRequest()
+	// CreateBuilder creates a OpcuaHelloRequestBuilder
+	CreateOpcuaHelloRequestBuilder() OpcuaHelloRequestBuilder
 }
 
 // _OpcuaHelloRequest is the data-structure of this message
@@ -59,6 +62,171 @@ type _OpcuaHelloRequest struct {
 
 var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
+
+// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
+	if limits == nil {
+		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
+	}
+	if endpoint == nil {
+		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
+	}
+	_result := &_OpcuaHelloRequest{
+		MessagePDUContract: NewMessagePDU(chunk),
+		Version:            version,
+		Limits:             limits,
+		Endpoint:           endpoint,
+	}
+	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaHelloRequestBuilder is a builder for OpcuaHelloRequest
+type OpcuaHelloRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(version uint32, limits OpcuaProtocolLimits, endpoint PascalString) OpcuaHelloRequestBuilder
+	// WithVersion adds Version (property field)
+	WithVersion(uint32) OpcuaHelloRequestBuilder
+	// WithLimits adds Limits (property field)
+	WithLimits(OpcuaProtocolLimits) OpcuaHelloRequestBuilder
+	// WithLimitsBuilder adds Limits (property field) which is build by the builder
+	WithLimitsBuilder(func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaHelloRequestBuilder
+	// WithEndpoint adds Endpoint (property field)
+	WithEndpoint(PascalString) OpcuaHelloRequestBuilder
+	// WithEndpointBuilder adds Endpoint (property field) which is build by the builder
+	WithEndpointBuilder(func(PascalStringBuilder) PascalStringBuilder) OpcuaHelloRequestBuilder
+	// Build builds the OpcuaHelloRequest or returns an error if something is wrong
+	Build() (OpcuaHelloRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaHelloRequest
+}
+
+// NewOpcuaHelloRequestBuilder() creates a OpcuaHelloRequestBuilder
+func NewOpcuaHelloRequestBuilder() OpcuaHelloRequestBuilder {
+	return &_OpcuaHelloRequestBuilder{_OpcuaHelloRequest: new(_OpcuaHelloRequest)}
+}
+
+type _OpcuaHelloRequestBuilder struct {
+	*_OpcuaHelloRequest
+
+	parentBuilder *_MessagePDUBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaHelloRequestBuilder) = (*_OpcuaHelloRequestBuilder)(nil)
+
+func (b *_OpcuaHelloRequestBuilder) setParent(contract MessagePDUContract) {
+	b.MessagePDUContract = contract
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithMandatoryFields(version uint32, limits OpcuaProtocolLimits, endpoint PascalString) OpcuaHelloRequestBuilder {
+	return b.WithVersion(version).WithLimits(limits).WithEndpoint(endpoint)
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithVersion(version uint32) OpcuaHelloRequestBuilder {
+	b.Version = version
+	return b
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithLimits(limits OpcuaProtocolLimits) OpcuaHelloRequestBuilder {
+	b.Limits = limits
+	return b
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithLimitsBuilder(builderSupplier func(OpcuaProtocolLimitsBuilder) OpcuaProtocolLimitsBuilder) OpcuaHelloRequestBuilder {
+	builder := builderSupplier(b.Limits.CreateOpcuaProtocolLimitsBuilder())
+	var err error
+	b.Limits, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "OpcuaProtocolLimitsBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithEndpoint(endpoint PascalString) OpcuaHelloRequestBuilder {
+	b.Endpoint = endpoint
+	return b
+}
+
+func (b *_OpcuaHelloRequestBuilder) WithEndpointBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) OpcuaHelloRequestBuilder {
+	builder := builderSupplier(b.Endpoint.CreatePascalStringBuilder())
+	var err error
+	b.Endpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaHelloRequestBuilder) Build() (OpcuaHelloRequest, error) {
+	if b.Limits == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'limits' not set"))
+	}
+	if b.Endpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'endpoint' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaHelloRequest.deepCopy(), nil
+}
+
+func (b *_OpcuaHelloRequestBuilder) MustBuild() OpcuaHelloRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_OpcuaHelloRequestBuilder) Done() MessagePDUBuilder {
+	return b.parentBuilder
+}
+
+func (b *_OpcuaHelloRequestBuilder) buildForMessagePDU() (MessagePDU, error) {
+	return b.Build()
+}
+
+func (b *_OpcuaHelloRequestBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaHelloRequestBuilder().(*_OpcuaHelloRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaHelloRequestBuilder creates a OpcuaHelloRequestBuilder
+func (b *_OpcuaHelloRequest) CreateOpcuaHelloRequestBuilder() OpcuaHelloRequestBuilder {
+	if b == nil {
+		return NewOpcuaHelloRequestBuilder()
+	}
+	return &_OpcuaHelloRequestBuilder{_OpcuaHelloRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,24 +271,6 @@ func (m *_OpcuaHelloRequest) GetEndpoint() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(version uint32, limits OpcuaProtocolLimits, endpoint PascalString, chunk ChunkType) *_OpcuaHelloRequest {
-	if limits == nil {
-		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
-	}
-	if endpoint == nil {
-		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
-	}
-	_result := &_OpcuaHelloRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
-		Version:            version,
-		Limits:             limits,
-		Endpoint:           endpoint,
-	}
-	_result.MessagePDUContract.(*_MessagePDU)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaHelloRequest(structType any) OpcuaHelloRequest {
@@ -232,13 +382,35 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_OpcuaHelloRequest) IsOpcuaHelloRequest() {}
 
+func (m *_OpcuaHelloRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaHelloRequest) deepCopy() *_OpcuaHelloRequest {
+	if m == nil {
+		return nil
+	}
+	_OpcuaHelloRequestCopy := &_OpcuaHelloRequest{
+		m.MessagePDUContract.(*_MessagePDU).deepCopy(),
+		m.Version,
+		m.Limits.DeepCopy().(OpcuaProtocolLimits),
+		m.Endpoint.DeepCopy().(PascalString),
+	}
+	m.MessagePDUContract.(*_MessagePDU)._SubType = m
+	return _OpcuaHelloRequestCopy
+}
+
 func (m *_OpcuaHelloRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

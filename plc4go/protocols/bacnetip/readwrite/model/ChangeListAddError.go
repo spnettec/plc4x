@@ -38,6 +38,7 @@ type ChangeListAddError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -45,6 +46,8 @@ type ChangeListAddError interface {
 	GetFirstFailedElementNumber() BACnetContextTagUnsignedInteger
 	// IsChangeListAddError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsChangeListAddError()
+	// CreateBuilder creates a ChangeListAddErrorBuilder
+	CreateChangeListAddErrorBuilder() ChangeListAddErrorBuilder
 }
 
 // _ChangeListAddError is the data-structure of this message
@@ -56,6 +59,163 @@ type _ChangeListAddError struct {
 
 var _ ChangeListAddError = (*_ChangeListAddError)(nil)
 var _ BACnetErrorRequirements = (*_ChangeListAddError)(nil)
+
+// NewChangeListAddError factory function for _ChangeListAddError
+func NewChangeListAddError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_ChangeListAddError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for ChangeListAddError must not be nil")
+	}
+	if firstFailedElementNumber == nil {
+		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for ChangeListAddError must not be nil")
+	}
+	_result := &_ChangeListAddError{
+		BACnetErrorContract:      NewBACnetError(),
+		ErrorType:                errorType,
+		FirstFailedElementNumber: firstFailedElementNumber,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ChangeListAddErrorBuilder is a builder for ChangeListAddError
+type ChangeListAddErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder
+	// WithErrorType adds ErrorType (property field)
+	WithErrorType(ErrorEnclosed) ChangeListAddErrorBuilder
+	// WithErrorTypeBuilder adds ErrorType (property field) which is build by the builder
+	WithErrorTypeBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ChangeListAddErrorBuilder
+	// WithFirstFailedElementNumber adds FirstFailedElementNumber (property field)
+	WithFirstFailedElementNumber(BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder
+	// WithFirstFailedElementNumberBuilder adds FirstFailedElementNumber (property field) which is build by the builder
+	WithFirstFailedElementNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ChangeListAddErrorBuilder
+	// Build builds the ChangeListAddError or returns an error if something is wrong
+	Build() (ChangeListAddError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ChangeListAddError
+}
+
+// NewChangeListAddErrorBuilder() creates a ChangeListAddErrorBuilder
+func NewChangeListAddErrorBuilder() ChangeListAddErrorBuilder {
+	return &_ChangeListAddErrorBuilder{_ChangeListAddError: new(_ChangeListAddError)}
+}
+
+type _ChangeListAddErrorBuilder struct {
+	*_ChangeListAddError
+
+	parentBuilder *_BACnetErrorBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ChangeListAddErrorBuilder) = (*_ChangeListAddErrorBuilder)(nil)
+
+func (b *_ChangeListAddErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
+}
+
+func (b *_ChangeListAddErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
+	return b.WithErrorType(errorType).WithFirstFailedElementNumber(firstFailedElementNumber)
+}
+
+func (b *_ChangeListAddErrorBuilder) WithErrorType(errorType ErrorEnclosed) ChangeListAddErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_ChangeListAddErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) ChangeListAddErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
+	var err error
+	b.ErrorType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ChangeListAddErrorBuilder) WithFirstFailedElementNumber(firstFailedElementNumber BACnetContextTagUnsignedInteger) ChangeListAddErrorBuilder {
+	b.FirstFailedElementNumber = firstFailedElementNumber
+	return b
+}
+
+func (b *_ChangeListAddErrorBuilder) WithFirstFailedElementNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) ChangeListAddErrorBuilder {
+	builder := builderSupplier(b.FirstFailedElementNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.FirstFailedElementNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ChangeListAddErrorBuilder) Build() (ChangeListAddError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+	}
+	if b.FirstFailedElementNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'firstFailedElementNumber' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ChangeListAddError.deepCopy(), nil
+}
+
+func (b *_ChangeListAddErrorBuilder) MustBuild() ChangeListAddError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ChangeListAddErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ChangeListAddErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_ChangeListAddErrorBuilder) DeepCopy() any {
+	_copy := b.CreateChangeListAddErrorBuilder().(*_ChangeListAddErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateChangeListAddErrorBuilder creates a ChangeListAddErrorBuilder
+func (b *_ChangeListAddError) CreateChangeListAddErrorBuilder() ChangeListAddErrorBuilder {
+	if b == nil {
+		return NewChangeListAddErrorBuilder()
+	}
+	return &_ChangeListAddErrorBuilder{_ChangeListAddError: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +252,6 @@ func (m *_ChangeListAddError) GetFirstFailedElementNumber() BACnetContextTagUnsi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewChangeListAddError factory function for _ChangeListAddError
-func NewChangeListAddError(errorType ErrorEnclosed, firstFailedElementNumber BACnetContextTagUnsignedInteger) *_ChangeListAddError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for ChangeListAddError must not be nil")
-	}
-	if firstFailedElementNumber == nil {
-		panic("firstFailedElementNumber of type BACnetContextTagUnsignedInteger for ChangeListAddError must not be nil")
-	}
-	_result := &_ChangeListAddError{
-		BACnetErrorContract:      NewBACnetError(),
-		ErrorType:                errorType,
-		FirstFailedElementNumber: firstFailedElementNumber,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastChangeListAddError(structType any) ChangeListAddError {
@@ -207,13 +350,34 @@ func (m *_ChangeListAddError) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_ChangeListAddError) IsChangeListAddError() {}
 
+func (m *_ChangeListAddError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ChangeListAddError) deepCopy() *_ChangeListAddError {
+	if m == nil {
+		return nil
+	}
+	_ChangeListAddErrorCopy := &_ChangeListAddError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.FirstFailedElementNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _ChangeListAddErrorCopy
+}
+
 func (m *_ChangeListAddError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

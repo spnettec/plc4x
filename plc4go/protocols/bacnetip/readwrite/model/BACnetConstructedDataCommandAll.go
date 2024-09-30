@@ -36,9 +36,12 @@ type BACnetConstructedDataCommandAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataCommandAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCommandAll()
+	// CreateBuilder creates a BACnetConstructedDataCommandAllBuilder
+	CreateBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder
 }
 
 // _BACnetConstructedDataCommandAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataCommandAll struct {
 
 var _ BACnetConstructedDataCommandAll = (*_BACnetConstructedDataCommandAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCommandAll)(nil)
+
+// NewBACnetConstructedDataCommandAll factory function for _BACnetConstructedDataCommandAll
+func NewBACnetConstructedDataCommandAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandAll {
+	_result := &_BACnetConstructedDataCommandAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCommandAllBuilder is a builder for BACnetConstructedDataCommandAll
+type BACnetConstructedDataCommandAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataCommandAllBuilder
+	// Build builds the BACnetConstructedDataCommandAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataCommandAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCommandAll
+}
+
+// NewBACnetConstructedDataCommandAllBuilder() creates a BACnetConstructedDataCommandAllBuilder
+func NewBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder {
+	return &_BACnetConstructedDataCommandAllBuilder{_BACnetConstructedDataCommandAll: new(_BACnetConstructedDataCommandAll)}
+}
+
+type _BACnetConstructedDataCommandAllBuilder struct {
+	*_BACnetConstructedDataCommandAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCommandAllBuilder) = (*_BACnetConstructedDataCommandAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataCommandAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCommandAllBuilder) WithMandatoryFields() BACnetConstructedDataCommandAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataCommandAllBuilder) Build() (BACnetConstructedDataCommandAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCommandAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCommandAllBuilder) MustBuild() BACnetConstructedDataCommandAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCommandAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCommandAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCommandAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCommandAllBuilder().(*_BACnetConstructedDataCommandAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCommandAllBuilder creates a BACnetConstructedDataCommandAllBuilder
+func (b *_BACnetConstructedDataCommandAll) CreateBACnetConstructedDataCommandAllBuilder() BACnetConstructedDataCommandAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCommandAllBuilder()
+	}
+	return &_BACnetConstructedDataCommandAllBuilder{_BACnetConstructedDataCommandAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataCommandAll) GetPropertyIdentifierArgument() BACne
 
 func (m *_BACnetConstructedDataCommandAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataCommandAll factory function for _BACnetConstructedDataCommandAll
-func NewBACnetConstructedDataCommandAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCommandAll {
-	_result := &_BACnetConstructedDataCommandAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataCommandAll) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataCommandAll) IsBACnetConstructedDataCommandAll() {}
 
+func (m *_BACnetConstructedDataCommandAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCommandAll) deepCopy() *_BACnetConstructedDataCommandAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCommandAllCopy := &_BACnetConstructedDataCommandAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCommandAllCopy
+}
+
 func (m *_BACnetConstructedDataCommandAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

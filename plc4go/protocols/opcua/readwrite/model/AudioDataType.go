@@ -36,8 +36,11 @@ type AudioDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsAudioDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAudioDataType()
+	// CreateBuilder creates a AudioDataTypeBuilder
+	CreateAudioDataTypeBuilder() AudioDataTypeBuilder
 }
 
 // _AudioDataType is the data-structure of this message
@@ -50,6 +53,75 @@ var _ AudioDataType = (*_AudioDataType)(nil)
 func NewAudioDataType() *_AudioDataType {
 	return &_AudioDataType{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AudioDataTypeBuilder is a builder for AudioDataType
+type AudioDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() AudioDataTypeBuilder
+	// Build builds the AudioDataType or returns an error if something is wrong
+	Build() (AudioDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AudioDataType
+}
+
+// NewAudioDataTypeBuilder() creates a AudioDataTypeBuilder
+func NewAudioDataTypeBuilder() AudioDataTypeBuilder {
+	return &_AudioDataTypeBuilder{_AudioDataType: new(_AudioDataType)}
+}
+
+type _AudioDataTypeBuilder struct {
+	*_AudioDataType
+
+	err *utils.MultiError
+}
+
+var _ (AudioDataTypeBuilder) = (*_AudioDataTypeBuilder)(nil)
+
+func (b *_AudioDataTypeBuilder) WithMandatoryFields() AudioDataTypeBuilder {
+	return b
+}
+
+func (b *_AudioDataTypeBuilder) Build() (AudioDataType, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AudioDataType.deepCopy(), nil
+}
+
+func (b *_AudioDataTypeBuilder) MustBuild() AudioDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AudioDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateAudioDataTypeBuilder().(*_AudioDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAudioDataTypeBuilder creates a AudioDataTypeBuilder
+func (b *_AudioDataType) CreateAudioDataTypeBuilder() AudioDataTypeBuilder {
+	if b == nil {
+		return NewAudioDataTypeBuilder()
+	}
+	return &_AudioDataTypeBuilder{_AudioDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastAudioDataType(structType any) AudioDataType {
@@ -91,7 +163,7 @@ func AudioDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_AudioDataType) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__audioDataType AudioDataType, err error) {
@@ -135,13 +207,29 @@ func (m *_AudioDataType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_AudioDataType) IsAudioDataType() {}
 
+func (m *_AudioDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AudioDataType) deepCopy() *_AudioDataType {
+	if m == nil {
+		return nil
+	}
+	_AudioDataTypeCopy := &_AudioDataType{}
+	return _AudioDataTypeCopy
+}
+
 func (m *_AudioDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

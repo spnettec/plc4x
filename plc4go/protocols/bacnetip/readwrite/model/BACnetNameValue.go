@@ -38,12 +38,15 @@ type BACnetNameValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetName returns Name (property field)
 	GetName() BACnetContextTagCharacterString
 	// GetValue returns Value (property field)
 	GetValue() BACnetConstructedData
 	// IsBACnetNameValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetNameValue()
+	// CreateBuilder creates a BACnetNameValueBuilder
+	CreateBACnetNameValueBuilder() BACnetNameValueBuilder
 }
 
 // _BACnetNameValue is the data-structure of this message
@@ -53,6 +56,133 @@ type _BACnetNameValue struct {
 }
 
 var _ BACnetNameValue = (*_BACnetNameValue)(nil)
+
+// NewBACnetNameValue factory function for _BACnetNameValue
+func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstructedData) *_BACnetNameValue {
+	if name == nil {
+		panic("name of type BACnetContextTagCharacterString for BACnetNameValue must not be nil")
+	}
+	return &_BACnetNameValue{Name: name, Value: value}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetNameValueBuilder is a builder for BACnetNameValue
+type BACnetNameValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name BACnetContextTagCharacterString) BACnetNameValueBuilder
+	// WithName adds Name (property field)
+	WithName(BACnetContextTagCharacterString) BACnetNameValueBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNameValueBuilder
+	// WithValue adds Value (property field)
+	WithOptionalValue(BACnetConstructedData) BACnetNameValueBuilder
+	// WithOptionalValueBuilder adds Value (property field) which is build by the builder
+	WithOptionalValueBuilder(func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNameValueBuilder
+	// Build builds the BACnetNameValue or returns an error if something is wrong
+	Build() (BACnetNameValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetNameValue
+}
+
+// NewBACnetNameValueBuilder() creates a BACnetNameValueBuilder
+func NewBACnetNameValueBuilder() BACnetNameValueBuilder {
+	return &_BACnetNameValueBuilder{_BACnetNameValue: new(_BACnetNameValue)}
+}
+
+type _BACnetNameValueBuilder struct {
+	*_BACnetNameValue
+
+	err *utils.MultiError
+}
+
+var _ (BACnetNameValueBuilder) = (*_BACnetNameValueBuilder)(nil)
+
+func (b *_BACnetNameValueBuilder) WithMandatoryFields(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
+	return b.WithName(name)
+}
+
+func (b *_BACnetNameValueBuilder) WithName(name BACnetContextTagCharacterString) BACnetNameValueBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_BACnetNameValueBuilder) WithNameBuilder(builderSupplier func(BACnetContextTagCharacterStringBuilder) BACnetContextTagCharacterStringBuilder) BACnetNameValueBuilder {
+	builder := builderSupplier(b.Name.CreateBACnetContextTagCharacterStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNameValueBuilder) WithOptionalValue(value BACnetConstructedData) BACnetNameValueBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetNameValueBuilder) WithOptionalValueBuilder(builderSupplier func(BACnetConstructedDataBuilder) BACnetConstructedDataBuilder) BACnetNameValueBuilder {
+	builder := builderSupplier(b.Value.CreateBACnetConstructedDataBuilder())
+	var err error
+	b.Value, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetConstructedDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetNameValueBuilder) Build() (BACnetNameValue, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetNameValue.deepCopy(), nil
+}
+
+func (b *_BACnetNameValueBuilder) MustBuild() BACnetNameValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetNameValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetNameValueBuilder().(*_BACnetNameValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetNameValueBuilder creates a BACnetNameValueBuilder
+func (b *_BACnetNameValue) CreateBACnetNameValueBuilder() BACnetNameValueBuilder {
+	if b == nil {
+		return NewBACnetNameValueBuilder()
+	}
+	return &_BACnetNameValueBuilder{_BACnetNameValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -71,14 +201,6 @@ func (m *_BACnetNameValue) GetValue() BACnetConstructedData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetNameValue factory function for _BACnetNameValue
-func NewBACnetNameValue(name BACnetContextTagCharacterString, value BACnetConstructedData) *_BACnetNameValue {
-	if name == nil {
-		panic("name of type BACnetContextTagCharacterString for BACnetNameValue must not be nil")
-	}
-	return &_BACnetNameValue{Name: name, Value: value}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetNameValue(structType any) BACnetNameValue {
@@ -128,7 +250,7 @@ func BACnetNameValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetNameValue) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetNameValue BACnetNameValue, err error) {
@@ -196,13 +318,32 @@ func (m *_BACnetNameValue) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_BACnetNameValue) IsBACnetNameValue() {}
 
+func (m *_BACnetNameValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetNameValue) deepCopy() *_BACnetNameValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetNameValueCopy := &_BACnetNameValue{
+		m.Name.DeepCopy().(BACnetContextTagCharacterString),
+		m.Value.DeepCopy().(BACnetConstructedData),
+	}
+	return _BACnetNameValueCopy
+}
+
 func (m *_BACnetNameValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

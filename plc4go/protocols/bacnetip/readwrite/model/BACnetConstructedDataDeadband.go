@@ -38,6 +38,7 @@ type BACnetConstructedDataDeadband interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDeadband returns Deadband (property field)
 	GetDeadband() BACnetApplicationTagReal
@@ -45,6 +46,8 @@ type BACnetConstructedDataDeadband interface {
 	GetActualValue() BACnetApplicationTagReal
 	// IsBACnetConstructedDataDeadband is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataDeadband()
+	// CreateBuilder creates a BACnetConstructedDataDeadbandBuilder
+	CreateBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuilder
 }
 
 // _BACnetConstructedDataDeadband is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataDeadband struct {
 
 var _ BACnetConstructedDataDeadband = (*_BACnetConstructedDataDeadband)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataDeadband)(nil)
+
+// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
+func NewBACnetConstructedDataDeadband(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, deadband BACnetApplicationTagReal, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
+	if deadband == nil {
+		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
+	}
+	_result := &_BACnetConstructedDataDeadband{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Deadband:                      deadband,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataDeadbandBuilder is a builder for BACnetConstructedDataDeadband
+type BACnetConstructedDataDeadbandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder
+	// WithDeadband adds Deadband (property field)
+	WithDeadband(BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder
+	// WithDeadbandBuilder adds Deadband (property field) which is build by the builder
+	WithDeadbandBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDeadbandBuilder
+	// Build builds the BACnetConstructedDataDeadband or returns an error if something is wrong
+	Build() (BACnetConstructedDataDeadband, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataDeadband
+}
+
+// NewBACnetConstructedDataDeadbandBuilder() creates a BACnetConstructedDataDeadbandBuilder
+func NewBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuilder {
+	return &_BACnetConstructedDataDeadbandBuilder{_BACnetConstructedDataDeadband: new(_BACnetConstructedDataDeadband)}
+}
+
+type _BACnetConstructedDataDeadbandBuilder struct {
+	*_BACnetConstructedDataDeadband
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataDeadbandBuilder) = (*_BACnetConstructedDataDeadbandBuilder)(nil)
+
+func (b *_BACnetConstructedDataDeadbandBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) WithMandatoryFields(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
+	return b.WithDeadband(deadband)
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) WithDeadband(deadband BACnetApplicationTagReal) BACnetConstructedDataDeadbandBuilder {
+	b.Deadband = deadband
+	return b
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) WithDeadbandBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetConstructedDataDeadbandBuilder {
+	builder := builderSupplier(b.Deadband.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.Deadband, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) Build() (BACnetConstructedDataDeadband, error) {
+	if b.Deadband == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'deadband' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataDeadband.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) MustBuild() BACnetConstructedDataDeadband {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataDeadbandBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataDeadbandBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataDeadbandBuilder().(*_BACnetConstructedDataDeadbandBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataDeadbandBuilder creates a BACnetConstructedDataDeadbandBuilder
+func (b *_BACnetConstructedDataDeadband) CreateBACnetConstructedDataDeadbandBuilder() BACnetConstructedDataDeadbandBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataDeadbandBuilder()
+	}
+	return &_BACnetConstructedDataDeadbandBuilder{_BACnetConstructedDataDeadband: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataDeadband) GetActualValue() BACnetApplicationTagRe
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataDeadband factory function for _BACnetConstructedDataDeadband
-func NewBACnetConstructedDataDeadband(deadband BACnetApplicationTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataDeadband {
-	if deadband == nil {
-		panic("deadband of type BACnetApplicationTagReal for BACnetConstructedDataDeadband must not be nil")
-	}
-	_result := &_BACnetConstructedDataDeadband{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Deadband:                      deadband,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataDeadband(structType any) BACnetConstructedDataDeadband {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataDeadband) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataDeadband) IsBACnetConstructedDataDeadband() {}
 
+func (m *_BACnetConstructedDataDeadband) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataDeadband) deepCopy() *_BACnetConstructedDataDeadband {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataDeadbandCopy := &_BACnetConstructedDataDeadband{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Deadband.DeepCopy().(BACnetApplicationTagReal),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataDeadbandCopy
+}
+
 func (m *_BACnetConstructedDataDeadband) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

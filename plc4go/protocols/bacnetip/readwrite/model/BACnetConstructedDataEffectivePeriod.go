@@ -38,6 +38,7 @@ type BACnetConstructedDataEffectivePeriod interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetDateRange returns DateRange (property field)
 	GetDateRange() BACnetDateRange
@@ -45,6 +46,8 @@ type BACnetConstructedDataEffectivePeriod interface {
 	GetActualValue() BACnetDateRange
 	// IsBACnetConstructedDataEffectivePeriod is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEffectivePeriod()
+	// CreateBuilder creates a BACnetConstructedDataEffectivePeriodBuilder
+	CreateBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffectivePeriodBuilder
 }
 
 // _BACnetConstructedDataEffectivePeriod is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataEffectivePeriod struct {
 
 var _ BACnetConstructedDataEffectivePeriod = (*_BACnetConstructedDataEffectivePeriod)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEffectivePeriod)(nil)
+
+// NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
+func NewBACnetConstructedDataEffectivePeriod(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, dateRange BACnetDateRange, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
+	}
+	_result := &_BACnetConstructedDataEffectivePeriod{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		DateRange:                     dateRange,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEffectivePeriodBuilder is a builder for BACnetConstructedDataEffectivePeriod
+type BACnetConstructedDataEffectivePeriodBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder
+	// WithDateRange adds DateRange (property field)
+	WithDateRange(BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder
+	// WithDateRangeBuilder adds DateRange (property field) which is build by the builder
+	WithDateRangeBuilder(func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetConstructedDataEffectivePeriodBuilder
+	// Build builds the BACnetConstructedDataEffectivePeriod or returns an error if something is wrong
+	Build() (BACnetConstructedDataEffectivePeriod, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEffectivePeriod
+}
+
+// NewBACnetConstructedDataEffectivePeriodBuilder() creates a BACnetConstructedDataEffectivePeriodBuilder
+func NewBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffectivePeriodBuilder {
+	return &_BACnetConstructedDataEffectivePeriodBuilder{_BACnetConstructedDataEffectivePeriod: new(_BACnetConstructedDataEffectivePeriod)}
+}
+
+type _BACnetConstructedDataEffectivePeriodBuilder struct {
+	*_BACnetConstructedDataEffectivePeriod
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEffectivePeriodBuilder) = (*_BACnetConstructedDataEffectivePeriodBuilder)(nil)
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithMandatoryFields(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
+	return b.WithDateRange(dateRange)
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRange(dateRange BACnetDateRange) BACnetConstructedDataEffectivePeriodBuilder {
+	b.DateRange = dateRange
+	return b
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) WithDateRangeBuilder(builderSupplier func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetConstructedDataEffectivePeriodBuilder {
+	builder := builderSupplier(b.DateRange.CreateBACnetDateRangeBuilder())
+	var err error
+	b.DateRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateRangeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) Build() (BACnetConstructedDataEffectivePeriod, error) {
+	if b.DateRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateRange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEffectivePeriod.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) MustBuild() BACnetConstructedDataEffectivePeriod {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEffectivePeriodBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEffectivePeriodBuilder().(*_BACnetConstructedDataEffectivePeriodBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEffectivePeriodBuilder creates a BACnetConstructedDataEffectivePeriodBuilder
+func (b *_BACnetConstructedDataEffectivePeriod) CreateBACnetConstructedDataEffectivePeriodBuilder() BACnetConstructedDataEffectivePeriodBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEffectivePeriodBuilder()
+	}
+	return &_BACnetConstructedDataEffectivePeriodBuilder{_BACnetConstructedDataEffectivePeriod: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataEffectivePeriod) GetActualValue() BACnetDateRange
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEffectivePeriod factory function for _BACnetConstructedDataEffectivePeriod
-func NewBACnetConstructedDataEffectivePeriod(dateRange BACnetDateRange, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEffectivePeriod {
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRange for BACnetConstructedDataEffectivePeriod must not be nil")
-	}
-	_result := &_BACnetConstructedDataEffectivePeriod{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		DateRange:                     dateRange,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEffectivePeriod(structType any) BACnetConstructedDataEffectivePeriod {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataEffectivePeriod) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataEffectivePeriod) IsBACnetConstructedDataEffectivePeriod() {}
 
+func (m *_BACnetConstructedDataEffectivePeriod) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEffectivePeriod) deepCopy() *_BACnetConstructedDataEffectivePeriod {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEffectivePeriodCopy := &_BACnetConstructedDataEffectivePeriod{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.DateRange.DeepCopy().(BACnetDateRange),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEffectivePeriodCopy
+}
+
 func (m *_BACnetConstructedDataEffectivePeriod) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataChangeOfStateTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetChangeOfStateTime returns ChangeOfStateTime (property field)
 	GetChangeOfStateTime() BACnetDateTime
@@ -45,6 +46,8 @@ type BACnetConstructedDataChangeOfStateTime interface {
 	GetActualValue() BACnetDateTime
 	// IsBACnetConstructedDataChangeOfStateTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataChangeOfStateTime()
+	// CreateBuilder creates a BACnetConstructedDataChangeOfStateTimeBuilder
+	CreateBACnetConstructedDataChangeOfStateTimeBuilder() BACnetConstructedDataChangeOfStateTimeBuilder
 }
 
 // _BACnetConstructedDataChangeOfStateTime is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataChangeOfStateTime struct {
 
 var _ BACnetConstructedDataChangeOfStateTime = (*_BACnetConstructedDataChangeOfStateTime)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataChangeOfStateTime)(nil)
+
+// NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
+func NewBACnetConstructedDataChangeOfStateTime(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, changeOfStateTime BACnetDateTime, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
+	if changeOfStateTime == nil {
+		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
+	}
+	_result := &_BACnetConstructedDataChangeOfStateTime{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ChangeOfStateTime:             changeOfStateTime,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataChangeOfStateTimeBuilder is a builder for BACnetConstructedDataChangeOfStateTime
+type BACnetConstructedDataChangeOfStateTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(changeOfStateTime BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder
+	// WithChangeOfStateTime adds ChangeOfStateTime (property field)
+	WithChangeOfStateTime(BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder
+	// WithChangeOfStateTimeBuilder adds ChangeOfStateTime (property field) which is build by the builder
+	WithChangeOfStateTimeBuilder(func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataChangeOfStateTimeBuilder
+	// Build builds the BACnetConstructedDataChangeOfStateTime or returns an error if something is wrong
+	Build() (BACnetConstructedDataChangeOfStateTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataChangeOfStateTime
+}
+
+// NewBACnetConstructedDataChangeOfStateTimeBuilder() creates a BACnetConstructedDataChangeOfStateTimeBuilder
+func NewBACnetConstructedDataChangeOfStateTimeBuilder() BACnetConstructedDataChangeOfStateTimeBuilder {
+	return &_BACnetConstructedDataChangeOfStateTimeBuilder{_BACnetConstructedDataChangeOfStateTime: new(_BACnetConstructedDataChangeOfStateTime)}
+}
+
+type _BACnetConstructedDataChangeOfStateTimeBuilder struct {
+	*_BACnetConstructedDataChangeOfStateTime
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataChangeOfStateTimeBuilder) = (*_BACnetConstructedDataChangeOfStateTimeBuilder)(nil)
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) WithMandatoryFields(changeOfStateTime BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder {
+	return b.WithChangeOfStateTime(changeOfStateTime)
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) WithChangeOfStateTime(changeOfStateTime BACnetDateTime) BACnetConstructedDataChangeOfStateTimeBuilder {
+	b.ChangeOfStateTime = changeOfStateTime
+	return b
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) WithChangeOfStateTimeBuilder(builderSupplier func(BACnetDateTimeBuilder) BACnetDateTimeBuilder) BACnetConstructedDataChangeOfStateTimeBuilder {
+	builder := builderSupplier(b.ChangeOfStateTime.CreateBACnetDateTimeBuilder())
+	var err error
+	b.ChangeOfStateTime, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) Build() (BACnetConstructedDataChangeOfStateTime, error) {
+	if b.ChangeOfStateTime == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'changeOfStateTime' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataChangeOfStateTime.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) MustBuild() BACnetConstructedDataChangeOfStateTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataChangeOfStateTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataChangeOfStateTimeBuilder().(*_BACnetConstructedDataChangeOfStateTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataChangeOfStateTimeBuilder creates a BACnetConstructedDataChangeOfStateTimeBuilder
+func (b *_BACnetConstructedDataChangeOfStateTime) CreateBACnetConstructedDataChangeOfStateTimeBuilder() BACnetConstructedDataChangeOfStateTimeBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataChangeOfStateTimeBuilder()
+	}
+	return &_BACnetConstructedDataChangeOfStateTimeBuilder{_BACnetConstructedDataChangeOfStateTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataChangeOfStateTime) GetActualValue() BACnetDateTim
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataChangeOfStateTime factory function for _BACnetConstructedDataChangeOfStateTime
-func NewBACnetConstructedDataChangeOfStateTime(changeOfStateTime BACnetDateTime, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataChangeOfStateTime {
-	if changeOfStateTime == nil {
-		panic("changeOfStateTime of type BACnetDateTime for BACnetConstructedDataChangeOfStateTime must not be nil")
-	}
-	_result := &_BACnetConstructedDataChangeOfStateTime{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ChangeOfStateTime:             changeOfStateTime,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataChangeOfStateTime(structType any) BACnetConstructedDataChangeOfStateTime {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataChangeOfStateTime) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataChangeOfStateTime) IsBACnetConstructedDataChangeOfStateTime() {}
 
+func (m *_BACnetConstructedDataChangeOfStateTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataChangeOfStateTime) deepCopy() *_BACnetConstructedDataChangeOfStateTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataChangeOfStateTimeCopy := &_BACnetConstructedDataChangeOfStateTime{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ChangeOfStateTime.DeepCopy().(BACnetDateTime),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataChangeOfStateTimeCopy
+}
+
 func (m *_BACnetConstructedDataChangeOfStateTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

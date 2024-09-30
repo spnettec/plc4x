@@ -40,8 +40,11 @@ type BACnetChannelValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetChannelValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValue()
+	// CreateBuilder creates a BACnetChannelValueBuilder
+	CreateBACnetChannelValueBuilder() BACnetChannelValueBuilder
 }
 
 // BACnetChannelValueContract provides a set of functions which can be overwritten by a sub struct
@@ -54,6 +57,8 @@ type BACnetChannelValueContract interface {
 	GetPeekedIsContextTag() bool
 	// IsBACnetChannelValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetChannelValue()
+	// CreateBuilder creates a BACnetChannelValueBuilder
+	CreateBACnetChannelValueBuilder() BACnetChannelValueBuilder
 }
 
 // BACnetChannelValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -73,6 +78,439 @@ type _BACnetChannelValue struct {
 }
 
 var _ BACnetChannelValueContract = (*_BACnetChannelValue)(nil)
+
+// NewBACnetChannelValue factory function for _BACnetChannelValue
+func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
+	}
+	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetChannelValueBuilder is a builder for BACnetChannelValue
+type BACnetChannelValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetChannelValueBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetChannelValueBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetChannelValueBuilder
+	// AsBACnetChannelValueNull converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueNull() interface {
+		BACnetChannelValueNullBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueReal converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueReal() interface {
+		BACnetChannelValueRealBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueEnumerated converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueEnumerated() interface {
+		BACnetChannelValueEnumeratedBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueUnsigned converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueUnsigned() interface {
+		BACnetChannelValueUnsignedBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueBoolean converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueBoolean() interface {
+		BACnetChannelValueBooleanBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueInteger converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueInteger() interface {
+		BACnetChannelValueIntegerBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueDouble converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueDouble() interface {
+		BACnetChannelValueDoubleBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueTime converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueTime() interface {
+		BACnetChannelValueTimeBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueCharacterString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueCharacterString() interface {
+		BACnetChannelValueCharacterStringBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueOctetString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueOctetString() interface {
+		BACnetChannelValueOctetStringBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueBitString converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueBitString() interface {
+		BACnetChannelValueBitStringBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueDate converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueDate() interface {
+		BACnetChannelValueDateBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueObjectidentifier converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueObjectidentifier() interface {
+		BACnetChannelValueObjectidentifierBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// AsBACnetChannelValueLightingCommand converts this build to a subType of BACnetChannelValue. It is always possible to return to current builder using Done()
+	AsBACnetChannelValueLightingCommand() interface {
+		BACnetChannelValueLightingCommandBuilder
+		Done() BACnetChannelValueBuilder
+	}
+	// Build builds the BACnetChannelValue or returns an error if something is wrong
+	PartialBuild() (BACnetChannelValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetChannelValueContract
+	// Build builds the BACnetChannelValue or returns an error if something is wrong
+	Build() (BACnetChannelValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetChannelValue
+}
+
+// NewBACnetChannelValueBuilder() creates a BACnetChannelValueBuilder
+func NewBACnetChannelValueBuilder() BACnetChannelValueBuilder {
+	return &_BACnetChannelValueBuilder{_BACnetChannelValue: new(_BACnetChannelValue)}
+}
+
+type _BACnetChannelValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetChannelValueContract)
+	buildForBACnetChannelValue() (BACnetChannelValue, error)
+}
+
+type _BACnetChannelValueBuilder struct {
+	*_BACnetChannelValue
+
+	childBuilder _BACnetChannelValueChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetChannelValueBuilder) = (*_BACnetChannelValueBuilder)(nil)
+
+func (b *_BACnetChannelValueBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetChannelValueBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetChannelValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetChannelValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetChannelValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetChannelValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetChannelValueBuilder) PartialBuild() (BACnetChannelValueContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetChannelValue.deepCopy(), nil
+}
+
+func (b *_BACnetChannelValueBuilder) PartialMustBuild() BACnetChannelValueContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueNull() interface {
+	BACnetChannelValueNullBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueNullBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueNullBuilder().(*_BACnetChannelValueNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueReal() interface {
+	BACnetChannelValueRealBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueRealBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueRealBuilder().(*_BACnetChannelValueRealBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueEnumerated() interface {
+	BACnetChannelValueEnumeratedBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueEnumeratedBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueEnumeratedBuilder().(*_BACnetChannelValueEnumeratedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueUnsigned() interface {
+	BACnetChannelValueUnsignedBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueUnsignedBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueUnsignedBuilder().(*_BACnetChannelValueUnsignedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBoolean() interface {
+	BACnetChannelValueBooleanBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueBooleanBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueBooleanBuilder().(*_BACnetChannelValueBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueInteger() interface {
+	BACnetChannelValueIntegerBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueIntegerBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueIntegerBuilder().(*_BACnetChannelValueIntegerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDouble() interface {
+	BACnetChannelValueDoubleBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueDoubleBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueDoubleBuilder().(*_BACnetChannelValueDoubleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueTime() interface {
+	BACnetChannelValueTimeBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueTimeBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueTimeBuilder().(*_BACnetChannelValueTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueCharacterString() interface {
+	BACnetChannelValueCharacterStringBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueCharacterStringBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueCharacterStringBuilder().(*_BACnetChannelValueCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueOctetString() interface {
+	BACnetChannelValueOctetStringBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueOctetStringBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueOctetStringBuilder().(*_BACnetChannelValueOctetStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueBitString() interface {
+	BACnetChannelValueBitStringBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueBitStringBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueBitStringBuilder().(*_BACnetChannelValueBitStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueDate() interface {
+	BACnetChannelValueDateBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueDateBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueDateBuilder().(*_BACnetChannelValueDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueObjectidentifier() interface {
+	BACnetChannelValueObjectidentifierBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueObjectidentifierBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueObjectidentifierBuilder().(*_BACnetChannelValueObjectidentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) AsBACnetChannelValueLightingCommand() interface {
+	BACnetChannelValueLightingCommandBuilder
+	Done() BACnetChannelValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetChannelValueLightingCommandBuilder
+		Done() BACnetChannelValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetChannelValueLightingCommandBuilder().(*_BACnetChannelValueLightingCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetChannelValueBuilder) Build() (BACnetChannelValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetChannelValue()
+}
+
+func (b *_BACnetChannelValueBuilder) MustBuild() BACnetChannelValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetChannelValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetChannelValueBuilder().(*_BACnetChannelValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetChannelValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetChannelValueBuilder creates a BACnetChannelValueBuilder
+func (b *_BACnetChannelValue) CreateBACnetChannelValueBuilder() BACnetChannelValueBuilder {
+	if b == nil {
+		return NewBACnetChannelValueBuilder()
+	}
+	return &_BACnetChannelValueBuilder{_BACnetChannelValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -110,14 +548,6 @@ func (pm *_BACnetChannelValue) GetPeekedIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetChannelValue factory function for _BACnetChannelValue
-func NewBACnetChannelValue(peekedTagHeader BACnetTagHeader) *_BACnetChannelValue {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetChannelValue must not be nil")
-	}
-	return &_BACnetChannelValue{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetChannelValue(structType any) BACnetChannelValue {
@@ -159,7 +589,7 @@ func BACnetChannelValueParseWithBufferProducer[T BACnetChannelValue]() func(ctx 
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -169,7 +599,12 @@ func BACnetChannelValueParseWithBuffer[T BACnetChannelValue](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetChannelValue) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetChannelValue BACnetChannelValue, err error) {
@@ -208,59 +643,59 @@ func (m *_BACnetChannelValue) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child BACnetChannelValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetChannelValueNull
-		if _child, err = (&_BACnetChannelValueNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueNull for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetChannelValueReal
-		if _child, err = (&_BACnetChannelValueReal{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueReal).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueReal for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetChannelValueEnumerated
-		if _child, err = (&_BACnetChannelValueEnumerated{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueEnumerated).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueEnumerated for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetChannelValueUnsigned
-		if _child, err = (&_BACnetChannelValueUnsigned{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueUnsigned).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueUnsigned for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetChannelValueBoolean
-		if _child, err = (&_BACnetChannelValueBoolean{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueBoolean).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueBoolean for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetChannelValueInteger
-		if _child, err = (&_BACnetChannelValueInteger{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueInteger).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueInteger for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetChannelValueDouble
-		if _child, err = (&_BACnetChannelValueDouble{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueDouble).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueDouble for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetChannelValueTime
-		if _child, err = (&_BACnetChannelValueTime{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueTime).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueTime for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetChannelValueCharacterString
-		if _child, err = (&_BACnetChannelValueCharacterString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueCharacterString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueCharacterString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetChannelValueOctetString
-		if _child, err = (&_BACnetChannelValueOctetString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueOctetString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueOctetString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetChannelValueBitString
-		if _child, err = (&_BACnetChannelValueBitString{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueBitString).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueBitString for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetChannelValueDate
-		if _child, err = (&_BACnetChannelValueDate{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueDate).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueDate for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetChannelValueObjectidentifier
-		if _child, err = (&_BACnetChannelValueObjectidentifier{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueObjectidentifier).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueObjectidentifier for type-switch of BACnetChannelValue")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetChannelValueLightingCommand
-		if _child, err = (&_BACnetChannelValueLightingCommand{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetChannelValueLightingCommand).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetChannelValueLightingCommand for type-switch of BACnetChannelValue")
 		}
 	default:
@@ -310,3 +745,18 @@ func (pm *_BACnetChannelValue) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_BACnetChannelValue) IsBACnetChannelValue() {}
+
+func (m *_BACnetChannelValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetChannelValue) deepCopy() *_BACnetChannelValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetChannelValueCopy := &_BACnetChannelValue{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetChannelValueCopy
+}

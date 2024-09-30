@@ -38,6 +38,7 @@ type TemperatureBroadcastData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommandTypeContainer returns CommandTypeContainer (property field)
 	GetCommandTypeContainer() TemperatureBroadcastCommandTypeContainer
 	// GetTemperatureGroup returns TemperatureGroup (property field)
@@ -50,6 +51,8 @@ type TemperatureBroadcastData interface {
 	GetTemperatureInCelsius() float32
 	// IsTemperatureBroadcastData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTemperatureBroadcastData()
+	// CreateBuilder creates a TemperatureBroadcastDataBuilder
+	CreateTemperatureBroadcastDataBuilder() TemperatureBroadcastDataBuilder
 }
 
 // _TemperatureBroadcastData is the data-structure of this message
@@ -60,6 +63,101 @@ type _TemperatureBroadcastData struct {
 }
 
 var _ TemperatureBroadcastData = (*_TemperatureBroadcastData)(nil)
+
+// NewTemperatureBroadcastData factory function for _TemperatureBroadcastData
+func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) *_TemperatureBroadcastData {
+	return &_TemperatureBroadcastData{CommandTypeContainer: commandTypeContainer, TemperatureGroup: temperatureGroup, TemperatureByte: temperatureByte}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TemperatureBroadcastDataBuilder is a builder for TemperatureBroadcastData
+type TemperatureBroadcastDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) TemperatureBroadcastDataBuilder
+	// WithCommandTypeContainer adds CommandTypeContainer (property field)
+	WithCommandTypeContainer(TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastDataBuilder
+	// WithTemperatureGroup adds TemperatureGroup (property field)
+	WithTemperatureGroup(byte) TemperatureBroadcastDataBuilder
+	// WithTemperatureByte adds TemperatureByte (property field)
+	WithTemperatureByte(byte) TemperatureBroadcastDataBuilder
+	// Build builds the TemperatureBroadcastData or returns an error if something is wrong
+	Build() (TemperatureBroadcastData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TemperatureBroadcastData
+}
+
+// NewTemperatureBroadcastDataBuilder() creates a TemperatureBroadcastDataBuilder
+func NewTemperatureBroadcastDataBuilder() TemperatureBroadcastDataBuilder {
+	return &_TemperatureBroadcastDataBuilder{_TemperatureBroadcastData: new(_TemperatureBroadcastData)}
+}
+
+type _TemperatureBroadcastDataBuilder struct {
+	*_TemperatureBroadcastData
+
+	err *utils.MultiError
+}
+
+var _ (TemperatureBroadcastDataBuilder) = (*_TemperatureBroadcastDataBuilder)(nil)
+
+func (b *_TemperatureBroadcastDataBuilder) WithMandatoryFields(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) TemperatureBroadcastDataBuilder {
+	return b.WithCommandTypeContainer(commandTypeContainer).WithTemperatureGroup(temperatureGroup).WithTemperatureByte(temperatureByte)
+}
+
+func (b *_TemperatureBroadcastDataBuilder) WithCommandTypeContainer(commandTypeContainer TemperatureBroadcastCommandTypeContainer) TemperatureBroadcastDataBuilder {
+	b.CommandTypeContainer = commandTypeContainer
+	return b
+}
+
+func (b *_TemperatureBroadcastDataBuilder) WithTemperatureGroup(temperatureGroup byte) TemperatureBroadcastDataBuilder {
+	b.TemperatureGroup = temperatureGroup
+	return b
+}
+
+func (b *_TemperatureBroadcastDataBuilder) WithTemperatureByte(temperatureByte byte) TemperatureBroadcastDataBuilder {
+	b.TemperatureByte = temperatureByte
+	return b
+}
+
+func (b *_TemperatureBroadcastDataBuilder) Build() (TemperatureBroadcastData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TemperatureBroadcastData.deepCopy(), nil
+}
+
+func (b *_TemperatureBroadcastDataBuilder) MustBuild() TemperatureBroadcastData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TemperatureBroadcastDataBuilder) DeepCopy() any {
+	_copy := b.CreateTemperatureBroadcastDataBuilder().(*_TemperatureBroadcastDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTemperatureBroadcastDataBuilder creates a TemperatureBroadcastDataBuilder
+func (b *_TemperatureBroadcastData) CreateTemperatureBroadcastDataBuilder() TemperatureBroadcastDataBuilder {
+	if b == nil {
+		return NewTemperatureBroadcastDataBuilder()
+	}
+	return &_TemperatureBroadcastDataBuilder{_TemperatureBroadcastData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -103,11 +201,6 @@ func (m *_TemperatureBroadcastData) GetTemperatureInCelsius() float32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTemperatureBroadcastData factory function for _TemperatureBroadcastData
-func NewTemperatureBroadcastData(commandTypeContainer TemperatureBroadcastCommandTypeContainer, temperatureGroup byte, temperatureByte byte) *_TemperatureBroadcastData {
-	return &_TemperatureBroadcastData{CommandTypeContainer: commandTypeContainer, TemperatureGroup: temperatureGroup, TemperatureByte: temperatureByte}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTemperatureBroadcastData(structType any) TemperatureBroadcastData {
@@ -162,7 +255,7 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TemperatureBroadcastData) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__temperatureBroadcastData TemperatureBroadcastData, err error) {
@@ -265,13 +358,33 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_TemperatureBroadcastData) IsTemperatureBroadcastData() {}
 
+func (m *_TemperatureBroadcastData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TemperatureBroadcastData) deepCopy() *_TemperatureBroadcastData {
+	if m == nil {
+		return nil
+	}
+	_TemperatureBroadcastDataCopy := &_TemperatureBroadcastData{
+		m.CommandTypeContainer,
+		m.TemperatureGroup,
+		m.TemperatureByte,
+	}
+	return _TemperatureBroadcastDataCopy
+}
+
 func (m *_TemperatureBroadcastData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

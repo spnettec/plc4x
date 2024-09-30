@@ -38,6 +38,7 @@ type BACnetConstructedDataPriorityForWriting interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetPriorityForWriting returns PriorityForWriting (property field)
 	GetPriorityForWriting() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataPriorityForWriting interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataPriorityForWriting is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataPriorityForWriting()
+	// CreateBuilder creates a BACnetConstructedDataPriorityForWritingBuilder
+	CreateBACnetConstructedDataPriorityForWritingBuilder() BACnetConstructedDataPriorityForWritingBuilder
 }
 
 // _BACnetConstructedDataPriorityForWriting is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataPriorityForWriting struct {
 
 var _ BACnetConstructedDataPriorityForWriting = (*_BACnetConstructedDataPriorityForWriting)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataPriorityForWriting)(nil)
+
+// NewBACnetConstructedDataPriorityForWriting factory function for _BACnetConstructedDataPriorityForWriting
+func NewBACnetConstructedDataPriorityForWriting(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, priorityForWriting BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityForWriting {
+	if priorityForWriting == nil {
+		panic("priorityForWriting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPriorityForWriting must not be nil")
+	}
+	_result := &_BACnetConstructedDataPriorityForWriting{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		PriorityForWriting:            priorityForWriting,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataPriorityForWritingBuilder is a builder for BACnetConstructedDataPriorityForWriting
+type BACnetConstructedDataPriorityForWritingBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(priorityForWriting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder
+	// WithPriorityForWriting adds PriorityForWriting (property field)
+	WithPriorityForWriting(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder
+	// WithPriorityForWritingBuilder adds PriorityForWriting (property field) which is build by the builder
+	WithPriorityForWritingBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityForWritingBuilder
+	// Build builds the BACnetConstructedDataPriorityForWriting or returns an error if something is wrong
+	Build() (BACnetConstructedDataPriorityForWriting, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataPriorityForWriting
+}
+
+// NewBACnetConstructedDataPriorityForWritingBuilder() creates a BACnetConstructedDataPriorityForWritingBuilder
+func NewBACnetConstructedDataPriorityForWritingBuilder() BACnetConstructedDataPriorityForWritingBuilder {
+	return &_BACnetConstructedDataPriorityForWritingBuilder{_BACnetConstructedDataPriorityForWriting: new(_BACnetConstructedDataPriorityForWriting)}
+}
+
+type _BACnetConstructedDataPriorityForWritingBuilder struct {
+	*_BACnetConstructedDataPriorityForWriting
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataPriorityForWritingBuilder) = (*_BACnetConstructedDataPriorityForWritingBuilder)(nil)
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) WithMandatoryFields(priorityForWriting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder {
+	return b.WithPriorityForWriting(priorityForWriting)
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) WithPriorityForWriting(priorityForWriting BACnetApplicationTagUnsignedInteger) BACnetConstructedDataPriorityForWritingBuilder {
+	b.PriorityForWriting = priorityForWriting
+	return b
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) WithPriorityForWritingBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataPriorityForWritingBuilder {
+	builder := builderSupplier(b.PriorityForWriting.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.PriorityForWriting, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) Build() (BACnetConstructedDataPriorityForWriting, error) {
+	if b.PriorityForWriting == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'priorityForWriting' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataPriorityForWriting.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) MustBuild() BACnetConstructedDataPriorityForWriting {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataPriorityForWritingBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataPriorityForWritingBuilder().(*_BACnetConstructedDataPriorityForWritingBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataPriorityForWritingBuilder creates a BACnetConstructedDataPriorityForWritingBuilder
+func (b *_BACnetConstructedDataPriorityForWriting) CreateBACnetConstructedDataPriorityForWritingBuilder() BACnetConstructedDataPriorityForWritingBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataPriorityForWritingBuilder()
+	}
+	return &_BACnetConstructedDataPriorityForWritingBuilder{_BACnetConstructedDataPriorityForWriting: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataPriorityForWriting) GetActualValue() BACnetApplic
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataPriorityForWriting factory function for _BACnetConstructedDataPriorityForWriting
-func NewBACnetConstructedDataPriorityForWriting(priorityForWriting BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataPriorityForWriting {
-	if priorityForWriting == nil {
-		panic("priorityForWriting of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataPriorityForWriting must not be nil")
-	}
-	_result := &_BACnetConstructedDataPriorityForWriting{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		PriorityForWriting:            priorityForWriting,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataPriorityForWriting(structType any) BACnetConstructedDataPriorityForWriting {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataPriorityForWriting) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetConstructedDataPriorityForWriting) IsBACnetConstructedDataPriorityForWriting() {}
 
+func (m *_BACnetConstructedDataPriorityForWriting) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataPriorityForWriting) deepCopy() *_BACnetConstructedDataPriorityForWriting {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataPriorityForWritingCopy := &_BACnetConstructedDataPriorityForWriting{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.PriorityForWriting.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataPriorityForWritingCopy
+}
+
 func (m *_BACnetConstructedDataPriorityForWriting) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

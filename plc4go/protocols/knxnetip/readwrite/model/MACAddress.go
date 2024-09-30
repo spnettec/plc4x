@@ -38,10 +38,13 @@ type MACAddress interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAddr returns Addr (property field)
 	GetAddr() []byte
 	// IsMACAddress is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMACAddress()
+	// CreateBuilder creates a MACAddressBuilder
+	CreateMACAddressBuilder() MACAddressBuilder
 }
 
 // _MACAddress is the data-structure of this message
@@ -50,6 +53,87 @@ type _MACAddress struct {
 }
 
 var _ MACAddress = (*_MACAddress)(nil)
+
+// NewMACAddress factory function for _MACAddress
+func NewMACAddress(addr []byte) *_MACAddress {
+	return &_MACAddress{Addr: addr}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MACAddressBuilder is a builder for MACAddress
+type MACAddressBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(addr []byte) MACAddressBuilder
+	// WithAddr adds Addr (property field)
+	WithAddr(...byte) MACAddressBuilder
+	// Build builds the MACAddress or returns an error if something is wrong
+	Build() (MACAddress, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MACAddress
+}
+
+// NewMACAddressBuilder() creates a MACAddressBuilder
+func NewMACAddressBuilder() MACAddressBuilder {
+	return &_MACAddressBuilder{_MACAddress: new(_MACAddress)}
+}
+
+type _MACAddressBuilder struct {
+	*_MACAddress
+
+	err *utils.MultiError
+}
+
+var _ (MACAddressBuilder) = (*_MACAddressBuilder)(nil)
+
+func (b *_MACAddressBuilder) WithMandatoryFields(addr []byte) MACAddressBuilder {
+	return b.WithAddr(addr...)
+}
+
+func (b *_MACAddressBuilder) WithAddr(addr ...byte) MACAddressBuilder {
+	b.Addr = addr
+	return b
+}
+
+func (b *_MACAddressBuilder) Build() (MACAddress, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MACAddress.deepCopy(), nil
+}
+
+func (b *_MACAddressBuilder) MustBuild() MACAddress {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_MACAddressBuilder) DeepCopy() any {
+	_copy := b.CreateMACAddressBuilder().(*_MACAddressBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMACAddressBuilder creates a MACAddressBuilder
+func (b *_MACAddress) CreateMACAddressBuilder() MACAddressBuilder {
+	if b == nil {
+		return NewMACAddressBuilder()
+	}
+	return &_MACAddressBuilder{_MACAddress: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_MACAddress) GetAddr() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMACAddress factory function for _MACAddress
-func NewMACAddress(addr []byte) *_MACAddress {
-	return &_MACAddress{Addr: addr}
-}
 
 // Deprecated: use the interface for direct cast
 func CastMACAddress(structType any) MACAddress {
@@ -115,7 +194,7 @@ func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_MACAddress) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__mACAddress MACAddress, err error) {
@@ -169,13 +248,31 @@ func (m *_MACAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 func (m *_MACAddress) IsMACAddress() {}
 
+func (m *_MACAddress) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MACAddress) deepCopy() *_MACAddress {
+	if m == nil {
+		return nil
+	}
+	_MACAddressCopy := &_MACAddress{
+		utils.DeepCopySlice[byte, byte](m.Addr),
+	}
+	return _MACAddressCopy
+}
+
 func (m *_MACAddress) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

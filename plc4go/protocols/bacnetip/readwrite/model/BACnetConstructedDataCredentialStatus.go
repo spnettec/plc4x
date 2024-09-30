@@ -38,6 +38,7 @@ type BACnetConstructedDataCredentialStatus interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetBinaryPv returns BinaryPv (property field)
 	GetBinaryPv() BACnetBinaryPVTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataCredentialStatus interface {
 	GetActualValue() BACnetBinaryPVTagged
 	// IsBACnetConstructedDataCredentialStatus is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialStatus()
+	// CreateBuilder creates a BACnetConstructedDataCredentialStatusBuilder
+	CreateBACnetConstructedDataCredentialStatusBuilder() BACnetConstructedDataCredentialStatusBuilder
 }
 
 // _BACnetConstructedDataCredentialStatus is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCredentialStatus struct {
 
 var _ BACnetConstructedDataCredentialStatus = (*_BACnetConstructedDataCredentialStatus)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialStatus)(nil)
+
+// NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
+func NewBACnetConstructedDataCredentialStatus(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, binaryPv BACnetBinaryPVTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
+	if binaryPv == nil {
+		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
+	}
+	_result := &_BACnetConstructedDataCredentialStatus{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		BinaryPv:                      binaryPv,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialStatusBuilder is a builder for BACnetConstructedDataCredentialStatus
+type BACnetConstructedDataCredentialStatusBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataCredentialStatusBuilder
+	// WithBinaryPv adds BinaryPv (property field)
+	WithBinaryPv(BACnetBinaryPVTagged) BACnetConstructedDataCredentialStatusBuilder
+	// WithBinaryPvBuilder adds BinaryPv (property field) which is build by the builder
+	WithBinaryPvBuilder(func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataCredentialStatusBuilder
+	// Build builds the BACnetConstructedDataCredentialStatus or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialStatus, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialStatus
+}
+
+// NewBACnetConstructedDataCredentialStatusBuilder() creates a BACnetConstructedDataCredentialStatusBuilder
+func NewBACnetConstructedDataCredentialStatusBuilder() BACnetConstructedDataCredentialStatusBuilder {
+	return &_BACnetConstructedDataCredentialStatusBuilder{_BACnetConstructedDataCredentialStatus: new(_BACnetConstructedDataCredentialStatus)}
+}
+
+type _BACnetConstructedDataCredentialStatusBuilder struct {
+	*_BACnetConstructedDataCredentialStatus
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialStatusBuilder) = (*_BACnetConstructedDataCredentialStatusBuilder)(nil)
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) WithMandatoryFields(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataCredentialStatusBuilder {
+	return b.WithBinaryPv(binaryPv)
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) WithBinaryPv(binaryPv BACnetBinaryPVTagged) BACnetConstructedDataCredentialStatusBuilder {
+	b.BinaryPv = binaryPv
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) WithBinaryPvBuilder(builderSupplier func(BACnetBinaryPVTaggedBuilder) BACnetBinaryPVTaggedBuilder) BACnetConstructedDataCredentialStatusBuilder {
+	builder := builderSupplier(b.BinaryPv.CreateBACnetBinaryPVTaggedBuilder())
+	var err error
+	b.BinaryPv, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetBinaryPVTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) Build() (BACnetConstructedDataCredentialStatus, error) {
+	if b.BinaryPv == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'binaryPv' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentialStatus.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) MustBuild() BACnetConstructedDataCredentialStatus {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialStatusBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialStatusBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialStatusBuilder().(*_BACnetConstructedDataCredentialStatusBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCredentialStatusBuilder creates a BACnetConstructedDataCredentialStatusBuilder
+func (b *_BACnetConstructedDataCredentialStatus) CreateBACnetConstructedDataCredentialStatusBuilder() BACnetConstructedDataCredentialStatusBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCredentialStatusBuilder()
+	}
+	return &_BACnetConstructedDataCredentialStatusBuilder{_BACnetConstructedDataCredentialStatus: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCredentialStatus) GetActualValue() BACnetBinaryPV
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialStatus factory function for _BACnetConstructedDataCredentialStatus
-func NewBACnetConstructedDataCredentialStatus(binaryPv BACnetBinaryPVTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialStatus {
-	if binaryPv == nil {
-		panic("binaryPv of type BACnetBinaryPVTagged for BACnetConstructedDataCredentialStatus must not be nil")
-	}
-	_result := &_BACnetConstructedDataCredentialStatus{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		BinaryPv:                      binaryPv,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialStatus(structType any) BACnetConstructedDataCredentialStatus {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCredentialStatus) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetConstructedDataCredentialStatus) IsBACnetConstructedDataCredentialStatus() {}
 
+func (m *_BACnetConstructedDataCredentialStatus) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialStatus) deepCopy() *_BACnetConstructedDataCredentialStatus {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialStatusCopy := &_BACnetConstructedDataCredentialStatus{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.BinaryPv.DeepCopy().(BACnetBinaryPVTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialStatusCopy
+}
+
 func (m *_BACnetConstructedDataCredentialStatus) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type VariantLocalizedText interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantLocalizedText interface {
 	GetValue() []LocalizedText
 	// IsVariantLocalizedText is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantLocalizedText()
+	// CreateBuilder creates a VariantLocalizedTextBuilder
+	CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder
 }
 
 // _VariantLocalizedText is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantLocalizedText struct {
 
 var _ VariantLocalizedText = (*_VariantLocalizedText)(nil)
 var _ VariantRequirements = (*_VariantLocalizedText)(nil)
+
+// NewVariantLocalizedText factory function for _VariantLocalizedText
+func NewVariantLocalizedText(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []LocalizedText) *_VariantLocalizedText {
+	_result := &_VariantLocalizedText{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantLocalizedTextBuilder is a builder for VariantLocalizedText
+type VariantLocalizedTextBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantLocalizedTextBuilder
+	// WithValue adds Value (property field)
+	WithValue(...LocalizedText) VariantLocalizedTextBuilder
+	// Build builds the VariantLocalizedText or returns an error if something is wrong
+	Build() (VariantLocalizedText, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantLocalizedText
+}
+
+// NewVariantLocalizedTextBuilder() creates a VariantLocalizedTextBuilder
+func NewVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
+	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: new(_VariantLocalizedText)}
+}
+
+type _VariantLocalizedTextBuilder struct {
+	*_VariantLocalizedText
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantLocalizedTextBuilder) = (*_VariantLocalizedTextBuilder)(nil)
+
+func (b *_VariantLocalizedTextBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantLocalizedTextBuilder) WithMandatoryFields(value []LocalizedText) VariantLocalizedTextBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantLocalizedTextBuilder) WithOptionalArrayLength(arrayLength int32) VariantLocalizedTextBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantLocalizedTextBuilder) WithValue(value ...LocalizedText) VariantLocalizedTextBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantLocalizedTextBuilder) Build() (VariantLocalizedText, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantLocalizedText.deepCopy(), nil
+}
+
+func (b *_VariantLocalizedTextBuilder) MustBuild() VariantLocalizedText {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantLocalizedTextBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantLocalizedTextBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantLocalizedTextBuilder) DeepCopy() any {
+	_copy := b.CreateVariantLocalizedTextBuilder().(*_VariantLocalizedTextBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantLocalizedTextBuilder creates a VariantLocalizedTextBuilder
+func (b *_VariantLocalizedText) CreateVariantLocalizedTextBuilder() VariantLocalizedTextBuilder {
+	if b == nil {
+		return NewVariantLocalizedTextBuilder()
+	}
+	return &_VariantLocalizedTextBuilder{_VariantLocalizedText: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantLocalizedText) GetValue() []LocalizedText {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantLocalizedText factory function for _VariantLocalizedText
-func NewVariantLocalizedText(arrayLength *int32, value []LocalizedText, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantLocalizedText {
-	_result := &_VariantLocalizedText{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantLocalizedText(structType any) VariantLocalizedText {
@@ -211,13 +312,34 @@ func (m *_VariantLocalizedText) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_VariantLocalizedText) IsVariantLocalizedText() {}
 
+func (m *_VariantLocalizedText) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantLocalizedText) deepCopy() *_VariantLocalizedText {
+	if m == nil {
+		return nil
+	}
+	_VariantLocalizedTextCopy := &_VariantLocalizedText{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[LocalizedText, LocalizedText](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantLocalizedTextCopy
+}
+
 func (m *_VariantLocalizedText) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type SecurityArmCode interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCode returns Code (property field)
 	GetCode() uint8
 	// GetIsDisarmed returns IsDisarmed (virtual field)
@@ -52,6 +53,8 @@ type SecurityArmCode interface {
 	GetIsReserved() bool
 	// IsSecurityArmCode is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityArmCode()
+	// CreateBuilder creates a SecurityArmCodeBuilder
+	CreateSecurityArmCodeBuilder() SecurityArmCodeBuilder
 }
 
 // _SecurityArmCode is the data-structure of this message
@@ -60,6 +63,87 @@ type _SecurityArmCode struct {
 }
 
 var _ SecurityArmCode = (*_SecurityArmCode)(nil)
+
+// NewSecurityArmCode factory function for _SecurityArmCode
+func NewSecurityArmCode(code uint8) *_SecurityArmCode {
+	return &_SecurityArmCode{Code: code}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityArmCodeBuilder is a builder for SecurityArmCode
+type SecurityArmCodeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(code uint8) SecurityArmCodeBuilder
+	// WithCode adds Code (property field)
+	WithCode(uint8) SecurityArmCodeBuilder
+	// Build builds the SecurityArmCode or returns an error if something is wrong
+	Build() (SecurityArmCode, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityArmCode
+}
+
+// NewSecurityArmCodeBuilder() creates a SecurityArmCodeBuilder
+func NewSecurityArmCodeBuilder() SecurityArmCodeBuilder {
+	return &_SecurityArmCodeBuilder{_SecurityArmCode: new(_SecurityArmCode)}
+}
+
+type _SecurityArmCodeBuilder struct {
+	*_SecurityArmCode
+
+	err *utils.MultiError
+}
+
+var _ (SecurityArmCodeBuilder) = (*_SecurityArmCodeBuilder)(nil)
+
+func (b *_SecurityArmCodeBuilder) WithMandatoryFields(code uint8) SecurityArmCodeBuilder {
+	return b.WithCode(code)
+}
+
+func (b *_SecurityArmCodeBuilder) WithCode(code uint8) SecurityArmCodeBuilder {
+	b.Code = code
+	return b
+}
+
+func (b *_SecurityArmCodeBuilder) Build() (SecurityArmCode, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityArmCode.deepCopy(), nil
+}
+
+func (b *_SecurityArmCodeBuilder) MustBuild() SecurityArmCode {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SecurityArmCodeBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityArmCodeBuilder().(*_SecurityArmCodeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityArmCodeBuilder creates a SecurityArmCodeBuilder
+func (b *_SecurityArmCode) CreateSecurityArmCodeBuilder() SecurityArmCodeBuilder {
+	if b == nil {
+		return NewSecurityArmCodeBuilder()
+	}
+	return &_SecurityArmCodeBuilder{_SecurityArmCode: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +198,6 @@ func (m *_SecurityArmCode) GetIsReserved() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewSecurityArmCode factory function for _SecurityArmCode
-func NewSecurityArmCode(code uint8) *_SecurityArmCode {
-	return &_SecurityArmCode{Code: code}
-}
-
 // Deprecated: use the interface for direct cast
 func CastSecurityArmCode(structType any) SecurityArmCode {
 	if casted, ok := structType.(SecurityArmCode); ok {
@@ -172,7 +251,7 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SecurityArmCode) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__securityArmCode SecurityArmCode, err error) {
@@ -286,13 +365,31 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_SecurityArmCode) IsSecurityArmCode() {}
 
+func (m *_SecurityArmCode) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityArmCode) deepCopy() *_SecurityArmCode {
+	if m == nil {
+		return nil
+	}
+	_SecurityArmCodeCopy := &_SecurityArmCode{
+		m.Code,
+	}
+	return _SecurityArmCodeCopy
+}
+
 func (m *_SecurityArmCode) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

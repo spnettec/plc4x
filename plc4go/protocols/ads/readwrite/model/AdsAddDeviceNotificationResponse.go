@@ -38,6 +38,7 @@ type AdsAddDeviceNotificationResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AmsPacket
 	// GetResult returns Result (property field)
 	GetResult() ReturnCode
@@ -45,6 +46,8 @@ type AdsAddDeviceNotificationResponse interface {
 	GetNotificationHandle() uint32
 	// IsAdsAddDeviceNotificationResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsAddDeviceNotificationResponse()
+	// CreateBuilder creates a AdsAddDeviceNotificationResponseBuilder
+	CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder
 }
 
 // _AdsAddDeviceNotificationResponse is the data-structure of this message
@@ -56,6 +59,115 @@ type _AdsAddDeviceNotificationResponse struct {
 
 var _ AdsAddDeviceNotificationResponse = (*_AdsAddDeviceNotificationResponse)(nil)
 var _ AmsPacketRequirements = (*_AdsAddDeviceNotificationResponse)(nil)
+
+// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
+func NewAdsAddDeviceNotificationResponse(targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32, result ReturnCode, notificationHandle uint32) *_AdsAddDeviceNotificationResponse {
+	_result := &_AdsAddDeviceNotificationResponse{
+		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
+		Result:             result,
+		NotificationHandle: notificationHandle,
+	}
+	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsAddDeviceNotificationResponseBuilder is a builder for AdsAddDeviceNotificationResponse
+type AdsAddDeviceNotificationResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder
+	// WithResult adds Result (property field)
+	WithResult(ReturnCode) AdsAddDeviceNotificationResponseBuilder
+	// WithNotificationHandle adds NotificationHandle (property field)
+	WithNotificationHandle(uint32) AdsAddDeviceNotificationResponseBuilder
+	// Build builds the AdsAddDeviceNotificationResponse or returns an error if something is wrong
+	Build() (AdsAddDeviceNotificationResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsAddDeviceNotificationResponse
+}
+
+// NewAdsAddDeviceNotificationResponseBuilder() creates a AdsAddDeviceNotificationResponseBuilder
+func NewAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
+	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: new(_AdsAddDeviceNotificationResponse)}
+}
+
+type _AdsAddDeviceNotificationResponseBuilder struct {
+	*_AdsAddDeviceNotificationResponse
+
+	parentBuilder *_AmsPacketBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsAddDeviceNotificationResponseBuilder) = (*_AdsAddDeviceNotificationResponseBuilder)(nil)
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) setParent(contract AmsPacketContract) {
+	b.AmsPacketContract = contract
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithMandatoryFields(result ReturnCode, notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	return b.WithResult(result).WithNotificationHandle(notificationHandle)
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithResult(result ReturnCode) AdsAddDeviceNotificationResponseBuilder {
+	b.Result = result
+	return b
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) WithNotificationHandle(notificationHandle uint32) AdsAddDeviceNotificationResponseBuilder {
+	b.NotificationHandle = notificationHandle
+	return b
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) Build() (AdsAddDeviceNotificationResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsAddDeviceNotificationResponse.deepCopy(), nil
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) MustBuild() AdsAddDeviceNotificationResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsAddDeviceNotificationResponseBuilder) Done() AmsPacketBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) buildForAmsPacket() (AmsPacket, error) {
+	return b.Build()
+}
+
+func (b *_AdsAddDeviceNotificationResponseBuilder) DeepCopy() any {
+	_copy := b.CreateAdsAddDeviceNotificationResponseBuilder().(*_AdsAddDeviceNotificationResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsAddDeviceNotificationResponseBuilder creates a AdsAddDeviceNotificationResponseBuilder
+func (b *_AdsAddDeviceNotificationResponse) CreateAdsAddDeviceNotificationResponseBuilder() AdsAddDeviceNotificationResponseBuilder {
+	if b == nil {
+		return NewAdsAddDeviceNotificationResponseBuilder()
+	}
+	return &_AdsAddDeviceNotificationResponseBuilder{_AdsAddDeviceNotificationResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -96,17 +208,6 @@ func (m *_AdsAddDeviceNotificationResponse) GetNotificationHandle() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsAddDeviceNotificationResponse factory function for _AdsAddDeviceNotificationResponse
-func NewAdsAddDeviceNotificationResponse(result ReturnCode, notificationHandle uint32, targetAmsNetId AmsNetId, targetAmsPort uint16, sourceAmsNetId AmsNetId, sourceAmsPort uint16, errorCode uint32, invokeId uint32) *_AdsAddDeviceNotificationResponse {
-	_result := &_AdsAddDeviceNotificationResponse{
-		AmsPacketContract:  NewAmsPacket(targetAmsNetId, targetAmsPort, sourceAmsNetId, sourceAmsPort, errorCode, invokeId),
-		Result:             result,
-		NotificationHandle: notificationHandle,
-	}
-	_result.AmsPacketContract.(*_AmsPacket)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsAddDeviceNotificationResponse(structType any) AdsAddDeviceNotificationResponse {
@@ -205,13 +306,34 @@ func (m *_AdsAddDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context
 
 func (m *_AdsAddDeviceNotificationResponse) IsAdsAddDeviceNotificationResponse() {}
 
+func (m *_AdsAddDeviceNotificationResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsAddDeviceNotificationResponse) deepCopy() *_AdsAddDeviceNotificationResponse {
+	if m == nil {
+		return nil
+	}
+	_AdsAddDeviceNotificationResponseCopy := &_AdsAddDeviceNotificationResponse{
+		m.AmsPacketContract.(*_AmsPacket).deepCopy(),
+		m.Result,
+		m.NotificationHandle,
+	}
+	m.AmsPacketContract.(*_AmsPacket)._SubType = m
+	return _AdsAddDeviceNotificationResponseCopy
+}
+
 func (m *_AdsAddDeviceNotificationResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

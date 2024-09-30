@@ -38,11 +38,14 @@ type S7PayloadAlarmSC interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7PayloadUserDataItem
 	// GetAlarmMessage returns AlarmMessage (property field)
 	GetAlarmMessage() AlarmMessagePushType
 	// IsS7PayloadAlarmSC is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7PayloadAlarmSC()
+	// CreateBuilder creates a S7PayloadAlarmSCBuilder
+	CreateS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder
 }
 
 // _S7PayloadAlarmSC is the data-structure of this message
@@ -53,6 +56,131 @@ type _S7PayloadAlarmSC struct {
 
 var _ S7PayloadAlarmSC = (*_S7PayloadAlarmSC)(nil)
 var _ S7PayloadUserDataItemRequirements = (*_S7PayloadAlarmSC)(nil)
+
+// NewS7PayloadAlarmSC factory function for _S7PayloadAlarmSC
+func NewS7PayloadAlarmSC(returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16, alarmMessage AlarmMessagePushType) *_S7PayloadAlarmSC {
+	if alarmMessage == nil {
+		panic("alarmMessage of type AlarmMessagePushType for S7PayloadAlarmSC must not be nil")
+	}
+	_result := &_S7PayloadAlarmSC{
+		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
+		AlarmMessage:                  alarmMessage,
+	}
+	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7PayloadAlarmSCBuilder is a builder for S7PayloadAlarmSC
+type S7PayloadAlarmSCBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder
+	// WithAlarmMessage adds AlarmMessage (property field)
+	WithAlarmMessage(AlarmMessagePushType) S7PayloadAlarmSCBuilder
+	// WithAlarmMessageBuilder adds AlarmMessage (property field) which is build by the builder
+	WithAlarmMessageBuilder(func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSCBuilder
+	// Build builds the S7PayloadAlarmSC or returns an error if something is wrong
+	Build() (S7PayloadAlarmSC, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7PayloadAlarmSC
+}
+
+// NewS7PayloadAlarmSCBuilder() creates a S7PayloadAlarmSCBuilder
+func NewS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder {
+	return &_S7PayloadAlarmSCBuilder{_S7PayloadAlarmSC: new(_S7PayloadAlarmSC)}
+}
+
+type _S7PayloadAlarmSCBuilder struct {
+	*_S7PayloadAlarmSC
+
+	parentBuilder *_S7PayloadUserDataItemBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7PayloadAlarmSCBuilder) = (*_S7PayloadAlarmSCBuilder)(nil)
+
+func (b *_S7PayloadAlarmSCBuilder) setParent(contract S7PayloadUserDataItemContract) {
+	b.S7PayloadUserDataItemContract = contract
+}
+
+func (b *_S7PayloadAlarmSCBuilder) WithMandatoryFields(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
+	return b.WithAlarmMessage(alarmMessage)
+}
+
+func (b *_S7PayloadAlarmSCBuilder) WithAlarmMessage(alarmMessage AlarmMessagePushType) S7PayloadAlarmSCBuilder {
+	b.AlarmMessage = alarmMessage
+	return b
+}
+
+func (b *_S7PayloadAlarmSCBuilder) WithAlarmMessageBuilder(builderSupplier func(AlarmMessagePushTypeBuilder) AlarmMessagePushTypeBuilder) S7PayloadAlarmSCBuilder {
+	builder := builderSupplier(b.AlarmMessage.CreateAlarmMessagePushTypeBuilder())
+	var err error
+	b.AlarmMessage, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AlarmMessagePushTypeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_S7PayloadAlarmSCBuilder) Build() (S7PayloadAlarmSC, error) {
+	if b.AlarmMessage == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'alarmMessage' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7PayloadAlarmSC.deepCopy(), nil
+}
+
+func (b *_S7PayloadAlarmSCBuilder) MustBuild() S7PayloadAlarmSC {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7PayloadAlarmSCBuilder) Done() S7PayloadUserDataItemBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7PayloadAlarmSCBuilder) buildForS7PayloadUserDataItem() (S7PayloadUserDataItem, error) {
+	return b.Build()
+}
+
+func (b *_S7PayloadAlarmSCBuilder) DeepCopy() any {
+	_copy := b.CreateS7PayloadAlarmSCBuilder().(*_S7PayloadAlarmSCBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7PayloadAlarmSCBuilder creates a S7PayloadAlarmSCBuilder
+func (b *_S7PayloadAlarmSC) CreateS7PayloadAlarmSCBuilder() S7PayloadAlarmSCBuilder {
+	if b == nil {
+		return NewS7PayloadAlarmSCBuilder()
+	}
+	return &_S7PayloadAlarmSCBuilder{_S7PayloadAlarmSC: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -93,19 +221,6 @@ func (m *_S7PayloadAlarmSC) GetAlarmMessage() AlarmMessagePushType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7PayloadAlarmSC factory function for _S7PayloadAlarmSC
-func NewS7PayloadAlarmSC(alarmMessage AlarmMessagePushType, returnCode DataTransportErrorCode, transportSize DataTransportSize, dataLength uint16) *_S7PayloadAlarmSC {
-	if alarmMessage == nil {
-		panic("alarmMessage of type AlarmMessagePushType for S7PayloadAlarmSC must not be nil")
-	}
-	_result := &_S7PayloadAlarmSC{
-		S7PayloadUserDataItemContract: NewS7PayloadUserDataItem(returnCode, transportSize, dataLength),
-		AlarmMessage:                  alarmMessage,
-	}
-	_result.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7PayloadAlarmSC(structType any) S7PayloadAlarmSC {
@@ -191,13 +306,33 @@ func (m *_S7PayloadAlarmSC) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_S7PayloadAlarmSC) IsS7PayloadAlarmSC() {}
 
+func (m *_S7PayloadAlarmSC) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7PayloadAlarmSC) deepCopy() *_S7PayloadAlarmSC {
+	if m == nil {
+		return nil
+	}
+	_S7PayloadAlarmSCCopy := &_S7PayloadAlarmSC{
+		m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem).deepCopy(),
+		m.AlarmMessage.DeepCopy().(AlarmMessagePushType),
+	}
+	m.S7PayloadUserDataItemContract.(*_S7PayloadUserDataItem)._SubType = m
+	return _S7PayloadAlarmSCCopy
+}
+
 func (m *_S7PayloadAlarmSC) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

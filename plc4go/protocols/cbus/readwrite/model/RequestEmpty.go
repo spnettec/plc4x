@@ -36,9 +36,12 @@ type RequestEmpty interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Request
 	// IsRequestEmpty is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestEmpty()
+	// CreateBuilder creates a RequestEmptyBuilder
+	CreateRequestEmptyBuilder() RequestEmptyBuilder
 }
 
 // _RequestEmpty is the data-structure of this message
@@ -48,6 +51,99 @@ type _RequestEmpty struct {
 
 var _ RequestEmpty = (*_RequestEmpty)(nil)
 var _ RequestRequirements = (*_RequestEmpty)(nil)
+
+// NewRequestEmpty factory function for _RequestEmpty
+func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
+	_result := &_RequestEmpty{
+		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
+	}
+	_result.RequestContract.(*_Request)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestEmptyBuilder is a builder for RequestEmpty
+type RequestEmptyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RequestEmptyBuilder
+	// Build builds the RequestEmpty or returns an error if something is wrong
+	Build() (RequestEmpty, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestEmpty
+}
+
+// NewRequestEmptyBuilder() creates a RequestEmptyBuilder
+func NewRequestEmptyBuilder() RequestEmptyBuilder {
+	return &_RequestEmptyBuilder{_RequestEmpty: new(_RequestEmpty)}
+}
+
+type _RequestEmptyBuilder struct {
+	*_RequestEmpty
+
+	parentBuilder *_RequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RequestEmptyBuilder) = (*_RequestEmptyBuilder)(nil)
+
+func (b *_RequestEmptyBuilder) setParent(contract RequestContract) {
+	b.RequestContract = contract
+}
+
+func (b *_RequestEmptyBuilder) WithMandatoryFields() RequestEmptyBuilder {
+	return b
+}
+
+func (b *_RequestEmptyBuilder) Build() (RequestEmpty, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestEmpty.deepCopy(), nil
+}
+
+func (b *_RequestEmptyBuilder) MustBuild() RequestEmpty {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RequestEmptyBuilder) Done() RequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RequestEmptyBuilder) buildForRequest() (Request, error) {
+	return b.Build()
+}
+
+func (b *_RequestEmptyBuilder) DeepCopy() any {
+	_copy := b.CreateRequestEmptyBuilder().(*_RequestEmptyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestEmptyBuilder creates a RequestEmptyBuilder
+func (b *_RequestEmpty) CreateRequestEmptyBuilder() RequestEmptyBuilder {
+	if b == nil {
+		return NewRequestEmptyBuilder()
+	}
+	return &_RequestEmptyBuilder{_RequestEmpty: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ RequestRequirements = (*_RequestEmpty)(nil)
 
 func (m *_RequestEmpty) GetParent() RequestContract {
 	return m.RequestContract
-}
-
-// NewRequestEmpty factory function for _RequestEmpty
-func NewRequestEmpty(peekedByte RequestType, startingCR *RequestType, resetMode *RequestType, secondPeek RequestType, termination RequestTermination, cBusOptions CBusOptions) *_RequestEmpty {
-	_result := &_RequestEmpty{
-		RequestContract: NewRequest(peekedByte, startingCR, resetMode, secondPeek, termination, cBusOptions),
-	}
-	_result.RequestContract.(*_Request)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_RequestEmpty) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_RequestEmpty) IsRequestEmpty() {}
 
+func (m *_RequestEmpty) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestEmpty) deepCopy() *_RequestEmpty {
+	if m == nil {
+		return nil
+	}
+	_RequestEmptyCopy := &_RequestEmpty{
+		m.RequestContract.(*_Request).deepCopy(),
+	}
+	m.RequestContract.(*_Request)._SubType = m
+	return _RequestEmptyCopy
+}
+
 func (m *_RequestEmpty) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

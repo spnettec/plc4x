@@ -38,6 +38,7 @@ type VTCloseError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetError
 	// GetErrorType returns ErrorType (property field)
 	GetErrorType() ErrorEnclosed
@@ -45,6 +46,8 @@ type VTCloseError interface {
 	GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSessionIdentifiers
 	// IsVTCloseError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVTCloseError()
+	// CreateBuilder creates a VTCloseErrorBuilder
+	CreateVTCloseErrorBuilder() VTCloseErrorBuilder
 }
 
 // _VTCloseError is the data-structure of this message
@@ -56,6 +59,154 @@ type _VTCloseError struct {
 
 var _ VTCloseError = (*_VTCloseError)(nil)
 var _ BACnetErrorRequirements = (*_VTCloseError)(nil)
+
+// NewVTCloseError factory function for _VTCloseError
+func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
+	if errorType == nil {
+		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
+	}
+	_result := &_VTCloseError{
+		BACnetErrorContract:        NewBACnetError(),
+		ErrorType:                  errorType,
+		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
+	}
+	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VTCloseErrorBuilder is a builder for VTCloseError
+type VTCloseErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(errorType ErrorEnclosed) VTCloseErrorBuilder
+	// WithErrorType adds ErrorType (property field)
+	WithErrorType(ErrorEnclosed) VTCloseErrorBuilder
+	// WithErrorTypeBuilder adds ErrorType (property field) which is build by the builder
+	WithErrorTypeBuilder(func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) VTCloseErrorBuilder
+	// WithListOfVtSessionIdentifiers adds ListOfVtSessionIdentifiers (property field)
+	WithOptionalListOfVtSessionIdentifiers(VTCloseErrorListOfVTSessionIdentifiers) VTCloseErrorBuilder
+	// WithOptionalListOfVtSessionIdentifiersBuilder adds ListOfVtSessionIdentifiers (property field) which is build by the builder
+	WithOptionalListOfVtSessionIdentifiersBuilder(func(VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorBuilder
+	// Build builds the VTCloseError or returns an error if something is wrong
+	Build() (VTCloseError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VTCloseError
+}
+
+// NewVTCloseErrorBuilder() creates a VTCloseErrorBuilder
+func NewVTCloseErrorBuilder() VTCloseErrorBuilder {
+	return &_VTCloseErrorBuilder{_VTCloseError: new(_VTCloseError)}
+}
+
+type _VTCloseErrorBuilder struct {
+	*_VTCloseError
+
+	parentBuilder *_BACnetErrorBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VTCloseErrorBuilder) = (*_VTCloseErrorBuilder)(nil)
+
+func (b *_VTCloseErrorBuilder) setParent(contract BACnetErrorContract) {
+	b.BACnetErrorContract = contract
+}
+
+func (b *_VTCloseErrorBuilder) WithMandatoryFields(errorType ErrorEnclosed) VTCloseErrorBuilder {
+	return b.WithErrorType(errorType)
+}
+
+func (b *_VTCloseErrorBuilder) WithErrorType(errorType ErrorEnclosed) VTCloseErrorBuilder {
+	b.ErrorType = errorType
+	return b
+}
+
+func (b *_VTCloseErrorBuilder) WithErrorTypeBuilder(builderSupplier func(ErrorEnclosedBuilder) ErrorEnclosedBuilder) VTCloseErrorBuilder {
+	builder := builderSupplier(b.ErrorType.CreateErrorEnclosedBuilder())
+	var err error
+	b.ErrorType, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ErrorEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiers(listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) VTCloseErrorBuilder {
+	b.ListOfVtSessionIdentifiers = listOfVtSessionIdentifiers
+	return b
+}
+
+func (b *_VTCloseErrorBuilder) WithOptionalListOfVtSessionIdentifiersBuilder(builderSupplier func(VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorListOfVTSessionIdentifiersBuilder) VTCloseErrorBuilder {
+	builder := builderSupplier(b.ListOfVtSessionIdentifiers.CreateVTCloseErrorListOfVTSessionIdentifiersBuilder())
+	var err error
+	b.ListOfVtSessionIdentifiers, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "VTCloseErrorListOfVTSessionIdentifiersBuilder failed"))
+	}
+	return b
+}
+
+func (b *_VTCloseErrorBuilder) Build() (VTCloseError, error) {
+	if b.ErrorType == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'errorType' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VTCloseError.deepCopy(), nil
+}
+
+func (b *_VTCloseErrorBuilder) MustBuild() VTCloseError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VTCloseErrorBuilder) Done() BACnetErrorBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VTCloseErrorBuilder) buildForBACnetError() (BACnetError, error) {
+	return b.Build()
+}
+
+func (b *_VTCloseErrorBuilder) DeepCopy() any {
+	_copy := b.CreateVTCloseErrorBuilder().(*_VTCloseErrorBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVTCloseErrorBuilder creates a VTCloseErrorBuilder
+func (b *_VTCloseError) CreateVTCloseErrorBuilder() VTCloseErrorBuilder {
+	if b == nil {
+		return NewVTCloseErrorBuilder()
+	}
+	return &_VTCloseErrorBuilder{_VTCloseError: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,20 +243,6 @@ func (m *_VTCloseError) GetListOfVtSessionIdentifiers() VTCloseErrorListOfVTSess
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVTCloseError factory function for _VTCloseError
-func NewVTCloseError(errorType ErrorEnclosed, listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers) *_VTCloseError {
-	if errorType == nil {
-		panic("errorType of type ErrorEnclosed for VTCloseError must not be nil")
-	}
-	_result := &_VTCloseError{
-		BACnetErrorContract:        NewBACnetError(),
-		ErrorType:                  errorType,
-		ListOfVtSessionIdentifiers: listOfVtSessionIdentifiers,
-	}
-	_result.BACnetErrorContract.(*_BACnetError)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVTCloseError(structType any) VTCloseError {
@@ -210,13 +347,34 @@ func (m *_VTCloseError) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_VTCloseError) IsVTCloseError() {}
 
+func (m *_VTCloseError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VTCloseError) deepCopy() *_VTCloseError {
+	if m == nil {
+		return nil
+	}
+	_VTCloseErrorCopy := &_VTCloseError{
+		m.BACnetErrorContract.(*_BACnetError).deepCopy(),
+		m.ErrorType.DeepCopy().(ErrorEnclosed),
+		m.ListOfVtSessionIdentifiers.DeepCopy().(VTCloseErrorListOfVTSessionIdentifiers),
+	}
+	m.BACnetErrorContract.(*_BACnetError)._SubType = m
+	return _VTCloseErrorCopy
+}
+
 func (m *_VTCloseError) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

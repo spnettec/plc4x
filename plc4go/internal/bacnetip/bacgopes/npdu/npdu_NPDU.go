@@ -21,14 +21,11 @@ package npdu
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
 	"github.com/pkg/errors"
 
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/comp"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/debugging"
-	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/globals"
 	. "github.com/apache/plc4x/plc4go/internal/bacnetip/bacgopes/pdu"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
@@ -48,11 +45,11 @@ type _NPDU struct {
 
 var _ = (NPDU)(nil)
 
-// TODO: optimize with options and smart non-recoding...
-func NewNPDU(nlm readWriteModel.NLM, apdu readWriteModel.APDU) (NPDU, error) {
+func NewNPDU(args Args, kwArgs KWArgs, options ...Option) (NPDU, error) {
 	n := &_NPDU{}
-	n._NPCI = NewNPCI(nlm, apdu).(*_NPCI)
-	n.PDUData = NewPDUData(NoArgs, NoKWArgs())
+	options = AddLeafTypeIfAbundant(options, n)
+	n._NPCI = NewNPCI(args, kwArgs, options...).(*_NPCI)
+	n.PDUData = NewPDUData(NoArgs, NoKWArgs(), options...)
 	n.AddExtraPrinters(n.PDUData.(DebugContentPrinter))
 	if n.GetRootMessage() != nil {
 		data, _ := n.GetRootMessage().Serialize()
@@ -103,6 +100,14 @@ func (n *_NPDU) getNPDUModel() (readWriteModel.NPDU, bool) {
 	rm := n.GetRootMessage()
 	npdu, ok := rm.(readWriteModel.NPDU)
 	return npdu, ok
+}
+
+func (n *_NPDU) CreateNPDUBuilder() readWriteModel.NPDUBuilder {
+	npdu, ok := n.getNPDUModel()
+	if !ok {
+		return readWriteModel.NewNPDUBuilder()
+	}
+	return npdu.CreateNPDUBuilder()
 }
 
 func (n *_NPDU) GetProtocolVersionNumber() uint8 {
@@ -226,13 +231,4 @@ func (n *_NPDU) deepCopy() *_NPDU {
 
 func (n *_NPDU) DeepCopy() any {
 	return n.deepCopy()
-}
-
-func (n *_NPDU) String() string {
-	if ExtendedPDUOutput {
-		return fmt.Sprintf("NPDU{%s}", n._NPCI)
-	} else {
-		npci := "\t" + strings.Join(strings.Split(n._NPCI.String(), "\n"), "\n\t")
-		return fmt.Sprintf("<NPDU instance at %p>%s\n\tpduData = %s", n, npci, Btox(n.GetPduData(), "."))
-	}
 }

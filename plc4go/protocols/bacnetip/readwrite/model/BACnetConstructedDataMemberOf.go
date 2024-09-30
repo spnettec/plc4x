@@ -38,11 +38,14 @@ type BACnetConstructedDataMemberOf interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetZones returns Zones (property field)
 	GetZones() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataMemberOf is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataMemberOf()
+	// CreateBuilder creates a BACnetConstructedDataMemberOfBuilder
+	CreateBACnetConstructedDataMemberOfBuilder() BACnetConstructedDataMemberOfBuilder
 }
 
 // _BACnetConstructedDataMemberOf is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataMemberOf struct {
 
 var _ BACnetConstructedDataMemberOf = (*_BACnetConstructedDataMemberOf)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataMemberOf)(nil)
+
+// NewBACnetConstructedDataMemberOf factory function for _BACnetConstructedDataMemberOf
+func NewBACnetConstructedDataMemberOf(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zones []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
+	_result := &_BACnetConstructedDataMemberOf{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Zones:                         zones,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataMemberOfBuilder is a builder for BACnetConstructedDataMemberOf
+type BACnetConstructedDataMemberOfBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zones []BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder
+	// WithZones adds Zones (property field)
+	WithZones(...BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder
+	// Build builds the BACnetConstructedDataMemberOf or returns an error if something is wrong
+	Build() (BACnetConstructedDataMemberOf, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataMemberOf
+}
+
+// NewBACnetConstructedDataMemberOfBuilder() creates a BACnetConstructedDataMemberOfBuilder
+func NewBACnetConstructedDataMemberOfBuilder() BACnetConstructedDataMemberOfBuilder {
+	return &_BACnetConstructedDataMemberOfBuilder{_BACnetConstructedDataMemberOf: new(_BACnetConstructedDataMemberOf)}
+}
+
+type _BACnetConstructedDataMemberOfBuilder struct {
+	*_BACnetConstructedDataMemberOf
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataMemberOfBuilder) = (*_BACnetConstructedDataMemberOfBuilder)(nil)
+
+func (b *_BACnetConstructedDataMemberOfBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) WithMandatoryFields(zones []BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder {
+	return b.WithZones(zones...)
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) WithZones(zones ...BACnetDeviceObjectReference) BACnetConstructedDataMemberOfBuilder {
+	b.Zones = zones
+	return b
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) Build() (BACnetConstructedDataMemberOf, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataMemberOf.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) MustBuild() BACnetConstructedDataMemberOf {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataMemberOfBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataMemberOfBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataMemberOfBuilder().(*_BACnetConstructedDataMemberOfBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataMemberOfBuilder creates a BACnetConstructedDataMemberOfBuilder
+func (b *_BACnetConstructedDataMemberOf) CreateBACnetConstructedDataMemberOfBuilder() BACnetConstructedDataMemberOfBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataMemberOfBuilder()
+	}
+	return &_BACnetConstructedDataMemberOfBuilder{_BACnetConstructedDataMemberOf: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataMemberOf) GetZones() []BACnetDeviceObjectReferenc
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataMemberOf factory function for _BACnetConstructedDataMemberOf
-func NewBACnetConstructedDataMemberOf(zones []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataMemberOf {
-	_result := &_BACnetConstructedDataMemberOf{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Zones:                         zones,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataMemberOf(structType any) BACnetConstructedDataMemberOf {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataMemberOf) SerializeWithWriteBuffer(ctx context.Co
 
 func (m *_BACnetConstructedDataMemberOf) IsBACnetConstructedDataMemberOf() {}
 
+func (m *_BACnetConstructedDataMemberOf) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataMemberOf) deepCopy() *_BACnetConstructedDataMemberOf {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataMemberOfCopy := &_BACnetConstructedDataMemberOf{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Zones),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataMemberOfCopy
+}
+
 func (m *_BACnetConstructedDataMemberOf) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

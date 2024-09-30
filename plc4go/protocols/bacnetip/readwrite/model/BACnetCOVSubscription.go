@@ -38,6 +38,7 @@ type BACnetCOVSubscription interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetRecipient returns Recipient (property field)
 	GetRecipient() BACnetRecipientProcessEnclosed
 	// GetMonitoredPropertyReference returns MonitoredPropertyReference (property field)
@@ -50,6 +51,8 @@ type BACnetCOVSubscription interface {
 	GetCovIncrement() BACnetContextTagReal
 	// IsBACnetCOVSubscription is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetCOVSubscription()
+	// CreateBuilder creates a BACnetCOVSubscriptionBuilder
+	CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder
 }
 
 // _BACnetCOVSubscription is the data-structure of this message
@@ -62,6 +65,226 @@ type _BACnetCOVSubscription struct {
 }
 
 var _ BACnetCOVSubscription = (*_BACnetCOVSubscription)(nil)
+
+// NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
+func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
+	if recipient == nil {
+		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if monitoredPropertyReference == nil {
+		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
+	}
+	if issueConfirmedNotifications == nil {
+		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
+	}
+	if timeRemaining == nil {
+		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
+	}
+	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetCOVSubscriptionBuilder is a builder for BACnetCOVSubscription
+type BACnetCOVSubscriptionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder
+	// WithRecipient adds Recipient (property field)
+	WithRecipient(BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder
+	// WithRecipientBuilder adds Recipient (property field) which is build by the builder
+	WithRecipientBuilder(func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder
+	// WithMonitoredPropertyReference adds MonitoredPropertyReference (property field)
+	WithMonitoredPropertyReference(BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder
+	// WithMonitoredPropertyReferenceBuilder adds MonitoredPropertyReference (property field) which is build by the builder
+	WithMonitoredPropertyReferenceBuilder(func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder
+	// WithIssueConfirmedNotifications adds IssueConfirmedNotifications (property field)
+	WithIssueConfirmedNotifications(BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder
+	// WithIssueConfirmedNotificationsBuilder adds IssueConfirmedNotifications (property field) which is build by the builder
+	WithIssueConfirmedNotificationsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder
+	// WithTimeRemaining adds TimeRemaining (property field)
+	WithTimeRemaining(BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder
+	// WithTimeRemainingBuilder adds TimeRemaining (property field) which is build by the builder
+	WithTimeRemainingBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder
+	// WithCovIncrement adds CovIncrement (property field)
+	WithOptionalCovIncrement(BACnetContextTagReal) BACnetCOVSubscriptionBuilder
+	// WithOptionalCovIncrementBuilder adds CovIncrement (property field) which is build by the builder
+	WithOptionalCovIncrementBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder
+	// Build builds the BACnetCOVSubscription or returns an error if something is wrong
+	Build() (BACnetCOVSubscription, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetCOVSubscription
+}
+
+// NewBACnetCOVSubscriptionBuilder() creates a BACnetCOVSubscriptionBuilder
+func NewBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
+	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: new(_BACnetCOVSubscription)}
+}
+
+type _BACnetCOVSubscriptionBuilder struct {
+	*_BACnetCOVSubscription
+
+	err *utils.MultiError
+}
+
+var _ (BACnetCOVSubscriptionBuilder) = (*_BACnetCOVSubscriptionBuilder)(nil)
+
+func (b *_BACnetCOVSubscriptionBuilder) WithMandatoryFields(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	return b.WithRecipient(recipient).WithMonitoredPropertyReference(monitoredPropertyReference).WithIssueConfirmedNotifications(issueConfirmedNotifications).WithTimeRemaining(timeRemaining)
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithRecipient(recipient BACnetRecipientProcessEnclosed) BACnetCOVSubscriptionBuilder {
+	b.Recipient = recipient
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithRecipientBuilder(builderSupplier func(BACnetRecipientProcessEnclosedBuilder) BACnetRecipientProcessEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.Recipient.CreateBACnetRecipientProcessEnclosedBuilder())
+	var err error
+	b.Recipient, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetRecipientProcessEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReference(monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed) BACnetCOVSubscriptionBuilder {
+	b.MonitoredPropertyReference = monitoredPropertyReference
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithMonitoredPropertyReferenceBuilder(builderSupplier func(BACnetObjectPropertyReferenceEnclosedBuilder) BACnetObjectPropertyReferenceEnclosedBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.MonitoredPropertyReference.CreateBACnetObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	b.MonitoredPropertyReference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotifications(issueConfirmedNotifications BACnetContextTagBoolean) BACnetCOVSubscriptionBuilder {
+	b.IssueConfirmedNotifications = issueConfirmedNotifications
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithIssueConfirmedNotificationsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.IssueConfirmedNotifications.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.IssueConfirmedNotifications, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithTimeRemaining(timeRemaining BACnetContextTagUnsignedInteger) BACnetCOVSubscriptionBuilder {
+	b.TimeRemaining = timeRemaining
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithTimeRemainingBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.TimeRemaining.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.TimeRemaining, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrement(covIncrement BACnetContextTagReal) BACnetCOVSubscriptionBuilder {
+	b.CovIncrement = covIncrement
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) WithOptionalCovIncrementBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetCOVSubscriptionBuilder {
+	builder := builderSupplier(b.CovIncrement.CreateBACnetContextTagRealBuilder())
+	var err error
+	b.CovIncrement, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) Build() (BACnetCOVSubscription, error) {
+	if b.Recipient == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'recipient' not set"))
+	}
+	if b.MonitoredPropertyReference == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredPropertyReference' not set"))
+	}
+	if b.IssueConfirmedNotifications == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'issueConfirmedNotifications' not set"))
+	}
+	if b.TimeRemaining == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeRemaining' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetCOVSubscription.deepCopy(), nil
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) MustBuild() BACnetCOVSubscription {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetCOVSubscriptionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetCOVSubscriptionBuilder().(*_BACnetCOVSubscriptionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetCOVSubscriptionBuilder creates a BACnetCOVSubscriptionBuilder
+func (b *_BACnetCOVSubscription) CreateBACnetCOVSubscriptionBuilder() BACnetCOVSubscriptionBuilder {
+	if b == nil {
+		return NewBACnetCOVSubscriptionBuilder()
+	}
+	return &_BACnetCOVSubscriptionBuilder{_BACnetCOVSubscription: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +315,6 @@ func (m *_BACnetCOVSubscription) GetCovIncrement() BACnetContextTagReal {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetCOVSubscription factory function for _BACnetCOVSubscription
-func NewBACnetCOVSubscription(recipient BACnetRecipientProcessEnclosed, monitoredPropertyReference BACnetObjectPropertyReferenceEnclosed, issueConfirmedNotifications BACnetContextTagBoolean, timeRemaining BACnetContextTagUnsignedInteger, covIncrement BACnetContextTagReal) *_BACnetCOVSubscription {
-	if recipient == nil {
-		panic("recipient of type BACnetRecipientProcessEnclosed for BACnetCOVSubscription must not be nil")
-	}
-	if monitoredPropertyReference == nil {
-		panic("monitoredPropertyReference of type BACnetObjectPropertyReferenceEnclosed for BACnetCOVSubscription must not be nil")
-	}
-	if issueConfirmedNotifications == nil {
-		panic("issueConfirmedNotifications of type BACnetContextTagBoolean for BACnetCOVSubscription must not be nil")
-	}
-	if timeRemaining == nil {
-		panic("timeRemaining of type BACnetContextTagUnsignedInteger for BACnetCOVSubscription must not be nil")
-	}
-	return &_BACnetCOVSubscription{Recipient: recipient, MonitoredPropertyReference: monitoredPropertyReference, IssueConfirmedNotifications: issueConfirmedNotifications, TimeRemaining: timeRemaining, CovIncrement: covIncrement}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetCOVSubscription(structType any) BACnetCOVSubscription {
@@ -167,7 +373,7 @@ func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetCOVSubscription) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetCOVSubscription BACnetCOVSubscription, err error) {
@@ -265,13 +471,35 @@ func (m *_BACnetCOVSubscription) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_BACnetCOVSubscription) IsBACnetCOVSubscription() {}
 
+func (m *_BACnetCOVSubscription) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetCOVSubscription) deepCopy() *_BACnetCOVSubscription {
+	if m == nil {
+		return nil
+	}
+	_BACnetCOVSubscriptionCopy := &_BACnetCOVSubscription{
+		m.Recipient.DeepCopy().(BACnetRecipientProcessEnclosed),
+		m.MonitoredPropertyReference.DeepCopy().(BACnetObjectPropertyReferenceEnclosed),
+		m.IssueConfirmedNotifications.DeepCopy().(BACnetContextTagBoolean),
+		m.TimeRemaining.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.CovIncrement.DeepCopy().(BACnetContextTagReal),
+	}
+	return _BACnetCOVSubscriptionCopy
+}
+
 func (m *_BACnetCOVSubscription) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

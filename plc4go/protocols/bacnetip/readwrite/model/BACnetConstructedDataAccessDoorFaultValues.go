@@ -38,11 +38,14 @@ type BACnetConstructedDataAccessDoorFaultValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultValues returns FaultValues (property field)
 	GetFaultValues() []BACnetDoorAlarmStateTagged
 	// IsBACnetConstructedDataAccessDoorFaultValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataAccessDoorFaultValues()
+	// CreateBuilder creates a BACnetConstructedDataAccessDoorFaultValuesBuilder
+	CreateBACnetConstructedDataAccessDoorFaultValuesBuilder() BACnetConstructedDataAccessDoorFaultValuesBuilder
 }
 
 // _BACnetConstructedDataAccessDoorFaultValues is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataAccessDoorFaultValues struct {
 
 var _ BACnetConstructedDataAccessDoorFaultValues = (*_BACnetConstructedDataAccessDoorFaultValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataAccessDoorFaultValues)(nil)
+
+// NewBACnetConstructedDataAccessDoorFaultValues factory function for _BACnetConstructedDataAccessDoorFaultValues
+func NewBACnetConstructedDataAccessDoorFaultValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultValues []BACnetDoorAlarmStateTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorFaultValues {
+	_result := &_BACnetConstructedDataAccessDoorFaultValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultValues:                   faultValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataAccessDoorFaultValuesBuilder is a builder for BACnetConstructedDataAccessDoorFaultValues
+type BACnetConstructedDataAccessDoorFaultValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultValues []BACnetDoorAlarmStateTagged) BACnetConstructedDataAccessDoorFaultValuesBuilder
+	// WithFaultValues adds FaultValues (property field)
+	WithFaultValues(...BACnetDoorAlarmStateTagged) BACnetConstructedDataAccessDoorFaultValuesBuilder
+	// Build builds the BACnetConstructedDataAccessDoorFaultValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataAccessDoorFaultValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataAccessDoorFaultValues
+}
+
+// NewBACnetConstructedDataAccessDoorFaultValuesBuilder() creates a BACnetConstructedDataAccessDoorFaultValuesBuilder
+func NewBACnetConstructedDataAccessDoorFaultValuesBuilder() BACnetConstructedDataAccessDoorFaultValuesBuilder {
+	return &_BACnetConstructedDataAccessDoorFaultValuesBuilder{_BACnetConstructedDataAccessDoorFaultValues: new(_BACnetConstructedDataAccessDoorFaultValues)}
+}
+
+type _BACnetConstructedDataAccessDoorFaultValuesBuilder struct {
+	*_BACnetConstructedDataAccessDoorFaultValues
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataAccessDoorFaultValuesBuilder) = (*_BACnetConstructedDataAccessDoorFaultValuesBuilder)(nil)
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) WithMandatoryFields(faultValues []BACnetDoorAlarmStateTagged) BACnetConstructedDataAccessDoorFaultValuesBuilder {
+	return b.WithFaultValues(faultValues...)
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) WithFaultValues(faultValues ...BACnetDoorAlarmStateTagged) BACnetConstructedDataAccessDoorFaultValuesBuilder {
+	b.FaultValues = faultValues
+	return b
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) Build() (BACnetConstructedDataAccessDoorFaultValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataAccessDoorFaultValues.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) MustBuild() BACnetConstructedDataAccessDoorFaultValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataAccessDoorFaultValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataAccessDoorFaultValuesBuilder().(*_BACnetConstructedDataAccessDoorFaultValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataAccessDoorFaultValuesBuilder creates a BACnetConstructedDataAccessDoorFaultValuesBuilder
+func (b *_BACnetConstructedDataAccessDoorFaultValues) CreateBACnetConstructedDataAccessDoorFaultValuesBuilder() BACnetConstructedDataAccessDoorFaultValuesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataAccessDoorFaultValuesBuilder()
+	}
+	return &_BACnetConstructedDataAccessDoorFaultValuesBuilder{_BACnetConstructedDataAccessDoorFaultValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataAccessDoorFaultValues) GetFaultValues() []BACnetD
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataAccessDoorFaultValues factory function for _BACnetConstructedDataAccessDoorFaultValues
-func NewBACnetConstructedDataAccessDoorFaultValues(faultValues []BACnetDoorAlarmStateTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataAccessDoorFaultValues {
-	_result := &_BACnetConstructedDataAccessDoorFaultValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultValues:                   faultValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataAccessDoorFaultValues(structType any) BACnetConstructedDataAccessDoorFaultValues {
@@ -189,13 +283,33 @@ func (m *_BACnetConstructedDataAccessDoorFaultValues) SerializeWithWriteBuffer(c
 func (m *_BACnetConstructedDataAccessDoorFaultValues) IsBACnetConstructedDataAccessDoorFaultValues() {
 }
 
+func (m *_BACnetConstructedDataAccessDoorFaultValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataAccessDoorFaultValues) deepCopy() *_BACnetConstructedDataAccessDoorFaultValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataAccessDoorFaultValuesCopy := &_BACnetConstructedDataAccessDoorFaultValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDoorAlarmStateTagged, BACnetDoorAlarmStateTagged](m.FaultValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataAccessDoorFaultValuesCopy
+}
+
 func (m *_BACnetConstructedDataAccessDoorFaultValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

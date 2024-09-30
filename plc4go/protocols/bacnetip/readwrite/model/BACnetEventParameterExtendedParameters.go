@@ -38,6 +38,7 @@ type BACnetEventParameterExtendedParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetPeekedTagHeader returns PeekedTagHeader (property field)
@@ -80,6 +81,8 @@ type BACnetEventParameterExtendedParameters interface {
 	GetIsClosingTag() bool
 	// IsBACnetEventParameterExtendedParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetEventParameterExtendedParameters()
+	// CreateBuilder creates a BACnetEventParameterExtendedParametersBuilder
+	CreateBACnetEventParameterExtendedParametersBuilder() BACnetEventParameterExtendedParametersBuilder
 }
 
 // _BACnetEventParameterExtendedParameters is the data-structure of this message
@@ -107,6 +110,481 @@ type _BACnetEventParameterExtendedParameters struct {
 }
 
 var _ BACnetEventParameterExtendedParameters = (*_BACnetEventParameterExtendedParameters)(nil)
+
+// NewBACnetEventParameterExtendedParameters factory function for _BACnetEventParameterExtendedParameters
+func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterExtendedParameters {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtendedParameters must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterExtendedParameters must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtendedParameters must not be nil")
+	}
+	return &_BACnetEventParameterExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetEventParameterExtendedParametersBuilder is a builder for BACnetEventParameterExtendedParameters
+type BACnetEventParameterExtendedParametersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventParameterExtendedParametersBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetEventParameterExtendedParametersBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetEventParameterExtendedParametersBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithNullValue adds NullValue (property field)
+	WithOptionalNullValue(BACnetApplicationTagNull) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalNullValueBuilder adds NullValue (property field) which is build by the builder
+	WithOptionalNullValueBuilder(func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithRealValue adds RealValue (property field)
+	WithOptionalRealValue(BACnetApplicationTagReal) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalRealValueBuilder adds RealValue (property field) which is build by the builder
+	WithOptionalRealValueBuilder(func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithUnsignedValue adds UnsignedValue (property field)
+	WithOptionalUnsignedValue(BACnetApplicationTagUnsignedInteger) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalUnsignedValueBuilder adds UnsignedValue (property field) which is build by the builder
+	WithOptionalUnsignedValueBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithBooleanValue adds BooleanValue (property field)
+	WithOptionalBooleanValue(BACnetApplicationTagBoolean) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
+	WithOptionalBooleanValueBuilder(func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithIntegerValue adds IntegerValue (property field)
+	WithOptionalIntegerValue(BACnetApplicationTagSignedInteger) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalIntegerValueBuilder adds IntegerValue (property field) which is build by the builder
+	WithOptionalIntegerValueBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithDoubleValue adds DoubleValue (property field)
+	WithOptionalDoubleValue(BACnetApplicationTagDouble) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalDoubleValueBuilder adds DoubleValue (property field) which is build by the builder
+	WithOptionalDoubleValueBuilder(func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithOctetStringValue adds OctetStringValue (property field)
+	WithOptionalOctetStringValue(BACnetApplicationTagOctetString) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalOctetStringValueBuilder adds OctetStringValue (property field) which is build by the builder
+	WithOptionalOctetStringValueBuilder(func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithCharacterStringValue adds CharacterStringValue (property field)
+	WithOptionalCharacterStringValue(BACnetApplicationTagCharacterString) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalCharacterStringValueBuilder adds CharacterStringValue (property field) which is build by the builder
+	WithOptionalCharacterStringValueBuilder(func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithBitStringValue adds BitStringValue (property field)
+	WithOptionalBitStringValue(BACnetApplicationTagBitString) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
+	WithOptionalBitStringValueBuilder(func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithEnumeratedValue adds EnumeratedValue (property field)
+	WithOptionalEnumeratedValue(BACnetApplicationTagEnumerated) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalEnumeratedValueBuilder adds EnumeratedValue (property field) which is build by the builder
+	WithOptionalEnumeratedValueBuilder(func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithDateValue adds DateValue (property field)
+	WithOptionalDateValue(BACnetApplicationTagDate) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalDateValueBuilder adds DateValue (property field) which is build by the builder
+	WithOptionalDateValueBuilder(func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithTimeValue adds TimeValue (property field)
+	WithOptionalTimeValue(BACnetApplicationTagTime) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalTimeValueBuilder adds TimeValue (property field) which is build by the builder
+	WithOptionalTimeValueBuilder(func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithObjectIdentifier adds ObjectIdentifier (property field)
+	WithOptionalObjectIdentifier(BACnetApplicationTagObjectIdentifier) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalObjectIdentifierBuilder adds ObjectIdentifier (property field) which is build by the builder
+	WithOptionalObjectIdentifierBuilder(func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithReference adds Reference (property field)
+	WithOptionalReference(BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterExtendedParametersBuilder
+	// WithOptionalReferenceBuilder adds Reference (property field) which is build by the builder
+	WithOptionalReferenceBuilder(func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterExtendedParametersBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetEventParameterExtendedParametersBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedParametersBuilder
+	// Build builds the BACnetEventParameterExtendedParameters or returns an error if something is wrong
+	Build() (BACnetEventParameterExtendedParameters, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetEventParameterExtendedParameters
+}
+
+// NewBACnetEventParameterExtendedParametersBuilder() creates a BACnetEventParameterExtendedParametersBuilder
+func NewBACnetEventParameterExtendedParametersBuilder() BACnetEventParameterExtendedParametersBuilder {
+	return &_BACnetEventParameterExtendedParametersBuilder{_BACnetEventParameterExtendedParameters: new(_BACnetEventParameterExtendedParameters)}
+}
+
+type _BACnetEventParameterExtendedParametersBuilder struct {
+	*_BACnetEventParameterExtendedParameters
+
+	err *utils.MultiError
+}
+
+var _ (BACnetEventParameterExtendedParametersBuilder) = (*_BACnetEventParameterExtendedParametersBuilder)(nil)
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetEventParameterExtendedParametersBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetEventParameterExtendedParametersBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetEventParameterExtendedParametersBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalNullValue(nullValue BACnetApplicationTagNull) BACnetEventParameterExtendedParametersBuilder {
+	b.NullValue = nullValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalNullValueBuilder(builderSupplier func(BACnetApplicationTagNullBuilder) BACnetApplicationTagNullBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.NullValue.CreateBACnetApplicationTagNullBuilder())
+	var err error
+	b.NullValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagNullBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalRealValue(realValue BACnetApplicationTagReal) BACnetEventParameterExtendedParametersBuilder {
+	b.RealValue = realValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalRealValueBuilder(builderSupplier func(BACnetApplicationTagRealBuilder) BACnetApplicationTagRealBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.RealValue.CreateBACnetApplicationTagRealBuilder())
+	var err error
+	b.RealValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalUnsignedValue(unsignedValue BACnetApplicationTagUnsignedInteger) BACnetEventParameterExtendedParametersBuilder {
+	b.UnsignedValue = unsignedValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalUnsignedValueBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.UnsignedValue.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.UnsignedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalBooleanValue(booleanValue BACnetApplicationTagBoolean) BACnetEventParameterExtendedParametersBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalBooleanValueBuilder(builderSupplier func(BACnetApplicationTagBooleanBuilder) BACnetApplicationTagBooleanBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetApplicationTagBooleanBuilder())
+	var err error
+	b.BooleanValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalIntegerValue(integerValue BACnetApplicationTagSignedInteger) BACnetEventParameterExtendedParametersBuilder {
+	b.IntegerValue = integerValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalIntegerValueBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.IntegerValue.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.IntegerValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalDoubleValue(doubleValue BACnetApplicationTagDouble) BACnetEventParameterExtendedParametersBuilder {
+	b.DoubleValue = doubleValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalDoubleValueBuilder(builderSupplier func(BACnetApplicationTagDoubleBuilder) BACnetApplicationTagDoubleBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.DoubleValue.CreateBACnetApplicationTagDoubleBuilder())
+	var err error
+	b.DoubleValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDoubleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalOctetStringValue(octetStringValue BACnetApplicationTagOctetString) BACnetEventParameterExtendedParametersBuilder {
+	b.OctetStringValue = octetStringValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalOctetStringValueBuilder(builderSupplier func(BACnetApplicationTagOctetStringBuilder) BACnetApplicationTagOctetStringBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.OctetStringValue.CreateBACnetApplicationTagOctetStringBuilder())
+	var err error
+	b.OctetStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalCharacterStringValue(characterStringValue BACnetApplicationTagCharacterString) BACnetEventParameterExtendedParametersBuilder {
+	b.CharacterStringValue = characterStringValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalCharacterStringValueBuilder(builderSupplier func(BACnetApplicationTagCharacterStringBuilder) BACnetApplicationTagCharacterStringBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.CharacterStringValue.CreateBACnetApplicationTagCharacterStringBuilder())
+	var err error
+	b.CharacterStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagCharacterStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalBitStringValue(bitStringValue BACnetApplicationTagBitString) BACnetEventParameterExtendedParametersBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalBitStringValueBuilder(builderSupplier func(BACnetApplicationTagBitStringBuilder) BACnetApplicationTagBitStringBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetApplicationTagBitStringBuilder())
+	var err error
+	b.BitStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagBitStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalEnumeratedValue(enumeratedValue BACnetApplicationTagEnumerated) BACnetEventParameterExtendedParametersBuilder {
+	b.EnumeratedValue = enumeratedValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalEnumeratedValueBuilder(builderSupplier func(BACnetApplicationTagEnumeratedBuilder) BACnetApplicationTagEnumeratedBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.EnumeratedValue.CreateBACnetApplicationTagEnumeratedBuilder())
+	var err error
+	b.EnumeratedValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagEnumeratedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalDateValue(dateValue BACnetApplicationTagDate) BACnetEventParameterExtendedParametersBuilder {
+	b.DateValue = dateValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalDateValueBuilder(builderSupplier func(BACnetApplicationTagDateBuilder) BACnetApplicationTagDateBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.DateValue.CreateBACnetApplicationTagDateBuilder())
+	var err error
+	b.DateValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagDateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalTimeValue(timeValue BACnetApplicationTagTime) BACnetEventParameterExtendedParametersBuilder {
+	b.TimeValue = timeValue
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalTimeValueBuilder(builderSupplier func(BACnetApplicationTagTimeBuilder) BACnetApplicationTagTimeBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.TimeValue.CreateBACnetApplicationTagTimeBuilder())
+	var err error
+	b.TimeValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagTimeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalObjectIdentifier(objectIdentifier BACnetApplicationTagObjectIdentifier) BACnetEventParameterExtendedParametersBuilder {
+	b.ObjectIdentifier = objectIdentifier
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalObjectIdentifierBuilder(builderSupplier func(BACnetApplicationTagObjectIdentifierBuilder) BACnetApplicationTagObjectIdentifierBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.ObjectIdentifier.CreateBACnetApplicationTagObjectIdentifierBuilder())
+	var err error
+	b.ObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalReference(reference BACnetDeviceObjectPropertyReferenceEnclosed) BACnetEventParameterExtendedParametersBuilder {
+	b.Reference = reference
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithOptionalReferenceBuilder(builderSupplier func(BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetDeviceObjectPropertyReferenceEnclosedBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.Reference.CreateBACnetDeviceObjectPropertyReferenceEnclosedBuilder())
+	var err error
+	b.Reference, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectPropertyReferenceEnclosedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetEventParameterExtendedParametersBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetEventParameterExtendedParametersBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) Build() (BACnetEventParameterExtendedParameters, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetEventParameterExtendedParameters.deepCopy(), nil
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) MustBuild() BACnetEventParameterExtendedParameters {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetEventParameterExtendedParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetEventParameterExtendedParametersBuilder().(*_BACnetEventParameterExtendedParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetEventParameterExtendedParametersBuilder creates a BACnetEventParameterExtendedParametersBuilder
+func (b *_BACnetEventParameterExtendedParameters) CreateBACnetEventParameterExtendedParametersBuilder() BACnetEventParameterExtendedParametersBuilder {
+	if b == nil {
+		return NewBACnetEventParameterExtendedParametersBuilder()
+	}
+	return &_BACnetEventParameterExtendedParametersBuilder{_BACnetEventParameterExtendedParameters: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -297,20 +775,6 @@ func (m *_BACnetEventParameterExtendedParameters) GetIsClosingTag() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetEventParameterExtendedParameters factory function for _BACnetEventParameterExtendedParameters
-func NewBACnetEventParameterExtendedParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, nullValue BACnetApplicationTagNull, realValue BACnetApplicationTagReal, unsignedValue BACnetApplicationTagUnsignedInteger, booleanValue BACnetApplicationTagBoolean, integerValue BACnetApplicationTagSignedInteger, doubleValue BACnetApplicationTagDouble, octetStringValue BACnetApplicationTagOctetString, characterStringValue BACnetApplicationTagCharacterString, bitStringValue BACnetApplicationTagBitString, enumeratedValue BACnetApplicationTagEnumerated, dateValue BACnetApplicationTagDate, timeValue BACnetApplicationTagTime, objectIdentifier BACnetApplicationTagObjectIdentifier, reference BACnetDeviceObjectPropertyReferenceEnclosed, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetEventParameterExtendedParameters {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetEventParameterExtendedParameters must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetEventParameterExtendedParameters must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetEventParameterExtendedParameters must not be nil")
-	}
-	return &_BACnetEventParameterExtendedParameters{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, NullValue: nullValue, RealValue: realValue, UnsignedValue: unsignedValue, BooleanValue: booleanValue, IntegerValue: integerValue, DoubleValue: doubleValue, OctetStringValue: octetStringValue, CharacterStringValue: characterStringValue, BitStringValue: bitStringValue, EnumeratedValue: enumeratedValue, DateValue: dateValue, TimeValue: timeValue, ObjectIdentifier: objectIdentifier, Reference: reference, ClosingTag: closingTag, TagNumber: tagNumber}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetEventParameterExtendedParameters(structType any) BACnetEventParameterExtendedParameters {
 	if casted, ok := structType.(BACnetEventParameterExtendedParameters); ok {
@@ -433,7 +897,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetEventParameterExtendedParameters) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetEventParameterExtendedParameters BACnetEventParameterExtendedParameters, err error) {
@@ -745,13 +1209,48 @@ func (m *_BACnetEventParameterExtendedParameters) GetTagNumber() uint8 {
 
 func (m *_BACnetEventParameterExtendedParameters) IsBACnetEventParameterExtendedParameters() {}
 
+func (m *_BACnetEventParameterExtendedParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetEventParameterExtendedParameters) deepCopy() *_BACnetEventParameterExtendedParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetEventParameterExtendedParametersCopy := &_BACnetEventParameterExtendedParameters{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.NullValue.DeepCopy().(BACnetApplicationTagNull),
+		m.RealValue.DeepCopy().(BACnetApplicationTagReal),
+		m.UnsignedValue.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		m.BooleanValue.DeepCopy().(BACnetApplicationTagBoolean),
+		m.IntegerValue.DeepCopy().(BACnetApplicationTagSignedInteger),
+		m.DoubleValue.DeepCopy().(BACnetApplicationTagDouble),
+		m.OctetStringValue.DeepCopy().(BACnetApplicationTagOctetString),
+		m.CharacterStringValue.DeepCopy().(BACnetApplicationTagCharacterString),
+		m.BitStringValue.DeepCopy().(BACnetApplicationTagBitString),
+		m.EnumeratedValue.DeepCopy().(BACnetApplicationTagEnumerated),
+		m.DateValue.DeepCopy().(BACnetApplicationTagDate),
+		m.TimeValue.DeepCopy().(BACnetApplicationTagTime),
+		m.ObjectIdentifier.DeepCopy().(BACnetApplicationTagObjectIdentifier),
+		m.Reference.DeepCopy().(BACnetDeviceObjectPropertyReferenceEnclosed),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetEventParameterExtendedParametersCopy
+}
+
 func (m *_BACnetEventParameterExtendedParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

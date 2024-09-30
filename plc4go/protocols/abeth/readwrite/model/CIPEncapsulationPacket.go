@@ -42,8 +42,11 @@ type CIPEncapsulationPacket interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
+	// CreateBuilder creates a CIPEncapsulationPacketBuilder
+	CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder
 }
 
 // CIPEncapsulationPacketContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type CIPEncapsulationPacketContract interface {
 	GetOptions() uint32
 	// IsCIPEncapsulationPacket is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPEncapsulationPacket()
+	// CreateBuilder creates a CIPEncapsulationPacketBuilder
+	CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder
 }
 
 // CIPEncapsulationPacketRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,226 @@ type _CIPEncapsulationPacket struct {
 }
 
 var _ CIPEncapsulationPacketContract = (*_CIPEncapsulationPacket)(nil)
+
+// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
+func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
+	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPEncapsulationPacketBuilder is a builder for CIPEncapsulationPacket
+type CIPEncapsulationPacketBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) CIPEncapsulationPacketBuilder
+	// WithSessionHandle adds SessionHandle (property field)
+	WithSessionHandle(uint32) CIPEncapsulationPacketBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint32) CIPEncapsulationPacketBuilder
+	// WithSenderContext adds SenderContext (property field)
+	WithSenderContext(...uint8) CIPEncapsulationPacketBuilder
+	// WithOptions adds Options (property field)
+	WithOptions(uint32) CIPEncapsulationPacketBuilder
+	// AsCIPEncapsulationConnectionRequest converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
+	AsCIPEncapsulationConnectionRequest() interface {
+		CIPEncapsulationConnectionRequestBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}
+	// AsCIPEncapsulationConnectionResponse converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
+	AsCIPEncapsulationConnectionResponse() interface {
+		CIPEncapsulationConnectionResponseBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}
+	// AsCIPEncapsulationReadRequest converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
+	AsCIPEncapsulationReadRequest() interface {
+		CIPEncapsulationReadRequestBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}
+	// AsCIPEncapsulationReadResponse converts this build to a subType of CIPEncapsulationPacket. It is always possible to return to current builder using Done()
+	AsCIPEncapsulationReadResponse() interface {
+		CIPEncapsulationReadResponseBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}
+	// Build builds the CIPEncapsulationPacket or returns an error if something is wrong
+	PartialBuild() (CIPEncapsulationPacketContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() CIPEncapsulationPacketContract
+	// Build builds the CIPEncapsulationPacket or returns an error if something is wrong
+	Build() (CIPEncapsulationPacket, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPEncapsulationPacket
+}
+
+// NewCIPEncapsulationPacketBuilder() creates a CIPEncapsulationPacketBuilder
+func NewCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder {
+	return &_CIPEncapsulationPacketBuilder{_CIPEncapsulationPacket: new(_CIPEncapsulationPacket)}
+}
+
+type _CIPEncapsulationPacketChildBuilder interface {
+	utils.Copyable
+	setParent(CIPEncapsulationPacketContract)
+	buildForCIPEncapsulationPacket() (CIPEncapsulationPacket, error)
+}
+
+type _CIPEncapsulationPacketBuilder struct {
+	*_CIPEncapsulationPacket
+
+	childBuilder _CIPEncapsulationPacketChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CIPEncapsulationPacketBuilder) = (*_CIPEncapsulationPacketBuilder)(nil)
+
+func (b *_CIPEncapsulationPacketBuilder) WithMandatoryFields(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) CIPEncapsulationPacketBuilder {
+	return b.WithSessionHandle(sessionHandle).WithStatus(status).WithSenderContext(senderContext...).WithOptions(options)
+}
+
+func (b *_CIPEncapsulationPacketBuilder) WithSessionHandle(sessionHandle uint32) CIPEncapsulationPacketBuilder {
+	b.SessionHandle = sessionHandle
+	return b
+}
+
+func (b *_CIPEncapsulationPacketBuilder) WithStatus(status uint32) CIPEncapsulationPacketBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_CIPEncapsulationPacketBuilder) WithSenderContext(senderContext ...uint8) CIPEncapsulationPacketBuilder {
+	b.SenderContext = senderContext
+	return b
+}
+
+func (b *_CIPEncapsulationPacketBuilder) WithOptions(options uint32) CIPEncapsulationPacketBuilder {
+	b.Options = options
+	return b
+}
+
+func (b *_CIPEncapsulationPacketBuilder) PartialBuild() (CIPEncapsulationPacketContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPEncapsulationPacket.deepCopy(), nil
+}
+
+func (b *_CIPEncapsulationPacketBuilder) PartialMustBuild() CIPEncapsulationPacketContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionRequest() interface {
+	CIPEncapsulationConnectionRequestBuilder
+	Done() CIPEncapsulationPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CIPEncapsulationConnectionRequestBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCIPEncapsulationConnectionRequestBuilder().(*_CIPEncapsulationConnectionRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationConnectionResponse() interface {
+	CIPEncapsulationConnectionResponseBuilder
+	Done() CIPEncapsulationPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CIPEncapsulationConnectionResponseBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCIPEncapsulationConnectionResponseBuilder().(*_CIPEncapsulationConnectionResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadRequest() interface {
+	CIPEncapsulationReadRequestBuilder
+	Done() CIPEncapsulationPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CIPEncapsulationReadRequestBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCIPEncapsulationReadRequestBuilder().(*_CIPEncapsulationReadRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CIPEncapsulationPacketBuilder) AsCIPEncapsulationReadResponse() interface {
+	CIPEncapsulationReadResponseBuilder
+	Done() CIPEncapsulationPacketBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CIPEncapsulationReadResponseBuilder
+		Done() CIPEncapsulationPacketBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCIPEncapsulationReadResponseBuilder().(*_CIPEncapsulationReadResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CIPEncapsulationPacketBuilder) Build() (CIPEncapsulationPacket, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCIPEncapsulationPacket()
+}
+
+func (b *_CIPEncapsulationPacketBuilder) MustBuild() CIPEncapsulationPacket {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CIPEncapsulationPacketBuilder) DeepCopy() any {
+	_copy := b.CreateCIPEncapsulationPacketBuilder().(*_CIPEncapsulationPacketBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CIPEncapsulationPacketChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCIPEncapsulationPacketBuilder creates a CIPEncapsulationPacketBuilder
+func (b *_CIPEncapsulationPacket) CreateCIPEncapsulationPacketBuilder() CIPEncapsulationPacketBuilder {
+	if b == nil {
+		return NewCIPEncapsulationPacketBuilder()
+	}
+	return &_CIPEncapsulationPacketBuilder{_CIPEncapsulationPacket: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,11 +331,6 @@ func (m *_CIPEncapsulationPacket) GetOptions() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPEncapsulationPacket factory function for _CIPEncapsulationPacket
-func NewCIPEncapsulationPacket(sessionHandle uint32, status uint32, senderContext []uint8, options uint32) *_CIPEncapsulationPacket {
-	return &_CIPEncapsulationPacket{SessionHandle: sessionHandle, Status: status, SenderContext: senderContext, Options: options}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPEncapsulationPacket(structType any) CIPEncapsulationPacket {
@@ -170,7 +390,7 @@ func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() f
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -180,7 +400,12 @@ func CIPEncapsulationPacketParseWithBuffer[T CIPEncapsulationPacket](ctx context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__cIPEncapsulationPacket CIPEncapsulationPacket, err error) {
@@ -237,19 +462,19 @@ func (m *_CIPEncapsulationPacket) parse(ctx context.Context, readBuffer utils.Re
 	var _child CIPEncapsulationPacket
 	switch {
 	case commandType == 0x0101: // CIPEncapsulationConnectionRequest
-		if _child, err = (&_CIPEncapsulationConnectionRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0201: // CIPEncapsulationConnectionResponse
-		if _child, err = (&_CIPEncapsulationConnectionResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationConnectionResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationConnectionResponse for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0107: // CIPEncapsulationReadRequest
-		if _child, err = (&_CIPEncapsulationReadRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_CIPEncapsulationReadRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadRequest for type-switch of CIPEncapsulationPacket")
 		}
 	case commandType == 0x0207: // CIPEncapsulationReadResponse
-		if _child, err = (&_CIPEncapsulationReadResponse{}).parse(ctx, readBuffer, m, packetLen); err != nil {
+		if _child, err = new(_CIPEncapsulationReadResponse).parse(ctx, readBuffer, m, packetLen); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CIPEncapsulationReadResponse for type-switch of CIPEncapsulationPacket")
 		}
 	default:
@@ -315,3 +540,22 @@ func (pm *_CIPEncapsulationPacket) serializeParent(ctx context.Context, writeBuf
 }
 
 func (m *_CIPEncapsulationPacket) IsCIPEncapsulationPacket() {}
+
+func (m *_CIPEncapsulationPacket) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPEncapsulationPacket) deepCopy() *_CIPEncapsulationPacket {
+	if m == nil {
+		return nil
+	}
+	_CIPEncapsulationPacketCopy := &_CIPEncapsulationPacket{
+		nil, // will be set by child
+		m.SessionHandle,
+		m.Status,
+		utils.DeepCopySlice[uint8, uint8](m.SenderContext),
+		m.Options,
+		m.reservedField0,
+	}
+	return _CIPEncapsulationPacketCopy
+}

@@ -38,6 +38,7 @@ type S7MessageObjectResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7DataAlarmMessage
 	// GetReturnCode returns ReturnCode (property field)
 	GetReturnCode() DataTransportErrorCode
@@ -45,6 +46,8 @@ type S7MessageObjectResponse interface {
 	GetTransportSize() DataTransportSize
 	// IsS7MessageObjectResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7MessageObjectResponse()
+	// CreateBuilder creates a S7MessageObjectResponseBuilder
+	CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder
 }
 
 // _S7MessageObjectResponse is the data-structure of this message
@@ -58,6 +61,115 @@ type _S7MessageObjectResponse struct {
 
 var _ S7MessageObjectResponse = (*_S7MessageObjectResponse)(nil)
 var _ S7DataAlarmMessageRequirements = (*_S7MessageObjectResponse)(nil)
+
+// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
+func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
+	_result := &_S7MessageObjectResponse{
+		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
+		ReturnCode:                 returnCode,
+		TransportSize:              transportSize,
+	}
+	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageObjectResponseBuilder is a builder for S7MessageObjectResponse
+type S7MessageObjectResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder
+	// WithReturnCode adds ReturnCode (property field)
+	WithReturnCode(DataTransportErrorCode) S7MessageObjectResponseBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(DataTransportSize) S7MessageObjectResponseBuilder
+	// Build builds the S7MessageObjectResponse or returns an error if something is wrong
+	Build() (S7MessageObjectResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7MessageObjectResponse
+}
+
+// NewS7MessageObjectResponseBuilder() creates a S7MessageObjectResponseBuilder
+func NewS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
+	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: new(_S7MessageObjectResponse)}
+}
+
+type _S7MessageObjectResponseBuilder struct {
+	*_S7MessageObjectResponse
+
+	parentBuilder *_S7DataAlarmMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageObjectResponseBuilder) = (*_S7MessageObjectResponseBuilder)(nil)
+
+func (b *_S7MessageObjectResponseBuilder) setParent(contract S7DataAlarmMessageContract) {
+	b.S7DataAlarmMessageContract = contract
+}
+
+func (b *_S7MessageObjectResponseBuilder) WithMandatoryFields(returnCode DataTransportErrorCode, transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	return b.WithReturnCode(returnCode).WithTransportSize(transportSize)
+}
+
+func (b *_S7MessageObjectResponseBuilder) WithReturnCode(returnCode DataTransportErrorCode) S7MessageObjectResponseBuilder {
+	b.ReturnCode = returnCode
+	return b
+}
+
+func (b *_S7MessageObjectResponseBuilder) WithTransportSize(transportSize DataTransportSize) S7MessageObjectResponseBuilder {
+	b.TransportSize = transportSize
+	return b
+}
+
+func (b *_S7MessageObjectResponseBuilder) Build() (S7MessageObjectResponse, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7MessageObjectResponse.deepCopy(), nil
+}
+
+func (b *_S7MessageObjectResponseBuilder) MustBuild() S7MessageObjectResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7MessageObjectResponseBuilder) Done() S7DataAlarmMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7MessageObjectResponseBuilder) buildForS7DataAlarmMessage() (S7DataAlarmMessage, error) {
+	return b.Build()
+}
+
+func (b *_S7MessageObjectResponseBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageObjectResponseBuilder().(*_S7MessageObjectResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7MessageObjectResponseBuilder creates a S7MessageObjectResponseBuilder
+func (b *_S7MessageObjectResponse) CreateS7MessageObjectResponseBuilder() S7MessageObjectResponseBuilder {
+	if b == nil {
+		return NewS7MessageObjectResponseBuilder()
+	}
+	return &_S7MessageObjectResponseBuilder{_S7MessageObjectResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -94,17 +206,6 @@ func (m *_S7MessageObjectResponse) GetTransportSize() DataTransportSize {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7MessageObjectResponse factory function for _S7MessageObjectResponse
-func NewS7MessageObjectResponse(returnCode DataTransportErrorCode, transportSize DataTransportSize) *_S7MessageObjectResponse {
-	_result := &_S7MessageObjectResponse{
-		S7DataAlarmMessageContract: NewS7DataAlarmMessage(),
-		ReturnCode:                 returnCode,
-		TransportSize:              transportSize,
-	}
-	_result.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7MessageObjectResponse(structType any) S7MessageObjectResponse {
@@ -216,13 +317,35 @@ func (m *_S7MessageObjectResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_S7MessageObjectResponse) IsS7MessageObjectResponse() {}
 
+func (m *_S7MessageObjectResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7MessageObjectResponse) deepCopy() *_S7MessageObjectResponse {
+	if m == nil {
+		return nil
+	}
+	_S7MessageObjectResponseCopy := &_S7MessageObjectResponse{
+		m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage).deepCopy(),
+		m.ReturnCode,
+		m.TransportSize,
+		m.reservedField0,
+	}
+	m.S7DataAlarmMessageContract.(*_S7DataAlarmMessage)._SubType = m
+	return _S7MessageObjectResponseCopy
+}
+
 func (m *_S7MessageObjectResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

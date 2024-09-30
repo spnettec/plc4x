@@ -40,8 +40,11 @@ type SALData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
+	// CreateBuilder creates a SALDataBuilder
+	CreateSALDataBuilder() SALDataBuilder
 }
 
 // SALDataContract provides a set of functions which can be overwritten by a sub struct
@@ -50,6 +53,8 @@ type SALDataContract interface {
 	GetSalData() SALData
 	// IsSALData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALData()
+	// CreateBuilder creates a SALDataBuilder
+	CreateSALDataBuilder() SALDataBuilder
 }
 
 // SALDataRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +73,619 @@ type _SALData struct {
 
 var _ SALDataContract = (*_SALData)(nil)
 
+// NewSALData factory function for _SALData
+func NewSALData(salData SALData) *_SALData {
+	return &_SALData{SalData: salData}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataBuilder is a builder for SALData
+type SALDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataBuilder
+	// WithSalData adds SalData (property field)
+	WithOptionalSalData(SALData) SALDataBuilder
+	// WithOptionalSalDataBuilder adds SalData (property field) which is build by the builder
+	WithOptionalSalDataBuilder(func(SALDataBuilder) SALDataBuilder) SALDataBuilder
+	// AsSALDataReserved converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataReserved() interface {
+		SALDataReservedBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataFreeUsage converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataFreeUsage() interface {
+		SALDataFreeUsageBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTemperatureBroadcast converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTemperatureBroadcast() interface {
+		SALDataTemperatureBroadcastBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataRoomControlSystem converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataRoomControlSystem() interface {
+		SALDataRoomControlSystemBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataLighting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataLighting() interface {
+		SALDataLightingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataVentilation converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataVentilation() interface {
+		SALDataVentilationBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataIrrigationControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataIrrigationControl() interface {
+		SALDataIrrigationControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataPoolsSpasPondsFountainsControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataPoolsSpasPondsFountainsControl() interface {
+		SALDataPoolsSpasPondsFountainsControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataHeating converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataHeating() interface {
+		SALDataHeatingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAirConditioning converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAirConditioning() interface {
+		SALDataAirConditioningBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTriggerControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTriggerControl() interface {
+		SALDataTriggerControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataEnableControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataEnableControl() interface {
+		SALDataEnableControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAudioAndVideo converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAudioAndVideo() interface {
+		SALDataAudioAndVideoBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataSecurity converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataSecurity() interface {
+		SALDataSecurityBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMetering converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMetering() interface {
+		SALDataMeteringBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataAccessControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataAccessControl() interface {
+		SALDataAccessControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataClockAndTimekeeping converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataClockAndTimekeeping() interface {
+		SALDataClockAndTimekeepingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTelephonyStatusAndControl converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTelephonyStatusAndControl() interface {
+		SALDataTelephonyStatusAndControlBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMeasurement converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMeasurement() interface {
+		SALDataMeasurementBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataTesting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataTesting() interface {
+		SALDataTestingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataMediaTransport converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataMediaTransport() interface {
+		SALDataMediaTransportBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataErrorReporting converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataErrorReporting() interface {
+		SALDataErrorReportingBuilder
+		Done() SALDataBuilder
+	}
+	// AsSALDataHvacActuator converts this build to a subType of SALData. It is always possible to return to current builder using Done()
+	AsSALDataHvacActuator() interface {
+		SALDataHvacActuatorBuilder
+		Done() SALDataBuilder
+	}
+	// Build builds the SALData or returns an error if something is wrong
+	PartialBuild() (SALDataContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() SALDataContract
+	// Build builds the SALData or returns an error if something is wrong
+	Build() (SALData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALData
+}
+
+// NewSALDataBuilder() creates a SALDataBuilder
+func NewSALDataBuilder() SALDataBuilder {
+	return &_SALDataBuilder{_SALData: new(_SALData)}
+}
+
+type _SALDataChildBuilder interface {
+	utils.Copyable
+	setParent(SALDataContract)
+	buildForSALData() (SALData, error)
+}
+
+type _SALDataBuilder struct {
+	*_SALData
+
+	childBuilder _SALDataChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataBuilder) = (*_SALDataBuilder)(nil)
+
+func (b *_SALDataBuilder) WithMandatoryFields() SALDataBuilder {
+	return b
+}
+
+func (b *_SALDataBuilder) WithOptionalSalData(salData SALData) SALDataBuilder {
+	b.SalData = salData
+	return b
+}
+
+func (b *_SALDataBuilder) WithOptionalSalDataBuilder(builderSupplier func(SALDataBuilder) SALDataBuilder) SALDataBuilder {
+	builder := builderSupplier(b.SalData.CreateSALDataBuilder())
+	var err error
+	b.SalData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "SALDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataBuilder) PartialBuild() (SALDataContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALData.deepCopy(), nil
+}
+
+func (b *_SALDataBuilder) PartialMustBuild() SALDataContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SALDataBuilder) AsSALDataReserved() interface {
+	SALDataReservedBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataReservedBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataReservedBuilder().(*_SALDataReservedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataFreeUsage() interface {
+	SALDataFreeUsageBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataFreeUsageBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataFreeUsageBuilder().(*_SALDataFreeUsageBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTemperatureBroadcast() interface {
+	SALDataTemperatureBroadcastBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTemperatureBroadcastBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTemperatureBroadcastBuilder().(*_SALDataTemperatureBroadcastBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataRoomControlSystem() interface {
+	SALDataRoomControlSystemBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataRoomControlSystemBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataRoomControlSystemBuilder().(*_SALDataRoomControlSystemBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataLighting() interface {
+	SALDataLightingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataLightingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataLightingBuilder().(*_SALDataLightingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataVentilation() interface {
+	SALDataVentilationBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataVentilationBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataVentilationBuilder().(*_SALDataVentilationBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataIrrigationControl() interface {
+	SALDataIrrigationControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataIrrigationControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataIrrigationControlBuilder().(*_SALDataIrrigationControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataPoolsSpasPondsFountainsControl() interface {
+	SALDataPoolsSpasPondsFountainsControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataPoolsSpasPondsFountainsControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataPoolsSpasPondsFountainsControlBuilder().(*_SALDataPoolsSpasPondsFountainsControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataHeating() interface {
+	SALDataHeatingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataHeatingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataHeatingBuilder().(*_SALDataHeatingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAirConditioning() interface {
+	SALDataAirConditioningBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAirConditioningBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAirConditioningBuilder().(*_SALDataAirConditioningBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTriggerControl() interface {
+	SALDataTriggerControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTriggerControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTriggerControlBuilder().(*_SALDataTriggerControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataEnableControl() interface {
+	SALDataEnableControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataEnableControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataEnableControlBuilder().(*_SALDataEnableControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAudioAndVideo() interface {
+	SALDataAudioAndVideoBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAudioAndVideoBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAudioAndVideoBuilder().(*_SALDataAudioAndVideoBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataSecurity() interface {
+	SALDataSecurityBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataSecurityBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataSecurityBuilder().(*_SALDataSecurityBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMetering() interface {
+	SALDataMeteringBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMeteringBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMeteringBuilder().(*_SALDataMeteringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataAccessControl() interface {
+	SALDataAccessControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataAccessControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataAccessControlBuilder().(*_SALDataAccessControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataClockAndTimekeeping() interface {
+	SALDataClockAndTimekeepingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataClockAndTimekeepingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataClockAndTimekeepingBuilder().(*_SALDataClockAndTimekeepingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTelephonyStatusAndControl() interface {
+	SALDataTelephonyStatusAndControlBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTelephonyStatusAndControlBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTelephonyStatusAndControlBuilder().(*_SALDataTelephonyStatusAndControlBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMeasurement() interface {
+	SALDataMeasurementBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMeasurementBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMeasurementBuilder().(*_SALDataMeasurementBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataTesting() interface {
+	SALDataTestingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataTestingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataTestingBuilder().(*_SALDataTestingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataMediaTransport() interface {
+	SALDataMediaTransportBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataMediaTransportBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataMediaTransportBuilder().(*_SALDataMediaTransportBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataErrorReporting() interface {
+	SALDataErrorReportingBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataErrorReportingBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataErrorReportingBuilder().(*_SALDataErrorReportingBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) AsSALDataHvacActuator() interface {
+	SALDataHvacActuatorBuilder
+	Done() SALDataBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SALDataHvacActuatorBuilder
+		Done() SALDataBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSALDataHvacActuatorBuilder().(*_SALDataHvacActuatorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_SALDataBuilder) Build() (SALData, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForSALData()
+}
+
+func (b *_SALDataBuilder) MustBuild() SALData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SALDataBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataBuilder().(*_SALDataBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_SALDataChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataBuilder creates a SALDataBuilder
+func (b *_SALData) CreateSALDataBuilder() SALDataBuilder {
+	if b == nil {
+		return NewSALDataBuilder()
+	}
+	return &_SALDataBuilder{_SALData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -81,11 +699,6 @@ func (m *_SALData) GetSalData() SALData {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALData factory function for _SALData
-func NewSALData(salData SALData) *_SALData {
-	return &_SALData{SalData: salData}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALData(structType any) SALData {
@@ -128,7 +741,7 @@ func SALDataParseWithBufferProducer[T SALData](applicationId ApplicationId) func
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -138,7 +751,12 @@ func SALDataParseWithBuffer[T SALData](ctx context.Context, readBuffer utils.Rea
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_SALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (__sALData SALData, err error) {
@@ -154,95 +772,95 @@ func (m *_SALData) parse(ctx context.Context, readBuffer utils.ReadBuffer, appli
 	var _child SALData
 	switch {
 	case applicationId == ApplicationId_RESERVED: // SALDataReserved
-		if _child, err = (&_SALDataReserved{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataReserved).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataReserved for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_FREE_USAGE: // SALDataFreeUsage
-		if _child, err = (&_SALDataFreeUsage{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataFreeUsage).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataFreeUsage for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TEMPERATURE_BROADCAST: // SALDataTemperatureBroadcast
-		if _child, err = (&_SALDataTemperatureBroadcast{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTemperatureBroadcast).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTemperatureBroadcast for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ROOM_CONTROL_SYSTEM: // SALDataRoomControlSystem
-		if _child, err = (&_SALDataRoomControlSystem{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataRoomControlSystem).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataRoomControlSystem for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_LIGHTING: // SALDataLighting
-		if _child, err = (&_SALDataLighting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataLighting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataLighting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_VENTILATION: // SALDataVentilation
-		if _child, err = (&_SALDataVentilation{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataVentilation).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataVentilation for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_IRRIGATION_CONTROL: // SALDataIrrigationControl
-		if _child, err = (&_SALDataIrrigationControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataIrrigationControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataIrrigationControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_POOLS_SPAS_PONDS_FOUNTAINS_CONTROL: // SALDataPoolsSpasPondsFountainsControl
-		if _child, err = (&_SALDataPoolsSpasPondsFountainsControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataPoolsSpasPondsFountainsControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataPoolsSpasPondsFountainsControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_HEATING: // SALDataHeating
-		if _child, err = (&_SALDataHeating{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataHeating).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataHeating for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_AIR_CONDITIONING: // SALDataAirConditioning
-		if _child, err = (&_SALDataAirConditioning{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAirConditioning).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAirConditioning for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TRIGGER_CONTROL: // SALDataTriggerControl
-		if _child, err = (&_SALDataTriggerControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTriggerControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTriggerControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ENABLE_CONTROL: // SALDataEnableControl
-		if _child, err = (&_SALDataEnableControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataEnableControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataEnableControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_AUDIO_AND_VIDEO: // SALDataAudioAndVideo
-		if _child, err = (&_SALDataAudioAndVideo{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAudioAndVideo).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAudioAndVideo for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_SECURITY: // SALDataSecurity
-		if _child, err = (&_SALDataSecurity{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataSecurity).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataSecurity for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_METERING: // SALDataMetering
-		if _child, err = (&_SALDataMetering{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMetering).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMetering for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ACCESS_CONTROL: // SALDataAccessControl
-		if _child, err = (&_SALDataAccessControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataAccessControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataAccessControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_CLOCK_AND_TIMEKEEPING: // SALDataClockAndTimekeeping
-		if _child, err = (&_SALDataClockAndTimekeeping{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataClockAndTimekeeping).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataClockAndTimekeeping for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TELEPHONY_STATUS_AND_CONTROL: // SALDataTelephonyStatusAndControl
-		if _child, err = (&_SALDataTelephonyStatusAndControl{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTelephonyStatusAndControl).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTelephonyStatusAndControl for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_MEASUREMENT: // SALDataMeasurement
-		if _child, err = (&_SALDataMeasurement{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMeasurement).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMeasurement for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_TESTING: // SALDataTesting
-		if _child, err = (&_SALDataTesting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataTesting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataTesting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_MEDIA_TRANSPORT_CONTROL: // SALDataMediaTransport
-		if _child, err = (&_SALDataMediaTransport{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataMediaTransport).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataMediaTransport for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_ERROR_REPORTING: // SALDataErrorReporting
-		if _child, err = (&_SALDataErrorReporting{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataErrorReporting).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataErrorReporting for type-switch of SALData")
 		}
 	case applicationId == ApplicationId_HVAC_ACTUATOR: // SALDataHvacActuator
-		if _child, err = (&_SALDataHvacActuator{}).parse(ctx, readBuffer, m, applicationId); err != nil {
+		if _child, err = new(_SALDataHvacActuator).parse(ctx, readBuffer, m, applicationId); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SALDataHvacActuator for type-switch of SALData")
 		}
 	default:
@@ -294,3 +912,18 @@ func (pm *_SALData) serializeParent(ctx context.Context, writeBuffer utils.Write
 }
 
 func (m *_SALData) IsSALData() {}
+
+func (m *_SALData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALData) deepCopy() *_SALData {
+	if m == nil {
+		return nil
+	}
+	_SALDataCopy := &_SALData{
+		nil, // will be set by child
+		m.SalData.DeepCopy().(SALData),
+	}
+	return _SALDataCopy
+}

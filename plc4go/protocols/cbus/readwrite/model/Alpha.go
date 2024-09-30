@@ -38,10 +38,13 @@ type Alpha interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCharacter returns Character (property field)
 	GetCharacter() byte
 	// IsAlpha is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAlpha()
+	// CreateBuilder creates a AlphaBuilder
+	CreateAlphaBuilder() AlphaBuilder
 }
 
 // _Alpha is the data-structure of this message
@@ -50,6 +53,87 @@ type _Alpha struct {
 }
 
 var _ Alpha = (*_Alpha)(nil)
+
+// NewAlpha factory function for _Alpha
+func NewAlpha(character byte) *_Alpha {
+	return &_Alpha{Character: character}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AlphaBuilder is a builder for Alpha
+type AlphaBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(character byte) AlphaBuilder
+	// WithCharacter adds Character (property field)
+	WithCharacter(byte) AlphaBuilder
+	// Build builds the Alpha or returns an error if something is wrong
+	Build() (Alpha, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() Alpha
+}
+
+// NewAlphaBuilder() creates a AlphaBuilder
+func NewAlphaBuilder() AlphaBuilder {
+	return &_AlphaBuilder{_Alpha: new(_Alpha)}
+}
+
+type _AlphaBuilder struct {
+	*_Alpha
+
+	err *utils.MultiError
+}
+
+var _ (AlphaBuilder) = (*_AlphaBuilder)(nil)
+
+func (b *_AlphaBuilder) WithMandatoryFields(character byte) AlphaBuilder {
+	return b.WithCharacter(character)
+}
+
+func (b *_AlphaBuilder) WithCharacter(character byte) AlphaBuilder {
+	b.Character = character
+	return b
+}
+
+func (b *_AlphaBuilder) Build() (Alpha, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._Alpha.deepCopy(), nil
+}
+
+func (b *_AlphaBuilder) MustBuild() Alpha {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_AlphaBuilder) DeepCopy() any {
+	_copy := b.CreateAlphaBuilder().(*_AlphaBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAlphaBuilder creates a AlphaBuilder
+func (b *_Alpha) CreateAlphaBuilder() AlphaBuilder {
+	if b == nil {
+		return NewAlphaBuilder()
+	}
+	return &_AlphaBuilder{_Alpha: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_Alpha) GetCharacter() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAlpha factory function for _Alpha
-func NewAlpha(character byte) *_Alpha {
-	return &_Alpha{Character: character}
-}
 
 // Deprecated: use the interface for direct cast
 func CastAlpha(structType any) Alpha {
@@ -113,7 +192,7 @@ func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alp
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_Alpha) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__alpha Alpha, err error) {
@@ -172,13 +251,31 @@ func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 func (m *_Alpha) IsAlpha() {}
 
+func (m *_Alpha) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_Alpha) deepCopy() *_Alpha {
+	if m == nil {
+		return nil
+	}
+	_AlphaCopy := &_Alpha{
+		m.Character,
+	}
+	return _AlphaCopy
+}
+
 func (m *_Alpha) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

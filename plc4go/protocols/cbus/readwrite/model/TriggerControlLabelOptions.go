@@ -38,12 +38,15 @@ type TriggerControlLabelOptions interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetLabelFlavour returns LabelFlavour (property field)
 	GetLabelFlavour() TriggerControlLabelFlavour
 	// GetLabelType returns LabelType (property field)
 	GetLabelType() TriggerControlLabelType
 	// IsTriggerControlLabelOptions is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsTriggerControlLabelOptions()
+	// CreateBuilder creates a TriggerControlLabelOptionsBuilder
+	CreateTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder
 }
 
 // _TriggerControlLabelOptions is the data-structure of this message
@@ -58,6 +61,94 @@ type _TriggerControlLabelOptions struct {
 }
 
 var _ TriggerControlLabelOptions = (*_TriggerControlLabelOptions)(nil)
+
+// NewTriggerControlLabelOptions factory function for _TriggerControlLabelOptions
+func NewTriggerControlLabelOptions(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) *_TriggerControlLabelOptions {
+	return &_TriggerControlLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// TriggerControlLabelOptionsBuilder is a builder for TriggerControlLabelOptions
+type TriggerControlLabelOptionsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder
+	// WithLabelFlavour adds LabelFlavour (property field)
+	WithLabelFlavour(TriggerControlLabelFlavour) TriggerControlLabelOptionsBuilder
+	// WithLabelType adds LabelType (property field)
+	WithLabelType(TriggerControlLabelType) TriggerControlLabelOptionsBuilder
+	// Build builds the TriggerControlLabelOptions or returns an error if something is wrong
+	Build() (TriggerControlLabelOptions, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() TriggerControlLabelOptions
+}
+
+// NewTriggerControlLabelOptionsBuilder() creates a TriggerControlLabelOptionsBuilder
+func NewTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder {
+	return &_TriggerControlLabelOptionsBuilder{_TriggerControlLabelOptions: new(_TriggerControlLabelOptions)}
+}
+
+type _TriggerControlLabelOptionsBuilder struct {
+	*_TriggerControlLabelOptions
+
+	err *utils.MultiError
+}
+
+var _ (TriggerControlLabelOptionsBuilder) = (*_TriggerControlLabelOptionsBuilder)(nil)
+
+func (b *_TriggerControlLabelOptionsBuilder) WithMandatoryFields(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
+	return b.WithLabelFlavour(labelFlavour).WithLabelType(labelType)
+}
+
+func (b *_TriggerControlLabelOptionsBuilder) WithLabelFlavour(labelFlavour TriggerControlLabelFlavour) TriggerControlLabelOptionsBuilder {
+	b.LabelFlavour = labelFlavour
+	return b
+}
+
+func (b *_TriggerControlLabelOptionsBuilder) WithLabelType(labelType TriggerControlLabelType) TriggerControlLabelOptionsBuilder {
+	b.LabelType = labelType
+	return b
+}
+
+func (b *_TriggerControlLabelOptionsBuilder) Build() (TriggerControlLabelOptions, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._TriggerControlLabelOptions.deepCopy(), nil
+}
+
+func (b *_TriggerControlLabelOptionsBuilder) MustBuild() TriggerControlLabelOptions {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_TriggerControlLabelOptionsBuilder) DeepCopy() any {
+	_copy := b.CreateTriggerControlLabelOptionsBuilder().(*_TriggerControlLabelOptionsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateTriggerControlLabelOptionsBuilder creates a TriggerControlLabelOptionsBuilder
+func (b *_TriggerControlLabelOptions) CreateTriggerControlLabelOptionsBuilder() TriggerControlLabelOptionsBuilder {
+	if b == nil {
+		return NewTriggerControlLabelOptionsBuilder()
+	}
+	return &_TriggerControlLabelOptionsBuilder{_TriggerControlLabelOptions: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -76,11 +167,6 @@ func (m *_TriggerControlLabelOptions) GetLabelType() TriggerControlLabelType {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewTriggerControlLabelOptions factory function for _TriggerControlLabelOptions
-func NewTriggerControlLabelOptions(labelFlavour TriggerControlLabelFlavour, labelType TriggerControlLabelType) *_TriggerControlLabelOptions {
-	return &_TriggerControlLabelOptions{LabelFlavour: labelFlavour, LabelType: labelType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastTriggerControlLabelOptions(structType any) TriggerControlLabelOptions {
@@ -140,7 +226,7 @@ func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_TriggerControlLabelOptions) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__triggerControlLabelOptions TriggerControlLabelOptions, err error) {
@@ -244,13 +330,36 @@ func (m *_TriggerControlLabelOptions) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_TriggerControlLabelOptions) IsTriggerControlLabelOptions() {}
 
+func (m *_TriggerControlLabelOptions) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_TriggerControlLabelOptions) deepCopy() *_TriggerControlLabelOptions {
+	if m == nil {
+		return nil
+	}
+	_TriggerControlLabelOptionsCopy := &_TriggerControlLabelOptions{
+		m.LabelFlavour,
+		m.LabelType,
+		m.reservedField0,
+		m.reservedField1,
+		m.reservedField2,
+		m.reservedField3,
+	}
+	return _TriggerControlLabelOptionsCopy
+}
+
 func (m *_TriggerControlLabelOptions) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

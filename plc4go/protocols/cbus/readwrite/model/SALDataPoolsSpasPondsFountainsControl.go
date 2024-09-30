@@ -38,11 +38,14 @@ type SALDataPoolsSpasPondsFountainsControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// GetPoolsSpaPondsFountainsData returns PoolsSpaPondsFountainsData (property field)
 	GetPoolsSpaPondsFountainsData() LightingData
 	// IsSALDataPoolsSpasPondsFountainsControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataPoolsSpasPondsFountainsControl()
+	// CreateBuilder creates a SALDataPoolsSpasPondsFountainsControlBuilder
+	CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder
 }
 
 // _SALDataPoolsSpasPondsFountainsControl is the data-structure of this message
@@ -53,6 +56,131 @@ type _SALDataPoolsSpasPondsFountainsControl struct {
 
 var _ SALDataPoolsSpasPondsFountainsControl = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
 var _ SALDataRequirements = (*_SALDataPoolsSpasPondsFountainsControl)(nil)
+
+// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
+func NewSALDataPoolsSpasPondsFountainsControl(salData SALData, poolsSpaPondsFountainsData LightingData) *_SALDataPoolsSpasPondsFountainsControl {
+	if poolsSpaPondsFountainsData == nil {
+		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
+	}
+	_result := &_SALDataPoolsSpasPondsFountainsControl{
+		SALDataContract:            NewSALData(salData),
+		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataPoolsSpasPondsFountainsControlBuilder is a builder for SALDataPoolsSpasPondsFountainsControl
+type SALDataPoolsSpasPondsFountainsControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
+	// WithPoolsSpaPondsFountainsData adds PoolsSpaPondsFountainsData (property field)
+	WithPoolsSpaPondsFountainsData(LightingData) SALDataPoolsSpasPondsFountainsControlBuilder
+	// WithPoolsSpaPondsFountainsDataBuilder adds PoolsSpaPondsFountainsData (property field) which is build by the builder
+	WithPoolsSpaPondsFountainsDataBuilder(func(LightingDataBuilder) LightingDataBuilder) SALDataPoolsSpasPondsFountainsControlBuilder
+	// Build builds the SALDataPoolsSpasPondsFountainsControl or returns an error if something is wrong
+	Build() (SALDataPoolsSpasPondsFountainsControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataPoolsSpasPondsFountainsControl
+}
+
+// NewSALDataPoolsSpasPondsFountainsControlBuilder() creates a SALDataPoolsSpasPondsFountainsControlBuilder
+func NewSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
+	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: new(_SALDataPoolsSpasPondsFountainsControl)}
+}
+
+type _SALDataPoolsSpasPondsFountainsControlBuilder struct {
+	*_SALDataPoolsSpasPondsFountainsControl
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataPoolsSpasPondsFountainsControlBuilder) = (*_SALDataPoolsSpasPondsFountainsControlBuilder)(nil)
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithMandatoryFields(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	return b.WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData)
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsData(poolsSpaPondsFountainsData LightingData) SALDataPoolsSpasPondsFountainsControlBuilder {
+	b.PoolsSpaPondsFountainsData = poolsSpaPondsFountainsData
+	return b
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) WithPoolsSpaPondsFountainsDataBuilder(builderSupplier func(LightingDataBuilder) LightingDataBuilder) SALDataPoolsSpasPondsFountainsControlBuilder {
+	builder := builderSupplier(b.PoolsSpaPondsFountainsData.CreateLightingDataBuilder())
+	var err error
+	b.PoolsSpaPondsFountainsData, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "LightingDataBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) Build() (SALDataPoolsSpasPondsFountainsControl, error) {
+	if b.PoolsSpaPondsFountainsData == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'poolsSpaPondsFountainsData' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataPoolsSpasPondsFountainsControl.deepCopy(), nil
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) MustBuild() SALDataPoolsSpasPondsFountainsControl {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataPoolsSpasPondsFountainsControlBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataPoolsSpasPondsFountainsControlBuilder().(*_SALDataPoolsSpasPondsFountainsControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataPoolsSpasPondsFountainsControlBuilder creates a SALDataPoolsSpasPondsFountainsControlBuilder
+func (b *_SALDataPoolsSpasPondsFountainsControl) CreateSALDataPoolsSpasPondsFountainsControlBuilder() SALDataPoolsSpasPondsFountainsControlBuilder {
+	if b == nil {
+		return NewSALDataPoolsSpasPondsFountainsControlBuilder()
+	}
+	return &_SALDataPoolsSpasPondsFountainsControlBuilder{_SALDataPoolsSpasPondsFountainsControl: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) GetPoolsSpaPondsFountainsData()
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSALDataPoolsSpasPondsFountainsControl factory function for _SALDataPoolsSpasPondsFountainsControl
-func NewSALDataPoolsSpasPondsFountainsControl(poolsSpaPondsFountainsData LightingData, salData SALData) *_SALDataPoolsSpasPondsFountainsControl {
-	if poolsSpaPondsFountainsData == nil {
-		panic("poolsSpaPondsFountainsData of type LightingData for SALDataPoolsSpasPondsFountainsControl must not be nil")
-	}
-	_result := &_SALDataPoolsSpasPondsFountainsControl{
-		SALDataContract:            NewSALData(salData),
-		PoolsSpaPondsFountainsData: poolsSpaPondsFountainsData,
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSALDataPoolsSpasPondsFountainsControl(structType any) SALDataPoolsSpasPondsFountainsControl {
@@ -183,13 +298,33 @@ func (m *_SALDataPoolsSpasPondsFountainsControl) SerializeWithWriteBuffer(ctx co
 
 func (m *_SALDataPoolsSpasPondsFountainsControl) IsSALDataPoolsSpasPondsFountainsControl() {}
 
+func (m *_SALDataPoolsSpasPondsFountainsControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataPoolsSpasPondsFountainsControl) deepCopy() *_SALDataPoolsSpasPondsFountainsControl {
+	if m == nil {
+		return nil
+	}
+	_SALDataPoolsSpasPondsFountainsControlCopy := &_SALDataPoolsSpasPondsFountainsControl{
+		m.SALDataContract.(*_SALData).deepCopy(),
+		m.PoolsSpaPondsFountainsData.DeepCopy().(LightingData),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataPoolsSpasPondsFountainsControlCopy
+}
+
 func (m *_SALDataPoolsSpasPondsFountainsControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

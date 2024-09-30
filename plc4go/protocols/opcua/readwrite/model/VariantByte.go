@@ -38,6 +38,7 @@ type VariantByte interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	Variant
 	// GetArrayLength returns ArrayLength (property field)
 	GetArrayLength() *int32
@@ -45,6 +46,8 @@ type VariantByte interface {
 	GetValue() []uint8
 	// IsVariantByte is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVariantByte()
+	// CreateBuilder creates a VariantByteBuilder
+	CreateVariantByteBuilder() VariantByteBuilder
 }
 
 // _VariantByte is the data-structure of this message
@@ -56,6 +59,115 @@ type _VariantByte struct {
 
 var _ VariantByte = (*_VariantByte)(nil)
 var _ VariantRequirements = (*_VariantByte)(nil)
+
+// NewVariantByte factory function for _VariantByte
+func NewVariantByte(arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool, arrayLength *int32, value []uint8) *_VariantByte {
+	_result := &_VariantByte{
+		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
+		ArrayLength:     arrayLength,
+		Value:           value,
+	}
+	_result.VariantContract.(*_Variant)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VariantByteBuilder is a builder for VariantByte
+type VariantByteBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(value []uint8) VariantByteBuilder
+	// WithArrayLength adds ArrayLength (property field)
+	WithOptionalArrayLength(int32) VariantByteBuilder
+	// WithValue adds Value (property field)
+	WithValue(...uint8) VariantByteBuilder
+	// Build builds the VariantByte or returns an error if something is wrong
+	Build() (VariantByte, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VariantByte
+}
+
+// NewVariantByteBuilder() creates a VariantByteBuilder
+func NewVariantByteBuilder() VariantByteBuilder {
+	return &_VariantByteBuilder{_VariantByte: new(_VariantByte)}
+}
+
+type _VariantByteBuilder struct {
+	*_VariantByte
+
+	parentBuilder *_VariantBuilder
+
+	err *utils.MultiError
+}
+
+var _ (VariantByteBuilder) = (*_VariantByteBuilder)(nil)
+
+func (b *_VariantByteBuilder) setParent(contract VariantContract) {
+	b.VariantContract = contract
+}
+
+func (b *_VariantByteBuilder) WithMandatoryFields(value []uint8) VariantByteBuilder {
+	return b.WithValue(value...)
+}
+
+func (b *_VariantByteBuilder) WithOptionalArrayLength(arrayLength int32) VariantByteBuilder {
+	b.ArrayLength = &arrayLength
+	return b
+}
+
+func (b *_VariantByteBuilder) WithValue(value ...uint8) VariantByteBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_VariantByteBuilder) Build() (VariantByte, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VariantByte.deepCopy(), nil
+}
+
+func (b *_VariantByteBuilder) MustBuild() VariantByte {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_VariantByteBuilder) Done() VariantBuilder {
+	return b.parentBuilder
+}
+
+func (b *_VariantByteBuilder) buildForVariant() (Variant, error) {
+	return b.Build()
+}
+
+func (b *_VariantByteBuilder) DeepCopy() any {
+	_copy := b.CreateVariantByteBuilder().(*_VariantByteBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVariantByteBuilder creates a VariantByteBuilder
+func (b *_VariantByte) CreateVariantByteBuilder() VariantByteBuilder {
+	if b == nil {
+		return NewVariantByteBuilder()
+	}
+	return &_VariantByteBuilder{_VariantByte: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,17 +204,6 @@ func (m *_VariantByte) GetValue() []uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewVariantByte factory function for _VariantByte
-func NewVariantByte(arrayLength *int32, value []uint8, arrayLengthSpecified bool, arrayDimensionsSpecified bool, noOfArrayDimensions *int32, arrayDimensions []bool) *_VariantByte {
-	_result := &_VariantByte{
-		VariantContract: NewVariant(arrayLengthSpecified, arrayDimensionsSpecified, noOfArrayDimensions, arrayDimensions),
-		ArrayLength:     arrayLength,
-		Value:           value,
-	}
-	_result.VariantContract.(*_Variant)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastVariantByte(structType any) VariantByte {
@@ -206,13 +307,34 @@ func (m *_VariantByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_VariantByte) IsVariantByte() {}
 
+func (m *_VariantByte) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VariantByte) deepCopy() *_VariantByte {
+	if m == nil {
+		return nil
+	}
+	_VariantByteCopy := &_VariantByte{
+		m.VariantContract.(*_Variant).deepCopy(),
+		utils.CopyPtr[int32](m.ArrayLength),
+		utils.DeepCopySlice[uint8, uint8](m.Value),
+	}
+	m.VariantContract.(*_Variant)._SubType = m
+	return _VariantByteCopy
+}
+
 func (m *_VariantByte) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

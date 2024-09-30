@@ -38,14 +38,19 @@ type BACnetError interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
+	// CreateBuilder creates a BACnetErrorBuilder
+	CreateBACnetErrorBuilder() BACnetErrorBuilder
 }
 
 // BACnetErrorContract provides a set of functions which can be overwritten by a sub struct
 type BACnetErrorContract interface {
 	// IsBACnetError is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetError()
+	// CreateBuilder creates a BACnetErrorBuilder
+	CreateBACnetErrorBuilder() BACnetErrorBuilder
 }
 
 // BACnetErrorRequirements provides a set of functions which need to be implemented by a sub struct
@@ -67,6 +72,277 @@ var _ BACnetErrorContract = (*_BACnetError)(nil)
 func NewBACnetError() *_BACnetError {
 	return &_BACnetError{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetErrorBuilder is a builder for BACnetError
+type BACnetErrorBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetErrorBuilder
+	// AsSubscribeCOVPropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsSubscribeCOVPropertyMultipleError() interface {
+		SubscribeCOVPropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsChangeListAddError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsChangeListAddError() interface {
+		ChangeListAddErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsChangeListRemoveError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsChangeListRemoveError() interface {
+		ChangeListRemoveErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsCreateObjectError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsCreateObjectError() interface {
+		CreateObjectErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsWritePropertyMultipleError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsWritePropertyMultipleError() interface {
+		WritePropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsConfirmedPrivateTransferError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsConfirmedPrivateTransferError() interface {
+		ConfirmedPrivateTransferErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsVTCloseError converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsVTCloseError() interface {
+		VTCloseErrorBuilder
+		Done() BACnetErrorBuilder
+	}
+	// AsBACnetErrorGeneral converts this build to a subType of BACnetError. It is always possible to return to current builder using Done()
+	AsBACnetErrorGeneral() interface {
+		BACnetErrorGeneralBuilder
+		Done() BACnetErrorBuilder
+	}
+	// Build builds the BACnetError or returns an error if something is wrong
+	PartialBuild() (BACnetErrorContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetErrorContract
+	// Build builds the BACnetError or returns an error if something is wrong
+	Build() (BACnetError, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetError
+}
+
+// NewBACnetErrorBuilder() creates a BACnetErrorBuilder
+func NewBACnetErrorBuilder() BACnetErrorBuilder {
+	return &_BACnetErrorBuilder{_BACnetError: new(_BACnetError)}
+}
+
+type _BACnetErrorChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetErrorContract)
+	buildForBACnetError() (BACnetError, error)
+}
+
+type _BACnetErrorBuilder struct {
+	*_BACnetError
+
+	childBuilder _BACnetErrorChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetErrorBuilder) = (*_BACnetErrorBuilder)(nil)
+
+func (b *_BACnetErrorBuilder) WithMandatoryFields() BACnetErrorBuilder {
+	return b
+}
+
+func (b *_BACnetErrorBuilder) PartialBuild() (BACnetErrorContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetError.deepCopy(), nil
+}
+
+func (b *_BACnetErrorBuilder) PartialMustBuild() BACnetErrorContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetErrorBuilder) AsSubscribeCOVPropertyMultipleError() interface {
+	SubscribeCOVPropertyMultipleErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		SubscribeCOVPropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewSubscribeCOVPropertyMultipleErrorBuilder().(*_SubscribeCOVPropertyMultipleErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsChangeListAddError() interface {
+	ChangeListAddErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ChangeListAddErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewChangeListAddErrorBuilder().(*_ChangeListAddErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsChangeListRemoveError() interface {
+	ChangeListRemoveErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ChangeListRemoveErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewChangeListRemoveErrorBuilder().(*_ChangeListRemoveErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsCreateObjectError() interface {
+	CreateObjectErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CreateObjectErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCreateObjectErrorBuilder().(*_CreateObjectErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsWritePropertyMultipleError() interface {
+	WritePropertyMultipleErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		WritePropertyMultipleErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewWritePropertyMultipleErrorBuilder().(*_WritePropertyMultipleErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsConfirmedPrivateTransferError() interface {
+	ConfirmedPrivateTransferErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ConfirmedPrivateTransferErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewConfirmedPrivateTransferErrorBuilder().(*_ConfirmedPrivateTransferErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsVTCloseError() interface {
+	VTCloseErrorBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		VTCloseErrorBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewVTCloseErrorBuilder().(*_VTCloseErrorBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) AsBACnetErrorGeneral() interface {
+	BACnetErrorGeneralBuilder
+	Done() BACnetErrorBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetErrorGeneralBuilder
+		Done() BACnetErrorBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetErrorGeneralBuilder().(*_BACnetErrorGeneralBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetErrorBuilder) Build() (BACnetError, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetError()
+}
+
+func (b *_BACnetErrorBuilder) MustBuild() BACnetError {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetErrorBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetErrorBuilder().(*_BACnetErrorBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetErrorChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetErrorBuilder creates a BACnetErrorBuilder
+func (b *_BACnetError) CreateBACnetErrorBuilder() BACnetErrorBuilder {
+	if b == nil {
+		return NewBACnetErrorBuilder()
+	}
+	return &_BACnetErrorBuilder{_BACnetError: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBACnetError(structType any) BACnetError {
@@ -104,7 +380,7 @@ func BACnetErrorParseWithBufferProducer[T BACnetError](errorChoice BACnetConfirm
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -114,7 +390,12 @@ func BACnetErrorParseWithBuffer[T BACnetError](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetError) parse(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (__bACnetError BACnetError, err error) {
@@ -130,35 +411,35 @@ func (m *_BACnetError) parse(ctx context.Context, readBuffer utils.ReadBuffer, e
 	var _child BACnetError
 	switch {
 	case errorChoice == BACnetConfirmedServiceChoice_SUBSCRIBE_COV_PROPERTY_MULTIPLE: // SubscribeCOVPropertyMultipleError
-		if _child, err = (&_SubscribeCOVPropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_SubscribeCOVPropertyMultipleError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type SubscribeCOVPropertyMultipleError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_ADD_LIST_ELEMENT: // ChangeListAddError
-		if _child, err = (&_ChangeListAddError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ChangeListAddError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListAddError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_REMOVE_LIST_ELEMENT: // ChangeListRemoveError
-		if _child, err = (&_ChangeListRemoveError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ChangeListRemoveError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ChangeListRemoveError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_CREATE_OBJECT: // CreateObjectError
-		if _child, err = (&_CreateObjectError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_CreateObjectError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CreateObjectError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_WRITE_PROPERTY_MULTIPLE: // WritePropertyMultipleError
-		if _child, err = (&_WritePropertyMultipleError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_WritePropertyMultipleError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type WritePropertyMultipleError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_CONFIRMED_PRIVATE_TRANSFER: // ConfirmedPrivateTransferError
-		if _child, err = (&_ConfirmedPrivateTransferError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_ConfirmedPrivateTransferError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ConfirmedPrivateTransferError for type-switch of BACnetError")
 		}
 	case errorChoice == BACnetConfirmedServiceChoice_VT_CLOSE: // VTCloseError
-		if _child, err = (&_VTCloseError{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_VTCloseError).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type VTCloseError for type-switch of BACnetError")
 		}
 	case 0 == 0: // BACnetErrorGeneral
-		if _child, err = (&_BACnetErrorGeneral{}).parse(ctx, readBuffer, m, errorChoice); err != nil {
+		if _child, err = new(_BACnetErrorGeneral).parse(ctx, readBuffer, m, errorChoice); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetErrorGeneral for type-switch of BACnetError")
 		}
 	default:
@@ -196,3 +477,17 @@ func (pm *_BACnetError) serializeParent(ctx context.Context, writeBuffer utils.W
 }
 
 func (m *_BACnetError) IsBACnetError() {}
+
+func (m *_BACnetError) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetError) deepCopy() *_BACnetError {
+	if m == nil {
+		return nil
+	}
+	_BACnetErrorCopy := &_BACnetError{
+		nil, // will be set by child
+	}
+	return _BACnetErrorCopy
+}

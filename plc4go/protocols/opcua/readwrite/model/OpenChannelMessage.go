@@ -38,14 +38,19 @@ type OpenChannelMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
+	// CreateBuilder creates a OpenChannelMessageBuilder
+	CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder
 }
 
 // OpenChannelMessageContract provides a set of functions which can be overwritten by a sub struct
 type OpenChannelMessageContract interface {
 	// IsOpenChannelMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpenChannelMessage()
+	// CreateBuilder creates a OpenChannelMessageBuilder
+	CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder
 }
 
 // OpenChannelMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -67,6 +72,151 @@ var _ OpenChannelMessageContract = (*_OpenChannelMessage)(nil)
 func NewOpenChannelMessage() *_OpenChannelMessage {
 	return &_OpenChannelMessage{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpenChannelMessageBuilder is a builder for OpenChannelMessage
+type OpenChannelMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() OpenChannelMessageBuilder
+	// AsOpenChannelMessageRequest converts this build to a subType of OpenChannelMessage. It is always possible to return to current builder using Done()
+	AsOpenChannelMessageRequest() interface {
+		OpenChannelMessageRequestBuilder
+		Done() OpenChannelMessageBuilder
+	}
+	// AsOpenChannelMessageResponse converts this build to a subType of OpenChannelMessage. It is always possible to return to current builder using Done()
+	AsOpenChannelMessageResponse() interface {
+		OpenChannelMessageResponseBuilder
+		Done() OpenChannelMessageBuilder
+	}
+	// Build builds the OpenChannelMessage or returns an error if something is wrong
+	PartialBuild() (OpenChannelMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() OpenChannelMessageContract
+	// Build builds the OpenChannelMessage or returns an error if something is wrong
+	Build() (OpenChannelMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpenChannelMessage
+}
+
+// NewOpenChannelMessageBuilder() creates a OpenChannelMessageBuilder
+func NewOpenChannelMessageBuilder() OpenChannelMessageBuilder {
+	return &_OpenChannelMessageBuilder{_OpenChannelMessage: new(_OpenChannelMessage)}
+}
+
+type _OpenChannelMessageChildBuilder interface {
+	utils.Copyable
+	setParent(OpenChannelMessageContract)
+	buildForOpenChannelMessage() (OpenChannelMessage, error)
+}
+
+type _OpenChannelMessageBuilder struct {
+	*_OpenChannelMessage
+
+	childBuilder _OpenChannelMessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (OpenChannelMessageBuilder) = (*_OpenChannelMessageBuilder)(nil)
+
+func (b *_OpenChannelMessageBuilder) WithMandatoryFields() OpenChannelMessageBuilder {
+	return b
+}
+
+func (b *_OpenChannelMessageBuilder) PartialBuild() (OpenChannelMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpenChannelMessage.deepCopy(), nil
+}
+
+func (b *_OpenChannelMessageBuilder) PartialMustBuild() OpenChannelMessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageRequest() interface {
+	OpenChannelMessageRequestBuilder
+	Done() OpenChannelMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpenChannelMessageRequestBuilder
+		Done() OpenChannelMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpenChannelMessageRequestBuilder().(*_OpenChannelMessageRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_OpenChannelMessageBuilder) AsOpenChannelMessageResponse() interface {
+	OpenChannelMessageResponseBuilder
+	Done() OpenChannelMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		OpenChannelMessageResponseBuilder
+		Done() OpenChannelMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewOpenChannelMessageResponseBuilder().(*_OpenChannelMessageResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_OpenChannelMessageBuilder) Build() (OpenChannelMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForOpenChannelMessage()
+}
+
+func (b *_OpenChannelMessageBuilder) MustBuild() OpenChannelMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_OpenChannelMessageBuilder) DeepCopy() any {
+	_copy := b.CreateOpenChannelMessageBuilder().(*_OpenChannelMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_OpenChannelMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpenChannelMessageBuilder creates a OpenChannelMessageBuilder
+func (b *_OpenChannelMessage) CreateOpenChannelMessageBuilder() OpenChannelMessageBuilder {
+	if b == nil {
+		return NewOpenChannelMessageBuilder()
+	}
+	return &_OpenChannelMessageBuilder{_OpenChannelMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastOpenChannelMessage(structType any) OpenChannelMessage {
@@ -104,7 +254,7 @@ func OpenChannelMessageParseWithBufferProducer[T OpenChannelMessage](response bo
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -114,7 +264,12 @@ func OpenChannelMessageParseWithBuffer[T OpenChannelMessage](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_OpenChannelMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__openChannelMessage OpenChannelMessage, err error) {
@@ -130,11 +285,11 @@ func (m *_OpenChannelMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child OpenChannelMessage
 	switch {
 	case response == bool(false): // OpenChannelMessageRequest
-		if _child, err = (&_OpenChannelMessageRequest{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageRequest).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageRequest for type-switch of OpenChannelMessage")
 		}
 	case response == bool(true): // OpenChannelMessageResponse
-		if _child, err = (&_OpenChannelMessageResponse{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpenChannelMessageResponse).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpenChannelMessageResponse for type-switch of OpenChannelMessage")
 		}
 	default:
@@ -172,3 +327,17 @@ func (pm *_OpenChannelMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_OpenChannelMessage) IsOpenChannelMessage() {}
+
+func (m *_OpenChannelMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpenChannelMessage) deepCopy() *_OpenChannelMessage {
+	if m == nil {
+		return nil
+	}
+	_OpenChannelMessageCopy := &_OpenChannelMessage{
+		nil, // will be set by child
+	}
+	return _OpenChannelMessageCopy
+}

@@ -38,11 +38,14 @@ type LightingDataOn interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	LightingData
 	// GetGroup returns Group (property field)
 	GetGroup() byte
 	// IsLightingDataOn is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLightingDataOn()
+	// CreateBuilder creates a LightingDataOnBuilder
+	CreateLightingDataOnBuilder() LightingDataOnBuilder
 }
 
 // _LightingDataOn is the data-structure of this message
@@ -53,6 +56,107 @@ type _LightingDataOn struct {
 
 var _ LightingDataOn = (*_LightingDataOn)(nil)
 var _ LightingDataRequirements = (*_LightingDataOn)(nil)
+
+// NewLightingDataOn factory function for _LightingDataOn
+func NewLightingDataOn(commandTypeContainer LightingCommandTypeContainer, group byte) *_LightingDataOn {
+	_result := &_LightingDataOn{
+		LightingDataContract: NewLightingData(commandTypeContainer),
+		Group:                group,
+	}
+	_result.LightingDataContract.(*_LightingData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LightingDataOnBuilder is a builder for LightingDataOn
+type LightingDataOnBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(group byte) LightingDataOnBuilder
+	// WithGroup adds Group (property field)
+	WithGroup(byte) LightingDataOnBuilder
+	// Build builds the LightingDataOn or returns an error if something is wrong
+	Build() (LightingDataOn, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LightingDataOn
+}
+
+// NewLightingDataOnBuilder() creates a LightingDataOnBuilder
+func NewLightingDataOnBuilder() LightingDataOnBuilder {
+	return &_LightingDataOnBuilder{_LightingDataOn: new(_LightingDataOn)}
+}
+
+type _LightingDataOnBuilder struct {
+	*_LightingDataOn
+
+	parentBuilder *_LightingDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LightingDataOnBuilder) = (*_LightingDataOnBuilder)(nil)
+
+func (b *_LightingDataOnBuilder) setParent(contract LightingDataContract) {
+	b.LightingDataContract = contract
+}
+
+func (b *_LightingDataOnBuilder) WithMandatoryFields(group byte) LightingDataOnBuilder {
+	return b.WithGroup(group)
+}
+
+func (b *_LightingDataOnBuilder) WithGroup(group byte) LightingDataOnBuilder {
+	b.Group = group
+	return b
+}
+
+func (b *_LightingDataOnBuilder) Build() (LightingDataOn, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LightingDataOn.deepCopy(), nil
+}
+
+func (b *_LightingDataOnBuilder) MustBuild() LightingDataOn {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LightingDataOnBuilder) Done() LightingDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LightingDataOnBuilder) buildForLightingData() (LightingData, error) {
+	return b.Build()
+}
+
+func (b *_LightingDataOnBuilder) DeepCopy() any {
+	_copy := b.CreateLightingDataOnBuilder().(*_LightingDataOnBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLightingDataOnBuilder creates a LightingDataOnBuilder
+func (b *_LightingDataOn) CreateLightingDataOnBuilder() LightingDataOnBuilder {
+	if b == nil {
+		return NewLightingDataOnBuilder()
+	}
+	return &_LightingDataOnBuilder{_LightingDataOn: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_LightingDataOn) GetGroup() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLightingDataOn factory function for _LightingDataOn
-func NewLightingDataOn(group byte, commandTypeContainer LightingCommandTypeContainer) *_LightingDataOn {
-	_result := &_LightingDataOn{
-		LightingDataContract: NewLightingData(commandTypeContainer),
-		Group:                group,
-	}
-	_result.LightingDataContract.(*_LightingData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastLightingDataOn(structType any) LightingDataOn {
@@ -176,13 +270,33 @@ func (m *_LightingDataOn) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_LightingDataOn) IsLightingDataOn() {}
 
+func (m *_LightingDataOn) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LightingDataOn) deepCopy() *_LightingDataOn {
+	if m == nil {
+		return nil
+	}
+	_LightingDataOnCopy := &_LightingDataOn{
+		m.LightingDataContract.(*_LightingData).deepCopy(),
+		m.Group,
+	}
+	m.LightingDataContract.(*_LightingData)._SubType = m
+	return _LightingDataOnCopy
+}
+
 func (m *_LightingDataOn) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

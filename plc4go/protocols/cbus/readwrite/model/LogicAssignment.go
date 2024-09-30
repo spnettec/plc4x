@@ -38,6 +38,7 @@ type LogicAssignment interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetGreaterOfOrLogic returns GreaterOfOrLogic (property field)
 	GetGreaterOfOrLogic() bool
 	// GetReStrikeDelay returns ReStrikeDelay (property field)
@@ -52,6 +53,8 @@ type LogicAssignment interface {
 	GetAssignedToGav13() bool
 	// IsLogicAssignment is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLogicAssignment()
+	// CreateBuilder creates a LogicAssignmentBuilder
+	CreateLogicAssignmentBuilder() LogicAssignmentBuilder
 }
 
 // _LogicAssignment is the data-structure of this message
@@ -68,6 +71,122 @@ type _LogicAssignment struct {
 }
 
 var _ LogicAssignment = (*_LogicAssignment)(nil)
+
+// NewLogicAssignment factory function for _LogicAssignment
+func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
+	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LogicAssignmentBuilder is a builder for LogicAssignment
+type LogicAssignmentBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) LogicAssignmentBuilder
+	// WithGreaterOfOrLogic adds GreaterOfOrLogic (property field)
+	WithGreaterOfOrLogic(bool) LogicAssignmentBuilder
+	// WithReStrikeDelay adds ReStrikeDelay (property field)
+	WithReStrikeDelay(bool) LogicAssignmentBuilder
+	// WithAssignedToGav16 adds AssignedToGav16 (property field)
+	WithAssignedToGav16(bool) LogicAssignmentBuilder
+	// WithAssignedToGav15 adds AssignedToGav15 (property field)
+	WithAssignedToGav15(bool) LogicAssignmentBuilder
+	// WithAssignedToGav14 adds AssignedToGav14 (property field)
+	WithAssignedToGav14(bool) LogicAssignmentBuilder
+	// WithAssignedToGav13 adds AssignedToGav13 (property field)
+	WithAssignedToGav13(bool) LogicAssignmentBuilder
+	// Build builds the LogicAssignment or returns an error if something is wrong
+	Build() (LogicAssignment, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LogicAssignment
+}
+
+// NewLogicAssignmentBuilder() creates a LogicAssignmentBuilder
+func NewLogicAssignmentBuilder() LogicAssignmentBuilder {
+	return &_LogicAssignmentBuilder{_LogicAssignment: new(_LogicAssignment)}
+}
+
+type _LogicAssignmentBuilder struct {
+	*_LogicAssignment
+
+	err *utils.MultiError
+}
+
+var _ (LogicAssignmentBuilder) = (*_LogicAssignmentBuilder)(nil)
+
+func (b *_LogicAssignmentBuilder) WithMandatoryFields(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) LogicAssignmentBuilder {
+	return b.WithGreaterOfOrLogic(greaterOfOrLogic).WithReStrikeDelay(reStrikeDelay).WithAssignedToGav16(assignedToGav16).WithAssignedToGav15(assignedToGav15).WithAssignedToGav14(assignedToGav14).WithAssignedToGav13(assignedToGav13)
+}
+
+func (b *_LogicAssignmentBuilder) WithGreaterOfOrLogic(greaterOfOrLogic bool) LogicAssignmentBuilder {
+	b.GreaterOfOrLogic = greaterOfOrLogic
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) WithReStrikeDelay(reStrikeDelay bool) LogicAssignmentBuilder {
+	b.ReStrikeDelay = reStrikeDelay
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) WithAssignedToGav16(assignedToGav16 bool) LogicAssignmentBuilder {
+	b.AssignedToGav16 = assignedToGav16
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) WithAssignedToGav15(assignedToGav15 bool) LogicAssignmentBuilder {
+	b.AssignedToGav15 = assignedToGav15
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) WithAssignedToGav14(assignedToGav14 bool) LogicAssignmentBuilder {
+	b.AssignedToGav14 = assignedToGav14
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) WithAssignedToGav13(assignedToGav13 bool) LogicAssignmentBuilder {
+	b.AssignedToGav13 = assignedToGav13
+	return b
+}
+
+func (b *_LogicAssignmentBuilder) Build() (LogicAssignment, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LogicAssignment.deepCopy(), nil
+}
+
+func (b *_LogicAssignmentBuilder) MustBuild() LogicAssignment {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_LogicAssignmentBuilder) DeepCopy() any {
+	_copy := b.CreateLogicAssignmentBuilder().(*_LogicAssignmentBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLogicAssignmentBuilder creates a LogicAssignmentBuilder
+func (b *_LogicAssignment) CreateLogicAssignmentBuilder() LogicAssignmentBuilder {
+	if b == nil {
+		return NewLogicAssignmentBuilder()
+	}
+	return &_LogicAssignmentBuilder{_LogicAssignment: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,11 +221,6 @@ func (m *_LogicAssignment) GetAssignedToGav13() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewLogicAssignment factory function for _LogicAssignment
-func NewLogicAssignment(greaterOfOrLogic bool, reStrikeDelay bool, assignedToGav16 bool, assignedToGav15 bool, assignedToGav14 bool, assignedToGav13 bool) *_LogicAssignment {
-	return &_LogicAssignment{GreaterOfOrLogic: greaterOfOrLogic, ReStrikeDelay: reStrikeDelay, AssignedToGav16: assignedToGav16, AssignedToGav15: assignedToGav15, AssignedToGav14: assignedToGav14, AssignedToGav13: assignedToGav13}
-}
 
 // Deprecated: use the interface for direct cast
 func CastLogicAssignment(structType any) LogicAssignment {
@@ -172,7 +286,7 @@ func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_LogicAssignment) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__logicAssignment LogicAssignment, err error) {
@@ -296,13 +410,38 @@ func (m *_LogicAssignment) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 func (m *_LogicAssignment) IsLogicAssignment() {}
 
+func (m *_LogicAssignment) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LogicAssignment) deepCopy() *_LogicAssignment {
+	if m == nil {
+		return nil
+	}
+	_LogicAssignmentCopy := &_LogicAssignment{
+		m.GreaterOfOrLogic,
+		m.ReStrikeDelay,
+		m.AssignedToGav16,
+		m.AssignedToGav15,
+		m.AssignedToGav14,
+		m.AssignedToGav13,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _LogicAssignmentCopy
+}
+
 func (m *_LogicAssignment) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

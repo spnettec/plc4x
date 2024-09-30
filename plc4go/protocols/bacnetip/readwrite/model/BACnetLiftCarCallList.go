@@ -38,10 +38,13 @@ type BACnetLiftCarCallList interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetFloorNumbers returns FloorNumbers (property field)
 	GetFloorNumbers() BACnetLiftCarCallListFloorList
 	// IsBACnetLiftCarCallList is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLiftCarCallList()
+	// CreateBuilder creates a BACnetLiftCarCallListBuilder
+	CreateBACnetLiftCarCallListBuilder() BACnetLiftCarCallListBuilder
 }
 
 // _BACnetLiftCarCallList is the data-structure of this message
@@ -50,6 +53,111 @@ type _BACnetLiftCarCallList struct {
 }
 
 var _ BACnetLiftCarCallList = (*_BACnetLiftCarCallList)(nil)
+
+// NewBACnetLiftCarCallList factory function for _BACnetLiftCarCallList
+func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BACnetLiftCarCallList {
+	if floorNumbers == nil {
+		panic("floorNumbers of type BACnetLiftCarCallListFloorList for BACnetLiftCarCallList must not be nil")
+	}
+	return &_BACnetLiftCarCallList{FloorNumbers: floorNumbers}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLiftCarCallListBuilder is a builder for BACnetLiftCarCallList
+type BACnetLiftCarCallListBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder
+	// WithFloorNumbers adds FloorNumbers (property field)
+	WithFloorNumbers(BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder
+	// WithFloorNumbersBuilder adds FloorNumbers (property field) which is build by the builder
+	WithFloorNumbersBuilder(func(BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListBuilder
+	// Build builds the BACnetLiftCarCallList or returns an error if something is wrong
+	Build() (BACnetLiftCarCallList, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLiftCarCallList
+}
+
+// NewBACnetLiftCarCallListBuilder() creates a BACnetLiftCarCallListBuilder
+func NewBACnetLiftCarCallListBuilder() BACnetLiftCarCallListBuilder {
+	return &_BACnetLiftCarCallListBuilder{_BACnetLiftCarCallList: new(_BACnetLiftCarCallList)}
+}
+
+type _BACnetLiftCarCallListBuilder struct {
+	*_BACnetLiftCarCallList
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLiftCarCallListBuilder) = (*_BACnetLiftCarCallListBuilder)(nil)
+
+func (b *_BACnetLiftCarCallListBuilder) WithMandatoryFields(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
+	return b.WithFloorNumbers(floorNumbers)
+}
+
+func (b *_BACnetLiftCarCallListBuilder) WithFloorNumbers(floorNumbers BACnetLiftCarCallListFloorList) BACnetLiftCarCallListBuilder {
+	b.FloorNumbers = floorNumbers
+	return b
+}
+
+func (b *_BACnetLiftCarCallListBuilder) WithFloorNumbersBuilder(builderSupplier func(BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListFloorListBuilder) BACnetLiftCarCallListBuilder {
+	builder := builderSupplier(b.FloorNumbers.CreateBACnetLiftCarCallListFloorListBuilder())
+	var err error
+	b.FloorNumbers, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLiftCarCallListFloorListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLiftCarCallListBuilder) Build() (BACnetLiftCarCallList, error) {
+	if b.FloorNumbers == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'floorNumbers' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLiftCarCallList.deepCopy(), nil
+}
+
+func (b *_BACnetLiftCarCallListBuilder) MustBuild() BACnetLiftCarCallList {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLiftCarCallListBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLiftCarCallListBuilder().(*_BACnetLiftCarCallListBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLiftCarCallListBuilder creates a BACnetLiftCarCallListBuilder
+func (b *_BACnetLiftCarCallList) CreateBACnetLiftCarCallListBuilder() BACnetLiftCarCallListBuilder {
+	if b == nil {
+		return NewBACnetLiftCarCallListBuilder()
+	}
+	return &_BACnetLiftCarCallListBuilder{_BACnetLiftCarCallList: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,14 +172,6 @@ func (m *_BACnetLiftCarCallList) GetFloorNumbers() BACnetLiftCarCallListFloorLis
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLiftCarCallList factory function for _BACnetLiftCarCallList
-func NewBACnetLiftCarCallList(floorNumbers BACnetLiftCarCallListFloorList) *_BACnetLiftCarCallList {
-	if floorNumbers == nil {
-		panic("floorNumbers of type BACnetLiftCarCallListFloorList for BACnetLiftCarCallList must not be nil")
-	}
-	return &_BACnetLiftCarCallList{FloorNumbers: floorNumbers}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLiftCarCallList(structType any) BACnetLiftCarCallList {
@@ -116,7 +216,7 @@ func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLiftCarCallList) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetLiftCarCallList BACnetLiftCarCallList, err error) {
@@ -170,13 +270,31 @@ func (m *_BACnetLiftCarCallList) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_BACnetLiftCarCallList) IsBACnetLiftCarCallList() {}
 
+func (m *_BACnetLiftCarCallList) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLiftCarCallList) deepCopy() *_BACnetLiftCarCallList {
+	if m == nil {
+		return nil
+	}
+	_BACnetLiftCarCallListCopy := &_BACnetLiftCarCallList{
+		m.FloorNumbers.DeepCopy().(BACnetLiftCarCallListFloorList),
+	}
+	return _BACnetLiftCarCallListCopy
+}
+
 func (m *_BACnetLiftCarCallList) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -40,8 +40,11 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 }
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract inter
 	GetTagNumber() uint8
 	// IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
 }
 
 // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassRequirements provides a set of functions which need to be implemented by a sub struct
@@ -80,6 +85,249 @@ type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass struct {
 }
 
 var _ BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)(nil)
+
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
+	}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder is a builder for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
+		Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	}
+	// AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter converts this build to a subType of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass. It is always possible to return to current builder using Done()
+	AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+		Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	}
+	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass or returns an error if something is wrong
+	PartialBuild() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract
+	// Build builds the BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+}
+
+// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder() creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)}
+}
+
+type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract)
+	buildForBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error)
+}
+
+type _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder struct {
+	*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+
+	childBuilder _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) = (*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	return b.WithOpeningTag(openingTag).WithPeekedTagHeader(peekedTagHeader).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) PartialBuild() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) PartialMustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric() interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
+	Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder
+		Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) AsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter() interface {
+	BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+	Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder
+		Done() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) Build() (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass()
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) MustBuild() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder().(*_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder creates a BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder
+func (b *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) CreateBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder() BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassBuilder{_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -118,20 +366,6 @@ func (pm *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetPee
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass factory function for _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
-func NewBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
-	}
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass must not be nil")
-	}
-	return &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{OpeningTag: openingTag, PeekedTagHeader: peekedTagHeader, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass(structType any) BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
@@ -177,7 +411,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffe
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -187,7 +421,12 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffe
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetConfirmedServiceRequestConfirmedTextMessageMessageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, err error) {
@@ -221,11 +460,11 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) parse(c
 	var _child BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric
-		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 		}
 	case peekedTagNumber == uint8(1): // BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter
-		if _child, err = (&_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter{}).parse(ctx, readBuffer, m, tagNumber); err != nil {
+		if _child, err = new(_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter).parse(ctx, readBuffer, m, tagNumber); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter for type-switch of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass")
 		}
 	default:
@@ -293,4 +532,22 @@ func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) GetTagN
 ////
 
 func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) IsBACnetConfirmedServiceRequestConfirmedTextMessageMessageClass() {
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass) deepCopy() *_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCopy := &_BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass{
+		nil, // will be set by child
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCopy
 }

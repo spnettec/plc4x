@@ -38,6 +38,7 @@ type BACnetConstructedDataCarPosition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCarPosition returns CarPosition (property field)
 	GetCarPosition() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataCarPosition interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataCarPosition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCarPosition()
+	// CreateBuilder creates a BACnetConstructedDataCarPositionBuilder
+	CreateBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositionBuilder
 }
 
 // _BACnetConstructedDataCarPosition is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataCarPosition struct {
 
 var _ BACnetConstructedDataCarPosition = (*_BACnetConstructedDataCarPosition)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCarPosition)(nil)
+
+// NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
+func NewBACnetConstructedDataCarPosition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, carPosition BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
+	if carPosition == nil {
+		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
+	}
+	_result := &_BACnetConstructedDataCarPosition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CarPosition:                   carPosition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCarPositionBuilder is a builder for BACnetConstructedDataCarPosition
+type BACnetConstructedDataCarPositionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder
+	// WithCarPosition adds CarPosition (property field)
+	WithCarPosition(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder
+	// WithCarPositionBuilder adds CarPosition (property field) which is build by the builder
+	WithCarPositionBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarPositionBuilder
+	// Build builds the BACnetConstructedDataCarPosition or returns an error if something is wrong
+	Build() (BACnetConstructedDataCarPosition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCarPosition
+}
+
+// NewBACnetConstructedDataCarPositionBuilder() creates a BACnetConstructedDataCarPositionBuilder
+func NewBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositionBuilder {
+	return &_BACnetConstructedDataCarPositionBuilder{_BACnetConstructedDataCarPosition: new(_BACnetConstructedDataCarPosition)}
+}
+
+type _BACnetConstructedDataCarPositionBuilder struct {
+	*_BACnetConstructedDataCarPosition
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCarPositionBuilder) = (*_BACnetConstructedDataCarPositionBuilder)(nil)
+
+func (b *_BACnetConstructedDataCarPositionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) WithMandatoryFields(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
+	return b.WithCarPosition(carPosition)
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) WithCarPosition(carPosition BACnetApplicationTagUnsignedInteger) BACnetConstructedDataCarPositionBuilder {
+	b.CarPosition = carPosition
+	return b
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) WithCarPositionBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataCarPositionBuilder {
+	builder := builderSupplier(b.CarPosition.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.CarPosition, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) Build() (BACnetConstructedDataCarPosition, error) {
+	if b.CarPosition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'carPosition' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCarPosition.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) MustBuild() BACnetConstructedDataCarPosition {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCarPositionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCarPositionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCarPositionBuilder().(*_BACnetConstructedDataCarPositionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCarPositionBuilder creates a BACnetConstructedDataCarPositionBuilder
+func (b *_BACnetConstructedDataCarPosition) CreateBACnetConstructedDataCarPositionBuilder() BACnetConstructedDataCarPositionBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCarPositionBuilder()
+	}
+	return &_BACnetConstructedDataCarPositionBuilder{_BACnetConstructedDataCarPosition: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataCarPosition) GetActualValue() BACnetApplicationTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCarPosition factory function for _BACnetConstructedDataCarPosition
-func NewBACnetConstructedDataCarPosition(carPosition BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCarPosition {
-	if carPosition == nil {
-		panic("carPosition of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataCarPosition must not be nil")
-	}
-	_result := &_BACnetConstructedDataCarPosition{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CarPosition:                   carPosition,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCarPosition(structType any) BACnetConstructedDataCarPosition {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataCarPosition) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataCarPosition) IsBACnetConstructedDataCarPosition() {}
 
+func (m *_BACnetConstructedDataCarPosition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCarPosition) deepCopy() *_BACnetConstructedDataCarPosition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCarPositionCopy := &_BACnetConstructedDataCarPosition{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.CarPosition.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCarPositionCopy
+}
+
 func (m *_BACnetConstructedDataCarPosition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

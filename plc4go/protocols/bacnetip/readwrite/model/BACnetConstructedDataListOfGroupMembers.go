@@ -38,11 +38,14 @@ type BACnetConstructedDataListOfGroupMembers interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetListOfGroupMembers returns ListOfGroupMembers (property field)
 	GetListOfGroupMembers() []BACnetReadAccessSpecification
 	// IsBACnetConstructedDataListOfGroupMembers is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataListOfGroupMembers()
+	// CreateBuilder creates a BACnetConstructedDataListOfGroupMembersBuilder
+	CreateBACnetConstructedDataListOfGroupMembersBuilder() BACnetConstructedDataListOfGroupMembersBuilder
 }
 
 // _BACnetConstructedDataListOfGroupMembers is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataListOfGroupMembers struct {
 
 var _ BACnetConstructedDataListOfGroupMembers = (*_BACnetConstructedDataListOfGroupMembers)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataListOfGroupMembers)(nil)
+
+// NewBACnetConstructedDataListOfGroupMembers factory function for _BACnetConstructedDataListOfGroupMembers
+func NewBACnetConstructedDataListOfGroupMembers(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, listOfGroupMembers []BACnetReadAccessSpecification, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
+	_result := &_BACnetConstructedDataListOfGroupMembers{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ListOfGroupMembers:            listOfGroupMembers,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataListOfGroupMembersBuilder is a builder for BACnetConstructedDataListOfGroupMembers
+type BACnetConstructedDataListOfGroupMembersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(listOfGroupMembers []BACnetReadAccessSpecification) BACnetConstructedDataListOfGroupMembersBuilder
+	// WithListOfGroupMembers adds ListOfGroupMembers (property field)
+	WithListOfGroupMembers(...BACnetReadAccessSpecification) BACnetConstructedDataListOfGroupMembersBuilder
+	// Build builds the BACnetConstructedDataListOfGroupMembers or returns an error if something is wrong
+	Build() (BACnetConstructedDataListOfGroupMembers, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataListOfGroupMembers
+}
+
+// NewBACnetConstructedDataListOfGroupMembersBuilder() creates a BACnetConstructedDataListOfGroupMembersBuilder
+func NewBACnetConstructedDataListOfGroupMembersBuilder() BACnetConstructedDataListOfGroupMembersBuilder {
+	return &_BACnetConstructedDataListOfGroupMembersBuilder{_BACnetConstructedDataListOfGroupMembers: new(_BACnetConstructedDataListOfGroupMembers)}
+}
+
+type _BACnetConstructedDataListOfGroupMembersBuilder struct {
+	*_BACnetConstructedDataListOfGroupMembers
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataListOfGroupMembersBuilder) = (*_BACnetConstructedDataListOfGroupMembersBuilder)(nil)
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) WithMandatoryFields(listOfGroupMembers []BACnetReadAccessSpecification) BACnetConstructedDataListOfGroupMembersBuilder {
+	return b.WithListOfGroupMembers(listOfGroupMembers...)
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) WithListOfGroupMembers(listOfGroupMembers ...BACnetReadAccessSpecification) BACnetConstructedDataListOfGroupMembersBuilder {
+	b.ListOfGroupMembers = listOfGroupMembers
+	return b
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) Build() (BACnetConstructedDataListOfGroupMembers, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataListOfGroupMembers.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) MustBuild() BACnetConstructedDataListOfGroupMembers {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataListOfGroupMembersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataListOfGroupMembersBuilder().(*_BACnetConstructedDataListOfGroupMembersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataListOfGroupMembersBuilder creates a BACnetConstructedDataListOfGroupMembersBuilder
+func (b *_BACnetConstructedDataListOfGroupMembers) CreateBACnetConstructedDataListOfGroupMembersBuilder() BACnetConstructedDataListOfGroupMembersBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataListOfGroupMembersBuilder()
+	}
+	return &_BACnetConstructedDataListOfGroupMembersBuilder{_BACnetConstructedDataListOfGroupMembers: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataListOfGroupMembers) GetListOfGroupMembers() []BAC
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataListOfGroupMembers factory function for _BACnetConstructedDataListOfGroupMembers
-func NewBACnetConstructedDataListOfGroupMembers(listOfGroupMembers []BACnetReadAccessSpecification, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataListOfGroupMembers {
-	_result := &_BACnetConstructedDataListOfGroupMembers{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ListOfGroupMembers:            listOfGroupMembers,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataListOfGroupMembers(structType any) BACnetConstructedDataListOfGroupMembers {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataListOfGroupMembers) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetConstructedDataListOfGroupMembers) IsBACnetConstructedDataListOfGroupMembers() {}
 
+func (m *_BACnetConstructedDataListOfGroupMembers) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataListOfGroupMembers) deepCopy() *_BACnetConstructedDataListOfGroupMembers {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataListOfGroupMembersCopy := &_BACnetConstructedDataListOfGroupMembers{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetReadAccessSpecification, BACnetReadAccessSpecification](m.ListOfGroupMembers),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataListOfGroupMembersCopy
+}
+
 func (m *_BACnetConstructedDataListOfGroupMembers) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

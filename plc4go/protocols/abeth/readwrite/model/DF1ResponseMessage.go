@@ -40,8 +40,11 @@ type DF1ResponseMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
+	// CreateBuilder creates a DF1ResponseMessageBuilder
+	CreateDF1ResponseMessageBuilder() DF1ResponseMessageBuilder
 }
 
 // DF1ResponseMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -58,6 +61,8 @@ type DF1ResponseMessageContract interface {
 	GetPayloadLength() uint16
 	// IsDF1ResponseMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDF1ResponseMessage()
+	// CreateBuilder creates a DF1ResponseMessageBuilder
+	CreateDF1ResponseMessageBuilder() DF1ResponseMessageBuilder
 }
 
 // DF1ResponseMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -85,6 +90,163 @@ type _DF1ResponseMessage struct {
 
 var _ DF1ResponseMessageContract = (*_DF1ResponseMessage)(nil)
 
+// NewDF1ResponseMessage factory function for _DF1ResponseMessage
+func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
+	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DF1ResponseMessageBuilder is a builder for DF1ResponseMessage
+type DF1ResponseMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1ResponseMessageBuilder
+	// WithDestinationAddress adds DestinationAddress (property field)
+	WithDestinationAddress(uint8) DF1ResponseMessageBuilder
+	// WithSourceAddress adds SourceAddress (property field)
+	WithSourceAddress(uint8) DF1ResponseMessageBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(uint8) DF1ResponseMessageBuilder
+	// WithTransactionCounter adds TransactionCounter (property field)
+	WithTransactionCounter(uint16) DF1ResponseMessageBuilder
+	// AsDF1CommandResponseMessageProtectedTypedLogicalRead converts this build to a subType of DF1ResponseMessage. It is always possible to return to current builder using Done()
+	AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
+		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+		Done() DF1ResponseMessageBuilder
+	}
+	// Build builds the DF1ResponseMessage or returns an error if something is wrong
+	PartialBuild() (DF1ResponseMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() DF1ResponseMessageContract
+	// Build builds the DF1ResponseMessage or returns an error if something is wrong
+	Build() (DF1ResponseMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DF1ResponseMessage
+}
+
+// NewDF1ResponseMessageBuilder() creates a DF1ResponseMessageBuilder
+func NewDF1ResponseMessageBuilder() DF1ResponseMessageBuilder {
+	return &_DF1ResponseMessageBuilder{_DF1ResponseMessage: new(_DF1ResponseMessage)}
+}
+
+type _DF1ResponseMessageChildBuilder interface {
+	utils.Copyable
+	setParent(DF1ResponseMessageContract)
+	buildForDF1ResponseMessage() (DF1ResponseMessage, error)
+}
+
+type _DF1ResponseMessageBuilder struct {
+	*_DF1ResponseMessage
+
+	childBuilder _DF1ResponseMessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (DF1ResponseMessageBuilder) = (*_DF1ResponseMessageBuilder)(nil)
+
+func (b *_DF1ResponseMessageBuilder) WithMandatoryFields(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16) DF1ResponseMessageBuilder {
+	return b.WithDestinationAddress(destinationAddress).WithSourceAddress(sourceAddress).WithStatus(status).WithTransactionCounter(transactionCounter)
+}
+
+func (b *_DF1ResponseMessageBuilder) WithDestinationAddress(destinationAddress uint8) DF1ResponseMessageBuilder {
+	b.DestinationAddress = destinationAddress
+	return b
+}
+
+func (b *_DF1ResponseMessageBuilder) WithSourceAddress(sourceAddress uint8) DF1ResponseMessageBuilder {
+	b.SourceAddress = sourceAddress
+	return b
+}
+
+func (b *_DF1ResponseMessageBuilder) WithStatus(status uint8) DF1ResponseMessageBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_DF1ResponseMessageBuilder) WithTransactionCounter(transactionCounter uint16) DF1ResponseMessageBuilder {
+	b.TransactionCounter = transactionCounter
+	return b
+}
+
+func (b *_DF1ResponseMessageBuilder) PartialBuild() (DF1ResponseMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DF1ResponseMessage.deepCopy(), nil
+}
+
+func (b *_DF1ResponseMessageBuilder) PartialMustBuild() DF1ResponseMessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1ResponseMessageBuilder) AsDF1CommandResponseMessageProtectedTypedLogicalRead() interface {
+	DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+	Done() DF1ResponseMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		DF1CommandResponseMessageProtectedTypedLogicalReadBuilder
+		Done() DF1ResponseMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewDF1CommandResponseMessageProtectedTypedLogicalReadBuilder().(*_DF1CommandResponseMessageProtectedTypedLogicalReadBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_DF1ResponseMessageBuilder) Build() (DF1ResponseMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForDF1ResponseMessage()
+}
+
+func (b *_DF1ResponseMessageBuilder) MustBuild() DF1ResponseMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DF1ResponseMessageBuilder) DeepCopy() any {
+	_copy := b.CreateDF1ResponseMessageBuilder().(*_DF1ResponseMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_DF1ResponseMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDF1ResponseMessageBuilder creates a DF1ResponseMessageBuilder
+func (b *_DF1ResponseMessage) CreateDF1ResponseMessageBuilder() DF1ResponseMessageBuilder {
+	if b == nil {
+		return NewDF1ResponseMessageBuilder()
+	}
+	return &_DF1ResponseMessageBuilder{_DF1ResponseMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 /////////////////////// Accessors for property fields.
@@ -110,11 +272,6 @@ func (m *_DF1ResponseMessage) GetTransactionCounter() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDF1ResponseMessage factory function for _DF1ResponseMessage
-func NewDF1ResponseMessage(destinationAddress uint8, sourceAddress uint8, status uint8, transactionCounter uint16, payloadLength uint16) *_DF1ResponseMessage {
-	return &_DF1ResponseMessage{DestinationAddress: destinationAddress, SourceAddress: sourceAddress, Status: status, TransactionCounter: transactionCounter, PayloadLength: payloadLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDF1ResponseMessage(structType any) DF1ResponseMessage {
@@ -172,7 +329,7 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -182,7 +339,12 @@ func DF1ResponseMessageParseWithBuffer[T DF1ResponseMessage](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (__dF1ResponseMessage DF1ResponseMessage, err error) {
@@ -239,7 +401,7 @@ func (m *_DF1ResponseMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child DF1ResponseMessage
 	switch {
 	case commandCode == 0x4F: // DF1CommandResponseMessageProtectedTypedLogicalRead
-		if _child, err = (&_DF1CommandResponseMessageProtectedTypedLogicalRead{}).parse(ctx, readBuffer, m, payloadLength); err != nil {
+		if _child, err = new(_DF1CommandResponseMessageProtectedTypedLogicalRead).parse(ctx, readBuffer, m, payloadLength); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type DF1CommandResponseMessageProtectedTypedLogicalRead for type-switch of DF1ResponseMessage")
 		}
 	default:
@@ -315,3 +477,24 @@ func (m *_DF1ResponseMessage) GetPayloadLength() uint16 {
 ////
 
 func (m *_DF1ResponseMessage) IsDF1ResponseMessage() {}
+
+func (m *_DF1ResponseMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DF1ResponseMessage) deepCopy() *_DF1ResponseMessage {
+	if m == nil {
+		return nil
+	}
+	_DF1ResponseMessageCopy := &_DF1ResponseMessage{
+		nil, // will be set by child
+		m.DestinationAddress,
+		m.SourceAddress,
+		m.Status,
+		m.TransactionCounter,
+		m.PayloadLength,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _DF1ResponseMessageCopy
+}

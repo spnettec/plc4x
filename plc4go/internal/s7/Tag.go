@@ -45,25 +45,25 @@ type PlcTag interface {
 }
 
 type plcTag struct {
-	TagType        TagType
-	MemoryArea     readWriteModel.MemoryArea
-	BlockNumber    uint16
-	ByteOffset     uint16
-	BitOffset      uint8
-	NumElements    uint16
-	Datatype       readWriteModel.TransportSize
+	TagType     TagType
+	MemoryArea  readWriteModel.MemoryArea
+	BlockNumber uint16
+	ByteOffset  uint16
+	BitOffset   uint8
+	NumElements uint16
+	Datatype    readWriteModel.TransportSize
 	StringEncoding string
 }
 
 func NewTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcTag {
 	return plcTag{
-		TagType:        S7Tag,
-		MemoryArea:     memoryArea,
-		BlockNumber:    blockNumber,
-		ByteOffset:     byteOffset,
-		BitOffset:      bitOffset,
-		NumElements:    numElements,
-		Datatype:       datatype,
+		TagType:     S7Tag,
+		MemoryArea:  memoryArea,
+		BlockNumber: blockNumber,
+		ByteOffset:  byteOffset,
+		BitOffset:   bitOffset,
+		NumElements: numElements,
+		Datatype:    datatype,
 		StringEncoding: stringEncoding,
 	}
 }
@@ -76,13 +76,13 @@ type PlcStringTag struct {
 func NewStringTag(memoryArea readWriteModel.MemoryArea, blockNumber uint16, byteOffset uint16, bitOffset uint8, numElements uint16, stringLength uint16, datatype readWriteModel.TransportSize, stringEncoding string) PlcStringTag {
 	return PlcStringTag{
 		plcTag: plcTag{
-			TagType:        S7StringTag,
-			MemoryArea:     memoryArea,
-			BlockNumber:    blockNumber,
-			ByteOffset:     byteOffset,
-			BitOffset:      bitOffset,
-			NumElements:    numElements,
-			Datatype:       datatype,
+			TagType:     S7StringTag,
+			MemoryArea:  memoryArea,
+			BlockNumber: blockNumber,
+			ByteOffset:  byteOffset,
+			BitOffset:   bitOffset,
+			NumElements: numElements,
+			Datatype:    datatype,
 			StringEncoding: stringEncoding,
 		},
 		stringLength: stringLength,
@@ -153,42 +153,42 @@ func (m plcTag) GetStringEncoding() string {
 	return m.StringEncoding
 }
 
-func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
+func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
+	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
+	if err := wb.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
+	if err := wb.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
+	if err := wb.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.TagType.GetName()); err != nil {
+	if err := wb.PopContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m plcTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
 
 func (m PlcStringTag) Serialize() ([]byte, error) {
@@ -199,43 +199,43 @@ func (m PlcStringTag) Serialize() ([]byte, error) {
 	return wb.GetBytes(), nil
 }
 
-func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
-	if err := writeBuffer.PushContext(m.TagType.GetName()); err != nil {
+func (m PlcStringTag) SerializeWithWriteBuffer(ctx context.Context, wb utils.WriteBuffer) error {
+	if err := wb.PushContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
+	if err := wb.WriteString("memoryArea", uint32(len(m.MemoryArea.String())*8), m.MemoryArea.String()); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
+	if err := wb.WriteUint16("blockNumber", 16, m.BlockNumber); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
+	if err := wb.WriteUint16("byteOffset", 16, m.ByteOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
+	if err := wb.WriteUint8("bitOffset", 8, m.BitOffset); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("numElements", 16, m.NumElements); err != nil {
+	if err := wb.WriteUint16("numElements", 16, m.NumElements); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteUint16("stringLength", 16, m.stringLength); err != nil {
+	if err := wb.WriteUint16("stringLength", 16, m.stringLength); err != nil {
 		return err
 	}
-	if err := writeBuffer.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
+	if err := wb.WriteString("dataType", uint32(len(m.Datatype.String())*8), m.Datatype.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.PopContext(m.TagType.GetName()); err != nil {
+	if err := wb.PopContext(m.TagType.GetName()); err != nil {
 		return err
 	}
 	return nil
 }
 
 func (m PlcStringTag) String() string {
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(utils.WithWriteBufferBoxBasedOmitEmptyBoxes(), utils.WithWriteBufferBoxBasedMergeSingleBoxes())
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

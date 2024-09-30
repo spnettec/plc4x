@@ -38,6 +38,7 @@ type SetMonitoringModeResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type SetMonitoringModeResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsSetMonitoringModeResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSetMonitoringModeResponse()
+	// CreateBuilder creates a SetMonitoringModeResponseBuilder
+	CreateSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder
 }
 
 // _SetMonitoringModeResponse is the data-structure of this message
@@ -65,6 +68,163 @@ type _SetMonitoringModeResponse struct {
 
 var _ SetMonitoringModeResponse = (*_SetMonitoringModeResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SetMonitoringModeResponse)(nil)
+
+// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
+func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
+	}
+	_result := &_SetMonitoringModeResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SetMonitoringModeResponseBuilder is a builder for SetMonitoringModeResponse
+type SetMonitoringModeResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) SetMonitoringModeResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) SetMonitoringModeResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...StatusCode) SetMonitoringModeResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) SetMonitoringModeResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) SetMonitoringModeResponseBuilder
+	// Build builds the SetMonitoringModeResponse or returns an error if something is wrong
+	Build() (SetMonitoringModeResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SetMonitoringModeResponse
+}
+
+// NewSetMonitoringModeResponseBuilder() creates a SetMonitoringModeResponseBuilder
+func NewSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder {
+	return &_SetMonitoringModeResponseBuilder{_SetMonitoringModeResponse: new(_SetMonitoringModeResponse)}
+}
+
+type _SetMonitoringModeResponseBuilder struct {
+	*_SetMonitoringModeResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SetMonitoringModeResponseBuilder) = (*_SetMonitoringModeResponseBuilder)(nil)
+
+func (b *_SetMonitoringModeResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) SetMonitoringModeResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) SetMonitoringModeResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) SetMonitoringModeResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithNoOfResults(noOfResults int32) SetMonitoringModeResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithResults(results ...StatusCode) SetMonitoringModeResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) SetMonitoringModeResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) SetMonitoringModeResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_SetMonitoringModeResponseBuilder) Build() (SetMonitoringModeResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SetMonitoringModeResponse.deepCopy(), nil
+}
+
+func (b *_SetMonitoringModeResponseBuilder) MustBuild() SetMonitoringModeResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SetMonitoringModeResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SetMonitoringModeResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SetMonitoringModeResponseBuilder) DeepCopy() any {
+	_copy := b.CreateSetMonitoringModeResponseBuilder().(*_SetMonitoringModeResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSetMonitoringModeResponseBuilder creates a SetMonitoringModeResponseBuilder
+func (b *_SetMonitoringModeResponse) CreateSetMonitoringModeResponseBuilder() SetMonitoringModeResponseBuilder {
+	if b == nil {
+		return NewSetMonitoringModeResponseBuilder()
+	}
+	return &_SetMonitoringModeResponseBuilder{_SetMonitoringModeResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_SetMonitoringModeResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSetMonitoringModeResponse factory function for _SetMonitoringModeResponse
-func NewSetMonitoringModeResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []StatusCode, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_SetMonitoringModeResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for SetMonitoringModeResponse must not be nil")
-	}
-	_result := &_SetMonitoringModeResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSetMonitoringModeResponse(structType any) SetMonitoringModeResponse {
@@ -281,13 +424,37 @@ func (m *_SetMonitoringModeResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_SetMonitoringModeResponse) IsSetMonitoringModeResponse() {}
 
+func (m *_SetMonitoringModeResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SetMonitoringModeResponse) deepCopy() *_SetMonitoringModeResponse {
+	if m == nil {
+		return nil
+	}
+	_SetMonitoringModeResponseCopy := &_SetMonitoringModeResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[StatusCode, StatusCode](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SetMonitoringModeResponseCopy
+}
+
 func (m *_SetMonitoringModeResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

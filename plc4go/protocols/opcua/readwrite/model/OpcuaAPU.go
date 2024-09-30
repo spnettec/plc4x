@@ -40,10 +40,13 @@ type OpcuaAPU interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMessage returns Message (property field)
 	GetMessage() MessagePDU
 	// IsOpcuaAPU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsOpcuaAPU()
+	// CreateBuilder creates a OpcuaAPUBuilder
+	CreateOpcuaAPUBuilder() OpcuaAPUBuilder
 }
 
 // _OpcuaAPU is the data-structure of this message
@@ -55,6 +58,111 @@ type _OpcuaAPU struct {
 }
 
 var _ OpcuaAPU = (*_OpcuaAPU)(nil)
+
+// NewOpcuaAPU factory function for _OpcuaAPU
+func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
+	if message == nil {
+		panic("message of type MessagePDU for OpcuaAPU must not be nil")
+	}
+	return &_OpcuaAPU{Message: message, Response: response}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// OpcuaAPUBuilder is a builder for OpcuaAPU
+type OpcuaAPUBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder
+	// WithMessage adds Message (property field)
+	WithMessage(MessagePDU) OpcuaAPUBuilder
+	// WithMessageBuilder adds Message (property field) which is build by the builder
+	WithMessageBuilder(func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder
+	// Build builds the OpcuaAPU or returns an error if something is wrong
+	Build() (OpcuaAPU, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() OpcuaAPU
+}
+
+// NewOpcuaAPUBuilder() creates a OpcuaAPUBuilder
+func NewOpcuaAPUBuilder() OpcuaAPUBuilder {
+	return &_OpcuaAPUBuilder{_OpcuaAPU: new(_OpcuaAPU)}
+}
+
+type _OpcuaAPUBuilder struct {
+	*_OpcuaAPU
+
+	err *utils.MultiError
+}
+
+var _ (OpcuaAPUBuilder) = (*_OpcuaAPUBuilder)(nil)
+
+func (b *_OpcuaAPUBuilder) WithMandatoryFields(message MessagePDU) OpcuaAPUBuilder {
+	return b.WithMessage(message)
+}
+
+func (b *_OpcuaAPUBuilder) WithMessage(message MessagePDU) OpcuaAPUBuilder {
+	b.Message = message
+	return b
+}
+
+func (b *_OpcuaAPUBuilder) WithMessageBuilder(builderSupplier func(MessagePDUBuilder) MessagePDUBuilder) OpcuaAPUBuilder {
+	builder := builderSupplier(b.Message.CreateMessagePDUBuilder())
+	var err error
+	b.Message, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "MessagePDUBuilder failed"))
+	}
+	return b
+}
+
+func (b *_OpcuaAPUBuilder) Build() (OpcuaAPU, error) {
+	if b.Message == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'message' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._OpcuaAPU.deepCopy(), nil
+}
+
+func (b *_OpcuaAPUBuilder) MustBuild() OpcuaAPU {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_OpcuaAPUBuilder) DeepCopy() any {
+	_copy := b.CreateOpcuaAPUBuilder().(*_OpcuaAPUBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateOpcuaAPUBuilder creates a OpcuaAPUBuilder
+func (b *_OpcuaAPU) CreateOpcuaAPUBuilder() OpcuaAPUBuilder {
+	if b == nil {
+		return NewOpcuaAPUBuilder()
+	}
+	return &_OpcuaAPUBuilder{_OpcuaAPU: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,14 +177,6 @@ func (m *_OpcuaAPU) GetMessage() MessagePDU {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewOpcuaAPU factory function for _OpcuaAPU
-func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
-	if message == nil {
-		panic("message of type MessagePDU for OpcuaAPU must not be nil")
-	}
-	return &_OpcuaAPU{Message: message, Response: response}
-}
 
 // Deprecated: use the interface for direct cast
 func CastOpcuaAPU(structType any) OpcuaAPU {
@@ -121,7 +221,7 @@ func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, r
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__opcuaAPU OpcuaAPU, err error) {
@@ -185,13 +285,32 @@ func (m *_OpcuaAPU) GetResponse() bool {
 
 func (m *_OpcuaAPU) IsOpcuaAPU() {}
 
+func (m *_OpcuaAPU) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_OpcuaAPU) deepCopy() *_OpcuaAPU {
+	if m == nil {
+		return nil
+	}
+	_OpcuaAPUCopy := &_OpcuaAPU{
+		m.Message.DeepCopy().(MessagePDU),
+		m.Response,
+	}
+	return _OpcuaAPUCopy
+}
+
 func (m *_OpcuaAPU) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

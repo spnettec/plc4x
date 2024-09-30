@@ -38,6 +38,7 @@ type BACnetConstructedDataFaultParameters interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFaultParameters returns FaultParameters (property field)
 	GetFaultParameters() BACnetFaultParameter
@@ -45,6 +46,8 @@ type BACnetConstructedDataFaultParameters interface {
 	GetActualValue() BACnetFaultParameter
 	// IsBACnetConstructedDataFaultParameters is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataFaultParameters()
+	// CreateBuilder creates a BACnetConstructedDataFaultParametersBuilder
+	CreateBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFaultParametersBuilder
 }
 
 // _BACnetConstructedDataFaultParameters is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataFaultParameters struct {
 
 var _ BACnetConstructedDataFaultParameters = (*_BACnetConstructedDataFaultParameters)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataFaultParameters)(nil)
+
+// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
+func NewBACnetConstructedDataFaultParameters(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, faultParameters BACnetFaultParameter, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
+	if faultParameters == nil {
+		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
+	}
+	_result := &_BACnetConstructedDataFaultParameters{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FaultParameters:               faultParameters,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataFaultParametersBuilder is a builder for BACnetConstructedDataFaultParameters
+type BACnetConstructedDataFaultParametersBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder
+	// WithFaultParameters adds FaultParameters (property field)
+	WithFaultParameters(BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder
+	// WithFaultParametersBuilder adds FaultParameters (property field) which is build by the builder
+	WithFaultParametersBuilder(func(BACnetFaultParameterBuilder) BACnetFaultParameterBuilder) BACnetConstructedDataFaultParametersBuilder
+	// Build builds the BACnetConstructedDataFaultParameters or returns an error if something is wrong
+	Build() (BACnetConstructedDataFaultParameters, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataFaultParameters
+}
+
+// NewBACnetConstructedDataFaultParametersBuilder() creates a BACnetConstructedDataFaultParametersBuilder
+func NewBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFaultParametersBuilder {
+	return &_BACnetConstructedDataFaultParametersBuilder{_BACnetConstructedDataFaultParameters: new(_BACnetConstructedDataFaultParameters)}
+}
+
+type _BACnetConstructedDataFaultParametersBuilder struct {
+	*_BACnetConstructedDataFaultParameters
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataFaultParametersBuilder) = (*_BACnetConstructedDataFaultParametersBuilder)(nil)
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithMandatoryFields(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
+	return b.WithFaultParameters(faultParameters)
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithFaultParameters(faultParameters BACnetFaultParameter) BACnetConstructedDataFaultParametersBuilder {
+	b.FaultParameters = faultParameters
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) WithFaultParametersBuilder(builderSupplier func(BACnetFaultParameterBuilder) BACnetFaultParameterBuilder) BACnetConstructedDataFaultParametersBuilder {
+	builder := builderSupplier(b.FaultParameters.CreateBACnetFaultParameterBuilder())
+	var err error
+	b.FaultParameters, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetFaultParameterBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) Build() (BACnetConstructedDataFaultParameters, error) {
+	if b.FaultParameters == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'faultParameters' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataFaultParameters.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) MustBuild() BACnetConstructedDataFaultParameters {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataFaultParametersBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataFaultParametersBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataFaultParametersBuilder().(*_BACnetConstructedDataFaultParametersBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataFaultParametersBuilder creates a BACnetConstructedDataFaultParametersBuilder
+func (b *_BACnetConstructedDataFaultParameters) CreateBACnetConstructedDataFaultParametersBuilder() BACnetConstructedDataFaultParametersBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataFaultParametersBuilder()
+	}
+	return &_BACnetConstructedDataFaultParametersBuilder{_BACnetConstructedDataFaultParameters: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataFaultParameters) GetActualValue() BACnetFaultPara
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataFaultParameters factory function for _BACnetConstructedDataFaultParameters
-func NewBACnetConstructedDataFaultParameters(faultParameters BACnetFaultParameter, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataFaultParameters {
-	if faultParameters == nil {
-		panic("faultParameters of type BACnetFaultParameter for BACnetConstructedDataFaultParameters must not be nil")
-	}
-	_result := &_BACnetConstructedDataFaultParameters{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FaultParameters:               faultParameters,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataFaultParameters(structType any) BACnetConstructedDataFaultParameters {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataFaultParameters) SerializeWithWriteBuffer(ctx con
 
 func (m *_BACnetConstructedDataFaultParameters) IsBACnetConstructedDataFaultParameters() {}
 
+func (m *_BACnetConstructedDataFaultParameters) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataFaultParameters) deepCopy() *_BACnetConstructedDataFaultParameters {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataFaultParametersCopy := &_BACnetConstructedDataFaultParameters{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.FaultParameters.DeepCopy().(BACnetFaultParameter),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataFaultParametersCopy
+}
+
 func (m *_BACnetConstructedDataFaultParameters) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

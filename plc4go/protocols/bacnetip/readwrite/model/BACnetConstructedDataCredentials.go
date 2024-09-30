@@ -38,11 +38,14 @@ type BACnetConstructedDataCredentials interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentials returns Credentials (property field)
 	GetCredentials() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataCredentials is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentials()
+	// CreateBuilder creates a BACnetConstructedDataCredentialsBuilder
+	CreateBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentialsBuilder
 }
 
 // _BACnetConstructedDataCredentials is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataCredentials struct {
 
 var _ BACnetConstructedDataCredentials = (*_BACnetConstructedDataCredentials)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentials)(nil)
+
+// NewBACnetConstructedDataCredentials factory function for _BACnetConstructedDataCredentials
+func NewBACnetConstructedDataCredentials(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentials []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentials {
+	_result := &_BACnetConstructedDataCredentials{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Credentials:                   credentials,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialsBuilder is a builder for BACnetConstructedDataCredentials
+type BACnetConstructedDataCredentialsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder
+	// WithCredentials adds Credentials (property field)
+	WithCredentials(...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder
+	// Build builds the BACnetConstructedDataCredentials or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentials, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentials
+}
+
+// NewBACnetConstructedDataCredentialsBuilder() creates a BACnetConstructedDataCredentialsBuilder
+func NewBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentialsBuilder {
+	return &_BACnetConstructedDataCredentialsBuilder{_BACnetConstructedDataCredentials: new(_BACnetConstructedDataCredentials)}
+}
+
+type _BACnetConstructedDataCredentialsBuilder struct {
+	*_BACnetConstructedDataCredentials
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialsBuilder) = (*_BACnetConstructedDataCredentialsBuilder)(nil)
+
+func (b *_BACnetConstructedDataCredentialsBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) WithMandatoryFields(credentials []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
+	return b.WithCredentials(credentials...)
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) WithCredentials(credentials ...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsBuilder {
+	b.Credentials = credentials
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) Build() (BACnetConstructedDataCredentials, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentials.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) MustBuild() BACnetConstructedDataCredentials {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialsBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialsBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialsBuilder().(*_BACnetConstructedDataCredentialsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCredentialsBuilder creates a BACnetConstructedDataCredentialsBuilder
+func (b *_BACnetConstructedDataCredentials) CreateBACnetConstructedDataCredentialsBuilder() BACnetConstructedDataCredentialsBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCredentialsBuilder()
+	}
+	return &_BACnetConstructedDataCredentialsBuilder{_BACnetConstructedDataCredentials: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataCredentials) GetCredentials() []BACnetDeviceObjec
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentials factory function for _BACnetConstructedDataCredentials
-func NewBACnetConstructedDataCredentials(credentials []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentials {
-	_result := &_BACnetConstructedDataCredentials{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Credentials:                   credentials,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentials(structType any) BACnetConstructedDataCredentials {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataCredentials) IsBACnetConstructedDataCredentials() {}
 
+func (m *_BACnetConstructedDataCredentials) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentials) deepCopy() *_BACnetConstructedDataCredentials {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialsCopy := &_BACnetConstructedDataCredentials{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.Credentials),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialsCopy
+}
+
 func (m *_BACnetConstructedDataCredentials) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,11 +38,14 @@ type BACnetConstructedDataCredentialsInZone interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetCredentialsInZone returns CredentialsInZone (property field)
 	GetCredentialsInZone() []BACnetDeviceObjectReference
 	// IsBACnetConstructedDataCredentialsInZone is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataCredentialsInZone()
+	// CreateBuilder creates a BACnetConstructedDataCredentialsInZoneBuilder
+	CreateBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder
 }
 
 // _BACnetConstructedDataCredentialsInZone is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataCredentialsInZone struct {
 
 var _ BACnetConstructedDataCredentialsInZone = (*_BACnetConstructedDataCredentialsInZone)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataCredentialsInZone)(nil)
+
+// NewBACnetConstructedDataCredentialsInZone factory function for _BACnetConstructedDataCredentialsInZone
+func NewBACnetConstructedDataCredentialsInZone(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, credentialsInZone []BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialsInZone {
+	_result := &_BACnetConstructedDataCredentialsInZone{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		CredentialsInZone:             credentialsInZone,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataCredentialsInZoneBuilder is a builder for BACnetConstructedDataCredentialsInZone
+type BACnetConstructedDataCredentialsInZoneBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(credentialsInZone []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder
+	// WithCredentialsInZone adds CredentialsInZone (property field)
+	WithCredentialsInZone(...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder
+	// Build builds the BACnetConstructedDataCredentialsInZone or returns an error if something is wrong
+	Build() (BACnetConstructedDataCredentialsInZone, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataCredentialsInZone
+}
+
+// NewBACnetConstructedDataCredentialsInZoneBuilder() creates a BACnetConstructedDataCredentialsInZoneBuilder
+func NewBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder {
+	return &_BACnetConstructedDataCredentialsInZoneBuilder{_BACnetConstructedDataCredentialsInZone: new(_BACnetConstructedDataCredentialsInZone)}
+}
+
+type _BACnetConstructedDataCredentialsInZoneBuilder struct {
+	*_BACnetConstructedDataCredentialsInZone
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataCredentialsInZoneBuilder) = (*_BACnetConstructedDataCredentialsInZoneBuilder)(nil)
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) WithMandatoryFields(credentialsInZone []BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder {
+	return b.WithCredentialsInZone(credentialsInZone...)
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) WithCredentialsInZone(credentialsInZone ...BACnetDeviceObjectReference) BACnetConstructedDataCredentialsInZoneBuilder {
+	b.CredentialsInZone = credentialsInZone
+	return b
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) Build() (BACnetConstructedDataCredentialsInZone, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataCredentialsInZone.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) MustBuild() BACnetConstructedDataCredentialsInZone {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataCredentialsInZoneBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataCredentialsInZoneBuilder().(*_BACnetConstructedDataCredentialsInZoneBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataCredentialsInZoneBuilder creates a BACnetConstructedDataCredentialsInZoneBuilder
+func (b *_BACnetConstructedDataCredentialsInZone) CreateBACnetConstructedDataCredentialsInZoneBuilder() BACnetConstructedDataCredentialsInZoneBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataCredentialsInZoneBuilder()
+	}
+	return &_BACnetConstructedDataCredentialsInZoneBuilder{_BACnetConstructedDataCredentialsInZone: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataCredentialsInZone) GetCredentialsInZone() []BACne
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataCredentialsInZone factory function for _BACnetConstructedDataCredentialsInZone
-func NewBACnetConstructedDataCredentialsInZone(credentialsInZone []BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataCredentialsInZone {
-	_result := &_BACnetConstructedDataCredentialsInZone{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		CredentialsInZone:             credentialsInZone,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataCredentialsInZone(structType any) BACnetConstructedDataCredentialsInZone {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataCredentialsInZone) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataCredentialsInZone) IsBACnetConstructedDataCredentialsInZone() {}
 
+func (m *_BACnetConstructedDataCredentialsInZone) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataCredentialsInZone) deepCopy() *_BACnetConstructedDataCredentialsInZone {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataCredentialsInZoneCopy := &_BACnetConstructedDataCredentialsInZone{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetDeviceObjectReference, BACnetDeviceObjectReference](m.CredentialsInZone),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataCredentialsInZoneCopy
+}
+
 func (m *_BACnetConstructedDataCredentialsInZone) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

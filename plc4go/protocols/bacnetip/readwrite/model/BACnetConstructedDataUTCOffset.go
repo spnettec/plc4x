@@ -38,6 +38,7 @@ type BACnetConstructedDataUTCOffset interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetUtcOffset returns UtcOffset (property field)
 	GetUtcOffset() BACnetApplicationTagSignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataUTCOffset interface {
 	GetActualValue() BACnetApplicationTagSignedInteger
 	// IsBACnetConstructedDataUTCOffset is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataUTCOffset()
+	// CreateBuilder creates a BACnetConstructedDataUTCOffsetBuilder
+	CreateBACnetConstructedDataUTCOffsetBuilder() BACnetConstructedDataUTCOffsetBuilder
 }
 
 // _BACnetConstructedDataUTCOffset is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataUTCOffset struct {
 
 var _ BACnetConstructedDataUTCOffset = (*_BACnetConstructedDataUTCOffset)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataUTCOffset)(nil)
+
+// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
+func NewBACnetConstructedDataUTCOffset(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, utcOffset BACnetApplicationTagSignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
+	if utcOffset == nil {
+		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
+	}
+	_result := &_BACnetConstructedDataUTCOffset{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		UtcOffset:                     utcOffset,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataUTCOffsetBuilder is a builder for BACnetConstructedDataUTCOffset
+type BACnetConstructedDataUTCOffsetBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(utcOffset BACnetApplicationTagSignedInteger) BACnetConstructedDataUTCOffsetBuilder
+	// WithUtcOffset adds UtcOffset (property field)
+	WithUtcOffset(BACnetApplicationTagSignedInteger) BACnetConstructedDataUTCOffsetBuilder
+	// WithUtcOffsetBuilder adds UtcOffset (property field) which is build by the builder
+	WithUtcOffsetBuilder(func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataUTCOffsetBuilder
+	// Build builds the BACnetConstructedDataUTCOffset or returns an error if something is wrong
+	Build() (BACnetConstructedDataUTCOffset, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataUTCOffset
+}
+
+// NewBACnetConstructedDataUTCOffsetBuilder() creates a BACnetConstructedDataUTCOffsetBuilder
+func NewBACnetConstructedDataUTCOffsetBuilder() BACnetConstructedDataUTCOffsetBuilder {
+	return &_BACnetConstructedDataUTCOffsetBuilder{_BACnetConstructedDataUTCOffset: new(_BACnetConstructedDataUTCOffset)}
+}
+
+type _BACnetConstructedDataUTCOffsetBuilder struct {
+	*_BACnetConstructedDataUTCOffset
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataUTCOffsetBuilder) = (*_BACnetConstructedDataUTCOffsetBuilder)(nil)
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) WithMandatoryFields(utcOffset BACnetApplicationTagSignedInteger) BACnetConstructedDataUTCOffsetBuilder {
+	return b.WithUtcOffset(utcOffset)
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) WithUtcOffset(utcOffset BACnetApplicationTagSignedInteger) BACnetConstructedDataUTCOffsetBuilder {
+	b.UtcOffset = utcOffset
+	return b
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) WithUtcOffsetBuilder(builderSupplier func(BACnetApplicationTagSignedIntegerBuilder) BACnetApplicationTagSignedIntegerBuilder) BACnetConstructedDataUTCOffsetBuilder {
+	builder := builderSupplier(b.UtcOffset.CreateBACnetApplicationTagSignedIntegerBuilder())
+	var err error
+	b.UtcOffset, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagSignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) Build() (BACnetConstructedDataUTCOffset, error) {
+	if b.UtcOffset == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'utcOffset' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataUTCOffset.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) MustBuild() BACnetConstructedDataUTCOffset {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataUTCOffsetBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataUTCOffsetBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataUTCOffsetBuilder().(*_BACnetConstructedDataUTCOffsetBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataUTCOffsetBuilder creates a BACnetConstructedDataUTCOffsetBuilder
+func (b *_BACnetConstructedDataUTCOffset) CreateBACnetConstructedDataUTCOffsetBuilder() BACnetConstructedDataUTCOffsetBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataUTCOffsetBuilder()
+	}
+	return &_BACnetConstructedDataUTCOffsetBuilder{_BACnetConstructedDataUTCOffset: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataUTCOffset) GetActualValue() BACnetApplicationTagS
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataUTCOffset factory function for _BACnetConstructedDataUTCOffset
-func NewBACnetConstructedDataUTCOffset(utcOffset BACnetApplicationTagSignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataUTCOffset {
-	if utcOffset == nil {
-		panic("utcOffset of type BACnetApplicationTagSignedInteger for BACnetConstructedDataUTCOffset must not be nil")
-	}
-	_result := &_BACnetConstructedDataUTCOffset{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		UtcOffset:                     utcOffset,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataUTCOffset(structType any) BACnetConstructedDataUTCOffset {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataUTCOffset) SerializeWithWriteBuffer(ctx context.C
 
 func (m *_BACnetConstructedDataUTCOffset) IsBACnetConstructedDataUTCOffset() {}
 
+func (m *_BACnetConstructedDataUTCOffset) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataUTCOffset) deepCopy() *_BACnetConstructedDataUTCOffset {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataUTCOffsetCopy := &_BACnetConstructedDataUTCOffset{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.UtcOffset.DeepCopy().(BACnetApplicationTagSignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataUTCOffsetCopy
+}
+
 func (m *_BACnetConstructedDataUTCOffset) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

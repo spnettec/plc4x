@@ -40,8 +40,11 @@ type BACnetTimerStateChangeValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetTimerStateChangeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValue()
+	// CreateBuilder creates a BACnetTimerStateChangeValueBuilder
+	CreateBACnetTimerStateChangeValueBuilder() BACnetTimerStateChangeValueBuilder
 }
 
 // BACnetTimerStateChangeValueContract provides a set of functions which can be overwritten by a sub struct
@@ -56,6 +59,8 @@ type BACnetTimerStateChangeValueContract interface {
 	GetObjectTypeArgument() BACnetObjectType
 	// IsBACnetTimerStateChangeValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTimerStateChangeValue()
+	// CreateBuilder creates a BACnetTimerStateChangeValueBuilder
+	CreateBACnetTimerStateChangeValueBuilder() BACnetTimerStateChangeValueBuilder
 }
 
 // BACnetTimerStateChangeValueRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +83,502 @@ type _BACnetTimerStateChangeValue struct {
 }
 
 var _ BACnetTimerStateChangeValueContract = (*_BACnetTimerStateChangeValue)(nil)
+
+// NewBACnetTimerStateChangeValue factory function for _BACnetTimerStateChangeValue
+func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValue {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimerStateChangeValue must not be nil")
+	}
+	return &_BACnetTimerStateChangeValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTimerStateChangeValueBuilder is a builder for BACnetTimerStateChangeValue
+type BACnetTimerStateChangeValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimerStateChangeValueBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetTimerStateChangeValueBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateChangeValueBuilder
+	// AsBACnetTimerStateChangeValueNull converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueNull() interface {
+		BACnetTimerStateChangeValueNullBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueBoolean converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueBoolean() interface {
+		BACnetTimerStateChangeValueBooleanBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueUnsigned converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueUnsigned() interface {
+		BACnetTimerStateChangeValueUnsignedBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueInteger converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueInteger() interface {
+		BACnetTimerStateChangeValueIntegerBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueReal converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueReal() interface {
+		BACnetTimerStateChangeValueRealBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueDouble converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueDouble() interface {
+		BACnetTimerStateChangeValueDoubleBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueOctetString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueOctetString() interface {
+		BACnetTimerStateChangeValueOctetStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueCharacterString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueCharacterString() interface {
+		BACnetTimerStateChangeValueCharacterStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueBitString converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueBitString() interface {
+		BACnetTimerStateChangeValueBitStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueEnumerated converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueEnumerated() interface {
+		BACnetTimerStateChangeValueEnumeratedBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueDate converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueDate() interface {
+		BACnetTimerStateChangeValueDateBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueTime converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueTime() interface {
+		BACnetTimerStateChangeValueTimeBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueObjectidentifier converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueObjectidentifier() interface {
+		BACnetTimerStateChangeValueObjectidentifierBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueNoValue converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueNoValue() interface {
+		BACnetTimerStateChangeValueNoValueBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueConstructedValue converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueConstructedValue() interface {
+		BACnetTimerStateChangeValueConstructedValueBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueDateTime converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueDateTime() interface {
+		BACnetTimerStateChangeValueDateTimeBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// AsBACnetTimerStateChangeValueLightingCommand converts this build to a subType of BACnetTimerStateChangeValue. It is always possible to return to current builder using Done()
+	AsBACnetTimerStateChangeValueLightingCommand() interface {
+		BACnetTimerStateChangeValueLightingCommandBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}
+	// Build builds the BACnetTimerStateChangeValue or returns an error if something is wrong
+	PartialBuild() (BACnetTimerStateChangeValueContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetTimerStateChangeValueContract
+	// Build builds the BACnetTimerStateChangeValue or returns an error if something is wrong
+	Build() (BACnetTimerStateChangeValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTimerStateChangeValue
+}
+
+// NewBACnetTimerStateChangeValueBuilder() creates a BACnetTimerStateChangeValueBuilder
+func NewBACnetTimerStateChangeValueBuilder() BACnetTimerStateChangeValueBuilder {
+	return &_BACnetTimerStateChangeValueBuilder{_BACnetTimerStateChangeValue: new(_BACnetTimerStateChangeValue)}
+}
+
+type _BACnetTimerStateChangeValueChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetTimerStateChangeValueContract)
+	buildForBACnetTimerStateChangeValue() (BACnetTimerStateChangeValue, error)
+}
+
+type _BACnetTimerStateChangeValueBuilder struct {
+	*_BACnetTimerStateChangeValue
+
+	childBuilder _BACnetTimerStateChangeValueChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTimerStateChangeValueBuilder) = (*_BACnetTimerStateChangeValueBuilder)(nil)
+
+func (b *_BACnetTimerStateChangeValueBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetTimerStateChangeValueBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetTimerStateChangeValueBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetTimerStateChangeValueBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) PartialBuild() (BACnetTimerStateChangeValueContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTimerStateChangeValue.deepCopy(), nil
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) PartialMustBuild() BACnetTimerStateChangeValueContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNull() interface {
+	BACnetTimerStateChangeValueNullBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueNullBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueNullBuilder().(*_BACnetTimerStateChangeValueNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBoolean() interface {
+	BACnetTimerStateChangeValueBooleanBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueBooleanBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueBooleanBuilder().(*_BACnetTimerStateChangeValueBooleanBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueUnsigned() interface {
+	BACnetTimerStateChangeValueUnsignedBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueUnsignedBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueUnsignedBuilder().(*_BACnetTimerStateChangeValueUnsignedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueInteger() interface {
+	BACnetTimerStateChangeValueIntegerBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueIntegerBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueIntegerBuilder().(*_BACnetTimerStateChangeValueIntegerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueReal() interface {
+	BACnetTimerStateChangeValueRealBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueRealBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueRealBuilder().(*_BACnetTimerStateChangeValueRealBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDouble() interface {
+	BACnetTimerStateChangeValueDoubleBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueDoubleBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueDoubleBuilder().(*_BACnetTimerStateChangeValueDoubleBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueOctetString() interface {
+	BACnetTimerStateChangeValueOctetStringBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueOctetStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueOctetStringBuilder().(*_BACnetTimerStateChangeValueOctetStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueCharacterString() interface {
+	BACnetTimerStateChangeValueCharacterStringBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueCharacterStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueCharacterStringBuilder().(*_BACnetTimerStateChangeValueCharacterStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueBitString() interface {
+	BACnetTimerStateChangeValueBitStringBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueBitStringBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueBitStringBuilder().(*_BACnetTimerStateChangeValueBitStringBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueEnumerated() interface {
+	BACnetTimerStateChangeValueEnumeratedBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueEnumeratedBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueEnumeratedBuilder().(*_BACnetTimerStateChangeValueEnumeratedBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDate() interface {
+	BACnetTimerStateChangeValueDateBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueDateBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueDateBuilder().(*_BACnetTimerStateChangeValueDateBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueTime() interface {
+	BACnetTimerStateChangeValueTimeBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueTimeBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueTimeBuilder().(*_BACnetTimerStateChangeValueTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueObjectidentifier() interface {
+	BACnetTimerStateChangeValueObjectidentifierBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueObjectidentifierBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueObjectidentifierBuilder().(*_BACnetTimerStateChangeValueObjectidentifierBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueNoValue() interface {
+	BACnetTimerStateChangeValueNoValueBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueNoValueBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueNoValueBuilder().(*_BACnetTimerStateChangeValueNoValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueConstructedValue() interface {
+	BACnetTimerStateChangeValueConstructedValueBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueConstructedValueBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueConstructedValueBuilder().(*_BACnetTimerStateChangeValueConstructedValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueDateTime() interface {
+	BACnetTimerStateChangeValueDateTimeBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueDateTimeBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueDateTimeBuilder().(*_BACnetTimerStateChangeValueDateTimeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) AsBACnetTimerStateChangeValueLightingCommand() interface {
+	BACnetTimerStateChangeValueLightingCommandBuilder
+	Done() BACnetTimerStateChangeValueBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetTimerStateChangeValueLightingCommandBuilder
+		Done() BACnetTimerStateChangeValueBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetTimerStateChangeValueLightingCommandBuilder().(*_BACnetTimerStateChangeValueLightingCommandBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) Build() (BACnetTimerStateChangeValue, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetTimerStateChangeValue()
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) MustBuild() BACnetTimerStateChangeValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTimerStateChangeValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTimerStateChangeValueBuilder().(*_BACnetTimerStateChangeValueBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetTimerStateChangeValueChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTimerStateChangeValueBuilder creates a BACnetTimerStateChangeValueBuilder
+func (b *_BACnetTimerStateChangeValue) CreateBACnetTimerStateChangeValueBuilder() BACnetTimerStateChangeValueBuilder {
+	if b == nil {
+		return NewBACnetTimerStateChangeValueBuilder()
+	}
+	return &_BACnetTimerStateChangeValueBuilder{_BACnetTimerStateChangeValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,14 +616,6 @@ func (pm *_BACnetTimerStateChangeValue) GetPeekedIsContextTag() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetTimerStateChangeValue factory function for _BACnetTimerStateChangeValue
-func NewBACnetTimerStateChangeValue(peekedTagHeader BACnetTagHeader, objectTypeArgument BACnetObjectType) *_BACnetTimerStateChangeValue {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetTimerStateChangeValue must not be nil")
-	}
-	return &_BACnetTimerStateChangeValue{PeekedTagHeader: peekedTagHeader, ObjectTypeArgument: objectTypeArgument}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetTimerStateChangeValue(structType any) BACnetTimerStateChangeValue {
@@ -164,7 +657,7 @@ func BACnetTimerStateChangeValueParseWithBufferProducer[T BACnetTimerStateChange
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -174,7 +667,12 @@ func BACnetTimerStateChangeValueParseWithBuffer[T BACnetTimerStateChangeValue](c
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetTimerStateChangeValue) parse(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (__bACnetTimerStateChangeValue BACnetTimerStateChangeValue, err error) {
@@ -213,71 +711,71 @@ func (m *_BACnetTimerStateChangeValue) parse(ctx context.Context, readBuffer uti
 	var _child BACnetTimerStateChangeValue
 	switch {
 	case peekedTagNumber == 0x0 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueNull
-		if _child, err = (&_BACnetTimerStateChangeValueNull{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueNull).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueNull for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x1 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBoolean
-		if _child, err = (&_BACnetTimerStateChangeValueBoolean{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueBoolean).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueBoolean for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x2 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueUnsigned
-		if _child, err = (&_BACnetTimerStateChangeValueUnsigned{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueUnsigned).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueUnsigned for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x3 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueInteger
-		if _child, err = (&_BACnetTimerStateChangeValueInteger{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueInteger).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueInteger for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x4 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueReal
-		if _child, err = (&_BACnetTimerStateChangeValueReal{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueReal).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueReal for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x5 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDouble
-		if _child, err = (&_BACnetTimerStateChangeValueDouble{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueDouble).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDouble for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x6 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueOctetString
-		if _child, err = (&_BACnetTimerStateChangeValueOctetString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueOctetString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueOctetString for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x7 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueCharacterString
-		if _child, err = (&_BACnetTimerStateChangeValueCharacterString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueCharacterString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueCharacterString for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x8 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueBitString
-		if _child, err = (&_BACnetTimerStateChangeValueBitString{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueBitString).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueBitString for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0x9 && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueEnumerated
-		if _child, err = (&_BACnetTimerStateChangeValueEnumerated{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueEnumerated).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueEnumerated for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0xA && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueDate
-		if _child, err = (&_BACnetTimerStateChangeValueDate{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueDate).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDate for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0xB && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueTime
-		if _child, err = (&_BACnetTimerStateChangeValueTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueTime).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueTime for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == 0xC && peekedIsContextTag == bool(false): // BACnetTimerStateChangeValueObjectidentifier
-		if _child, err = (&_BACnetTimerStateChangeValueObjectidentifier{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueObjectidentifier).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueObjectidentifier for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == uint8(0) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueNoValue
-		if _child, err = (&_BACnetTimerStateChangeValueNoValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueNoValue).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueNoValue for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == uint8(1) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueConstructedValue
-		if _child, err = (&_BACnetTimerStateChangeValueConstructedValue{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueConstructedValue).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueConstructedValue for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == uint8(2) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueDateTime
-		if _child, err = (&_BACnetTimerStateChangeValueDateTime{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueDateTime).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueDateTime for type-switch of BACnetTimerStateChangeValue")
 		}
 	case peekedTagNumber == uint8(3) && peekedIsContextTag == bool(true): // BACnetTimerStateChangeValueLightingCommand
-		if _child, err = (&_BACnetTimerStateChangeValueLightingCommand{}).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
+		if _child, err = new(_BACnetTimerStateChangeValueLightingCommand).parse(ctx, readBuffer, m, objectTypeArgument); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetTimerStateChangeValueLightingCommand for type-switch of BACnetTimerStateChangeValue")
 		}
 	default:
@@ -337,3 +835,19 @@ func (m *_BACnetTimerStateChangeValue) GetObjectTypeArgument() BACnetObjectType 
 ////
 
 func (m *_BACnetTimerStateChangeValue) IsBACnetTimerStateChangeValue() {}
+
+func (m *_BACnetTimerStateChangeValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTimerStateChangeValue) deepCopy() *_BACnetTimerStateChangeValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetTimerStateChangeValueCopy := &_BACnetTimerStateChangeValue{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+		m.ObjectTypeArgument,
+	}
+	return _BACnetTimerStateChangeValueCopy
+}

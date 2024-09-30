@@ -38,6 +38,7 @@ type BACnetLifeSafetyModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetLifeSafetyModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetLifeSafetyModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLifeSafetyModeTagged()
+	// CreateBuilder creates a BACnetLifeSafetyModeTaggedBuilder
+	CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder
 }
 
 // _BACnetLifeSafetyModeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetLifeSafetyModeTagged struct {
 }
 
 var _ BACnetLifeSafetyModeTagged = (*_BACnetLifeSafetyModeTagged)(nil)
+
+// NewBACnetLifeSafetyModeTagged factory function for _BACnetLifeSafetyModeTagged
+func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetLifeSafetyModeTagged must not be nil")
+	}
+	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLifeSafetyModeTaggedBuilder is a builder for BACnetLifeSafetyModeTagged
+type BACnetLifeSafetyModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetLifeSafetyModeTaggedBuilder
+	// Build builds the BACnetLifeSafetyModeTagged or returns an error if something is wrong
+	Build() (BACnetLifeSafetyModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLifeSafetyModeTagged
+}
+
+// NewBACnetLifeSafetyModeTaggedBuilder() creates a BACnetLifeSafetyModeTaggedBuilder
+func NewBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
+	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: new(_BACnetLifeSafetyModeTagged)}
+}
+
+type _BACnetLifeSafetyModeTaggedBuilder struct {
+	*_BACnetLifeSafetyModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLifeSafetyModeTaggedBuilder) = (*_BACnetLifeSafetyModeTaggedBuilder)(nil)
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetLifeSafetyModeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetLifeSafetyModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithValue(value BACnetLifeSafetyMode) BACnetLifeSafetyModeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetLifeSafetyModeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) Build() (BACnetLifeSafetyModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLifeSafetyModeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) MustBuild() BACnetLifeSafetyModeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetLifeSafetyModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLifeSafetyModeTaggedBuilder().(*_BACnetLifeSafetyModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLifeSafetyModeTaggedBuilder creates a BACnetLifeSafetyModeTaggedBuilder
+func (b *_BACnetLifeSafetyModeTagged) CreateBACnetLifeSafetyModeTaggedBuilder() BACnetLifeSafetyModeTaggedBuilder {
+	if b == nil {
+		return NewBACnetLifeSafetyModeTaggedBuilder()
+	}
+	return &_BACnetLifeSafetyModeTaggedBuilder{_BACnetLifeSafetyModeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetLifeSafetyModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLifeSafetyModeTagged factory function for _BACnetLifeSafetyModeTagged
-func NewBACnetLifeSafetyModeTagged(header BACnetTagHeader, value BACnetLifeSafetyMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetLifeSafetyModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetLifeSafetyModeTagged must not be nil")
-	}
-	return &_BACnetLifeSafetyModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLifeSafetyModeTagged(structType any) BACnetLifeSafetyModeTagged {
@@ -159,7 +273,7 @@ func BACnetLifeSafetyModeTaggedParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetLifeSafetyModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetLifeSafetyModeTagged BACnetLifeSafetyModeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetLifeSafetyModeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetLifeSafetyModeTagged) IsBACnetLifeSafetyModeTagged() {}
 
+func (m *_BACnetLifeSafetyModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLifeSafetyModeTagged) deepCopy() *_BACnetLifeSafetyModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetLifeSafetyModeTaggedCopy := &_BACnetLifeSafetyModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetLifeSafetyModeTaggedCopy
+}
+
 func (m *_BACnetLifeSafetyModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

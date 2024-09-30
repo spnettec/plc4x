@@ -38,11 +38,14 @@ type IdentifyReplyCommandMaximumLevels interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	IdentifyReplyCommand
 	// GetMaximumLevels returns MaximumLevels (property field)
 	GetMaximumLevels() []byte
 	// IsIdentifyReplyCommandMaximumLevels is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsIdentifyReplyCommandMaximumLevels()
+	// CreateBuilder creates a IdentifyReplyCommandMaximumLevelsBuilder
+	CreateIdentifyReplyCommandMaximumLevelsBuilder() IdentifyReplyCommandMaximumLevelsBuilder
 }
 
 // _IdentifyReplyCommandMaximumLevels is the data-structure of this message
@@ -53,6 +56,107 @@ type _IdentifyReplyCommandMaximumLevels struct {
 
 var _ IdentifyReplyCommandMaximumLevels = (*_IdentifyReplyCommandMaximumLevels)(nil)
 var _ IdentifyReplyCommandRequirements = (*_IdentifyReplyCommandMaximumLevels)(nil)
+
+// NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
+func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
+	_result := &_IdentifyReplyCommandMaximumLevels{
+		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
+		MaximumLevels:                maximumLevels,
+	}
+	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// IdentifyReplyCommandMaximumLevelsBuilder is a builder for IdentifyReplyCommandMaximumLevels
+type IdentifyReplyCommandMaximumLevelsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(maximumLevels []byte) IdentifyReplyCommandMaximumLevelsBuilder
+	// WithMaximumLevels adds MaximumLevels (property field)
+	WithMaximumLevels(...byte) IdentifyReplyCommandMaximumLevelsBuilder
+	// Build builds the IdentifyReplyCommandMaximumLevels or returns an error if something is wrong
+	Build() (IdentifyReplyCommandMaximumLevels, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() IdentifyReplyCommandMaximumLevels
+}
+
+// NewIdentifyReplyCommandMaximumLevelsBuilder() creates a IdentifyReplyCommandMaximumLevelsBuilder
+func NewIdentifyReplyCommandMaximumLevelsBuilder() IdentifyReplyCommandMaximumLevelsBuilder {
+	return &_IdentifyReplyCommandMaximumLevelsBuilder{_IdentifyReplyCommandMaximumLevels: new(_IdentifyReplyCommandMaximumLevels)}
+}
+
+type _IdentifyReplyCommandMaximumLevelsBuilder struct {
+	*_IdentifyReplyCommandMaximumLevels
+
+	parentBuilder *_IdentifyReplyCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (IdentifyReplyCommandMaximumLevelsBuilder) = (*_IdentifyReplyCommandMaximumLevelsBuilder)(nil)
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) setParent(contract IdentifyReplyCommandContract) {
+	b.IdentifyReplyCommandContract = contract
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) WithMandatoryFields(maximumLevels []byte) IdentifyReplyCommandMaximumLevelsBuilder {
+	return b.WithMaximumLevels(maximumLevels...)
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) WithMaximumLevels(maximumLevels ...byte) IdentifyReplyCommandMaximumLevelsBuilder {
+	b.MaximumLevels = maximumLevels
+	return b
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) Build() (IdentifyReplyCommandMaximumLevels, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._IdentifyReplyCommandMaximumLevels.deepCopy(), nil
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) MustBuild() IdentifyReplyCommandMaximumLevels {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) Done() IdentifyReplyCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) buildForIdentifyReplyCommand() (IdentifyReplyCommand, error) {
+	return b.Build()
+}
+
+func (b *_IdentifyReplyCommandMaximumLevelsBuilder) DeepCopy() any {
+	_copy := b.CreateIdentifyReplyCommandMaximumLevelsBuilder().(*_IdentifyReplyCommandMaximumLevelsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateIdentifyReplyCommandMaximumLevelsBuilder creates a IdentifyReplyCommandMaximumLevelsBuilder
+func (b *_IdentifyReplyCommandMaximumLevels) CreateIdentifyReplyCommandMaximumLevelsBuilder() IdentifyReplyCommandMaximumLevelsBuilder {
+	if b == nil {
+		return NewIdentifyReplyCommandMaximumLevelsBuilder()
+	}
+	return &_IdentifyReplyCommandMaximumLevelsBuilder{_IdentifyReplyCommandMaximumLevels: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_IdentifyReplyCommandMaximumLevels) GetMaximumLevels() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewIdentifyReplyCommandMaximumLevels factory function for _IdentifyReplyCommandMaximumLevels
-func NewIdentifyReplyCommandMaximumLevels(maximumLevels []byte, numBytes uint8) *_IdentifyReplyCommandMaximumLevels {
-	_result := &_IdentifyReplyCommandMaximumLevels{
-		IdentifyReplyCommandContract: NewIdentifyReplyCommand(numBytes),
-		MaximumLevels:                maximumLevels,
-	}
-	_result.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastIdentifyReplyCommandMaximumLevels(structType any) IdentifyReplyCommandMaximumLevels {
@@ -182,13 +276,33 @@ func (m *_IdentifyReplyCommandMaximumLevels) SerializeWithWriteBuffer(ctx contex
 
 func (m *_IdentifyReplyCommandMaximumLevels) IsIdentifyReplyCommandMaximumLevels() {}
 
+func (m *_IdentifyReplyCommandMaximumLevels) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_IdentifyReplyCommandMaximumLevels) deepCopy() *_IdentifyReplyCommandMaximumLevels {
+	if m == nil {
+		return nil
+	}
+	_IdentifyReplyCommandMaximumLevelsCopy := &_IdentifyReplyCommandMaximumLevels{
+		m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand).deepCopy(),
+		utils.DeepCopySlice[byte, byte](m.MaximumLevels),
+	}
+	m.IdentifyReplyCommandContract.(*_IdentifyReplyCommand)._SubType = m
+	return _IdentifyReplyCommandMaximumLevelsCopy
+}
+
 func (m *_IdentifyReplyCommandMaximumLevels) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

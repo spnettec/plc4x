@@ -39,6 +39,7 @@ type DateAndTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetYear returns Year (property field)
 	GetYear() uint8
 	// GetMonth returns Month (property field)
@@ -57,6 +58,8 @@ type DateAndTime interface {
 	GetDow() uint8
 	// IsDateAndTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDateAndTime()
+	// CreateBuilder creates a DateAndTimeBuilder
+	CreateDateAndTimeBuilder() DateAndTimeBuilder
 }
 
 // _DateAndTime is the data-structure of this message
@@ -72,6 +75,136 @@ type _DateAndTime struct {
 }
 
 var _ DateAndTime = (*_DateAndTime)(nil)
+
+// NewDateAndTime factory function for _DateAndTime
+func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
+	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DateAndTimeBuilder is a builder for DateAndTime
+type DateAndTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) DateAndTimeBuilder
+	// WithYear adds Year (property field)
+	WithYear(uint8) DateAndTimeBuilder
+	// WithMonth adds Month (property field)
+	WithMonth(uint8) DateAndTimeBuilder
+	// WithDay adds Day (property field)
+	WithDay(uint8) DateAndTimeBuilder
+	// WithHour adds Hour (property field)
+	WithHour(uint8) DateAndTimeBuilder
+	// WithMinutes adds Minutes (property field)
+	WithMinutes(uint8) DateAndTimeBuilder
+	// WithSeconds adds Seconds (property field)
+	WithSeconds(uint8) DateAndTimeBuilder
+	// WithMsec adds Msec (property field)
+	WithMsec(uint16) DateAndTimeBuilder
+	// WithDow adds Dow (property field)
+	WithDow(uint8) DateAndTimeBuilder
+	// Build builds the DateAndTime or returns an error if something is wrong
+	Build() (DateAndTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DateAndTime
+}
+
+// NewDateAndTimeBuilder() creates a DateAndTimeBuilder
+func NewDateAndTimeBuilder() DateAndTimeBuilder {
+	return &_DateAndTimeBuilder{_DateAndTime: new(_DateAndTime)}
+}
+
+type _DateAndTimeBuilder struct {
+	*_DateAndTime
+
+	err *utils.MultiError
+}
+
+var _ (DateAndTimeBuilder) = (*_DateAndTimeBuilder)(nil)
+
+func (b *_DateAndTimeBuilder) WithMandatoryFields(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) DateAndTimeBuilder {
+	return b.WithYear(year).WithMonth(month).WithDay(day).WithHour(hour).WithMinutes(minutes).WithSeconds(seconds).WithMsec(msec).WithDow(dow)
+}
+
+func (b *_DateAndTimeBuilder) WithYear(year uint8) DateAndTimeBuilder {
+	b.Year = year
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithMonth(month uint8) DateAndTimeBuilder {
+	b.Month = month
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithDay(day uint8) DateAndTimeBuilder {
+	b.Day = day
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithHour(hour uint8) DateAndTimeBuilder {
+	b.Hour = hour
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithMinutes(minutes uint8) DateAndTimeBuilder {
+	b.Minutes = minutes
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithSeconds(seconds uint8) DateAndTimeBuilder {
+	b.Seconds = seconds
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithMsec(msec uint16) DateAndTimeBuilder {
+	b.Msec = msec
+	return b
+}
+
+func (b *_DateAndTimeBuilder) WithDow(dow uint8) DateAndTimeBuilder {
+	b.Dow = dow
+	return b
+}
+
+func (b *_DateAndTimeBuilder) Build() (DateAndTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DateAndTime.deepCopy(), nil
+}
+
+func (b *_DateAndTimeBuilder) MustBuild() DateAndTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DateAndTimeBuilder) DeepCopy() any {
+	_copy := b.CreateDateAndTimeBuilder().(*_DateAndTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDateAndTimeBuilder creates a DateAndTimeBuilder
+func (b *_DateAndTime) CreateDateAndTimeBuilder() DateAndTimeBuilder {
+	if b == nil {
+		return NewDateAndTimeBuilder()
+	}
+	return &_DateAndTimeBuilder{_DateAndTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +247,6 @@ func (m *_DateAndTime) GetDow() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDateAndTime factory function for _DateAndTime
-func NewDateAndTime(year uint8, month uint8, day uint8, hour uint8, minutes uint8, seconds uint8, msec uint16, dow uint8) *_DateAndTime {
-	return &_DateAndTime{Year: year, Month: month, Day: day, Hour: hour, Minutes: minutes, Seconds: seconds, Msec: msec, Dow: dow}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDateAndTime(structType any) DateAndTime {
@@ -184,7 +312,7 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DateAndTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__dateAndTime DateAndTime, err error) {
@@ -308,13 +436,38 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_DateAndTime) IsDateAndTime() {}
 
+func (m *_DateAndTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DateAndTime) deepCopy() *_DateAndTime {
+	if m == nil {
+		return nil
+	}
+	_DateAndTimeCopy := &_DateAndTime{
+		m.Year,
+		m.Month,
+		m.Day,
+		m.Hour,
+		m.Minutes,
+		m.Seconds,
+		m.Msec,
+		m.Dow,
+	}
+	return _DateAndTimeCopy
+}
+
 func (m *_DateAndTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

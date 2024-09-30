@@ -38,6 +38,7 @@ type RegisterNodesRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetRequestHeader returns RequestHeader (property field)
 	GetRequestHeader() ExtensionObjectDefinition
@@ -47,6 +48,8 @@ type RegisterNodesRequest interface {
 	GetNodesToRegister() []NodeId
 	// IsRegisterNodesRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRegisterNodesRequest()
+	// CreateBuilder creates a RegisterNodesRequestBuilder
+	CreateRegisterNodesRequestBuilder() RegisterNodesRequestBuilder
 }
 
 // _RegisterNodesRequest is the data-structure of this message
@@ -59,6 +62,147 @@ type _RegisterNodesRequest struct {
 
 var _ RegisterNodesRequest = (*_RegisterNodesRequest)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_RegisterNodesRequest)(nil)
+
+// NewRegisterNodesRequest factory function for _RegisterNodesRequest
+func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
+	if requestHeader == nil {
+		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
+	}
+	_result := &_RegisterNodesRequest{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		RequestHeader:                     requestHeader,
+		NoOfNodesToRegister:               noOfNodesToRegister,
+		NodesToRegister:                   nodesToRegister,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RegisterNodesRequestBuilder is a builder for RegisterNodesRequest
+type RegisterNodesRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder
+	// WithRequestHeader adds RequestHeader (property field)
+	WithRequestHeader(ExtensionObjectDefinition) RegisterNodesRequestBuilder
+	// WithRequestHeaderBuilder adds RequestHeader (property field) which is build by the builder
+	WithRequestHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder
+	// WithNoOfNodesToRegister adds NoOfNodesToRegister (property field)
+	WithNoOfNodesToRegister(int32) RegisterNodesRequestBuilder
+	// WithNodesToRegister adds NodesToRegister (property field)
+	WithNodesToRegister(...NodeId) RegisterNodesRequestBuilder
+	// Build builds the RegisterNodesRequest or returns an error if something is wrong
+	Build() (RegisterNodesRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RegisterNodesRequest
+}
+
+// NewRegisterNodesRequestBuilder() creates a RegisterNodesRequestBuilder
+func NewRegisterNodesRequestBuilder() RegisterNodesRequestBuilder {
+	return &_RegisterNodesRequestBuilder{_RegisterNodesRequest: new(_RegisterNodesRequest)}
+}
+
+type _RegisterNodesRequestBuilder struct {
+	*_RegisterNodesRequest
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (RegisterNodesRequestBuilder) = (*_RegisterNodesRequestBuilder)(nil)
+
+func (b *_RegisterNodesRequestBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_RegisterNodesRequestBuilder) WithMandatoryFields(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) RegisterNodesRequestBuilder {
+	return b.WithRequestHeader(requestHeader).WithNoOfNodesToRegister(noOfNodesToRegister).WithNodesToRegister(nodesToRegister...)
+}
+
+func (b *_RegisterNodesRequestBuilder) WithRequestHeader(requestHeader ExtensionObjectDefinition) RegisterNodesRequestBuilder {
+	b.RequestHeader = requestHeader
+	return b
+}
+
+func (b *_RegisterNodesRequestBuilder) WithRequestHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) RegisterNodesRequestBuilder {
+	builder := builderSupplier(b.RequestHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.RequestHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_RegisterNodesRequestBuilder) WithNoOfNodesToRegister(noOfNodesToRegister int32) RegisterNodesRequestBuilder {
+	b.NoOfNodesToRegister = noOfNodesToRegister
+	return b
+}
+
+func (b *_RegisterNodesRequestBuilder) WithNodesToRegister(nodesToRegister ...NodeId) RegisterNodesRequestBuilder {
+	b.NodesToRegister = nodesToRegister
+	return b
+}
+
+func (b *_RegisterNodesRequestBuilder) Build() (RegisterNodesRequest, error) {
+	if b.RequestHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'requestHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RegisterNodesRequest.deepCopy(), nil
+}
+
+func (b *_RegisterNodesRequestBuilder) MustBuild() RegisterNodesRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_RegisterNodesRequestBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_RegisterNodesRequestBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_RegisterNodesRequestBuilder) DeepCopy() any {
+	_copy := b.CreateRegisterNodesRequestBuilder().(*_RegisterNodesRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRegisterNodesRequestBuilder creates a RegisterNodesRequestBuilder
+func (b *_RegisterNodesRequest) CreateRegisterNodesRequestBuilder() RegisterNodesRequestBuilder {
+	if b == nil {
+		return NewRegisterNodesRequestBuilder()
+	}
+	return &_RegisterNodesRequestBuilder{_RegisterNodesRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_RegisterNodesRequest) GetNodesToRegister() []NodeId {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRegisterNodesRequest factory function for _RegisterNodesRequest
-func NewRegisterNodesRequest(requestHeader ExtensionObjectDefinition, noOfNodesToRegister int32, nodesToRegister []NodeId) *_RegisterNodesRequest {
-	if requestHeader == nil {
-		panic("requestHeader of type ExtensionObjectDefinition for RegisterNodesRequest must not be nil")
-	}
-	_result := &_RegisterNodesRequest{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		RequestHeader:                     requestHeader,
-		NoOfNodesToRegister:               noOfNodesToRegister,
-		NodesToRegister:                   nodesToRegister,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastRegisterNodesRequest(structType any) RegisterNodesRequest {
@@ -232,13 +361,35 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_RegisterNodesRequest) IsRegisterNodesRequest() {}
 
+func (m *_RegisterNodesRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RegisterNodesRequest) deepCopy() *_RegisterNodesRequest {
+	if m == nil {
+		return nil
+	}
+	_RegisterNodesRequestCopy := &_RegisterNodesRequest{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.RequestHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfNodesToRegister,
+		utils.DeepCopySlice[NodeId, NodeId](m.NodesToRegister),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _RegisterNodesRequestCopy
+}
+
 func (m *_RegisterNodesRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

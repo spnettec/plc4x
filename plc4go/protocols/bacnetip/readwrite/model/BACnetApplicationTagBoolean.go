@@ -38,6 +38,7 @@ type BACnetApplicationTagBoolean interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetApplicationTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadBoolean
@@ -45,6 +46,8 @@ type BACnetApplicationTagBoolean interface {
 	GetActualValue() bool
 	// IsBACnetApplicationTagBoolean is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetApplicationTagBoolean()
+	// CreateBuilder creates a BACnetApplicationTagBooleanBuilder
+	CreateBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder
 }
 
 // _BACnetApplicationTagBoolean is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetApplicationTagBoolean struct {
 
 var _ BACnetApplicationTagBoolean = (*_BACnetApplicationTagBoolean)(nil)
 var _ BACnetApplicationTagRequirements = (*_BACnetApplicationTagBoolean)(nil)
+
+// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
+func NewBACnetApplicationTagBoolean(header BACnetTagHeader, payload BACnetTagPayloadBoolean) *_BACnetApplicationTagBoolean {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
+	}
+	_result := &_BACnetApplicationTagBoolean{
+		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
+		Payload:                      payload,
+	}
+	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetApplicationTagBooleanBuilder is a builder for BACnetApplicationTagBoolean
+type BACnetApplicationTagBooleanBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetApplicationTagBooleanBuilder
+	// Build builds the BACnetApplicationTagBoolean or returns an error if something is wrong
+	Build() (BACnetApplicationTagBoolean, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetApplicationTagBoolean
+}
+
+// NewBACnetApplicationTagBooleanBuilder() creates a BACnetApplicationTagBooleanBuilder
+func NewBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder {
+	return &_BACnetApplicationTagBooleanBuilder{_BACnetApplicationTagBoolean: new(_BACnetApplicationTagBoolean)}
+}
+
+type _BACnetApplicationTagBooleanBuilder struct {
+	*_BACnetApplicationTagBoolean
+
+	parentBuilder *_BACnetApplicationTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetApplicationTagBooleanBuilder) = (*_BACnetApplicationTagBooleanBuilder)(nil)
+
+func (b *_BACnetApplicationTagBooleanBuilder) setParent(contract BACnetApplicationTagContract) {
+	b.BACnetApplicationTagContract = contract
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) WithMandatoryFields(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) WithPayload(payload BACnetTagPayloadBoolean) BACnetApplicationTagBooleanBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadBooleanBuilder) BACnetTagPayloadBooleanBuilder) BACnetApplicationTagBooleanBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadBooleanBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) Build() (BACnetApplicationTagBoolean, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetApplicationTagBoolean.deepCopy(), nil
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) MustBuild() BACnetApplicationTagBoolean {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetApplicationTagBooleanBuilder) Done() BACnetApplicationTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) buildForBACnetApplicationTag() (BACnetApplicationTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetApplicationTagBooleanBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetApplicationTagBooleanBuilder().(*_BACnetApplicationTagBooleanBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetApplicationTagBooleanBuilder creates a BACnetApplicationTagBooleanBuilder
+func (b *_BACnetApplicationTagBoolean) CreateBACnetApplicationTagBooleanBuilder() BACnetApplicationTagBooleanBuilder {
+	if b == nil {
+		return NewBACnetApplicationTagBooleanBuilder()
+	}
+	return &_BACnetApplicationTagBooleanBuilder{_BACnetApplicationTagBoolean: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -98,19 +226,6 @@ func (m *_BACnetApplicationTagBoolean) GetActualValue() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetApplicationTagBoolean factory function for _BACnetApplicationTagBoolean
-func NewBACnetApplicationTagBoolean(payload BACnetTagPayloadBoolean, header BACnetTagHeader) *_BACnetApplicationTagBoolean {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadBoolean for BACnetApplicationTagBoolean must not be nil")
-	}
-	_result := &_BACnetApplicationTagBoolean{
-		BACnetApplicationTagContract: NewBACnetApplicationTag(header),
-		Payload:                      payload,
-	}
-	_result.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetApplicationTagBoolean(structType any) BACnetApplicationTagBoolean {
@@ -210,13 +325,33 @@ func (m *_BACnetApplicationTagBoolean) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_BACnetApplicationTagBoolean) IsBACnetApplicationTagBoolean() {}
 
+func (m *_BACnetApplicationTagBoolean) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetApplicationTagBoolean) deepCopy() *_BACnetApplicationTagBoolean {
+	if m == nil {
+		return nil
+	}
+	_BACnetApplicationTagBooleanCopy := &_BACnetApplicationTagBoolean{
+		m.BACnetApplicationTagContract.(*_BACnetApplicationTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadBoolean),
+	}
+	m.BACnetApplicationTagContract.(*_BACnetApplicationTag)._SubType = m
+	return _BACnetApplicationTagBooleanCopy
+}
+
 func (m *_BACnetApplicationTagBoolean) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

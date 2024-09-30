@@ -36,9 +36,12 @@ type LPollDataReq interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CEMI
 	// IsLPollDataReq is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsLPollDataReq()
+	// CreateBuilder creates a LPollDataReqBuilder
+	CreateLPollDataReqBuilder() LPollDataReqBuilder
 }
 
 // _LPollDataReq is the data-structure of this message
@@ -48,6 +51,99 @@ type _LPollDataReq struct {
 
 var _ LPollDataReq = (*_LPollDataReq)(nil)
 var _ CEMIRequirements = (*_LPollDataReq)(nil)
+
+// NewLPollDataReq factory function for _LPollDataReq
+func NewLPollDataReq(size uint16) *_LPollDataReq {
+	_result := &_LPollDataReq{
+		CEMIContract: NewCEMI(size),
+	}
+	_result.CEMIContract.(*_CEMI)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// LPollDataReqBuilder is a builder for LPollDataReq
+type LPollDataReqBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() LPollDataReqBuilder
+	// Build builds the LPollDataReq or returns an error if something is wrong
+	Build() (LPollDataReq, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() LPollDataReq
+}
+
+// NewLPollDataReqBuilder() creates a LPollDataReqBuilder
+func NewLPollDataReqBuilder() LPollDataReqBuilder {
+	return &_LPollDataReqBuilder{_LPollDataReq: new(_LPollDataReq)}
+}
+
+type _LPollDataReqBuilder struct {
+	*_LPollDataReq
+
+	parentBuilder *_CEMIBuilder
+
+	err *utils.MultiError
+}
+
+var _ (LPollDataReqBuilder) = (*_LPollDataReqBuilder)(nil)
+
+func (b *_LPollDataReqBuilder) setParent(contract CEMIContract) {
+	b.CEMIContract = contract
+}
+
+func (b *_LPollDataReqBuilder) WithMandatoryFields() LPollDataReqBuilder {
+	return b
+}
+
+func (b *_LPollDataReqBuilder) Build() (LPollDataReq, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._LPollDataReq.deepCopy(), nil
+}
+
+func (b *_LPollDataReqBuilder) MustBuild() LPollDataReq {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_LPollDataReqBuilder) Done() CEMIBuilder {
+	return b.parentBuilder
+}
+
+func (b *_LPollDataReqBuilder) buildForCEMI() (CEMI, error) {
+	return b.Build()
+}
+
+func (b *_LPollDataReqBuilder) DeepCopy() any {
+	_copy := b.CreateLPollDataReqBuilder().(*_LPollDataReqBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateLPollDataReqBuilder creates a LPollDataReqBuilder
+func (b *_LPollDataReq) CreateLPollDataReqBuilder() LPollDataReqBuilder {
+	if b == nil {
+		return NewLPollDataReqBuilder()
+	}
+	return &_LPollDataReqBuilder{_LPollDataReq: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_LPollDataReq) GetMessageCode() uint8 {
 
 func (m *_LPollDataReq) GetParent() CEMIContract {
 	return m.CEMIContract
-}
-
-// NewLPollDataReq factory function for _LPollDataReq
-func NewLPollDataReq(size uint16) *_LPollDataReq {
-	_result := &_LPollDataReq{
-		CEMIContract: NewCEMI(size),
-	}
-	_result.CEMIContract.(*_CEMI)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -147,13 +234,32 @@ func (m *_LPollDataReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_LPollDataReq) IsLPollDataReq() {}
 
+func (m *_LPollDataReq) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_LPollDataReq) deepCopy() *_LPollDataReq {
+	if m == nil {
+		return nil
+	}
+	_LPollDataReqCopy := &_LPollDataReq{
+		m.CEMIContract.(*_CEMI).deepCopy(),
+	}
+	m.CEMIContract.(*_CEMI)._SubType = m
+	return _LPollDataReqCopy
+}
+
 func (m *_LPollDataReq) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

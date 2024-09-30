@@ -38,6 +38,7 @@ type BACnetAuthorizationModeTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
@@ -48,6 +49,8 @@ type BACnetAuthorizationModeTagged interface {
 	GetIsProprietary() bool
 	// IsBACnetAuthorizationModeTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetAuthorizationModeTagged()
+	// CreateBuilder creates a BACnetAuthorizationModeTaggedBuilder
+	CreateBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder
 }
 
 // _BACnetAuthorizationModeTagged is the data-structure of this message
@@ -62,6 +65,125 @@ type _BACnetAuthorizationModeTagged struct {
 }
 
 var _ BACnetAuthorizationModeTagged = (*_BACnetAuthorizationModeTagged)(nil)
+
+// NewBACnetAuthorizationModeTagged factory function for _BACnetAuthorizationModeTagged
+func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationModeTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetAuthorizationModeTagged must not be nil")
+	}
+	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetAuthorizationModeTaggedBuilder is a builder for BACnetAuthorizationModeTagged
+type BACnetAuthorizationModeTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetAuthorizationModeTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationModeTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder
+	// WithProprietaryValue adds ProprietaryValue (property field)
+	WithProprietaryValue(uint32) BACnetAuthorizationModeTaggedBuilder
+	// Build builds the BACnetAuthorizationModeTagged or returns an error if something is wrong
+	Build() (BACnetAuthorizationModeTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetAuthorizationModeTagged
+}
+
+// NewBACnetAuthorizationModeTaggedBuilder() creates a BACnetAuthorizationModeTaggedBuilder
+func NewBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder {
+	return &_BACnetAuthorizationModeTaggedBuilder{_BACnetAuthorizationModeTagged: new(_BACnetAuthorizationModeTagged)}
+}
+
+type _BACnetAuthorizationModeTaggedBuilder struct {
+	*_BACnetAuthorizationModeTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetAuthorizationModeTaggedBuilder) = (*_BACnetAuthorizationModeTaggedBuilder)(nil)
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
+	return b.WithHeader(header).WithValue(value).WithProprietaryValue(proprietaryValue)
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetAuthorizationModeTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetAuthorizationModeTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithValue(value BACnetAuthorizationMode) BACnetAuthorizationModeTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) WithProprietaryValue(proprietaryValue uint32) BACnetAuthorizationModeTaggedBuilder {
+	b.ProprietaryValue = proprietaryValue
+	return b
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) Build() (BACnetAuthorizationModeTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetAuthorizationModeTagged.deepCopy(), nil
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) MustBuild() BACnetAuthorizationModeTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetAuthorizationModeTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetAuthorizationModeTaggedBuilder().(*_BACnetAuthorizationModeTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetAuthorizationModeTaggedBuilder creates a BACnetAuthorizationModeTaggedBuilder
+func (b *_BACnetAuthorizationModeTagged) CreateBACnetAuthorizationModeTaggedBuilder() BACnetAuthorizationModeTaggedBuilder {
+	if b == nil {
+		return NewBACnetAuthorizationModeTaggedBuilder()
+	}
+	return &_BACnetAuthorizationModeTaggedBuilder{_BACnetAuthorizationModeTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +221,6 @@ func (m *_BACnetAuthorizationModeTagged) GetIsProprietary() bool {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetAuthorizationModeTagged factory function for _BACnetAuthorizationModeTagged
-func NewBACnetAuthorizationModeTagged(header BACnetTagHeader, value BACnetAuthorizationMode, proprietaryValue uint32, tagNumber uint8, tagClass TagClass) *_BACnetAuthorizationModeTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetAuthorizationModeTagged must not be nil")
-	}
-	return &_BACnetAuthorizationModeTagged{Header: header, Value: value, ProprietaryValue: proprietaryValue, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetAuthorizationModeTagged(structType any) BACnetAuthorizationModeTagged {
@@ -159,7 +273,7 @@ func BACnetAuthorizationModeTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetAuthorizationModeTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetAuthorizationModeTagged BACnetAuthorizationModeTagged, err error) {
@@ -270,13 +384,35 @@ func (m *_BACnetAuthorizationModeTagged) GetTagClass() TagClass {
 
 func (m *_BACnetAuthorizationModeTagged) IsBACnetAuthorizationModeTagged() {}
 
+func (m *_BACnetAuthorizationModeTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetAuthorizationModeTagged) deepCopy() *_BACnetAuthorizationModeTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetAuthorizationModeTaggedCopy := &_BACnetAuthorizationModeTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.ProprietaryValue,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetAuthorizationModeTaggedCopy
+}
+
 func (m *_BACnetAuthorizationModeTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

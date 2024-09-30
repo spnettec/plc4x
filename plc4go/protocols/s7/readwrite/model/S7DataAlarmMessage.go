@@ -44,14 +44,19 @@ type S7DataAlarmMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
+	// CreateBuilder creates a S7DataAlarmMessageBuilder
+	CreateS7DataAlarmMessageBuilder() S7DataAlarmMessageBuilder
 }
 
 // S7DataAlarmMessageContract provides a set of functions which can be overwritten by a sub struct
 type S7DataAlarmMessageContract interface {
 	// IsS7DataAlarmMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7DataAlarmMessage()
+	// CreateBuilder creates a S7DataAlarmMessageBuilder
+	CreateS7DataAlarmMessageBuilder() S7DataAlarmMessageBuilder
 }
 
 // S7DataAlarmMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -68,6 +73,156 @@ type _S7DataAlarmMessage struct {
 }
 
 var _ S7DataAlarmMessageContract = (*_S7DataAlarmMessage)(nil)
+
+// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
+func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
+	return &_S7DataAlarmMessage{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7DataAlarmMessageBuilder is a builder for S7DataAlarmMessage
+type S7DataAlarmMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() S7DataAlarmMessageBuilder
+	// AsS7MessageObjectRequest converts this build to a subType of S7DataAlarmMessage. It is always possible to return to current builder using Done()
+	AsS7MessageObjectRequest() interface {
+		S7MessageObjectRequestBuilder
+		Done() S7DataAlarmMessageBuilder
+	}
+	// AsS7MessageObjectResponse converts this build to a subType of S7DataAlarmMessage. It is always possible to return to current builder using Done()
+	AsS7MessageObjectResponse() interface {
+		S7MessageObjectResponseBuilder
+		Done() S7DataAlarmMessageBuilder
+	}
+	// Build builds the S7DataAlarmMessage or returns an error if something is wrong
+	PartialBuild() (S7DataAlarmMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() S7DataAlarmMessageContract
+	// Build builds the S7DataAlarmMessage or returns an error if something is wrong
+	Build() (S7DataAlarmMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7DataAlarmMessage
+}
+
+// NewS7DataAlarmMessageBuilder() creates a S7DataAlarmMessageBuilder
+func NewS7DataAlarmMessageBuilder() S7DataAlarmMessageBuilder {
+	return &_S7DataAlarmMessageBuilder{_S7DataAlarmMessage: new(_S7DataAlarmMessage)}
+}
+
+type _S7DataAlarmMessageChildBuilder interface {
+	utils.Copyable
+	setParent(S7DataAlarmMessageContract)
+	buildForS7DataAlarmMessage() (S7DataAlarmMessage, error)
+}
+
+type _S7DataAlarmMessageBuilder struct {
+	*_S7DataAlarmMessage
+
+	childBuilder _S7DataAlarmMessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7DataAlarmMessageBuilder) = (*_S7DataAlarmMessageBuilder)(nil)
+
+func (b *_S7DataAlarmMessageBuilder) WithMandatoryFields() S7DataAlarmMessageBuilder {
+	return b
+}
+
+func (b *_S7DataAlarmMessageBuilder) PartialBuild() (S7DataAlarmMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7DataAlarmMessage.deepCopy(), nil
+}
+
+func (b *_S7DataAlarmMessageBuilder) PartialMustBuild() S7DataAlarmMessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectRequest() interface {
+	S7MessageObjectRequestBuilder
+	Done() S7DataAlarmMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageObjectRequestBuilder
+		Done() S7DataAlarmMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageObjectRequestBuilder().(*_S7MessageObjectRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7DataAlarmMessageBuilder) AsS7MessageObjectResponse() interface {
+	S7MessageObjectResponseBuilder
+	Done() S7DataAlarmMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageObjectResponseBuilder
+		Done() S7DataAlarmMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageObjectResponseBuilder().(*_S7MessageObjectResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7DataAlarmMessageBuilder) Build() (S7DataAlarmMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7DataAlarmMessage()
+}
+
+func (b *_S7DataAlarmMessageBuilder) MustBuild() S7DataAlarmMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7DataAlarmMessageBuilder) DeepCopy() any {
+	_copy := b.CreateS7DataAlarmMessageBuilder().(*_S7DataAlarmMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7DataAlarmMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7DataAlarmMessageBuilder creates a S7DataAlarmMessageBuilder
+func (b *_S7DataAlarmMessage) CreateS7DataAlarmMessageBuilder() S7DataAlarmMessageBuilder {
+	if b == nil {
+		return NewS7DataAlarmMessageBuilder()
+	}
+	return &_S7DataAlarmMessageBuilder{_S7DataAlarmMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -86,11 +241,6 @@ func (m *_S7DataAlarmMessage) GetNumberMessageObj() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7DataAlarmMessage factory function for _S7DataAlarmMessage
-func NewS7DataAlarmMessage() *_S7DataAlarmMessage {
-	return &_S7DataAlarmMessage{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7DataAlarmMessage(structType any) S7DataAlarmMessage {
@@ -134,7 +284,7 @@ func S7DataAlarmMessageParseWithBufferProducer[T S7DataAlarmMessage](cpuFunction
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -144,7 +294,12 @@ func S7DataAlarmMessageParseWithBuffer[T S7DataAlarmMessage](ctx context.Context
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (__s7DataAlarmMessage S7DataAlarmMessage, err error) {
@@ -172,11 +327,11 @@ func (m *_S7DataAlarmMessage) parse(ctx context.Context, readBuffer utils.ReadBu
 	var _child S7DataAlarmMessage
 	switch {
 	case cpuFunctionType == 0x04: // S7MessageObjectRequest
-		if _child, err = (&_S7MessageObjectRequest{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectRequest).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectRequest for type-switch of S7DataAlarmMessage")
 		}
 	case cpuFunctionType == 0x08: // S7MessageObjectResponse
-		if _child, err = (&_S7MessageObjectResponse{}).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
+		if _child, err = new(_S7MessageObjectResponse).parse(ctx, readBuffer, m, cpuFunctionType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageObjectResponse for type-switch of S7DataAlarmMessage")
 		}
 	default:
@@ -222,3 +377,17 @@ func (pm *_S7DataAlarmMessage) serializeParent(ctx context.Context, writeBuffer 
 }
 
 func (m *_S7DataAlarmMessage) IsS7DataAlarmMessage() {}
+
+func (m *_S7DataAlarmMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7DataAlarmMessage) deepCopy() *_S7DataAlarmMessage {
+	if m == nil {
+		return nil
+	}
+	_S7DataAlarmMessageCopy := &_S7DataAlarmMessage{
+		nil, // will be set by child
+	}
+	return _S7DataAlarmMessageCopy
+}

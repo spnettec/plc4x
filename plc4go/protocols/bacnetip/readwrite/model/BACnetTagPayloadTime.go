@@ -38,6 +38,7 @@ type BACnetTagPayloadTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHour returns Hour (property field)
 	GetHour() uint8
 	// GetMinute returns Minute (property field)
@@ -58,6 +59,8 @@ type BACnetTagPayloadTime interface {
 	GetFractionalIsWildcard() bool
 	// IsBACnetTagPayloadTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetTagPayloadTime()
+	// CreateBuilder creates a BACnetTagPayloadTimeBuilder
+	CreateBACnetTagPayloadTimeBuilder() BACnetTagPayloadTimeBuilder
 }
 
 // _BACnetTagPayloadTime is the data-structure of this message
@@ -69,6 +72,108 @@ type _BACnetTagPayloadTime struct {
 }
 
 var _ BACnetTagPayloadTime = (*_BACnetTagPayloadTime)(nil)
+
+// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
+func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
+	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetTagPayloadTimeBuilder is a builder for BACnetTagPayloadTime
+type BACnetTagPayloadTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hour uint8, minute uint8, second uint8, fractional uint8) BACnetTagPayloadTimeBuilder
+	// WithHour adds Hour (property field)
+	WithHour(uint8) BACnetTagPayloadTimeBuilder
+	// WithMinute adds Minute (property field)
+	WithMinute(uint8) BACnetTagPayloadTimeBuilder
+	// WithSecond adds Second (property field)
+	WithSecond(uint8) BACnetTagPayloadTimeBuilder
+	// WithFractional adds Fractional (property field)
+	WithFractional(uint8) BACnetTagPayloadTimeBuilder
+	// Build builds the BACnetTagPayloadTime or returns an error if something is wrong
+	Build() (BACnetTagPayloadTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetTagPayloadTime
+}
+
+// NewBACnetTagPayloadTimeBuilder() creates a BACnetTagPayloadTimeBuilder
+func NewBACnetTagPayloadTimeBuilder() BACnetTagPayloadTimeBuilder {
+	return &_BACnetTagPayloadTimeBuilder{_BACnetTagPayloadTime: new(_BACnetTagPayloadTime)}
+}
+
+type _BACnetTagPayloadTimeBuilder struct {
+	*_BACnetTagPayloadTime
+
+	err *utils.MultiError
+}
+
+var _ (BACnetTagPayloadTimeBuilder) = (*_BACnetTagPayloadTimeBuilder)(nil)
+
+func (b *_BACnetTagPayloadTimeBuilder) WithMandatoryFields(hour uint8, minute uint8, second uint8, fractional uint8) BACnetTagPayloadTimeBuilder {
+	return b.WithHour(hour).WithMinute(minute).WithSecond(second).WithFractional(fractional)
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) WithHour(hour uint8) BACnetTagPayloadTimeBuilder {
+	b.Hour = hour
+	return b
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) WithMinute(minute uint8) BACnetTagPayloadTimeBuilder {
+	b.Minute = minute
+	return b
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) WithSecond(second uint8) BACnetTagPayloadTimeBuilder {
+	b.Second = second
+	return b
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) WithFractional(fractional uint8) BACnetTagPayloadTimeBuilder {
+	b.Fractional = fractional
+	return b
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) Build() (BACnetTagPayloadTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetTagPayloadTime.deepCopy(), nil
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) MustBuild() BACnetTagPayloadTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetTagPayloadTimeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetTagPayloadTimeBuilder().(*_BACnetTagPayloadTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetTagPayloadTimeBuilder creates a BACnetTagPayloadTimeBuilder
+func (b *_BACnetTagPayloadTime) CreateBACnetTagPayloadTimeBuilder() BACnetTagPayloadTimeBuilder {
+	if b == nil {
+		return NewBACnetTagPayloadTimeBuilder()
+	}
+	return &_BACnetTagPayloadTimeBuilder{_BACnetTagPayloadTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -135,11 +240,6 @@ func (m *_BACnetTagPayloadTime) GetFractionalIsWildcard() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewBACnetTagPayloadTime factory function for _BACnetTagPayloadTime
-func NewBACnetTagPayloadTime(hour uint8, minute uint8, second uint8, fractional uint8) *_BACnetTagPayloadTime {
-	return &_BACnetTagPayloadTime{Hour: hour, Minute: minute, Second: second, Fractional: fractional}
-}
-
 // Deprecated: use the interface for direct cast
 func CastBACnetTagPayloadTime(structType any) BACnetTagPayloadTime {
 	if casted, ok := structType.(BACnetTagPayloadTime); ok {
@@ -202,7 +302,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetTagPayloadTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetTagPayloadTime BACnetTagPayloadTime, err error) {
@@ -346,13 +446,34 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetTagPayloadTime) IsBACnetTagPayloadTime() {}
 
+func (m *_BACnetTagPayloadTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetTagPayloadTime) deepCopy() *_BACnetTagPayloadTime {
+	if m == nil {
+		return nil
+	}
+	_BACnetTagPayloadTimeCopy := &_BACnetTagPayloadTime{
+		m.Hour,
+		m.Minute,
+		m.Second,
+		m.Fractional,
+	}
+	return _BACnetTagPayloadTimeCopy
+}
+
 func (m *_BACnetTagPayloadTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

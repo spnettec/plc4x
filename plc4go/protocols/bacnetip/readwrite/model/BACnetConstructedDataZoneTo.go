@@ -38,6 +38,7 @@ type BACnetConstructedDataZoneTo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetZoneTo returns ZoneTo (property field)
 	GetZoneTo() BACnetDeviceObjectReference
@@ -45,6 +46,8 @@ type BACnetConstructedDataZoneTo interface {
 	GetActualValue() BACnetDeviceObjectReference
 	// IsBACnetConstructedDataZoneTo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataZoneTo()
+	// CreateBuilder creates a BACnetConstructedDataZoneToBuilder
+	CreateBACnetConstructedDataZoneToBuilder() BACnetConstructedDataZoneToBuilder
 }
 
 // _BACnetConstructedDataZoneTo is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataZoneTo struct {
 
 var _ BACnetConstructedDataZoneTo = (*_BACnetConstructedDataZoneTo)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataZoneTo)(nil)
+
+// NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
+func NewBACnetConstructedDataZoneTo(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, zoneTo BACnetDeviceObjectReference, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
+	if zoneTo == nil {
+		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
+	}
+	_result := &_BACnetConstructedDataZoneTo{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		ZoneTo:                        zoneTo,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataZoneToBuilder is a builder for BACnetConstructedDataZoneTo
+type BACnetConstructedDataZoneToBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(zoneTo BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder
+	// WithZoneTo adds ZoneTo (property field)
+	WithZoneTo(BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder
+	// WithZoneToBuilder adds ZoneTo (property field) which is build by the builder
+	WithZoneToBuilder(func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataZoneToBuilder
+	// Build builds the BACnetConstructedDataZoneTo or returns an error if something is wrong
+	Build() (BACnetConstructedDataZoneTo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataZoneTo
+}
+
+// NewBACnetConstructedDataZoneToBuilder() creates a BACnetConstructedDataZoneToBuilder
+func NewBACnetConstructedDataZoneToBuilder() BACnetConstructedDataZoneToBuilder {
+	return &_BACnetConstructedDataZoneToBuilder{_BACnetConstructedDataZoneTo: new(_BACnetConstructedDataZoneTo)}
+}
+
+type _BACnetConstructedDataZoneToBuilder struct {
+	*_BACnetConstructedDataZoneTo
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataZoneToBuilder) = (*_BACnetConstructedDataZoneToBuilder)(nil)
+
+func (b *_BACnetConstructedDataZoneToBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) WithMandatoryFields(zoneTo BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder {
+	return b.WithZoneTo(zoneTo)
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) WithZoneTo(zoneTo BACnetDeviceObjectReference) BACnetConstructedDataZoneToBuilder {
+	b.ZoneTo = zoneTo
+	return b
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) WithZoneToBuilder(builderSupplier func(BACnetDeviceObjectReferenceBuilder) BACnetDeviceObjectReferenceBuilder) BACnetConstructedDataZoneToBuilder {
+	builder := builderSupplier(b.ZoneTo.CreateBACnetDeviceObjectReferenceBuilder())
+	var err error
+	b.ZoneTo, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDeviceObjectReferenceBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) Build() (BACnetConstructedDataZoneTo, error) {
+	if b.ZoneTo == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'zoneTo' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataZoneTo.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) MustBuild() BACnetConstructedDataZoneTo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataZoneToBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataZoneToBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataZoneToBuilder().(*_BACnetConstructedDataZoneToBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataZoneToBuilder creates a BACnetConstructedDataZoneToBuilder
+func (b *_BACnetConstructedDataZoneTo) CreateBACnetConstructedDataZoneToBuilder() BACnetConstructedDataZoneToBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataZoneToBuilder()
+	}
+	return &_BACnetConstructedDataZoneToBuilder{_BACnetConstructedDataZoneTo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataZoneTo) GetActualValue() BACnetDeviceObjectRefere
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataZoneTo factory function for _BACnetConstructedDataZoneTo
-func NewBACnetConstructedDataZoneTo(zoneTo BACnetDeviceObjectReference, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataZoneTo {
-	if zoneTo == nil {
-		panic("zoneTo of type BACnetDeviceObjectReference for BACnetConstructedDataZoneTo must not be nil")
-	}
-	_result := &_BACnetConstructedDataZoneTo{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		ZoneTo:                        zoneTo,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataZoneTo(structType any) BACnetConstructedDataZoneTo {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataZoneTo) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_BACnetConstructedDataZoneTo) IsBACnetConstructedDataZoneTo() {}
 
+func (m *_BACnetConstructedDataZoneTo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataZoneTo) deepCopy() *_BACnetConstructedDataZoneTo {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataZoneToCopy := &_BACnetConstructedDataZoneTo{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.ZoneTo.DeepCopy().(BACnetDeviceObjectReference),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataZoneToCopy
+}
+
 func (m *_BACnetConstructedDataZoneTo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

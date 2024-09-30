@@ -38,11 +38,14 @@ type S7ParameterReadVarRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Parameter
 	// GetItems returns Items (property field)
 	GetItems() []S7VarRequestParameterItem
 	// IsS7ParameterReadVarRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7ParameterReadVarRequest()
+	// CreateBuilder creates a S7ParameterReadVarRequestBuilder
+	CreateS7ParameterReadVarRequestBuilder() S7ParameterReadVarRequestBuilder
 }
 
 // _S7ParameterReadVarRequest is the data-structure of this message
@@ -53,6 +56,107 @@ type _S7ParameterReadVarRequest struct {
 
 var _ S7ParameterReadVarRequest = (*_S7ParameterReadVarRequest)(nil)
 var _ S7ParameterRequirements = (*_S7ParameterReadVarRequest)(nil)
+
+// NewS7ParameterReadVarRequest factory function for _S7ParameterReadVarRequest
+func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7ParameterReadVarRequest {
+	_result := &_S7ParameterReadVarRequest{
+		S7ParameterContract: NewS7Parameter(),
+		Items:               items,
+	}
+	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7ParameterReadVarRequestBuilder is a builder for S7ParameterReadVarRequest
+type S7ParameterReadVarRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder
+	// WithItems adds Items (property field)
+	WithItems(...S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder
+	// Build builds the S7ParameterReadVarRequest or returns an error if something is wrong
+	Build() (S7ParameterReadVarRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7ParameterReadVarRequest
+}
+
+// NewS7ParameterReadVarRequestBuilder() creates a S7ParameterReadVarRequestBuilder
+func NewS7ParameterReadVarRequestBuilder() S7ParameterReadVarRequestBuilder {
+	return &_S7ParameterReadVarRequestBuilder{_S7ParameterReadVarRequest: new(_S7ParameterReadVarRequest)}
+}
+
+type _S7ParameterReadVarRequestBuilder struct {
+	*_S7ParameterReadVarRequest
+
+	parentBuilder *_S7ParameterBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7ParameterReadVarRequestBuilder) = (*_S7ParameterReadVarRequestBuilder)(nil)
+
+func (b *_S7ParameterReadVarRequestBuilder) setParent(contract S7ParameterContract) {
+	b.S7ParameterContract = contract
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) WithMandatoryFields(items []S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder {
+	return b.WithItems(items...)
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) WithItems(items ...S7VarRequestParameterItem) S7ParameterReadVarRequestBuilder {
+	b.Items = items
+	return b
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) Build() (S7ParameterReadVarRequest, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7ParameterReadVarRequest.deepCopy(), nil
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) MustBuild() S7ParameterReadVarRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7ParameterReadVarRequestBuilder) Done() S7ParameterBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) buildForS7Parameter() (S7Parameter, error) {
+	return b.Build()
+}
+
+func (b *_S7ParameterReadVarRequestBuilder) DeepCopy() any {
+	_copy := b.CreateS7ParameterReadVarRequestBuilder().(*_S7ParameterReadVarRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7ParameterReadVarRequestBuilder creates a S7ParameterReadVarRequestBuilder
+func (b *_S7ParameterReadVarRequest) CreateS7ParameterReadVarRequestBuilder() S7ParameterReadVarRequestBuilder {
+	if b == nil {
+		return NewS7ParameterReadVarRequestBuilder()
+	}
+	return &_S7ParameterReadVarRequestBuilder{_S7ParameterReadVarRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_S7ParameterReadVarRequest) GetItems() []S7VarRequestParameterItem {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7ParameterReadVarRequest factory function for _S7ParameterReadVarRequest
-func NewS7ParameterReadVarRequest(items []S7VarRequestParameterItem) *_S7ParameterReadVarRequest {
-	_result := &_S7ParameterReadVarRequest{
-		S7ParameterContract: NewS7Parameter(),
-		Items:               items,
-	}
-	_result.S7ParameterContract.(*_S7Parameter)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7ParameterReadVarRequest(structType any) S7ParameterReadVarRequest {
@@ -204,13 +298,33 @@ func (m *_S7ParameterReadVarRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_S7ParameterReadVarRequest) IsS7ParameterReadVarRequest() {}
 
+func (m *_S7ParameterReadVarRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7ParameterReadVarRequest) deepCopy() *_S7ParameterReadVarRequest {
+	if m == nil {
+		return nil
+	}
+	_S7ParameterReadVarRequestCopy := &_S7ParameterReadVarRequest{
+		m.S7ParameterContract.(*_S7Parameter).deepCopy(),
+		utils.DeepCopySlice[S7VarRequestParameterItem, S7VarRequestParameterItem](m.Items),
+	}
+	m.S7ParameterContract.(*_S7Parameter)._SubType = m
+	return _S7ParameterReadVarRequestCopy
+}
+
 func (m *_S7ParameterReadVarRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

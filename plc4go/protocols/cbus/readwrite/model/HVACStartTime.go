@@ -38,6 +38,7 @@ type HVACStartTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMinutesSinceSunday12AM returns MinutesSinceSunday12AM (property field)
 	GetMinutesSinceSunday12AM() uint16
 	// GetHoursSinceSunday12AM returns HoursSinceSunday12AM (virtual field)
@@ -52,6 +53,8 @@ type HVACStartTime interface {
 	GetMinute() uint8
 	// IsHVACStartTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACStartTime()
+	// CreateBuilder creates a HVACStartTimeBuilder
+	CreateHVACStartTimeBuilder() HVACStartTimeBuilder
 }
 
 // _HVACStartTime is the data-structure of this message
@@ -60,6 +63,87 @@ type _HVACStartTime struct {
 }
 
 var _ HVACStartTime = (*_HVACStartTime)(nil)
+
+// NewHVACStartTime factory function for _HVACStartTime
+func NewHVACStartTime(minutesSinceSunday12AM uint16) *_HVACStartTime {
+	return &_HVACStartTime{MinutesSinceSunday12AM: minutesSinceSunday12AM}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACStartTimeBuilder is a builder for HVACStartTime
+type HVACStartTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(minutesSinceSunday12AM uint16) HVACStartTimeBuilder
+	// WithMinutesSinceSunday12AM adds MinutesSinceSunday12AM (property field)
+	WithMinutesSinceSunday12AM(uint16) HVACStartTimeBuilder
+	// Build builds the HVACStartTime or returns an error if something is wrong
+	Build() (HVACStartTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACStartTime
+}
+
+// NewHVACStartTimeBuilder() creates a HVACStartTimeBuilder
+func NewHVACStartTimeBuilder() HVACStartTimeBuilder {
+	return &_HVACStartTimeBuilder{_HVACStartTime: new(_HVACStartTime)}
+}
+
+type _HVACStartTimeBuilder struct {
+	*_HVACStartTime
+
+	err *utils.MultiError
+}
+
+var _ (HVACStartTimeBuilder) = (*_HVACStartTimeBuilder)(nil)
+
+func (b *_HVACStartTimeBuilder) WithMandatoryFields(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
+	return b.WithMinutesSinceSunday12AM(minutesSinceSunday12AM)
+}
+
+func (b *_HVACStartTimeBuilder) WithMinutesSinceSunday12AM(minutesSinceSunday12AM uint16) HVACStartTimeBuilder {
+	b.MinutesSinceSunday12AM = minutesSinceSunday12AM
+	return b
+}
+
+func (b *_HVACStartTimeBuilder) Build() (HVACStartTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACStartTime.deepCopy(), nil
+}
+
+func (b *_HVACStartTimeBuilder) MustBuild() HVACStartTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACStartTimeBuilder) DeepCopy() any {
+	_copy := b.CreateHVACStartTimeBuilder().(*_HVACStartTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACStartTimeBuilder creates a HVACStartTimeBuilder
+func (b *_HVACStartTime) CreateHVACStartTimeBuilder() HVACStartTimeBuilder {
+	if b == nil {
+		return NewHVACStartTimeBuilder()
+	}
+	return &_HVACStartTimeBuilder{_HVACStartTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -114,11 +198,6 @@ func (m *_HVACStartTime) GetMinute() uint8 {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewHVACStartTime factory function for _HVACStartTime
-func NewHVACStartTime(minutesSinceSunday12AM uint16) *_HVACStartTime {
-	return &_HVACStartTime{MinutesSinceSunday12AM: minutesSinceSunday12AM}
-}
-
 // Deprecated: use the interface for direct cast
 func CastHVACStartTime(structType any) HVACStartTime {
 	if casted, ok := structType.(HVACStartTime); ok {
@@ -172,7 +251,7 @@ func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACStartTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACStartTime HVACStartTime, err error) {
@@ -286,13 +365,31 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 func (m *_HVACStartTime) IsHVACStartTime() {}
 
+func (m *_HVACStartTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACStartTime) deepCopy() *_HVACStartTime {
+	if m == nil {
+		return nil
+	}
+	_HVACStartTimeCopy := &_HVACStartTime{
+		m.MinutesSinceSunday12AM,
+	}
+	return _HVACStartTimeCopy
+}
+
 func (m *_HVACStartTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type NPDUControl interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetMessageTypeFieldPresent returns MessageTypeFieldPresent (property field)
 	GetMessageTypeFieldPresent() bool
 	// GetDestinationSpecified returns DestinationSpecified (property field)
@@ -50,6 +51,8 @@ type NPDUControl interface {
 	GetNetworkPriority() NPDUNetworkPriority
 	// IsNPDUControl is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNPDUControl()
+	// CreateBuilder creates a NPDUControlBuilder
+	CreateNPDUControlBuilder() NPDUControlBuilder
 }
 
 // _NPDUControl is the data-structure of this message
@@ -65,6 +68,115 @@ type _NPDUControl struct {
 }
 
 var _ NPDUControl = (*_NPDUControl)(nil)
+
+// NewNPDUControl factory function for _NPDUControl
+func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *_NPDUControl {
+	return &_NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NPDUControlBuilder is a builder for NPDUControl
+type NPDUControlBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) NPDUControlBuilder
+	// WithMessageTypeFieldPresent adds MessageTypeFieldPresent (property field)
+	WithMessageTypeFieldPresent(bool) NPDUControlBuilder
+	// WithDestinationSpecified adds DestinationSpecified (property field)
+	WithDestinationSpecified(bool) NPDUControlBuilder
+	// WithSourceSpecified adds SourceSpecified (property field)
+	WithSourceSpecified(bool) NPDUControlBuilder
+	// WithExpectingReply adds ExpectingReply (property field)
+	WithExpectingReply(bool) NPDUControlBuilder
+	// WithNetworkPriority adds NetworkPriority (property field)
+	WithNetworkPriority(NPDUNetworkPriority) NPDUControlBuilder
+	// Build builds the NPDUControl or returns an error if something is wrong
+	Build() (NPDUControl, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NPDUControl
+}
+
+// NewNPDUControlBuilder() creates a NPDUControlBuilder
+func NewNPDUControlBuilder() NPDUControlBuilder {
+	return &_NPDUControlBuilder{_NPDUControl: new(_NPDUControl)}
+}
+
+type _NPDUControlBuilder struct {
+	*_NPDUControl
+
+	err *utils.MultiError
+}
+
+var _ (NPDUControlBuilder) = (*_NPDUControlBuilder)(nil)
+
+func (b *_NPDUControlBuilder) WithMandatoryFields(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) NPDUControlBuilder {
+	return b.WithMessageTypeFieldPresent(messageTypeFieldPresent).WithDestinationSpecified(destinationSpecified).WithSourceSpecified(sourceSpecified).WithExpectingReply(expectingReply).WithNetworkPriority(networkPriority)
+}
+
+func (b *_NPDUControlBuilder) WithMessageTypeFieldPresent(messageTypeFieldPresent bool) NPDUControlBuilder {
+	b.MessageTypeFieldPresent = messageTypeFieldPresent
+	return b
+}
+
+func (b *_NPDUControlBuilder) WithDestinationSpecified(destinationSpecified bool) NPDUControlBuilder {
+	b.DestinationSpecified = destinationSpecified
+	return b
+}
+
+func (b *_NPDUControlBuilder) WithSourceSpecified(sourceSpecified bool) NPDUControlBuilder {
+	b.SourceSpecified = sourceSpecified
+	return b
+}
+
+func (b *_NPDUControlBuilder) WithExpectingReply(expectingReply bool) NPDUControlBuilder {
+	b.ExpectingReply = expectingReply
+	return b
+}
+
+func (b *_NPDUControlBuilder) WithNetworkPriority(networkPriority NPDUNetworkPriority) NPDUControlBuilder {
+	b.NetworkPriority = networkPriority
+	return b
+}
+
+func (b *_NPDUControlBuilder) Build() (NPDUControl, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NPDUControl.deepCopy(), nil
+}
+
+func (b *_NPDUControlBuilder) MustBuild() NPDUControl {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NPDUControlBuilder) DeepCopy() any {
+	_copy := b.CreateNPDUControlBuilder().(*_NPDUControlBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNPDUControlBuilder creates a NPDUControlBuilder
+func (b *_NPDUControl) CreateNPDUControlBuilder() NPDUControlBuilder {
+	if b == nil {
+		return NewNPDUControlBuilder()
+	}
+	return &_NPDUControlBuilder{_NPDUControl: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -95,11 +207,6 @@ func (m *_NPDUControl) GetNetworkPriority() NPDUNetworkPriority {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNPDUControl factory function for _NPDUControl
-func NewNPDUControl(messageTypeFieldPresent bool, destinationSpecified bool, sourceSpecified bool, expectingReply bool, networkPriority NPDUNetworkPriority) *_NPDUControl {
-	return &_NPDUControl{MessageTypeFieldPresent: messageTypeFieldPresent, DestinationSpecified: destinationSpecified, SourceSpecified: sourceSpecified, ExpectingReply: expectingReply, NetworkPriority: networkPriority}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNPDUControl(structType any) NPDUControl {
@@ -162,7 +269,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NPDUControl) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__nPDUControl NPDUControl, err error) {
@@ -276,13 +383,37 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_NPDUControl) IsNPDUControl() {}
 
+func (m *_NPDUControl) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NPDUControl) deepCopy() *_NPDUControl {
+	if m == nil {
+		return nil
+	}
+	_NPDUControlCopy := &_NPDUControl{
+		m.MessageTypeFieldPresent,
+		m.DestinationSpecified,
+		m.SourceSpecified,
+		m.ExpectingReply,
+		m.NetworkPriority,
+		m.reservedField0,
+		m.reservedField1,
+	}
+	return _NPDUControlCopy
+}
+
 func (m *_NPDUControl) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

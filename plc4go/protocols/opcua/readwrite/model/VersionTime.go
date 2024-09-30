@@ -36,8 +36,11 @@ type VersionTime interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsVersionTime is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsVersionTime()
+	// CreateBuilder creates a VersionTimeBuilder
+	CreateVersionTimeBuilder() VersionTimeBuilder
 }
 
 // _VersionTime is the data-structure of this message
@@ -50,6 +53,75 @@ var _ VersionTime = (*_VersionTime)(nil)
 func NewVersionTime() *_VersionTime {
 	return &_VersionTime{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// VersionTimeBuilder is a builder for VersionTime
+type VersionTimeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() VersionTimeBuilder
+	// Build builds the VersionTime or returns an error if something is wrong
+	Build() (VersionTime, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() VersionTime
+}
+
+// NewVersionTimeBuilder() creates a VersionTimeBuilder
+func NewVersionTimeBuilder() VersionTimeBuilder {
+	return &_VersionTimeBuilder{_VersionTime: new(_VersionTime)}
+}
+
+type _VersionTimeBuilder struct {
+	*_VersionTime
+
+	err *utils.MultiError
+}
+
+var _ (VersionTimeBuilder) = (*_VersionTimeBuilder)(nil)
+
+func (b *_VersionTimeBuilder) WithMandatoryFields() VersionTimeBuilder {
+	return b
+}
+
+func (b *_VersionTimeBuilder) Build() (VersionTime, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._VersionTime.deepCopy(), nil
+}
+
+func (b *_VersionTimeBuilder) MustBuild() VersionTime {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_VersionTimeBuilder) DeepCopy() any {
+	_copy := b.CreateVersionTimeBuilder().(*_VersionTimeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateVersionTimeBuilder creates a VersionTimeBuilder
+func (b *_VersionTime) CreateVersionTimeBuilder() VersionTimeBuilder {
+	if b == nil {
+		return NewVersionTimeBuilder()
+	}
+	return &_VersionTimeBuilder{_VersionTime: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastVersionTime(structType any) VersionTime {
@@ -91,7 +163,7 @@ func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_VersionTime) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__versionTime VersionTime, err error) {
@@ -135,13 +207,29 @@ func (m *_VersionTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 func (m *_VersionTime) IsVersionTime() {}
 
+func (m *_VersionTime) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_VersionTime) deepCopy() *_VersionTime {
+	if m == nil {
+		return nil
+	}
+	_VersionTimeCopy := &_VersionTime{}
+	return _VersionTimeCopy
+}
+
 func (m *_VersionTime) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

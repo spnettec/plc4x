@@ -38,6 +38,7 @@ type BACnetDailySchedule interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDaySchedule returns DaySchedule (property field)
@@ -46,6 +47,8 @@ type BACnetDailySchedule interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetDailySchedule is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDailySchedule()
+	// CreateBuilder creates a BACnetDailyScheduleBuilder
+	CreateBACnetDailyScheduleBuilder() BACnetDailyScheduleBuilder
 }
 
 // _BACnetDailySchedule is the data-structure of this message
@@ -56,6 +59,149 @@ type _BACnetDailySchedule struct {
 }
 
 var _ BACnetDailySchedule = (*_BACnetDailySchedule)(nil)
+
+// NewBACnetDailySchedule factory function for _BACnetDailySchedule
+func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
+	}
+	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDailyScheduleBuilder is a builder for BACnetDailySchedule
+type BACnetDailyScheduleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) BACnetDailyScheduleBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetDailyScheduleBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDailyScheduleBuilder
+	// WithDaySchedule adds DaySchedule (property field)
+	WithDaySchedule(...BACnetTimeValue) BACnetDailyScheduleBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetDailyScheduleBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDailyScheduleBuilder
+	// Build builds the BACnetDailySchedule or returns an error if something is wrong
+	Build() (BACnetDailySchedule, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDailySchedule
+}
+
+// NewBACnetDailyScheduleBuilder() creates a BACnetDailyScheduleBuilder
+func NewBACnetDailyScheduleBuilder() BACnetDailyScheduleBuilder {
+	return &_BACnetDailyScheduleBuilder{_BACnetDailySchedule: new(_BACnetDailySchedule)}
+}
+
+type _BACnetDailyScheduleBuilder struct {
+	*_BACnetDailySchedule
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDailyScheduleBuilder) = (*_BACnetDailyScheduleBuilder)(nil)
+
+func (b *_BACnetDailyScheduleBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
+	return b.WithOpeningTag(openingTag).WithDaySchedule(daySchedule...).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetDailyScheduleBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDailyScheduleBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetDailyScheduleBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDailyScheduleBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDailyScheduleBuilder) WithDaySchedule(daySchedule ...BACnetTimeValue) BACnetDailyScheduleBuilder {
+	b.DaySchedule = daySchedule
+	return b
+}
+
+func (b *_BACnetDailyScheduleBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDailyScheduleBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetDailyScheduleBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDailyScheduleBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDailyScheduleBuilder) Build() (BACnetDailySchedule, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDailySchedule.deepCopy(), nil
+}
+
+func (b *_BACnetDailyScheduleBuilder) MustBuild() BACnetDailySchedule {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDailyScheduleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDailyScheduleBuilder().(*_BACnetDailyScheduleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDailyScheduleBuilder creates a BACnetDailyScheduleBuilder
+func (b *_BACnetDailySchedule) CreateBACnetDailyScheduleBuilder() BACnetDailyScheduleBuilder {
+	if b == nil {
+		return NewBACnetDailyScheduleBuilder()
+	}
+	return &_BACnetDailyScheduleBuilder{_BACnetDailySchedule: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,17 +224,6 @@ func (m *_BACnetDailySchedule) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDailySchedule factory function for _BACnetDailySchedule
-func NewBACnetDailySchedule(openingTag BACnetOpeningTag, daySchedule []BACnetTimeValue, closingTag BACnetClosingTag) *_BACnetDailySchedule {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDailySchedule must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDailySchedule must not be nil")
-	}
-	return &_BACnetDailySchedule{OpeningTag: openingTag, DaySchedule: daySchedule, ClosingTag: closingTag}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDailySchedule(structType any) BACnetDailySchedule {
@@ -143,7 +278,7 @@ func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDailySchedule) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetDailySchedule BACnetDailySchedule, err error) {
@@ -217,13 +352,33 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_BACnetDailySchedule) IsBACnetDailySchedule() {}
 
+func (m *_BACnetDailySchedule) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDailySchedule) deepCopy() *_BACnetDailySchedule {
+	if m == nil {
+		return nil
+	}
+	_BACnetDailyScheduleCopy := &_BACnetDailySchedule{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		utils.DeepCopySlice[BACnetTimeValue, BACnetTimeValue](m.DaySchedule),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+	}
+	return _BACnetDailyScheduleCopy
+}
+
 func (m *_BACnetDailySchedule) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

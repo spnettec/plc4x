@@ -38,11 +38,14 @@ type CBusCommandPointToPoint interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	CBusCommand
 	// GetCommand returns Command (property field)
 	GetCommand() CBusPointToPointCommand
 	// IsCBusCommandPointToPoint is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusCommandPointToPoint()
+	// CreateBuilder creates a CBusCommandPointToPointBuilder
+	CreateCBusCommandPointToPointBuilder() CBusCommandPointToPointBuilder
 }
 
 // _CBusCommandPointToPoint is the data-structure of this message
@@ -53,6 +56,131 @@ type _CBusCommandPointToPoint struct {
 
 var _ CBusCommandPointToPoint = (*_CBusCommandPointToPoint)(nil)
 var _ CBusCommandRequirements = (*_CBusCommandPointToPoint)(nil)
+
+// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
+func NewCBusCommandPointToPoint(header CBusHeader, command CBusPointToPointCommand, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
+	if command == nil {
+		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
+	}
+	_result := &_CBusCommandPointToPoint{
+		CBusCommandContract: NewCBusCommand(header, cBusOptions),
+		Command:             command,
+	}
+	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusCommandPointToPointBuilder is a builder for CBusCommandPointToPoint
+type CBusCommandPointToPointBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(command CBusPointToPointCommand) CBusCommandPointToPointBuilder
+	// WithCommand adds Command (property field)
+	WithCommand(CBusPointToPointCommand) CBusCommandPointToPointBuilder
+	// WithCommandBuilder adds Command (property field) which is build by the builder
+	WithCommandBuilder(func(CBusPointToPointCommandBuilder) CBusPointToPointCommandBuilder) CBusCommandPointToPointBuilder
+	// Build builds the CBusCommandPointToPoint or returns an error if something is wrong
+	Build() (CBusCommandPointToPoint, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusCommandPointToPoint
+}
+
+// NewCBusCommandPointToPointBuilder() creates a CBusCommandPointToPointBuilder
+func NewCBusCommandPointToPointBuilder() CBusCommandPointToPointBuilder {
+	return &_CBusCommandPointToPointBuilder{_CBusCommandPointToPoint: new(_CBusCommandPointToPoint)}
+}
+
+type _CBusCommandPointToPointBuilder struct {
+	*_CBusCommandPointToPoint
+
+	parentBuilder *_CBusCommandBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusCommandPointToPointBuilder) = (*_CBusCommandPointToPointBuilder)(nil)
+
+func (b *_CBusCommandPointToPointBuilder) setParent(contract CBusCommandContract) {
+	b.CBusCommandContract = contract
+}
+
+func (b *_CBusCommandPointToPointBuilder) WithMandatoryFields(command CBusPointToPointCommand) CBusCommandPointToPointBuilder {
+	return b.WithCommand(command)
+}
+
+func (b *_CBusCommandPointToPointBuilder) WithCommand(command CBusPointToPointCommand) CBusCommandPointToPointBuilder {
+	b.Command = command
+	return b
+}
+
+func (b *_CBusCommandPointToPointBuilder) WithCommandBuilder(builderSupplier func(CBusPointToPointCommandBuilder) CBusPointToPointCommandBuilder) CBusCommandPointToPointBuilder {
+	builder := builderSupplier(b.Command.CreateCBusPointToPointCommandBuilder())
+	var err error
+	b.Command, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "CBusPointToPointCommandBuilder failed"))
+	}
+	return b
+}
+
+func (b *_CBusCommandPointToPointBuilder) Build() (CBusCommandPointToPoint, error) {
+	if b.Command == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'command' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusCommandPointToPoint.deepCopy(), nil
+}
+
+func (b *_CBusCommandPointToPointBuilder) MustBuild() CBusCommandPointToPoint {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_CBusCommandPointToPointBuilder) Done() CBusCommandBuilder {
+	return b.parentBuilder
+}
+
+func (b *_CBusCommandPointToPointBuilder) buildForCBusCommand() (CBusCommand, error) {
+	return b.Build()
+}
+
+func (b *_CBusCommandPointToPointBuilder) DeepCopy() any {
+	_copy := b.CreateCBusCommandPointToPointBuilder().(*_CBusCommandPointToPointBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusCommandPointToPointBuilder creates a CBusCommandPointToPointBuilder
+func (b *_CBusCommandPointToPoint) CreateCBusCommandPointToPointBuilder() CBusCommandPointToPointBuilder {
+	if b == nil {
+		return NewCBusCommandPointToPointBuilder()
+	}
+	return &_CBusCommandPointToPointBuilder{_CBusCommandPointToPoint: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_CBusCommandPointToPoint) GetCommand() CBusPointToPointCommand {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCBusCommandPointToPoint factory function for _CBusCommandPointToPoint
-func NewCBusCommandPointToPoint(command CBusPointToPointCommand, header CBusHeader, cBusOptions CBusOptions) *_CBusCommandPointToPoint {
-	if command == nil {
-		panic("command of type CBusPointToPointCommand for CBusCommandPointToPoint must not be nil")
-	}
-	_result := &_CBusCommandPointToPoint{
-		CBusCommandContract: NewCBusCommand(header, cBusOptions),
-		Command:             command,
-	}
-	_result.CBusCommandContract.(*_CBusCommand)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastCBusCommandPointToPoint(structType any) CBusCommandPointToPoint {
@@ -179,13 +294,33 @@ func (m *_CBusCommandPointToPoint) SerializeWithWriteBuffer(ctx context.Context,
 
 func (m *_CBusCommandPointToPoint) IsCBusCommandPointToPoint() {}
 
+func (m *_CBusCommandPointToPoint) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusCommandPointToPoint) deepCopy() *_CBusCommandPointToPoint {
+	if m == nil {
+		return nil
+	}
+	_CBusCommandPointToPointCopy := &_CBusCommandPointToPoint{
+		m.CBusCommandContract.(*_CBusCommand).deepCopy(),
+		m.Command.DeepCopy().(CBusPointToPointCommand),
+	}
+	m.CBusCommandContract.(*_CBusCommand)._SubType = m
+	return _CBusCommandPointToPointCopy
+}
+
 func (m *_CBusCommandPointToPoint) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

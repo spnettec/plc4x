@@ -38,11 +38,14 @@ type MediaTransportControlDataSelectionName interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	MediaTransportControlData
 	// GetSelectionName returns SelectionName (property field)
 	GetSelectionName() string
 	// IsMediaTransportControlDataSelectionName is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMediaTransportControlDataSelectionName()
+	// CreateBuilder creates a MediaTransportControlDataSelectionNameBuilder
+	CreateMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDataSelectionNameBuilder
 }
 
 // _MediaTransportControlDataSelectionName is the data-structure of this message
@@ -53,6 +56,107 @@ type _MediaTransportControlDataSelectionName struct {
 
 var _ MediaTransportControlDataSelectionName = (*_MediaTransportControlDataSelectionName)(nil)
 var _ MediaTransportControlDataRequirements = (*_MediaTransportControlDataSelectionName)(nil)
+
+// NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
+func NewMediaTransportControlDataSelectionName(commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte, selectionName string) *_MediaTransportControlDataSelectionName {
+	_result := &_MediaTransportControlDataSelectionName{
+		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
+		SelectionName:                     selectionName,
+	}
+	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// MediaTransportControlDataSelectionNameBuilder is a builder for MediaTransportControlDataSelectionName
+type MediaTransportControlDataSelectionNameBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder
+	// WithSelectionName adds SelectionName (property field)
+	WithSelectionName(string) MediaTransportControlDataSelectionNameBuilder
+	// Build builds the MediaTransportControlDataSelectionName or returns an error if something is wrong
+	Build() (MediaTransportControlDataSelectionName, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() MediaTransportControlDataSelectionName
+}
+
+// NewMediaTransportControlDataSelectionNameBuilder() creates a MediaTransportControlDataSelectionNameBuilder
+func NewMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDataSelectionNameBuilder {
+	return &_MediaTransportControlDataSelectionNameBuilder{_MediaTransportControlDataSelectionName: new(_MediaTransportControlDataSelectionName)}
+}
+
+type _MediaTransportControlDataSelectionNameBuilder struct {
+	*_MediaTransportControlDataSelectionName
+
+	parentBuilder *_MediaTransportControlDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (MediaTransportControlDataSelectionNameBuilder) = (*_MediaTransportControlDataSelectionNameBuilder)(nil)
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) setParent(contract MediaTransportControlDataContract) {
+	b.MediaTransportControlDataContract = contract
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) WithMandatoryFields(selectionName string) MediaTransportControlDataSelectionNameBuilder {
+	return b.WithSelectionName(selectionName)
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) WithSelectionName(selectionName string) MediaTransportControlDataSelectionNameBuilder {
+	b.SelectionName = selectionName
+	return b
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) Build() (MediaTransportControlDataSelectionName, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._MediaTransportControlDataSelectionName.deepCopy(), nil
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) MustBuild() MediaTransportControlDataSelectionName {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_MediaTransportControlDataSelectionNameBuilder) Done() MediaTransportControlDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) buildForMediaTransportControlData() (MediaTransportControlData, error) {
+	return b.Build()
+}
+
+func (b *_MediaTransportControlDataSelectionNameBuilder) DeepCopy() any {
+	_copy := b.CreateMediaTransportControlDataSelectionNameBuilder().(*_MediaTransportControlDataSelectionNameBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateMediaTransportControlDataSelectionNameBuilder creates a MediaTransportControlDataSelectionNameBuilder
+func (b *_MediaTransportControlDataSelectionName) CreateMediaTransportControlDataSelectionNameBuilder() MediaTransportControlDataSelectionNameBuilder {
+	if b == nil {
+		return NewMediaTransportControlDataSelectionNameBuilder()
+	}
+	return &_MediaTransportControlDataSelectionNameBuilder{_MediaTransportControlDataSelectionName: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,16 +185,6 @@ func (m *_MediaTransportControlDataSelectionName) GetSelectionName() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewMediaTransportControlDataSelectionName factory function for _MediaTransportControlDataSelectionName
-func NewMediaTransportControlDataSelectionName(selectionName string, commandTypeContainer MediaTransportControlCommandTypeContainer, mediaLinkGroup byte) *_MediaTransportControlDataSelectionName {
-	_result := &_MediaTransportControlDataSelectionName{
-		MediaTransportControlDataContract: NewMediaTransportControlData(commandTypeContainer, mediaLinkGroup),
-		SelectionName:                     selectionName,
-	}
-	_result.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastMediaTransportControlDataSelectionName(structType any) MediaTransportControlDataSelectionName {
@@ -176,13 +270,33 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 
 func (m *_MediaTransportControlDataSelectionName) IsMediaTransportControlDataSelectionName() {}
 
+func (m *_MediaTransportControlDataSelectionName) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_MediaTransportControlDataSelectionName) deepCopy() *_MediaTransportControlDataSelectionName {
+	if m == nil {
+		return nil
+	}
+	_MediaTransportControlDataSelectionNameCopy := &_MediaTransportControlDataSelectionName{
+		m.MediaTransportControlDataContract.(*_MediaTransportControlData).deepCopy(),
+		m.SelectionName,
+	}
+	m.MediaTransportControlDataContract.(*_MediaTransportControlData)._SubType = m
+	return _MediaTransportControlDataSelectionNameCopy
+}
+
 func (m *_MediaTransportControlDataSelectionName) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

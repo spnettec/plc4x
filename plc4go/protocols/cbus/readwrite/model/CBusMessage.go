@@ -38,8 +38,11 @@ type CBusMessage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessage()
+	// CreateBuilder creates a CBusMessageBuilder
+	CreateCBusMessageBuilder() CBusMessageBuilder
 }
 
 // CBusMessageContract provides a set of functions which can be overwritten by a sub struct
@@ -50,6 +53,8 @@ type CBusMessageContract interface {
 	GetCBusOptions() CBusOptions
 	// IsCBusMessage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCBusMessage()
+	// CreateBuilder creates a CBusMessageBuilder
+	CreateCBusMessageBuilder() CBusMessageBuilder
 }
 
 // CBusMessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -75,6 +80,151 @@ var _ CBusMessageContract = (*_CBusMessage)(nil)
 func NewCBusMessage(requestContext RequestContext, cBusOptions CBusOptions) *_CBusMessage {
 	return &_CBusMessage{RequestContext: requestContext, CBusOptions: cBusOptions}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CBusMessageBuilder is a builder for CBusMessage
+type CBusMessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() CBusMessageBuilder
+	// AsCBusMessageToServer converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
+	AsCBusMessageToServer() interface {
+		CBusMessageToServerBuilder
+		Done() CBusMessageBuilder
+	}
+	// AsCBusMessageToClient converts this build to a subType of CBusMessage. It is always possible to return to current builder using Done()
+	AsCBusMessageToClient() interface {
+		CBusMessageToClientBuilder
+		Done() CBusMessageBuilder
+	}
+	// Build builds the CBusMessage or returns an error if something is wrong
+	PartialBuild() (CBusMessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() CBusMessageContract
+	// Build builds the CBusMessage or returns an error if something is wrong
+	Build() (CBusMessage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CBusMessage
+}
+
+// NewCBusMessageBuilder() creates a CBusMessageBuilder
+func NewCBusMessageBuilder() CBusMessageBuilder {
+	return &_CBusMessageBuilder{_CBusMessage: new(_CBusMessage)}
+}
+
+type _CBusMessageChildBuilder interface {
+	utils.Copyable
+	setParent(CBusMessageContract)
+	buildForCBusMessage() (CBusMessage, error)
+}
+
+type _CBusMessageBuilder struct {
+	*_CBusMessage
+
+	childBuilder _CBusMessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (CBusMessageBuilder) = (*_CBusMessageBuilder)(nil)
+
+func (b *_CBusMessageBuilder) WithMandatoryFields() CBusMessageBuilder {
+	return b
+}
+
+func (b *_CBusMessageBuilder) PartialBuild() (CBusMessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CBusMessage.deepCopy(), nil
+}
+
+func (b *_CBusMessageBuilder) PartialMustBuild() CBusMessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusMessageBuilder) AsCBusMessageToServer() interface {
+	CBusMessageToServerBuilder
+	Done() CBusMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusMessageToServerBuilder
+		Done() CBusMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusMessageToServerBuilder().(*_CBusMessageToServerBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusMessageBuilder) AsCBusMessageToClient() interface {
+	CBusMessageToClientBuilder
+	Done() CBusMessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		CBusMessageToClientBuilder
+		Done() CBusMessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewCBusMessageToClientBuilder().(*_CBusMessageToClientBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_CBusMessageBuilder) Build() (CBusMessage, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForCBusMessage()
+}
+
+func (b *_CBusMessageBuilder) MustBuild() CBusMessage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CBusMessageBuilder) DeepCopy() any {
+	_copy := b.CreateCBusMessageBuilder().(*_CBusMessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_CBusMessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCBusMessageBuilder creates a CBusMessageBuilder
+func (b *_CBusMessage) CreateCBusMessageBuilder() CBusMessageBuilder {
+	if b == nil {
+		return NewCBusMessageBuilder()
+	}
+	return &_CBusMessageBuilder{_CBusMessage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastCBusMessage(structType any) CBusMessage {
@@ -112,7 +262,7 @@ func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestC
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -122,7 +272,12 @@ func CBusMessageParseWithBuffer[T CBusMessage](ctx context.Context, readBuffer u
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_CBusMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (__cBusMessage CBusMessage, err error) {
@@ -148,11 +303,11 @@ func (m *_CBusMessage) parse(ctx context.Context, readBuffer utils.ReadBuffer, i
 	var _child CBusMessage
 	switch {
 	case isResponse == bool(false): // CBusMessageToServer
-		if _child, err = (&_CBusMessageToServer{}).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
+		if _child, err = new(_CBusMessageToServer).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusMessageToServer for type-switch of CBusMessage")
 		}
 	case isResponse == bool(true): // CBusMessageToClient
-		if _child, err = (&_CBusMessageToClient{}).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
+		if _child, err = new(_CBusMessageToClient).parse(ctx, readBuffer, m, isResponse, requestContext, cBusOptions); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type CBusMessageToClient for type-switch of CBusMessage")
 		}
 	default:
@@ -203,3 +358,19 @@ func (m *_CBusMessage) GetCBusOptions() CBusOptions {
 ////
 
 func (m *_CBusMessage) IsCBusMessage() {}
+
+func (m *_CBusMessage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CBusMessage) deepCopy() *_CBusMessage {
+	if m == nil {
+		return nil
+	}
+	_CBusMessageCopy := &_CBusMessage{
+		nil, // will be set by child
+		m.RequestContext,
+		m.CBusOptions,
+	}
+	return _CBusMessageCopy
+}

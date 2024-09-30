@@ -38,6 +38,7 @@ type BACnetConstructedDataScale interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetScale returns Scale (property field)
 	GetScale() BACnetScale
@@ -45,6 +46,8 @@ type BACnetConstructedDataScale interface {
 	GetActualValue() BACnetScale
 	// IsBACnetConstructedDataScale is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataScale()
+	// CreateBuilder creates a BACnetConstructedDataScaleBuilder
+	CreateBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder
 }
 
 // _BACnetConstructedDataScale is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataScale struct {
 
 var _ BACnetConstructedDataScale = (*_BACnetConstructedDataScale)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataScale)(nil)
+
+// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
+func NewBACnetConstructedDataScale(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, scale BACnetScale, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
+	if scale == nil {
+		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
+	}
+	_result := &_BACnetConstructedDataScale{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Scale:                         scale,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataScaleBuilder is a builder for BACnetConstructedDataScale
+type BACnetConstructedDataScaleBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(scale BACnetScale) BACnetConstructedDataScaleBuilder
+	// WithScale adds Scale (property field)
+	WithScale(BACnetScale) BACnetConstructedDataScaleBuilder
+	// WithScaleBuilder adds Scale (property field) which is build by the builder
+	WithScaleBuilder(func(BACnetScaleBuilder) BACnetScaleBuilder) BACnetConstructedDataScaleBuilder
+	// Build builds the BACnetConstructedDataScale or returns an error if something is wrong
+	Build() (BACnetConstructedDataScale, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataScale
+}
+
+// NewBACnetConstructedDataScaleBuilder() creates a BACnetConstructedDataScaleBuilder
+func NewBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder {
+	return &_BACnetConstructedDataScaleBuilder{_BACnetConstructedDataScale: new(_BACnetConstructedDataScale)}
+}
+
+type _BACnetConstructedDataScaleBuilder struct {
+	*_BACnetConstructedDataScale
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataScaleBuilder) = (*_BACnetConstructedDataScaleBuilder)(nil)
+
+func (b *_BACnetConstructedDataScaleBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) WithMandatoryFields(scale BACnetScale) BACnetConstructedDataScaleBuilder {
+	return b.WithScale(scale)
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) WithScale(scale BACnetScale) BACnetConstructedDataScaleBuilder {
+	b.Scale = scale
+	return b
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) WithScaleBuilder(builderSupplier func(BACnetScaleBuilder) BACnetScaleBuilder) BACnetConstructedDataScaleBuilder {
+	builder := builderSupplier(b.Scale.CreateBACnetScaleBuilder())
+	var err error
+	b.Scale, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetScaleBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) Build() (BACnetConstructedDataScale, error) {
+	if b.Scale == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'scale' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataScale.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) MustBuild() BACnetConstructedDataScale {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataScaleBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataScaleBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataScaleBuilder().(*_BACnetConstructedDataScaleBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataScaleBuilder creates a BACnetConstructedDataScaleBuilder
+func (b *_BACnetConstructedDataScale) CreateBACnetConstructedDataScaleBuilder() BACnetConstructedDataScaleBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataScaleBuilder()
+	}
+	return &_BACnetConstructedDataScaleBuilder{_BACnetConstructedDataScale: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataScale) GetActualValue() BACnetScale {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataScale factory function for _BACnetConstructedDataScale
-func NewBACnetConstructedDataScale(scale BACnetScale, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataScale {
-	if scale == nil {
-		panic("scale of type BACnetScale for BACnetConstructedDataScale must not be nil")
-	}
-	_result := &_BACnetConstructedDataScale{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Scale:                         scale,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataScale(structType any) BACnetConstructedDataScale {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataScale) SerializeWithWriteBuffer(ctx context.Conte
 
 func (m *_BACnetConstructedDataScale) IsBACnetConstructedDataScale() {}
 
+func (m *_BACnetConstructedDataScale) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataScale) deepCopy() *_BACnetConstructedDataScale {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataScaleCopy := &_BACnetConstructedDataScale{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Scale.DeepCopy().(BACnetScale),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataScaleCopy
+}
+
 func (m *_BACnetConstructedDataScale) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

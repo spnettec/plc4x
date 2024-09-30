@@ -38,6 +38,7 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetNumberOfDataElements returns NumberOfDataElements (property field)
 	GetNumberOfDataElements() BACnetApplicationTagUnsignedInteger
@@ -47,6 +48,8 @@ type BACnetConstructedDataBitStringValueAlarmValues interface {
 	GetZero() uint64
 	// IsBACnetConstructedDataBitStringValueAlarmValues is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataBitStringValueAlarmValues()
+	// CreateBuilder creates a BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	CreateBACnetConstructedDataBitStringValueAlarmValuesBuilder() BACnetConstructedDataBitStringValueAlarmValuesBuilder
 }
 
 // _BACnetConstructedDataBitStringValueAlarmValues is the data-structure of this message
@@ -58,6 +61,130 @@ type _BACnetConstructedDataBitStringValueAlarmValues struct {
 
 var _ BACnetConstructedDataBitStringValueAlarmValues = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataBitStringValueAlarmValues)(nil)
+
+// NewBACnetConstructedDataBitStringValueAlarmValues factory function for _BACnetConstructedDataBitStringValueAlarmValues
+func NewBACnetConstructedDataBitStringValueAlarmValues(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetApplicationTagBitString, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueAlarmValues {
+	_result := &_BACnetConstructedDataBitStringValueAlarmValues{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		NumberOfDataElements:          numberOfDataElements,
+		AlarmValues:                   alarmValues,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataBitStringValueAlarmValuesBuilder is a builder for BACnetConstructedDataBitStringValueAlarmValues
+type BACnetConstructedDataBitStringValueAlarmValuesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(alarmValues []BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	// WithNumberOfDataElements adds NumberOfDataElements (property field)
+	WithOptionalNumberOfDataElements(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	// WithOptionalNumberOfDataElementsBuilder adds NumberOfDataElements (property field) which is build by the builder
+	WithOptionalNumberOfDataElementsBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	// WithAlarmValues adds AlarmValues (property field)
+	WithAlarmValues(...BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueAlarmValuesBuilder
+	// Build builds the BACnetConstructedDataBitStringValueAlarmValues or returns an error if something is wrong
+	Build() (BACnetConstructedDataBitStringValueAlarmValues, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataBitStringValueAlarmValues
+}
+
+// NewBACnetConstructedDataBitStringValueAlarmValuesBuilder() creates a BACnetConstructedDataBitStringValueAlarmValuesBuilder
+func NewBACnetConstructedDataBitStringValueAlarmValuesBuilder() BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	return &_BACnetConstructedDataBitStringValueAlarmValuesBuilder{_BACnetConstructedDataBitStringValueAlarmValues: new(_BACnetConstructedDataBitStringValueAlarmValues)}
+}
+
+type _BACnetConstructedDataBitStringValueAlarmValuesBuilder struct {
+	*_BACnetConstructedDataBitStringValueAlarmValues
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataBitStringValueAlarmValuesBuilder) = (*_BACnetConstructedDataBitStringValueAlarmValuesBuilder)(nil)
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) WithMandatoryFields(alarmValues []BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	return b.WithAlarmValues(alarmValues...)
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) WithOptionalNumberOfDataElements(numberOfDataElements BACnetApplicationTagUnsignedInteger) BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	b.NumberOfDataElements = numberOfDataElements
+	return b
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) WithOptionalNumberOfDataElementsBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	builder := builderSupplier(b.NumberOfDataElements.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.NumberOfDataElements, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) WithAlarmValues(alarmValues ...BACnetApplicationTagBitString) BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	b.AlarmValues = alarmValues
+	return b
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) Build() (BACnetConstructedDataBitStringValueAlarmValues, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataBitStringValueAlarmValues.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) MustBuild() BACnetConstructedDataBitStringValueAlarmValues {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataBitStringValueAlarmValuesBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataBitStringValueAlarmValuesBuilder().(*_BACnetConstructedDataBitStringValueAlarmValuesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataBitStringValueAlarmValuesBuilder creates a BACnetConstructedDataBitStringValueAlarmValuesBuilder
+func (b *_BACnetConstructedDataBitStringValueAlarmValues) CreateBACnetConstructedDataBitStringValueAlarmValuesBuilder() BACnetConstructedDataBitStringValueAlarmValuesBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataBitStringValueAlarmValuesBuilder()
+	}
+	return &_BACnetConstructedDataBitStringValueAlarmValuesBuilder{_BACnetConstructedDataBitStringValueAlarmValues: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,17 +242,6 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) GetZero() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataBitStringValueAlarmValues factory function for _BACnetConstructedDataBitStringValueAlarmValues
-func NewBACnetConstructedDataBitStringValueAlarmValues(numberOfDataElements BACnetApplicationTagUnsignedInteger, alarmValues []BACnetApplicationTagBitString, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataBitStringValueAlarmValues {
-	_result := &_BACnetConstructedDataBitStringValueAlarmValues{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		NumberOfDataElements:          numberOfDataElements,
-		AlarmValues:                   alarmValues,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataBitStringValueAlarmValues(structType any) BACnetConstructedDataBitStringValueAlarmValues {
@@ -249,13 +365,34 @@ func (m *_BACnetConstructedDataBitStringValueAlarmValues) SerializeWithWriteBuff
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) IsBACnetConstructedDataBitStringValueAlarmValues() {
 }
 
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataBitStringValueAlarmValues) deepCopy() *_BACnetConstructedDataBitStringValueAlarmValues {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataBitStringValueAlarmValuesCopy := &_BACnetConstructedDataBitStringValueAlarmValues{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.NumberOfDataElements.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+		utils.DeepCopySlice[BACnetApplicationTagBitString, BACnetApplicationTagBitString](m.AlarmValues),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataBitStringValueAlarmValuesCopy
+}
+
 func (m *_BACnetConstructedDataBitStringValueAlarmValues) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

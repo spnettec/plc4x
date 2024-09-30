@@ -38,6 +38,7 @@ type BACnetContextTagUnsignedInteger interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetContextTagUnsignedInteger interface {
 	GetActualValue() uint64
 	// IsBACnetContextTagUnsignedInteger is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagUnsignedInteger()
+	// CreateBuilder creates a BACnetContextTagUnsignedIntegerBuilder
+	CreateBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder
 }
 
 // _BACnetContextTagUnsignedInteger is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetContextTagUnsignedInteger struct {
 
 var _ BACnetContextTagUnsignedInteger = (*_BACnetContextTagUnsignedInteger)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagUnsignedInteger)(nil)
+
+// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
+func NewBACnetContextTagUnsignedInteger(header BACnetTagHeader, payload BACnetTagPayloadUnsignedInteger, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
+	}
+	_result := &_BACnetContextTagUnsignedInteger{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagUnsignedIntegerBuilder is a builder for BACnetContextTagUnsignedInteger
+type BACnetContextTagUnsignedIntegerBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadUnsignedIntegerBuilder) BACnetTagPayloadUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder
+	// Build builds the BACnetContextTagUnsignedInteger or returns an error if something is wrong
+	Build() (BACnetContextTagUnsignedInteger, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagUnsignedInteger
+}
+
+// NewBACnetContextTagUnsignedIntegerBuilder() creates a BACnetContextTagUnsignedIntegerBuilder
+func NewBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder {
+	return &_BACnetContextTagUnsignedIntegerBuilder{_BACnetContextTagUnsignedInteger: new(_BACnetContextTagUnsignedInteger)}
+}
+
+type _BACnetContextTagUnsignedIntegerBuilder struct {
+	*_BACnetContextTagUnsignedInteger
+
+	parentBuilder *_BACnetContextTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagUnsignedIntegerBuilder) = (*_BACnetContextTagUnsignedIntegerBuilder)(nil)
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) WithMandatoryFields(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) WithPayload(payload BACnetTagPayloadUnsignedInteger) BACnetContextTagUnsignedIntegerBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadUnsignedIntegerBuilder) BACnetTagPayloadUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadUnsignedIntegerBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) Build() (BACnetContextTagUnsignedInteger, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetContextTagUnsignedInteger.deepCopy(), nil
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) MustBuild() BACnetContextTagUnsignedInteger {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagUnsignedIntegerBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagUnsignedIntegerBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagUnsignedIntegerBuilder().(*_BACnetContextTagUnsignedIntegerBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetContextTagUnsignedIntegerBuilder creates a BACnetContextTagUnsignedIntegerBuilder
+func (b *_BACnetContextTagUnsignedInteger) CreateBACnetContextTagUnsignedIntegerBuilder() BACnetContextTagUnsignedIntegerBuilder {
+	if b == nil {
+		return NewBACnetContextTagUnsignedIntegerBuilder()
+	}
+	return &_BACnetContextTagUnsignedIntegerBuilder{_BACnetContextTagUnsignedInteger: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -102,19 +230,6 @@ func (m *_BACnetContextTagUnsignedInteger) GetActualValue() uint64 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagUnsignedInteger factory function for _BACnetContextTagUnsignedInteger
-func NewBACnetContextTagUnsignedInteger(payload BACnetTagPayloadUnsignedInteger, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagUnsignedInteger {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadUnsignedInteger for BACnetContextTagUnsignedInteger must not be nil")
-	}
-	_result := &_BACnetContextTagUnsignedInteger{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagUnsignedInteger(structType any) BACnetContextTagUnsignedInteger {
@@ -214,13 +329,33 @@ func (m *_BACnetContextTagUnsignedInteger) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetContextTagUnsignedInteger) IsBACnetContextTagUnsignedInteger() {}
 
+func (m *_BACnetContextTagUnsignedInteger) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagUnsignedInteger) deepCopy() *_BACnetContextTagUnsignedInteger {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagUnsignedIntegerCopy := &_BACnetContextTagUnsignedInteger{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadUnsignedInteger),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagUnsignedIntegerCopy
+}
+
 func (m *_BACnetContextTagUnsignedInteger) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

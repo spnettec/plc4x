@@ -38,11 +38,14 @@ type BACnetLogRecordLogDatumTimeChange interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogRecordLogDatum
 	// GetTimeChange returns TimeChange (property field)
 	GetTimeChange() BACnetContextTagReal
 	// IsBACnetLogRecordLogDatumTimeChange is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogRecordLogDatumTimeChange()
+	// CreateBuilder creates a BACnetLogRecordLogDatumTimeChangeBuilder
+	CreateBACnetLogRecordLogDatumTimeChangeBuilder() BACnetLogRecordLogDatumTimeChangeBuilder
 }
 
 // _BACnetLogRecordLogDatumTimeChange is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogRecordLogDatumTimeChange struct {
 
 var _ BACnetLogRecordLogDatumTimeChange = (*_BACnetLogRecordLogDatumTimeChange)(nil)
 var _ BACnetLogRecordLogDatumRequirements = (*_BACnetLogRecordLogDatumTimeChange)(nil)
+
+// NewBACnetLogRecordLogDatumTimeChange factory function for _BACnetLogRecordLogDatumTimeChange
+func NewBACnetLogRecordLogDatumTimeChange(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, timeChange BACnetContextTagReal, tagNumber uint8) *_BACnetLogRecordLogDatumTimeChange {
+	if timeChange == nil {
+		panic("timeChange of type BACnetContextTagReal for BACnetLogRecordLogDatumTimeChange must not be nil")
+	}
+	_result := &_BACnetLogRecordLogDatumTimeChange{
+		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
+		TimeChange:                      timeChange,
+	}
+	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogRecordLogDatumTimeChangeBuilder is a builder for BACnetLogRecordLogDatumTimeChange
+type BACnetLogRecordLogDatumTimeChangeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timeChange BACnetContextTagReal) BACnetLogRecordLogDatumTimeChangeBuilder
+	// WithTimeChange adds TimeChange (property field)
+	WithTimeChange(BACnetContextTagReal) BACnetLogRecordLogDatumTimeChangeBuilder
+	// WithTimeChangeBuilder adds TimeChange (property field) which is build by the builder
+	WithTimeChangeBuilder(func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogRecordLogDatumTimeChangeBuilder
+	// Build builds the BACnetLogRecordLogDatumTimeChange or returns an error if something is wrong
+	Build() (BACnetLogRecordLogDatumTimeChange, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogRecordLogDatumTimeChange
+}
+
+// NewBACnetLogRecordLogDatumTimeChangeBuilder() creates a BACnetLogRecordLogDatumTimeChangeBuilder
+func NewBACnetLogRecordLogDatumTimeChangeBuilder() BACnetLogRecordLogDatumTimeChangeBuilder {
+	return &_BACnetLogRecordLogDatumTimeChangeBuilder{_BACnetLogRecordLogDatumTimeChange: new(_BACnetLogRecordLogDatumTimeChange)}
+}
+
+type _BACnetLogRecordLogDatumTimeChangeBuilder struct {
+	*_BACnetLogRecordLogDatumTimeChange
+
+	parentBuilder *_BACnetLogRecordLogDatumBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogRecordLogDatumTimeChangeBuilder) = (*_BACnetLogRecordLogDatumTimeChangeBuilder)(nil)
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) setParent(contract BACnetLogRecordLogDatumContract) {
+	b.BACnetLogRecordLogDatumContract = contract
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) WithMandatoryFields(timeChange BACnetContextTagReal) BACnetLogRecordLogDatumTimeChangeBuilder {
+	return b.WithTimeChange(timeChange)
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) WithTimeChange(timeChange BACnetContextTagReal) BACnetLogRecordLogDatumTimeChangeBuilder {
+	b.TimeChange = timeChange
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) WithTimeChangeBuilder(builderSupplier func(BACnetContextTagRealBuilder) BACnetContextTagRealBuilder) BACnetLogRecordLogDatumTimeChangeBuilder {
+	builder := builderSupplier(b.TimeChange.CreateBACnetContextTagRealBuilder())
+	var err error
+	b.TimeChange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagRealBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) Build() (BACnetLogRecordLogDatumTimeChange, error) {
+	if b.TimeChange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'timeChange' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogRecordLogDatumTimeChange.deepCopy(), nil
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) MustBuild() BACnetLogRecordLogDatumTimeChange {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) Done() BACnetLogRecordLogDatumBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) buildForBACnetLogRecordLogDatum() (BACnetLogRecordLogDatum, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogRecordLogDatumTimeChangeBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogRecordLogDatumTimeChangeBuilder().(*_BACnetLogRecordLogDatumTimeChangeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogRecordLogDatumTimeChangeBuilder creates a BACnetLogRecordLogDatumTimeChangeBuilder
+func (b *_BACnetLogRecordLogDatumTimeChange) CreateBACnetLogRecordLogDatumTimeChangeBuilder() BACnetLogRecordLogDatumTimeChangeBuilder {
+	if b == nil {
+		return NewBACnetLogRecordLogDatumTimeChangeBuilder()
+	}
+	return &_BACnetLogRecordLogDatumTimeChangeBuilder{_BACnetLogRecordLogDatumTimeChange: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogRecordLogDatumTimeChange) GetTimeChange() BACnetContextTagRea
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogRecordLogDatumTimeChange factory function for _BACnetLogRecordLogDatumTimeChange
-func NewBACnetLogRecordLogDatumTimeChange(timeChange BACnetContextTagReal, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetLogRecordLogDatumTimeChange {
-	if timeChange == nil {
-		panic("timeChange of type BACnetContextTagReal for BACnetLogRecordLogDatumTimeChange must not be nil")
-	}
-	_result := &_BACnetLogRecordLogDatumTimeChange{
-		BACnetLogRecordLogDatumContract: NewBACnetLogRecordLogDatum(openingTag, peekedTagHeader, closingTag, tagNumber),
-		TimeChange:                      timeChange,
-	}
-	_result.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogRecordLogDatumTimeChange(structType any) BACnetLogRecordLogDatumTimeChange {
@@ -179,13 +294,33 @@ func (m *_BACnetLogRecordLogDatumTimeChange) SerializeWithWriteBuffer(ctx contex
 
 func (m *_BACnetLogRecordLogDatumTimeChange) IsBACnetLogRecordLogDatumTimeChange() {}
 
+func (m *_BACnetLogRecordLogDatumTimeChange) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogRecordLogDatumTimeChange) deepCopy() *_BACnetLogRecordLogDatumTimeChange {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogRecordLogDatumTimeChangeCopy := &_BACnetLogRecordLogDatumTimeChange{
+		m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum).deepCopy(),
+		m.TimeChange.DeepCopy().(BACnetContextTagReal),
+	}
+	m.BACnetLogRecordLogDatumContract.(*_BACnetLogRecordLogDatum)._SubType = m
+	return _BACnetLogRecordLogDatumTimeChangeCopy
+}
+
 func (m *_BACnetLogRecordLogDatumTimeChange) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

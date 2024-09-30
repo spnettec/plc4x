@@ -38,10 +38,13 @@ type RelativeTimestamp interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTimestamp returns Timestamp (property field)
 	GetTimestamp() uint16
 	// IsRelativeTimestamp is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRelativeTimestamp()
+	// CreateBuilder creates a RelativeTimestampBuilder
+	CreateRelativeTimestampBuilder() RelativeTimestampBuilder
 }
 
 // _RelativeTimestamp is the data-structure of this message
@@ -50,6 +53,87 @@ type _RelativeTimestamp struct {
 }
 
 var _ RelativeTimestamp = (*_RelativeTimestamp)(nil)
+
+// NewRelativeTimestamp factory function for _RelativeTimestamp
+func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
+	return &_RelativeTimestamp{Timestamp: timestamp}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RelativeTimestampBuilder is a builder for RelativeTimestamp
+type RelativeTimestampBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(timestamp uint16) RelativeTimestampBuilder
+	// WithTimestamp adds Timestamp (property field)
+	WithTimestamp(uint16) RelativeTimestampBuilder
+	// Build builds the RelativeTimestamp or returns an error if something is wrong
+	Build() (RelativeTimestamp, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RelativeTimestamp
+}
+
+// NewRelativeTimestampBuilder() creates a RelativeTimestampBuilder
+func NewRelativeTimestampBuilder() RelativeTimestampBuilder {
+	return &_RelativeTimestampBuilder{_RelativeTimestamp: new(_RelativeTimestamp)}
+}
+
+type _RelativeTimestampBuilder struct {
+	*_RelativeTimestamp
+
+	err *utils.MultiError
+}
+
+var _ (RelativeTimestampBuilder) = (*_RelativeTimestampBuilder)(nil)
+
+func (b *_RelativeTimestampBuilder) WithMandatoryFields(timestamp uint16) RelativeTimestampBuilder {
+	return b.WithTimestamp(timestamp)
+}
+
+func (b *_RelativeTimestampBuilder) WithTimestamp(timestamp uint16) RelativeTimestampBuilder {
+	b.Timestamp = timestamp
+	return b
+}
+
+func (b *_RelativeTimestampBuilder) Build() (RelativeTimestamp, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RelativeTimestamp.deepCopy(), nil
+}
+
+func (b *_RelativeTimestampBuilder) MustBuild() RelativeTimestamp {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RelativeTimestampBuilder) DeepCopy() any {
+	_copy := b.CreateRelativeTimestampBuilder().(*_RelativeTimestampBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRelativeTimestampBuilder creates a RelativeTimestampBuilder
+func (b *_RelativeTimestamp) CreateRelativeTimestampBuilder() RelativeTimestampBuilder {
+	if b == nil {
+		return NewRelativeTimestampBuilder()
+	}
+	return &_RelativeTimestampBuilder{_RelativeTimestamp: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +148,6 @@ func (m *_RelativeTimestamp) GetTimestamp() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRelativeTimestamp factory function for _RelativeTimestamp
-func NewRelativeTimestamp(timestamp uint16) *_RelativeTimestamp {
-	return &_RelativeTimestamp{Timestamp: timestamp}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRelativeTimestamp(structType any) RelativeTimestamp {
@@ -113,7 +192,7 @@ func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_RelativeTimestamp) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__relativeTimestamp RelativeTimestamp, err error) {
@@ -167,13 +246,31 @@ func (m *_RelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_RelativeTimestamp) IsRelativeTimestamp() {}
 
+func (m *_RelativeTimestamp) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RelativeTimestamp) deepCopy() *_RelativeTimestamp {
+	if m == nil {
+		return nil
+	}
+	_RelativeTimestampCopy := &_RelativeTimestamp{
+		m.Timestamp,
+	}
+	return _RelativeTimestampCopy
+}
+
 func (m *_RelativeTimestamp) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

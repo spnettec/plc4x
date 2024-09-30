@@ -38,6 +38,7 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConfirmedServiceRequest
 	// GetSubscriberProcessIdentifier returns SubscriberProcessIdentifier (property field)
 	GetSubscriberProcessIdentifier() BACnetContextTagUnsignedInteger
@@ -49,6 +50,8 @@ type BACnetConfirmedServiceRequestSubscribeCOV interface {
 	GetLifetimeInSeconds() BACnetContextTagUnsignedInteger
 	// IsBACnetConfirmedServiceRequestSubscribeCOV is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConfirmedServiceRequestSubscribeCOV()
+	// CreateBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	CreateBACnetConfirmedServiceRequestSubscribeCOVBuilder() BACnetConfirmedServiceRequestSubscribeCOVBuilder
 }
 
 // _BACnetConfirmedServiceRequestSubscribeCOV is the data-structure of this message
@@ -62,6 +65,209 @@ type _BACnetConfirmedServiceRequestSubscribeCOV struct {
 
 var _ BACnetConfirmedServiceRequestSubscribeCOV = (*_BACnetConfirmedServiceRequestSubscribeCOV)(nil)
 var _ BACnetConfirmedServiceRequestRequirements = (*_BACnetConfirmedServiceRequestSubscribeCOV)(nil)
+
+// NewBACnetConfirmedServiceRequestSubscribeCOV factory function for _BACnetConfirmedServiceRequestSubscribeCOV
+func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOV {
+	if subscriberProcessIdentifier == nil {
+		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOV must not be nil")
+	}
+	if monitoredObjectIdentifier == nil {
+		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestSubscribeCOV must not be nil")
+	}
+	_result := &_BACnetConfirmedServiceRequestSubscribeCOV{
+		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
+		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
+		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
+		IssueConfirmed:                        issueConfirmed,
+		LifetimeInSeconds:                     lifetimeInSeconds,
+	}
+	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConfirmedServiceRequestSubscribeCOVBuilder is a builder for BACnetConfirmedServiceRequestSubscribeCOV
+type BACnetConfirmedServiceRequestSubscribeCOVBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithSubscriberProcessIdentifier adds SubscriberProcessIdentifier (property field)
+	WithSubscriberProcessIdentifier(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithSubscriberProcessIdentifierBuilder adds SubscriberProcessIdentifier (property field) which is build by the builder
+	WithSubscriberProcessIdentifierBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithMonitoredObjectIdentifier adds MonitoredObjectIdentifier (property field)
+	WithMonitoredObjectIdentifier(BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithMonitoredObjectIdentifierBuilder adds MonitoredObjectIdentifier (property field) which is build by the builder
+	WithMonitoredObjectIdentifierBuilder(func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithIssueConfirmed adds IssueConfirmed (property field)
+	WithOptionalIssueConfirmed(BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithOptionalIssueConfirmedBuilder adds IssueConfirmed (property field) which is build by the builder
+	WithOptionalIssueConfirmedBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithLifetimeInSeconds adds LifetimeInSeconds (property field)
+	WithOptionalLifetimeInSeconds(BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// WithOptionalLifetimeInSecondsBuilder adds LifetimeInSeconds (property field) which is build by the builder
+	WithOptionalLifetimeInSecondsBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder
+	// Build builds the BACnetConfirmedServiceRequestSubscribeCOV or returns an error if something is wrong
+	Build() (BACnetConfirmedServiceRequestSubscribeCOV, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConfirmedServiceRequestSubscribeCOV
+}
+
+// NewBACnetConfirmedServiceRequestSubscribeCOVBuilder() creates a BACnetConfirmedServiceRequestSubscribeCOVBuilder
+func NewBACnetConfirmedServiceRequestSubscribeCOVBuilder() BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	return &_BACnetConfirmedServiceRequestSubscribeCOVBuilder{_BACnetConfirmedServiceRequestSubscribeCOV: new(_BACnetConfirmedServiceRequestSubscribeCOV)}
+}
+
+type _BACnetConfirmedServiceRequestSubscribeCOVBuilder struct {
+	*_BACnetConfirmedServiceRequestSubscribeCOV
+
+	parentBuilder *_BACnetConfirmedServiceRequestBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConfirmedServiceRequestSubscribeCOVBuilder) = (*_BACnetConfirmedServiceRequestSubscribeCOVBuilder)(nil)
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) setParent(contract BACnetConfirmedServiceRequestContract) {
+	b.BACnetConfirmedServiceRequestContract = contract
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithMandatoryFields(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	return b.WithSubscriberProcessIdentifier(subscriberProcessIdentifier).WithMonitoredObjectIdentifier(monitoredObjectIdentifier)
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithSubscriberProcessIdentifier(subscriberProcessIdentifier BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	b.SubscriberProcessIdentifier = subscriberProcessIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithSubscriberProcessIdentifierBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	builder := builderSupplier(b.SubscriberProcessIdentifier.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.SubscriberProcessIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithMonitoredObjectIdentifier(monitoredObjectIdentifier BACnetContextTagObjectIdentifier) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	b.MonitoredObjectIdentifier = monitoredObjectIdentifier
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithMonitoredObjectIdentifierBuilder(builderSupplier func(BACnetContextTagObjectIdentifierBuilder) BACnetContextTagObjectIdentifierBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	builder := builderSupplier(b.MonitoredObjectIdentifier.CreateBACnetContextTagObjectIdentifierBuilder())
+	var err error
+	b.MonitoredObjectIdentifier, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagObjectIdentifierBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithOptionalIssueConfirmed(issueConfirmed BACnetContextTagBoolean) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	b.IssueConfirmed = issueConfirmed
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithOptionalIssueConfirmedBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	builder := builderSupplier(b.IssueConfirmed.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.IssueConfirmed, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithOptionalLifetimeInSeconds(lifetimeInSeconds BACnetContextTagUnsignedInteger) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	b.LifetimeInSeconds = lifetimeInSeconds
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) WithOptionalLifetimeInSecondsBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	builder := builderSupplier(b.LifetimeInSeconds.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.LifetimeInSeconds, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) Build() (BACnetConfirmedServiceRequestSubscribeCOV, error) {
+	if b.SubscriberProcessIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'subscriberProcessIdentifier' not set"))
+	}
+	if b.MonitoredObjectIdentifier == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'monitoredObjectIdentifier' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConfirmedServiceRequestSubscribeCOV.deepCopy(), nil
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) MustBuild() BACnetConfirmedServiceRequestSubscribeCOV {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) Done() BACnetConfirmedServiceRequestBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) buildForBACnetConfirmedServiceRequest() (BACnetConfirmedServiceRequest, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConfirmedServiceRequestSubscribeCOVBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConfirmedServiceRequestSubscribeCOVBuilder().(*_BACnetConfirmedServiceRequestSubscribeCOVBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConfirmedServiceRequestSubscribeCOVBuilder creates a BACnetConfirmedServiceRequestSubscribeCOVBuilder
+func (b *_BACnetConfirmedServiceRequestSubscribeCOV) CreateBACnetConfirmedServiceRequestSubscribeCOVBuilder() BACnetConfirmedServiceRequestSubscribeCOVBuilder {
+	if b == nil {
+		return NewBACnetConfirmedServiceRequestSubscribeCOVBuilder()
+	}
+	return &_BACnetConfirmedServiceRequestSubscribeCOVBuilder{_BACnetConfirmedServiceRequestSubscribeCOV: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,25 +312,6 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) GetLifetimeInSeconds() BACn
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConfirmedServiceRequestSubscribeCOV factory function for _BACnetConfirmedServiceRequestSubscribeCOV
-func NewBACnetConfirmedServiceRequestSubscribeCOV(subscriberProcessIdentifier BACnetContextTagUnsignedInteger, monitoredObjectIdentifier BACnetContextTagObjectIdentifier, issueConfirmed BACnetContextTagBoolean, lifetimeInSeconds BACnetContextTagUnsignedInteger, serviceRequestLength uint32) *_BACnetConfirmedServiceRequestSubscribeCOV {
-	if subscriberProcessIdentifier == nil {
-		panic("subscriberProcessIdentifier of type BACnetContextTagUnsignedInteger for BACnetConfirmedServiceRequestSubscribeCOV must not be nil")
-	}
-	if monitoredObjectIdentifier == nil {
-		panic("monitoredObjectIdentifier of type BACnetContextTagObjectIdentifier for BACnetConfirmedServiceRequestSubscribeCOV must not be nil")
-	}
-	_result := &_BACnetConfirmedServiceRequestSubscribeCOV{
-		BACnetConfirmedServiceRequestContract: NewBACnetConfirmedServiceRequest(serviceRequestLength),
-		SubscriberProcessIdentifier:           subscriberProcessIdentifier,
-		MonitoredObjectIdentifier:             monitoredObjectIdentifier,
-		IssueConfirmed:                        issueConfirmed,
-		LifetimeInSeconds:                     lifetimeInSeconds,
-	}
-	_result.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConfirmedServiceRequestSubscribeCOV(structType any) BACnetConfirmedServiceRequestSubscribeCOV {
@@ -261,13 +448,36 @@ func (m *_BACnetConfirmedServiceRequestSubscribeCOV) SerializeWithWriteBuffer(ct
 
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) IsBACnetConfirmedServiceRequestSubscribeCOV() {}
 
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConfirmedServiceRequestSubscribeCOV) deepCopy() *_BACnetConfirmedServiceRequestSubscribeCOV {
+	if m == nil {
+		return nil
+	}
+	_BACnetConfirmedServiceRequestSubscribeCOVCopy := &_BACnetConfirmedServiceRequestSubscribeCOV{
+		m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest).deepCopy(),
+		m.SubscriberProcessIdentifier.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MonitoredObjectIdentifier.DeepCopy().(BACnetContextTagObjectIdentifier),
+		m.IssueConfirmed.DeepCopy().(BACnetContextTagBoolean),
+		m.LifetimeInSeconds.DeepCopy().(BACnetContextTagUnsignedInteger),
+	}
+	m.BACnetConfirmedServiceRequestContract.(*_BACnetConfirmedServiceRequest)._SubType = m
+	return _BACnetConfirmedServiceRequestSubscribeCOVCopy
+}
+
 func (m *_BACnetConfirmedServiceRequestSubscribeCOV) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

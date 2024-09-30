@@ -41,8 +41,11 @@ type RequestTermination interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsRequestTermination is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsRequestTermination()
+	// CreateBuilder creates a RequestTerminationBuilder
+	CreateRequestTerminationBuilder() RequestTerminationBuilder
 }
 
 // _RequestTermination is the data-structure of this message
@@ -50,6 +53,80 @@ type _RequestTermination struct {
 }
 
 var _ RequestTermination = (*_RequestTermination)(nil)
+
+// NewRequestTermination factory function for _RequestTermination
+func NewRequestTermination() *_RequestTermination {
+	return &_RequestTermination{}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// RequestTerminationBuilder is a builder for RequestTermination
+type RequestTerminationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() RequestTerminationBuilder
+	// Build builds the RequestTermination or returns an error if something is wrong
+	Build() (RequestTermination, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() RequestTermination
+}
+
+// NewRequestTerminationBuilder() creates a RequestTerminationBuilder
+func NewRequestTerminationBuilder() RequestTerminationBuilder {
+	return &_RequestTerminationBuilder{_RequestTermination: new(_RequestTermination)}
+}
+
+type _RequestTerminationBuilder struct {
+	*_RequestTermination
+
+	err *utils.MultiError
+}
+
+var _ (RequestTerminationBuilder) = (*_RequestTerminationBuilder)(nil)
+
+func (b *_RequestTerminationBuilder) WithMandatoryFields() RequestTerminationBuilder {
+	return b
+}
+
+func (b *_RequestTerminationBuilder) Build() (RequestTermination, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._RequestTermination.deepCopy(), nil
+}
+
+func (b *_RequestTerminationBuilder) MustBuild() RequestTermination {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_RequestTerminationBuilder) DeepCopy() any {
+	_copy := b.CreateRequestTerminationBuilder().(*_RequestTerminationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateRequestTerminationBuilder creates a RequestTerminationBuilder
+func (b *_RequestTermination) CreateRequestTerminationBuilder() RequestTerminationBuilder {
+	if b == nil {
+		return NewRequestTerminationBuilder()
+	}
+	return &_RequestTerminationBuilder{_RequestTermination: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -64,11 +141,6 @@ func (m *_RequestTermination) GetCr() byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewRequestTermination factory function for _RequestTermination
-func NewRequestTermination() *_RequestTermination {
-	return &_RequestTermination{}
-}
 
 // Deprecated: use the interface for direct cast
 func CastRequestTermination(structType any) RequestTermination {
@@ -113,7 +185,7 @@ func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_RequestTermination) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__requestTermination RequestTermination, err error) {
@@ -167,13 +239,29 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 
 func (m *_RequestTermination) IsRequestTermination() {}
 
+func (m *_RequestTermination) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_RequestTermination) deepCopy() *_RequestTermination {
+	if m == nil {
+		return nil
+	}
+	_RequestTerminationCopy := &_RequestTermination{}
+	return _RequestTerminationCopy
+}
+
 func (m *_RequestTermination) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

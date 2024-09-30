@@ -38,11 +38,14 @@ type AdsDiscoveryBlockPassword interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	AdsDiscoveryBlock
 	// GetPassword returns Password (property field)
 	GetPassword() AmsString
 	// IsAdsDiscoveryBlockPassword is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsAdsDiscoveryBlockPassword()
+	// CreateBuilder creates a AdsDiscoveryBlockPasswordBuilder
+	CreateAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder
 }
 
 // _AdsDiscoveryBlockPassword is the data-structure of this message
@@ -53,6 +56,131 @@ type _AdsDiscoveryBlockPassword struct {
 
 var _ AdsDiscoveryBlockPassword = (*_AdsDiscoveryBlockPassword)(nil)
 var _ AdsDiscoveryBlockRequirements = (*_AdsDiscoveryBlockPassword)(nil)
+
+// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
+func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
+	if password == nil {
+		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
+	}
+	_result := &_AdsDiscoveryBlockPassword{
+		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
+		Password:                  password,
+	}
+	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// AdsDiscoveryBlockPasswordBuilder is a builder for AdsDiscoveryBlockPassword
+type AdsDiscoveryBlockPasswordBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(password AmsString) AdsDiscoveryBlockPasswordBuilder
+	// WithPassword adds Password (property field)
+	WithPassword(AmsString) AdsDiscoveryBlockPasswordBuilder
+	// WithPasswordBuilder adds Password (property field) which is build by the builder
+	WithPasswordBuilder(func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockPasswordBuilder
+	// Build builds the AdsDiscoveryBlockPassword or returns an error if something is wrong
+	Build() (AdsDiscoveryBlockPassword, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() AdsDiscoveryBlockPassword
+}
+
+// NewAdsDiscoveryBlockPasswordBuilder() creates a AdsDiscoveryBlockPasswordBuilder
+func NewAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder {
+	return &_AdsDiscoveryBlockPasswordBuilder{_AdsDiscoveryBlockPassword: new(_AdsDiscoveryBlockPassword)}
+}
+
+type _AdsDiscoveryBlockPasswordBuilder struct {
+	*_AdsDiscoveryBlockPassword
+
+	parentBuilder *_AdsDiscoveryBlockBuilder
+
+	err *utils.MultiError
+}
+
+var _ (AdsDiscoveryBlockPasswordBuilder) = (*_AdsDiscoveryBlockPasswordBuilder)(nil)
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) setParent(contract AdsDiscoveryBlockContract) {
+	b.AdsDiscoveryBlockContract = contract
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithMandatoryFields(password AmsString) AdsDiscoveryBlockPasswordBuilder {
+	return b.WithPassword(password)
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithPassword(password AmsString) AdsDiscoveryBlockPasswordBuilder {
+	b.Password = password
+	return b
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) WithPasswordBuilder(builderSupplier func(AmsStringBuilder) AmsStringBuilder) AdsDiscoveryBlockPasswordBuilder {
+	builder := builderSupplier(b.Password.CreateAmsStringBuilder())
+	var err error
+	b.Password, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "AmsStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) Build() (AdsDiscoveryBlockPassword, error) {
+	if b.Password == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'password' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._AdsDiscoveryBlockPassword.deepCopy(), nil
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) MustBuild() AdsDiscoveryBlockPassword {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_AdsDiscoveryBlockPasswordBuilder) Done() AdsDiscoveryBlockBuilder {
+	return b.parentBuilder
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) buildForAdsDiscoveryBlock() (AdsDiscoveryBlock, error) {
+	return b.Build()
+}
+
+func (b *_AdsDiscoveryBlockPasswordBuilder) DeepCopy() any {
+	_copy := b.CreateAdsDiscoveryBlockPasswordBuilder().(*_AdsDiscoveryBlockPasswordBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateAdsDiscoveryBlockPasswordBuilder creates a AdsDiscoveryBlockPasswordBuilder
+func (b *_AdsDiscoveryBlockPassword) CreateAdsDiscoveryBlockPasswordBuilder() AdsDiscoveryBlockPasswordBuilder {
+	if b == nil {
+		return NewAdsDiscoveryBlockPasswordBuilder()
+	}
+	return &_AdsDiscoveryBlockPasswordBuilder{_AdsDiscoveryBlockPassword: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_AdsDiscoveryBlockPassword) GetPassword() AmsString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewAdsDiscoveryBlockPassword factory function for _AdsDiscoveryBlockPassword
-func NewAdsDiscoveryBlockPassword(password AmsString) *_AdsDiscoveryBlockPassword {
-	if password == nil {
-		panic("password of type AmsString for AdsDiscoveryBlockPassword must not be nil")
-	}
-	_result := &_AdsDiscoveryBlockPassword{
-		AdsDiscoveryBlockContract: NewAdsDiscoveryBlock(),
-		Password:                  password,
-	}
-	_result.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastAdsDiscoveryBlockPassword(structType any) AdsDiscoveryBlockPassword {
@@ -183,13 +298,33 @@ func (m *_AdsDiscoveryBlockPassword) SerializeWithWriteBuffer(ctx context.Contex
 
 func (m *_AdsDiscoveryBlockPassword) IsAdsDiscoveryBlockPassword() {}
 
+func (m *_AdsDiscoveryBlockPassword) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_AdsDiscoveryBlockPassword) deepCopy() *_AdsDiscoveryBlockPassword {
+	if m == nil {
+		return nil
+	}
+	_AdsDiscoveryBlockPasswordCopy := &_AdsDiscoveryBlockPassword{
+		m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock).deepCopy(),
+		m.Password.DeepCopy().(AmsString),
+	}
+	m.AdsDiscoveryBlockContract.(*_AdsDiscoveryBlock)._SubType = m
+	return _AdsDiscoveryBlockPasswordCopy
+}
+
 func (m *_AdsDiscoveryBlockPassword) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

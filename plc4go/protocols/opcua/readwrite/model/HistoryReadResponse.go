@@ -38,6 +38,7 @@ type HistoryReadResponse interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetResponseHeader returns ResponseHeader (property field)
 	GetResponseHeader() ExtensionObjectDefinition
@@ -51,6 +52,8 @@ type HistoryReadResponse interface {
 	GetDiagnosticInfos() []DiagnosticInfo
 	// IsHistoryReadResponse is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHistoryReadResponse()
+	// CreateBuilder creates a HistoryReadResponseBuilder
+	CreateHistoryReadResponseBuilder() HistoryReadResponseBuilder
 }
 
 // _HistoryReadResponse is the data-structure of this message
@@ -65,6 +68,163 @@ type _HistoryReadResponse struct {
 
 var _ HistoryReadResponse = (*_HistoryReadResponse)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_HistoryReadResponse)(nil)
+
+// NewHistoryReadResponse factory function for _HistoryReadResponse
+func NewHistoryReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryReadResponse {
+	if responseHeader == nil {
+		panic("responseHeader of type ExtensionObjectDefinition for HistoryReadResponse must not be nil")
+	}
+	_result := &_HistoryReadResponse{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ResponseHeader:                    responseHeader,
+		NoOfResults:                       noOfResults,
+		Results:                           results,
+		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
+		DiagnosticInfos:                   diagnosticInfos,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HistoryReadResponseBuilder is a builder for HistoryReadResponse
+type HistoryReadResponseBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder
+	// WithResponseHeader adds ResponseHeader (property field)
+	WithResponseHeader(ExtensionObjectDefinition) HistoryReadResponseBuilder
+	// WithResponseHeaderBuilder adds ResponseHeader (property field) which is build by the builder
+	WithResponseHeaderBuilder(func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadResponseBuilder
+	// WithNoOfResults adds NoOfResults (property field)
+	WithNoOfResults(int32) HistoryReadResponseBuilder
+	// WithResults adds Results (property field)
+	WithResults(...ExtensionObjectDefinition) HistoryReadResponseBuilder
+	// WithNoOfDiagnosticInfos adds NoOfDiagnosticInfos (property field)
+	WithNoOfDiagnosticInfos(int32) HistoryReadResponseBuilder
+	// WithDiagnosticInfos adds DiagnosticInfos (property field)
+	WithDiagnosticInfos(...DiagnosticInfo) HistoryReadResponseBuilder
+	// Build builds the HistoryReadResponse or returns an error if something is wrong
+	Build() (HistoryReadResponse, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HistoryReadResponse
+}
+
+// NewHistoryReadResponseBuilder() creates a HistoryReadResponseBuilder
+func NewHistoryReadResponseBuilder() HistoryReadResponseBuilder {
+	return &_HistoryReadResponseBuilder{_HistoryReadResponse: new(_HistoryReadResponse)}
+}
+
+type _HistoryReadResponseBuilder struct {
+	*_HistoryReadResponse
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (HistoryReadResponseBuilder) = (*_HistoryReadResponseBuilder)(nil)
+
+func (b *_HistoryReadResponseBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_HistoryReadResponseBuilder) WithMandatoryFields(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) HistoryReadResponseBuilder {
+	return b.WithResponseHeader(responseHeader).WithNoOfResults(noOfResults).WithResults(results...).WithNoOfDiagnosticInfos(noOfDiagnosticInfos).WithDiagnosticInfos(diagnosticInfos...)
+}
+
+func (b *_HistoryReadResponseBuilder) WithResponseHeader(responseHeader ExtensionObjectDefinition) HistoryReadResponseBuilder {
+	b.ResponseHeader = responseHeader
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithResponseHeaderBuilder(builderSupplier func(ExtensionObjectDefinitionBuilder) ExtensionObjectDefinitionBuilder) HistoryReadResponseBuilder {
+	builder := builderSupplier(b.ResponseHeader.CreateExtensionObjectDefinitionBuilder())
+	var err error
+	b.ResponseHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ExtensionObjectDefinitionBuilder failed"))
+	}
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithNoOfResults(noOfResults int32) HistoryReadResponseBuilder {
+	b.NoOfResults = noOfResults
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithResults(results ...ExtensionObjectDefinition) HistoryReadResponseBuilder {
+	b.Results = results
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithNoOfDiagnosticInfos(noOfDiagnosticInfos int32) HistoryReadResponseBuilder {
+	b.NoOfDiagnosticInfos = noOfDiagnosticInfos
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) WithDiagnosticInfos(diagnosticInfos ...DiagnosticInfo) HistoryReadResponseBuilder {
+	b.DiagnosticInfos = diagnosticInfos
+	return b
+}
+
+func (b *_HistoryReadResponseBuilder) Build() (HistoryReadResponse, error) {
+	if b.ResponseHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'responseHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HistoryReadResponse.deepCopy(), nil
+}
+
+func (b *_HistoryReadResponseBuilder) MustBuild() HistoryReadResponse {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_HistoryReadResponseBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_HistoryReadResponseBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_HistoryReadResponseBuilder) DeepCopy() any {
+	_copy := b.CreateHistoryReadResponseBuilder().(*_HistoryReadResponseBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHistoryReadResponseBuilder creates a HistoryReadResponseBuilder
+func (b *_HistoryReadResponse) CreateHistoryReadResponseBuilder() HistoryReadResponseBuilder {
+	if b == nil {
+		return NewHistoryReadResponseBuilder()
+	}
+	return &_HistoryReadResponseBuilder{_HistoryReadResponse: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,23 +273,6 @@ func (m *_HistoryReadResponse) GetDiagnosticInfos() []DiagnosticInfo {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewHistoryReadResponse factory function for _HistoryReadResponse
-func NewHistoryReadResponse(responseHeader ExtensionObjectDefinition, noOfResults int32, results []ExtensionObjectDefinition, noOfDiagnosticInfos int32, diagnosticInfos []DiagnosticInfo) *_HistoryReadResponse {
-	if responseHeader == nil {
-		panic("responseHeader of type ExtensionObjectDefinition for HistoryReadResponse must not be nil")
-	}
-	_result := &_HistoryReadResponse{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ResponseHeader:                    responseHeader,
-		NoOfResults:                       noOfResults,
-		Results:                           results,
-		NoOfDiagnosticInfos:               noOfDiagnosticInfos,
-		DiagnosticInfos:                   diagnosticInfos,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastHistoryReadResponse(structType any) HistoryReadResponse {
@@ -281,13 +424,37 @@ func (m *_HistoryReadResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 
 func (m *_HistoryReadResponse) IsHistoryReadResponse() {}
 
+func (m *_HistoryReadResponse) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HistoryReadResponse) deepCopy() *_HistoryReadResponse {
+	if m == nil {
+		return nil
+	}
+	_HistoryReadResponseCopy := &_HistoryReadResponse{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ResponseHeader.DeepCopy().(ExtensionObjectDefinition),
+		m.NoOfResults,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.Results),
+		m.NoOfDiagnosticInfos,
+		utils.DeepCopySlice[DiagnosticInfo, DiagnosticInfo](m.DiagnosticInfos),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _HistoryReadResponseCopy
+}
+
 func (m *_HistoryReadResponse) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

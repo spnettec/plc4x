@@ -38,6 +38,7 @@ type BACnetConstructedDataTransition interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetTransition returns Transition (property field)
 	GetTransition() BACnetLightingTransitionTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataTransition interface {
 	GetActualValue() BACnetLightingTransitionTagged
 	// IsBACnetConstructedDataTransition is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTransition()
+	// CreateBuilder creates a BACnetConstructedDataTransitionBuilder
+	CreateBACnetConstructedDataTransitionBuilder() BACnetConstructedDataTransitionBuilder
 }
 
 // _BACnetConstructedDataTransition is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataTransition struct {
 
 var _ BACnetConstructedDataTransition = (*_BACnetConstructedDataTransition)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTransition)(nil)
+
+// NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
+func NewBACnetConstructedDataTransition(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, transition BACnetLightingTransitionTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
+	if transition == nil {
+		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
+	}
+	_result := &_BACnetConstructedDataTransition{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		Transition:                    transition,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTransitionBuilder is a builder for BACnetConstructedDataTransition
+type BACnetConstructedDataTransitionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(transition BACnetLightingTransitionTagged) BACnetConstructedDataTransitionBuilder
+	// WithTransition adds Transition (property field)
+	WithTransition(BACnetLightingTransitionTagged) BACnetConstructedDataTransitionBuilder
+	// WithTransitionBuilder adds Transition (property field) which is build by the builder
+	WithTransitionBuilder(func(BACnetLightingTransitionTaggedBuilder) BACnetLightingTransitionTaggedBuilder) BACnetConstructedDataTransitionBuilder
+	// Build builds the BACnetConstructedDataTransition or returns an error if something is wrong
+	Build() (BACnetConstructedDataTransition, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTransition
+}
+
+// NewBACnetConstructedDataTransitionBuilder() creates a BACnetConstructedDataTransitionBuilder
+func NewBACnetConstructedDataTransitionBuilder() BACnetConstructedDataTransitionBuilder {
+	return &_BACnetConstructedDataTransitionBuilder{_BACnetConstructedDataTransition: new(_BACnetConstructedDataTransition)}
+}
+
+type _BACnetConstructedDataTransitionBuilder struct {
+	*_BACnetConstructedDataTransition
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTransitionBuilder) = (*_BACnetConstructedDataTransitionBuilder)(nil)
+
+func (b *_BACnetConstructedDataTransitionBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) WithMandatoryFields(transition BACnetLightingTransitionTagged) BACnetConstructedDataTransitionBuilder {
+	return b.WithTransition(transition)
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) WithTransition(transition BACnetLightingTransitionTagged) BACnetConstructedDataTransitionBuilder {
+	b.Transition = transition
+	return b
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) WithTransitionBuilder(builderSupplier func(BACnetLightingTransitionTaggedBuilder) BACnetLightingTransitionTaggedBuilder) BACnetConstructedDataTransitionBuilder {
+	builder := builderSupplier(b.Transition.CreateBACnetLightingTransitionTaggedBuilder())
+	var err error
+	b.Transition, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLightingTransitionTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) Build() (BACnetConstructedDataTransition, error) {
+	if b.Transition == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'transition' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTransition.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) MustBuild() BACnetConstructedDataTransition {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTransitionBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTransitionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTransitionBuilder().(*_BACnetConstructedDataTransitionBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTransitionBuilder creates a BACnetConstructedDataTransitionBuilder
+func (b *_BACnetConstructedDataTransition) CreateBACnetConstructedDataTransitionBuilder() BACnetConstructedDataTransitionBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTransitionBuilder()
+	}
+	return &_BACnetConstructedDataTransitionBuilder{_BACnetConstructedDataTransition: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataTransition) GetActualValue() BACnetLightingTransi
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataTransition factory function for _BACnetConstructedDataTransition
-func NewBACnetConstructedDataTransition(transition BACnetLightingTransitionTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTransition {
-	if transition == nil {
-		panic("transition of type BACnetLightingTransitionTagged for BACnetConstructedDataTransition must not be nil")
-	}
-	_result := &_BACnetConstructedDataTransition{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		Transition:                    transition,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataTransition(structType any) BACnetConstructedDataTransition {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataTransition) SerializeWithWriteBuffer(ctx context.
 
 func (m *_BACnetConstructedDataTransition) IsBACnetConstructedDataTransition() {}
 
+func (m *_BACnetConstructedDataTransition) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTransition) deepCopy() *_BACnetConstructedDataTransition {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTransitionCopy := &_BACnetConstructedDataTransition{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.Transition.DeepCopy().(BACnetLightingTransitionTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTransitionCopy
+}
+
 func (m *_BACnetConstructedDataTransition) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

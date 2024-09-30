@@ -36,9 +36,12 @@ type BACnetConstructedDataTimepatternValueAll interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// IsBACnetConstructedDataTimepatternValueAll is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataTimepatternValueAll()
+	// CreateBuilder creates a BACnetConstructedDataTimepatternValueAllBuilder
+	CreateBACnetConstructedDataTimepatternValueAllBuilder() BACnetConstructedDataTimepatternValueAllBuilder
 }
 
 // _BACnetConstructedDataTimepatternValueAll is the data-structure of this message
@@ -48,6 +51,99 @@ type _BACnetConstructedDataTimepatternValueAll struct {
 
 var _ BACnetConstructedDataTimepatternValueAll = (*_BACnetConstructedDataTimepatternValueAll)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataTimepatternValueAll)(nil)
+
+// NewBACnetConstructedDataTimepatternValueAll factory function for _BACnetConstructedDataTimepatternValueAll
+func NewBACnetConstructedDataTimepatternValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimepatternValueAll {
+	_result := &_BACnetConstructedDataTimepatternValueAll{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataTimepatternValueAllBuilder is a builder for BACnetConstructedDataTimepatternValueAll
+type BACnetConstructedDataTimepatternValueAllBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetConstructedDataTimepatternValueAllBuilder
+	// Build builds the BACnetConstructedDataTimepatternValueAll or returns an error if something is wrong
+	Build() (BACnetConstructedDataTimepatternValueAll, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataTimepatternValueAll
+}
+
+// NewBACnetConstructedDataTimepatternValueAllBuilder() creates a BACnetConstructedDataTimepatternValueAllBuilder
+func NewBACnetConstructedDataTimepatternValueAllBuilder() BACnetConstructedDataTimepatternValueAllBuilder {
+	return &_BACnetConstructedDataTimepatternValueAllBuilder{_BACnetConstructedDataTimepatternValueAll: new(_BACnetConstructedDataTimepatternValueAll)}
+}
+
+type _BACnetConstructedDataTimepatternValueAllBuilder struct {
+	*_BACnetConstructedDataTimepatternValueAll
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataTimepatternValueAllBuilder) = (*_BACnetConstructedDataTimepatternValueAllBuilder)(nil)
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) WithMandatoryFields() BACnetConstructedDataTimepatternValueAllBuilder {
+	return b
+}
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) Build() (BACnetConstructedDataTimepatternValueAll, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataTimepatternValueAll.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) MustBuild() BACnetConstructedDataTimepatternValueAll {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataTimepatternValueAllBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataTimepatternValueAllBuilder().(*_BACnetConstructedDataTimepatternValueAllBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataTimepatternValueAllBuilder creates a BACnetConstructedDataTimepatternValueAllBuilder
+func (b *_BACnetConstructedDataTimepatternValueAll) CreateBACnetConstructedDataTimepatternValueAllBuilder() BACnetConstructedDataTimepatternValueAllBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataTimepatternValueAllBuilder()
+	}
+	return &_BACnetConstructedDataTimepatternValueAllBuilder{_BACnetConstructedDataTimepatternValueAll: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -69,15 +165,6 @@ func (m *_BACnetConstructedDataTimepatternValueAll) GetPropertyIdentifierArgumen
 
 func (m *_BACnetConstructedDataTimepatternValueAll) GetParent() BACnetConstructedDataContract {
 	return m.BACnetConstructedDataContract
-}
-
-// NewBACnetConstructedDataTimepatternValueAll factory function for _BACnetConstructedDataTimepatternValueAll
-func NewBACnetConstructedDataTimepatternValueAll(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataTimepatternValueAll {
-	_result := &_BACnetConstructedDataTimepatternValueAll{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -156,13 +243,32 @@ func (m *_BACnetConstructedDataTimepatternValueAll) SerializeWithWriteBuffer(ctx
 
 func (m *_BACnetConstructedDataTimepatternValueAll) IsBACnetConstructedDataTimepatternValueAll() {}
 
+func (m *_BACnetConstructedDataTimepatternValueAll) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataTimepatternValueAll) deepCopy() *_BACnetConstructedDataTimepatternValueAll {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataTimepatternValueAllCopy := &_BACnetConstructedDataTimepatternValueAll{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataTimepatternValueAllCopy
+}
+
 func (m *_BACnetConstructedDataTimepatternValueAll) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

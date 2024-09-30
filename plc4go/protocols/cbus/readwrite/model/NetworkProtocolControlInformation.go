@@ -38,12 +38,15 @@ type NetworkProtocolControlInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetStackCounter returns StackCounter (property field)
 	GetStackCounter() uint8
 	// GetStackDepth returns StackDepth (property field)
 	GetStackDepth() uint8
 	// IsNetworkProtocolControlInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsNetworkProtocolControlInformation()
+	// CreateBuilder creates a NetworkProtocolControlInformationBuilder
+	CreateNetworkProtocolControlInformationBuilder() NetworkProtocolControlInformationBuilder
 }
 
 // _NetworkProtocolControlInformation is the data-structure of this message
@@ -55,6 +58,94 @@ type _NetworkProtocolControlInformation struct {
 }
 
 var _ NetworkProtocolControlInformation = (*_NetworkProtocolControlInformation)(nil)
+
+// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
+func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
+	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// NetworkProtocolControlInformationBuilder is a builder for NetworkProtocolControlInformation
+type NetworkProtocolControlInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(stackCounter uint8, stackDepth uint8) NetworkProtocolControlInformationBuilder
+	// WithStackCounter adds StackCounter (property field)
+	WithStackCounter(uint8) NetworkProtocolControlInformationBuilder
+	// WithStackDepth adds StackDepth (property field)
+	WithStackDepth(uint8) NetworkProtocolControlInformationBuilder
+	// Build builds the NetworkProtocolControlInformation or returns an error if something is wrong
+	Build() (NetworkProtocolControlInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() NetworkProtocolControlInformation
+}
+
+// NewNetworkProtocolControlInformationBuilder() creates a NetworkProtocolControlInformationBuilder
+func NewNetworkProtocolControlInformationBuilder() NetworkProtocolControlInformationBuilder {
+	return &_NetworkProtocolControlInformationBuilder{_NetworkProtocolControlInformation: new(_NetworkProtocolControlInformation)}
+}
+
+type _NetworkProtocolControlInformationBuilder struct {
+	*_NetworkProtocolControlInformation
+
+	err *utils.MultiError
+}
+
+var _ (NetworkProtocolControlInformationBuilder) = (*_NetworkProtocolControlInformationBuilder)(nil)
+
+func (b *_NetworkProtocolControlInformationBuilder) WithMandatoryFields(stackCounter uint8, stackDepth uint8) NetworkProtocolControlInformationBuilder {
+	return b.WithStackCounter(stackCounter).WithStackDepth(stackDepth)
+}
+
+func (b *_NetworkProtocolControlInformationBuilder) WithStackCounter(stackCounter uint8) NetworkProtocolControlInformationBuilder {
+	b.StackCounter = stackCounter
+	return b
+}
+
+func (b *_NetworkProtocolControlInformationBuilder) WithStackDepth(stackDepth uint8) NetworkProtocolControlInformationBuilder {
+	b.StackDepth = stackDepth
+	return b
+}
+
+func (b *_NetworkProtocolControlInformationBuilder) Build() (NetworkProtocolControlInformation, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._NetworkProtocolControlInformation.deepCopy(), nil
+}
+
+func (b *_NetworkProtocolControlInformationBuilder) MustBuild() NetworkProtocolControlInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_NetworkProtocolControlInformationBuilder) DeepCopy() any {
+	_copy := b.CreateNetworkProtocolControlInformationBuilder().(*_NetworkProtocolControlInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateNetworkProtocolControlInformationBuilder creates a NetworkProtocolControlInformationBuilder
+func (b *_NetworkProtocolControlInformation) CreateNetworkProtocolControlInformationBuilder() NetworkProtocolControlInformationBuilder {
+	if b == nil {
+		return NewNetworkProtocolControlInformationBuilder()
+	}
+	return &_NetworkProtocolControlInformationBuilder{_NetworkProtocolControlInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -73,11 +164,6 @@ func (m *_NetworkProtocolControlInformation) GetStackDepth() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewNetworkProtocolControlInformation factory function for _NetworkProtocolControlInformation
-func NewNetworkProtocolControlInformation(stackCounter uint8, stackDepth uint8) *_NetworkProtocolControlInformation {
-	return &_NetworkProtocolControlInformation{StackCounter: stackCounter, StackDepth: stackDepth}
-}
 
 // Deprecated: use the interface for direct cast
 func CastNetworkProtocolControlInformation(structType any) NetworkProtocolControlInformation {
@@ -128,7 +214,7 @@ func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readB
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_NetworkProtocolControlInformation) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__networkProtocolControlInformation NetworkProtocolControlInformation, err error) {
@@ -202,13 +288,33 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 
 func (m *_NetworkProtocolControlInformation) IsNetworkProtocolControlInformation() {}
 
+func (m *_NetworkProtocolControlInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_NetworkProtocolControlInformation) deepCopy() *_NetworkProtocolControlInformation {
+	if m == nil {
+		return nil
+	}
+	_NetworkProtocolControlInformationCopy := &_NetworkProtocolControlInformation{
+		m.StackCounter,
+		m.StackDepth,
+		m.reservedField0,
+	}
+	return _NetworkProtocolControlInformationCopy
+}
+
 func (m *_NetworkProtocolControlInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

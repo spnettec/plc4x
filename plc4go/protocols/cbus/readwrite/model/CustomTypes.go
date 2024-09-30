@@ -38,10 +38,13 @@ type CustomTypes interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCustomString returns CustomString (property field)
 	GetCustomString() string
 	// IsCustomTypes is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCustomTypes()
+	// CreateBuilder creates a CustomTypesBuilder
+	CreateCustomTypesBuilder() CustomTypesBuilder
 }
 
 // _CustomTypes is the data-structure of this message
@@ -53,6 +56,87 @@ type _CustomTypes struct {
 }
 
 var _ CustomTypes = (*_CustomTypes)(nil)
+
+// NewCustomTypes factory function for _CustomTypes
+func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
+	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CustomTypesBuilder is a builder for CustomTypes
+type CustomTypesBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(customString string) CustomTypesBuilder
+	// WithCustomString adds CustomString (property field)
+	WithCustomString(string) CustomTypesBuilder
+	// Build builds the CustomTypes or returns an error if something is wrong
+	Build() (CustomTypes, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CustomTypes
+}
+
+// NewCustomTypesBuilder() creates a CustomTypesBuilder
+func NewCustomTypesBuilder() CustomTypesBuilder {
+	return &_CustomTypesBuilder{_CustomTypes: new(_CustomTypes)}
+}
+
+type _CustomTypesBuilder struct {
+	*_CustomTypes
+
+	err *utils.MultiError
+}
+
+var _ (CustomTypesBuilder) = (*_CustomTypesBuilder)(nil)
+
+func (b *_CustomTypesBuilder) WithMandatoryFields(customString string) CustomTypesBuilder {
+	return b.WithCustomString(customString)
+}
+
+func (b *_CustomTypesBuilder) WithCustomString(customString string) CustomTypesBuilder {
+	b.CustomString = customString
+	return b
+}
+
+func (b *_CustomTypesBuilder) Build() (CustomTypes, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CustomTypes.deepCopy(), nil
+}
+
+func (b *_CustomTypesBuilder) MustBuild() CustomTypes {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CustomTypesBuilder) DeepCopy() any {
+	_copy := b.CreateCustomTypesBuilder().(*_CustomTypesBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCustomTypesBuilder creates a CustomTypesBuilder
+func (b *_CustomTypes) CreateCustomTypesBuilder() CustomTypesBuilder {
+	if b == nil {
+		return NewCustomTypesBuilder()
+	}
+	return &_CustomTypesBuilder{_CustomTypes: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -67,11 +151,6 @@ func (m *_CustomTypes) GetCustomString() string {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCustomTypes factory function for _CustomTypes
-func NewCustomTypes(customString string, numBytes uint8) *_CustomTypes {
-	return &_CustomTypes{CustomString: customString, NumBytes: numBytes}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCustomTypes(structType any) CustomTypes {
@@ -116,7 +195,7 @@ func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CustomTypes) parse(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (__customTypes CustomTypes, err error) {
@@ -180,13 +259,32 @@ func (m *_CustomTypes) GetNumBytes() uint8 {
 
 func (m *_CustomTypes) IsCustomTypes() {}
 
+func (m *_CustomTypes) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CustomTypes) deepCopy() *_CustomTypes {
+	if m == nil {
+		return nil
+	}
+	_CustomTypesCopy := &_CustomTypes{
+		m.CustomString,
+		m.NumBytes,
+	}
+	return _CustomTypesCopy
+}
+
 func (m *_CustomTypes) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

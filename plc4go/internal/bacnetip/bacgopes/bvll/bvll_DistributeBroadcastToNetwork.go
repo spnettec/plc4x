@@ -35,9 +35,10 @@ type DistributeBroadcastToNetwork struct {
 
 var _ BVLPDU = (*DistributeBroadcastToNetwork)(nil)
 
-func NewDistributeBroadcastToNetwork(args Args, kwArgs KWArgs) (*DistributeBroadcastToNetwork, error) {
+func NewDistributeBroadcastToNetwork(args Args, kwArgs KWArgs, options ...Option) (*DistributeBroadcastToNetwork, error) {
 	d := &DistributeBroadcastToNetwork{}
-	d._BVLPDU = NewBVLPDU(args, kwArgs).(*_BVLPDU)
+	options = AddLeafTypeIfAbundant(options, d)
+	d._BVLPDU = NewBVLPDU(args, kwArgs, options...).(*_BVLPDU)
 	switch npdu := d.GetRootMessage().(type) {
 	case readWriteModel.NPDU:
 		// Repackage
@@ -54,6 +55,7 @@ func (d *DistributeBroadcastToNetwork) produceInnerNPDU(inNpdu readWriteModel.NP
 }
 
 func (d *DistributeBroadcastToNetwork) Encode(bvlpdu Arg) error {
+	d.bvlciLength = uint16(4 + len(d.GetPduData()))
 	switch bvlpdu := bvlpdu.(type) {
 	case BVLCI:
 		if err := bvlpdu.getBVLCI().Update(d); err != nil {
@@ -83,7 +85,11 @@ func (d *DistributeBroadcastToNetwork) Decode(bvlpdu Arg) error {
 	}
 	switch bvlpdu := bvlpdu.(type) {
 	case PDUData:
-		d.SetPduData(bvlpdu.GetPduData())
+		data, err := bvlpdu.GetData(len(bvlpdu.GetPduData()))
+		if err != nil {
+			return errors.Wrap(err, "error getting data")
+		}
+		d.SetPduData(data)
 	}
 	return nil
 }

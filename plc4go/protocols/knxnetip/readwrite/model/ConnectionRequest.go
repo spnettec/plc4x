@@ -40,6 +40,7 @@ type ConnectionRequest interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxNetIpMessage
 	// GetHpaiDiscoveryEndpoint returns HpaiDiscoveryEndpoint (property field)
 	GetHpaiDiscoveryEndpoint() HPAIDiscoveryEndpoint
@@ -49,6 +50,8 @@ type ConnectionRequest interface {
 	GetConnectionRequestInformation() ConnectionRequestInformation
 	// IsConnectionRequest is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectionRequest()
+	// CreateBuilder creates a ConnectionRequestBuilder
+	CreateConnectionRequestBuilder() ConnectionRequestBuilder
 }
 
 // _ConnectionRequest is the data-structure of this message
@@ -61,6 +64,195 @@ type _ConnectionRequest struct {
 
 var _ ConnectionRequest = (*_ConnectionRequest)(nil)
 var _ KnxNetIpMessageRequirements = (*_ConnectionRequest)(nil)
+
+// NewConnectionRequest factory function for _ConnectionRequest
+func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
+	if hpaiDiscoveryEndpoint == nil {
+		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
+	}
+	if hpaiDataEndpoint == nil {
+		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
+	}
+	if connectionRequestInformation == nil {
+		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
+	}
+	_result := &_ConnectionRequest{
+		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
+		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
+		HpaiDataEndpoint:             hpaiDataEndpoint,
+		ConnectionRequestInformation: connectionRequestInformation,
+	}
+	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectionRequestBuilder is a builder for ConnectionRequest
+type ConnectionRequestBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder
+	// WithHpaiDiscoveryEndpoint adds HpaiDiscoveryEndpoint (property field)
+	WithHpaiDiscoveryEndpoint(HPAIDiscoveryEndpoint) ConnectionRequestBuilder
+	// WithHpaiDiscoveryEndpointBuilder adds HpaiDiscoveryEndpoint (property field) which is build by the builder
+	WithHpaiDiscoveryEndpointBuilder(func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) ConnectionRequestBuilder
+	// WithHpaiDataEndpoint adds HpaiDataEndpoint (property field)
+	WithHpaiDataEndpoint(HPAIDataEndpoint) ConnectionRequestBuilder
+	// WithHpaiDataEndpointBuilder adds HpaiDataEndpoint (property field) which is build by the builder
+	WithHpaiDataEndpointBuilder(func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionRequestBuilder
+	// WithConnectionRequestInformation adds ConnectionRequestInformation (property field)
+	WithConnectionRequestInformation(ConnectionRequestInformation) ConnectionRequestBuilder
+	// WithConnectionRequestInformationBuilder adds ConnectionRequestInformation (property field) which is build by the builder
+	WithConnectionRequestInformationBuilder(func(ConnectionRequestInformationBuilder) ConnectionRequestInformationBuilder) ConnectionRequestBuilder
+	// Build builds the ConnectionRequest or returns an error if something is wrong
+	Build() (ConnectionRequest, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectionRequest
+}
+
+// NewConnectionRequestBuilder() creates a ConnectionRequestBuilder
+func NewConnectionRequestBuilder() ConnectionRequestBuilder {
+	return &_ConnectionRequestBuilder{_ConnectionRequest: new(_ConnectionRequest)}
+}
+
+type _ConnectionRequestBuilder struct {
+	*_ConnectionRequest
+
+	parentBuilder *_KnxNetIpMessageBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectionRequestBuilder) = (*_ConnectionRequestBuilder)(nil)
+
+func (b *_ConnectionRequestBuilder) setParent(contract KnxNetIpMessageContract) {
+	b.KnxNetIpMessageContract = contract
+}
+
+func (b *_ConnectionRequestBuilder) WithMandatoryFields(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder {
+	return b.WithHpaiDiscoveryEndpoint(hpaiDiscoveryEndpoint).WithHpaiDataEndpoint(hpaiDataEndpoint).WithConnectionRequestInformation(connectionRequestInformation)
+}
+
+func (b *_ConnectionRequestBuilder) WithHpaiDiscoveryEndpoint(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint) ConnectionRequestBuilder {
+	b.HpaiDiscoveryEndpoint = hpaiDiscoveryEndpoint
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) WithHpaiDiscoveryEndpointBuilder(builderSupplier func(HPAIDiscoveryEndpointBuilder) HPAIDiscoveryEndpointBuilder) ConnectionRequestBuilder {
+	builder := builderSupplier(b.HpaiDiscoveryEndpoint.CreateHPAIDiscoveryEndpointBuilder())
+	var err error
+	b.HpaiDiscoveryEndpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HPAIDiscoveryEndpointBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) WithHpaiDataEndpoint(hpaiDataEndpoint HPAIDataEndpoint) ConnectionRequestBuilder {
+	b.HpaiDataEndpoint = hpaiDataEndpoint
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) WithHpaiDataEndpointBuilder(builderSupplier func(HPAIDataEndpointBuilder) HPAIDataEndpointBuilder) ConnectionRequestBuilder {
+	builder := builderSupplier(b.HpaiDataEndpoint.CreateHPAIDataEndpointBuilder())
+	var err error
+	b.HpaiDataEndpoint, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "HPAIDataEndpointBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) WithConnectionRequestInformation(connectionRequestInformation ConnectionRequestInformation) ConnectionRequestBuilder {
+	b.ConnectionRequestInformation = connectionRequestInformation
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) WithConnectionRequestInformationBuilder(builderSupplier func(ConnectionRequestInformationBuilder) ConnectionRequestInformationBuilder) ConnectionRequestBuilder {
+	builder := builderSupplier(b.ConnectionRequestInformation.CreateConnectionRequestInformationBuilder())
+	var err error
+	b.ConnectionRequestInformation, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "ConnectionRequestInformationBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ConnectionRequestBuilder) Build() (ConnectionRequest, error) {
+	if b.HpaiDiscoveryEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hpaiDiscoveryEndpoint' not set"))
+	}
+	if b.HpaiDataEndpoint == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'hpaiDataEndpoint' not set"))
+	}
+	if b.ConnectionRequestInformation == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'connectionRequestInformation' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectionRequest.deepCopy(), nil
+}
+
+func (b *_ConnectionRequestBuilder) MustBuild() ConnectionRequest {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectionRequestBuilder) Done() KnxNetIpMessageBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectionRequestBuilder) buildForKnxNetIpMessage() (KnxNetIpMessage, error) {
+	return b.Build()
+}
+
+func (b *_ConnectionRequestBuilder) DeepCopy() any {
+	_copy := b.CreateConnectionRequestBuilder().(*_ConnectionRequestBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectionRequestBuilder creates a ConnectionRequestBuilder
+func (b *_ConnectionRequest) CreateConnectionRequestBuilder() ConnectionRequestBuilder {
+	if b == nil {
+		return NewConnectionRequestBuilder()
+	}
+	return &_ConnectionRequestBuilder{_ConnectionRequest: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -101,27 +293,6 @@ func (m *_ConnectionRequest) GetConnectionRequestInformation() ConnectionRequest
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectionRequest factory function for _ConnectionRequest
-func NewConnectionRequest(hpaiDiscoveryEndpoint HPAIDiscoveryEndpoint, hpaiDataEndpoint HPAIDataEndpoint, connectionRequestInformation ConnectionRequestInformation) *_ConnectionRequest {
-	if hpaiDiscoveryEndpoint == nil {
-		panic("hpaiDiscoveryEndpoint of type HPAIDiscoveryEndpoint for ConnectionRequest must not be nil")
-	}
-	if hpaiDataEndpoint == nil {
-		panic("hpaiDataEndpoint of type HPAIDataEndpoint for ConnectionRequest must not be nil")
-	}
-	if connectionRequestInformation == nil {
-		panic("connectionRequestInformation of type ConnectionRequestInformation for ConnectionRequest must not be nil")
-	}
-	_result := &_ConnectionRequest{
-		KnxNetIpMessageContract:      NewKnxNetIpMessage(),
-		HpaiDiscoveryEndpoint:        hpaiDiscoveryEndpoint,
-		HpaiDataEndpoint:             hpaiDataEndpoint,
-		ConnectionRequestInformation: connectionRequestInformation,
-	}
-	_result.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectionRequest(structType any) ConnectionRequest {
@@ -233,13 +404,35 @@ func (m *_ConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_ConnectionRequest) IsConnectionRequest() {}
 
+func (m *_ConnectionRequest) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectionRequest) deepCopy() *_ConnectionRequest {
+	if m == nil {
+		return nil
+	}
+	_ConnectionRequestCopy := &_ConnectionRequest{
+		m.KnxNetIpMessageContract.(*_KnxNetIpMessage).deepCopy(),
+		m.HpaiDiscoveryEndpoint.DeepCopy().(HPAIDiscoveryEndpoint),
+		m.HpaiDataEndpoint.DeepCopy().(HPAIDataEndpoint),
+		m.ConnectionRequestInformation.DeepCopy().(ConnectionRequestInformation),
+	}
+	m.KnxNetIpMessageContract.(*_KnxNetIpMessage)._SubType = m
+	return _ConnectionRequestCopy
+}
+
 func (m *_ConnectionRequest) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

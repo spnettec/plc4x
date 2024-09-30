@@ -43,8 +43,11 @@ type S7Message interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
+	// CreateBuilder creates a S7MessageBuilder
+	CreateS7MessageBuilder() S7MessageBuilder
 }
 
 // S7MessageContract provides a set of functions which can be overwritten by a sub struct
@@ -57,6 +60,8 @@ type S7MessageContract interface {
 	GetPayload() S7Payload
 	// IsS7Message is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7Message()
+	// CreateBuilder creates a S7MessageBuilder
+	CreateS7MessageBuilder() S7MessageBuilder
 }
 
 // S7MessageRequirements provides a set of functions which need to be implemented by a sub struct
@@ -78,6 +83,249 @@ type _S7Message struct {
 }
 
 var _ S7MessageContract = (*_S7Message)(nil)
+
+// NewS7Message factory function for _S7Message
+func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
+	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7MessageBuilder is a builder for S7Message
+type S7MessageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(tpduReference uint16) S7MessageBuilder
+	// WithTpduReference adds TpduReference (property field)
+	WithTpduReference(uint16) S7MessageBuilder
+	// WithParameter adds Parameter (property field)
+	WithOptionalParameter(S7Parameter) S7MessageBuilder
+	// WithOptionalParameterBuilder adds Parameter (property field) which is build by the builder
+	WithOptionalParameterBuilder(func(S7ParameterBuilder) S7ParameterBuilder) S7MessageBuilder
+	// WithPayload adds Payload (property field)
+	WithOptionalPayload(S7Payload) S7MessageBuilder
+	// WithOptionalPayloadBuilder adds Payload (property field) which is build by the builder
+	WithOptionalPayloadBuilder(func(S7PayloadBuilder) S7PayloadBuilder) S7MessageBuilder
+	// AsS7MessageRequest converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
+	AsS7MessageRequest() interface {
+		S7MessageRequestBuilder
+		Done() S7MessageBuilder
+	}
+	// AsS7MessageResponse converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
+	AsS7MessageResponse() interface {
+		S7MessageResponseBuilder
+		Done() S7MessageBuilder
+	}
+	// AsS7MessageResponseData converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
+	AsS7MessageResponseData() interface {
+		S7MessageResponseDataBuilder
+		Done() S7MessageBuilder
+	}
+	// AsS7MessageUserData converts this build to a subType of S7Message. It is always possible to return to current builder using Done()
+	AsS7MessageUserData() interface {
+		S7MessageUserDataBuilder
+		Done() S7MessageBuilder
+	}
+	// Build builds the S7Message or returns an error if something is wrong
+	PartialBuild() (S7MessageContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() S7MessageContract
+	// Build builds the S7Message or returns an error if something is wrong
+	Build() (S7Message, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7Message
+}
+
+// NewS7MessageBuilder() creates a S7MessageBuilder
+func NewS7MessageBuilder() S7MessageBuilder {
+	return &_S7MessageBuilder{_S7Message: new(_S7Message)}
+}
+
+type _S7MessageChildBuilder interface {
+	utils.Copyable
+	setParent(S7MessageContract)
+	buildForS7Message() (S7Message, error)
+}
+
+type _S7MessageBuilder struct {
+	*_S7Message
+
+	childBuilder _S7MessageChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7MessageBuilder) = (*_S7MessageBuilder)(nil)
+
+func (b *_S7MessageBuilder) WithMandatoryFields(tpduReference uint16) S7MessageBuilder {
+	return b.WithTpduReference(tpduReference)
+}
+
+func (b *_S7MessageBuilder) WithTpduReference(tpduReference uint16) S7MessageBuilder {
+	b.TpduReference = tpduReference
+	return b
+}
+
+func (b *_S7MessageBuilder) WithOptionalParameter(parameter S7Parameter) S7MessageBuilder {
+	b.Parameter = parameter
+	return b
+}
+
+func (b *_S7MessageBuilder) WithOptionalParameterBuilder(builderSupplier func(S7ParameterBuilder) S7ParameterBuilder) S7MessageBuilder {
+	builder := builderSupplier(b.Parameter.CreateS7ParameterBuilder())
+	var err error
+	b.Parameter, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "S7ParameterBuilder failed"))
+	}
+	return b
+}
+
+func (b *_S7MessageBuilder) WithOptionalPayload(payload S7Payload) S7MessageBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_S7MessageBuilder) WithOptionalPayloadBuilder(builderSupplier func(S7PayloadBuilder) S7PayloadBuilder) S7MessageBuilder {
+	builder := builderSupplier(b.Payload.CreateS7PayloadBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "S7PayloadBuilder failed"))
+	}
+	return b
+}
+
+func (b *_S7MessageBuilder) PartialBuild() (S7MessageContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7Message.deepCopy(), nil
+}
+
+func (b *_S7MessageBuilder) PartialMustBuild() S7MessageContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7MessageBuilder) AsS7MessageRequest() interface {
+	S7MessageRequestBuilder
+	Done() S7MessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageRequestBuilder
+		Done() S7MessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageRequestBuilder().(*_S7MessageRequestBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7MessageBuilder) AsS7MessageResponse() interface {
+	S7MessageResponseBuilder
+	Done() S7MessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageResponseBuilder
+		Done() S7MessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageResponseBuilder().(*_S7MessageResponseBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7MessageBuilder) AsS7MessageResponseData() interface {
+	S7MessageResponseDataBuilder
+	Done() S7MessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageResponseDataBuilder
+		Done() S7MessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageResponseDataBuilder().(*_S7MessageResponseDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7MessageBuilder) AsS7MessageUserData() interface {
+	S7MessageUserDataBuilder
+	Done() S7MessageBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		S7MessageUserDataBuilder
+		Done() S7MessageBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewS7MessageUserDataBuilder().(*_S7MessageUserDataBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_S7MessageBuilder) Build() (S7Message, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForS7Message()
+}
+
+func (b *_S7MessageBuilder) MustBuild() S7Message {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_S7MessageBuilder) DeepCopy() any {
+	_copy := b.CreateS7MessageBuilder().(*_S7MessageBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_S7MessageChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7MessageBuilder creates a S7MessageBuilder
+func (b *_S7Message) CreateS7MessageBuilder() S7MessageBuilder {
+	if b == nil {
+		return NewS7MessageBuilder()
+	}
+	return &_S7MessageBuilder{_S7Message: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -113,11 +361,6 @@ func (m *_S7Message) GetProtocolId() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7Message factory function for _S7Message
-func NewS7Message(tpduReference uint16, parameter S7Parameter, payload S7Payload) *_S7Message {
-	return &_S7Message{TpduReference: tpduReference, Parameter: parameter, Payload: payload}
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7Message(structType any) S7Message {
@@ -182,7 +425,7 @@ func S7MessageParseWithBufferProducer[T S7Message]() func(ctx context.Context, r
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -192,7 +435,12 @@ func S7MessageParseWithBuffer[T S7Message](ctx context.Context, readBuffer utils
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__s7Message S7Message, err error) {
@@ -243,19 +491,19 @@ func (m *_S7Message) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__
 	var _child S7Message
 	switch {
 	case messageType == 0x01: // S7MessageRequest
-		if _child, err = (&_S7MessageRequest{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageRequest).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageRequest for type-switch of S7Message")
 		}
 	case messageType == 0x02: // S7MessageResponse
-		if _child, err = (&_S7MessageResponse{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponse).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponse for type-switch of S7Message")
 		}
 	case messageType == 0x03: // S7MessageResponseData
-		if _child, err = (&_S7MessageResponseData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageResponseData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageResponseData for type-switch of S7Message")
 		}
 	case messageType == 0x07: // S7MessageUserData
-		if _child, err = (&_S7MessageUserData{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_S7MessageUserData).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type S7MessageUserData for type-switch of S7Message")
 		}
 	default:
@@ -345,3 +593,21 @@ func (pm *_S7Message) serializeParent(ctx context.Context, writeBuffer utils.Wri
 }
 
 func (m *_S7Message) IsS7Message() {}
+
+func (m *_S7Message) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7Message) deepCopy() *_S7Message {
+	if m == nil {
+		return nil
+	}
+	_S7MessageCopy := &_S7Message{
+		nil, // will be set by child
+		m.TpduReference,
+		m.Parameter.DeepCopy().(S7Parameter),
+		m.Payload.DeepCopy().(S7Payload),
+		m.reservedField0,
+	}
+	return _S7MessageCopy
+}

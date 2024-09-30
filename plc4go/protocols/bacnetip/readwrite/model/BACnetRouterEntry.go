@@ -38,6 +38,7 @@ type BACnetRouterEntry interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetNetworkNumber returns NetworkNumber (property field)
 	GetNetworkNumber() BACnetContextTagUnsignedInteger
 	// GetMacAddress returns MacAddress (property field)
@@ -48,6 +49,8 @@ type BACnetRouterEntry interface {
 	GetPerformanceIndex() BACnetContextTagOctetString
 	// IsBACnetRouterEntry is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetRouterEntry()
+	// CreateBuilder creates a BACnetRouterEntryBuilder
+	CreateBACnetRouterEntryBuilder() BACnetRouterEntryBuilder
 }
 
 // _BACnetRouterEntry is the data-structure of this message
@@ -59,6 +62,195 @@ type _BACnetRouterEntry struct {
 }
 
 var _ BACnetRouterEntry = (*_BACnetRouterEntry)(nil)
+
+// NewBACnetRouterEntry factory function for _BACnetRouterEntry
+func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
+	if networkNumber == nil {
+		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
+	}
+	if macAddress == nil {
+		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
+	}
+	if status == nil {
+		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
+	}
+	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetRouterEntryBuilder is a builder for BACnetRouterEntry
+type BACnetRouterEntryBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged) BACnetRouterEntryBuilder
+	// WithNetworkNumber adds NetworkNumber (property field)
+	WithNetworkNumber(BACnetContextTagUnsignedInteger) BACnetRouterEntryBuilder
+	// WithNetworkNumberBuilder adds NetworkNumber (property field) which is build by the builder
+	WithNetworkNumberBuilder(func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRouterEntryBuilder
+	// WithMacAddress adds MacAddress (property field)
+	WithMacAddress(BACnetContextTagOctetString) BACnetRouterEntryBuilder
+	// WithMacAddressBuilder adds MacAddress (property field) which is build by the builder
+	WithMacAddressBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetRouterEntryBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(BACnetRouterEntryStatusTagged) BACnetRouterEntryBuilder
+	// WithStatusBuilder adds Status (property field) which is build by the builder
+	WithStatusBuilder(func(BACnetRouterEntryStatusTaggedBuilder) BACnetRouterEntryStatusTaggedBuilder) BACnetRouterEntryBuilder
+	// WithPerformanceIndex adds PerformanceIndex (property field)
+	WithOptionalPerformanceIndex(BACnetContextTagOctetString) BACnetRouterEntryBuilder
+	// WithOptionalPerformanceIndexBuilder adds PerformanceIndex (property field) which is build by the builder
+	WithOptionalPerformanceIndexBuilder(func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetRouterEntryBuilder
+	// Build builds the BACnetRouterEntry or returns an error if something is wrong
+	Build() (BACnetRouterEntry, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetRouterEntry
+}
+
+// NewBACnetRouterEntryBuilder() creates a BACnetRouterEntryBuilder
+func NewBACnetRouterEntryBuilder() BACnetRouterEntryBuilder {
+	return &_BACnetRouterEntryBuilder{_BACnetRouterEntry: new(_BACnetRouterEntry)}
+}
+
+type _BACnetRouterEntryBuilder struct {
+	*_BACnetRouterEntry
+
+	err *utils.MultiError
+}
+
+var _ (BACnetRouterEntryBuilder) = (*_BACnetRouterEntryBuilder)(nil)
+
+func (b *_BACnetRouterEntryBuilder) WithMandatoryFields(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged) BACnetRouterEntryBuilder {
+	return b.WithNetworkNumber(networkNumber).WithMacAddress(macAddress).WithStatus(status)
+}
+
+func (b *_BACnetRouterEntryBuilder) WithNetworkNumber(networkNumber BACnetContextTagUnsignedInteger) BACnetRouterEntryBuilder {
+	b.NetworkNumber = networkNumber
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithNetworkNumberBuilder(builderSupplier func(BACnetContextTagUnsignedIntegerBuilder) BACnetContextTagUnsignedIntegerBuilder) BACnetRouterEntryBuilder {
+	builder := builderSupplier(b.NetworkNumber.CreateBACnetContextTagUnsignedIntegerBuilder())
+	var err error
+	b.NetworkNumber, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithMacAddress(macAddress BACnetContextTagOctetString) BACnetRouterEntryBuilder {
+	b.MacAddress = macAddress
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithMacAddressBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetRouterEntryBuilder {
+	builder := builderSupplier(b.MacAddress.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	b.MacAddress, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithStatus(status BACnetRouterEntryStatusTagged) BACnetRouterEntryBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithStatusBuilder(builderSupplier func(BACnetRouterEntryStatusTaggedBuilder) BACnetRouterEntryStatusTaggedBuilder) BACnetRouterEntryBuilder {
+	builder := builderSupplier(b.Status.CreateBACnetRouterEntryStatusTaggedBuilder())
+	var err error
+	b.Status, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetRouterEntryStatusTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithOptionalPerformanceIndex(performanceIndex BACnetContextTagOctetString) BACnetRouterEntryBuilder {
+	b.PerformanceIndex = performanceIndex
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) WithOptionalPerformanceIndexBuilder(builderSupplier func(BACnetContextTagOctetStringBuilder) BACnetContextTagOctetStringBuilder) BACnetRouterEntryBuilder {
+	builder := builderSupplier(b.PerformanceIndex.CreateBACnetContextTagOctetStringBuilder())
+	var err error
+	b.PerformanceIndex, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagOctetStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetRouterEntryBuilder) Build() (BACnetRouterEntry, error) {
+	if b.NetworkNumber == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'networkNumber' not set"))
+	}
+	if b.MacAddress == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'macAddress' not set"))
+	}
+	if b.Status == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'status' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetRouterEntry.deepCopy(), nil
+}
+
+func (b *_BACnetRouterEntryBuilder) MustBuild() BACnetRouterEntry {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetRouterEntryBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetRouterEntryBuilder().(*_BACnetRouterEntryBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetRouterEntryBuilder creates a BACnetRouterEntryBuilder
+func (b *_BACnetRouterEntry) CreateBACnetRouterEntryBuilder() BACnetRouterEntryBuilder {
+	if b == nil {
+		return NewBACnetRouterEntryBuilder()
+	}
+	return &_BACnetRouterEntryBuilder{_BACnetRouterEntry: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,20 +277,6 @@ func (m *_BACnetRouterEntry) GetPerformanceIndex() BACnetContextTagOctetString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetRouterEntry factory function for _BACnetRouterEntry
-func NewBACnetRouterEntry(networkNumber BACnetContextTagUnsignedInteger, macAddress BACnetContextTagOctetString, status BACnetRouterEntryStatusTagged, performanceIndex BACnetContextTagOctetString) *_BACnetRouterEntry {
-	if networkNumber == nil {
-		panic("networkNumber of type BACnetContextTagUnsignedInteger for BACnetRouterEntry must not be nil")
-	}
-	if macAddress == nil {
-		panic("macAddress of type BACnetContextTagOctetString for BACnetRouterEntry must not be nil")
-	}
-	if status == nil {
-		panic("status of type BACnetRouterEntryStatusTagged for BACnetRouterEntry must not be nil")
-	}
-	return &_BACnetRouterEntry{NetworkNumber: networkNumber, MacAddress: macAddress, Status: status, PerformanceIndex: performanceIndex}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetRouterEntry(structType any) BACnetRouterEntry {
@@ -154,7 +332,7 @@ func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetRouterEntry) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetRouterEntry BACnetRouterEntry, err error) {
@@ -242,13 +420,34 @@ func (m *_BACnetRouterEntry) SerializeWithWriteBuffer(ctx context.Context, write
 
 func (m *_BACnetRouterEntry) IsBACnetRouterEntry() {}
 
+func (m *_BACnetRouterEntry) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetRouterEntry) deepCopy() *_BACnetRouterEntry {
+	if m == nil {
+		return nil
+	}
+	_BACnetRouterEntryCopy := &_BACnetRouterEntry{
+		m.NetworkNumber.DeepCopy().(BACnetContextTagUnsignedInteger),
+		m.MacAddress.DeepCopy().(BACnetContextTagOctetString),
+		m.Status.DeepCopy().(BACnetRouterEntryStatusTagged),
+		m.PerformanceIndex.DeepCopy().(BACnetContextTagOctetString),
+	}
+	return _BACnetRouterEntryCopy
+}
+
 func (m *_BACnetRouterEntry) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

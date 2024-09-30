@@ -38,6 +38,7 @@ type BACnetServiceAckGetEventInformation interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetServiceAck
 	// GetListOfEventSummaries returns ListOfEventSummaries (property field)
 	GetListOfEventSummaries() BACnetEventSummariesList
@@ -45,6 +46,8 @@ type BACnetServiceAckGetEventInformation interface {
 	GetMoreEvents() BACnetContextTagBoolean
 	// IsBACnetServiceAckGetEventInformation is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetServiceAckGetEventInformation()
+	// CreateBuilder creates a BACnetServiceAckGetEventInformationBuilder
+	CreateBACnetServiceAckGetEventInformationBuilder() BACnetServiceAckGetEventInformationBuilder
 }
 
 // _BACnetServiceAckGetEventInformation is the data-structure of this message
@@ -56,6 +59,163 @@ type _BACnetServiceAckGetEventInformation struct {
 
 var _ BACnetServiceAckGetEventInformation = (*_BACnetServiceAckGetEventInformation)(nil)
 var _ BACnetServiceAckRequirements = (*_BACnetServiceAckGetEventInformation)(nil)
+
+// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
+func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
+	if listOfEventSummaries == nil {
+		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	if moreEvents == nil {
+		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
+	}
+	_result := &_BACnetServiceAckGetEventInformation{
+		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
+		ListOfEventSummaries:     listOfEventSummaries,
+		MoreEvents:               moreEvents,
+	}
+	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetServiceAckGetEventInformationBuilder is a builder for BACnetServiceAckGetEventInformation
+type BACnetServiceAckGetEventInformationBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder
+	// WithListOfEventSummaries adds ListOfEventSummaries (property field)
+	WithListOfEventSummaries(BACnetEventSummariesList) BACnetServiceAckGetEventInformationBuilder
+	// WithListOfEventSummariesBuilder adds ListOfEventSummaries (property field) which is build by the builder
+	WithListOfEventSummariesBuilder(func(BACnetEventSummariesListBuilder) BACnetEventSummariesListBuilder) BACnetServiceAckGetEventInformationBuilder
+	// WithMoreEvents adds MoreEvents (property field)
+	WithMoreEvents(BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder
+	// WithMoreEventsBuilder adds MoreEvents (property field) which is build by the builder
+	WithMoreEventsBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetServiceAckGetEventInformationBuilder
+	// Build builds the BACnetServiceAckGetEventInformation or returns an error if something is wrong
+	Build() (BACnetServiceAckGetEventInformation, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetServiceAckGetEventInformation
+}
+
+// NewBACnetServiceAckGetEventInformationBuilder() creates a BACnetServiceAckGetEventInformationBuilder
+func NewBACnetServiceAckGetEventInformationBuilder() BACnetServiceAckGetEventInformationBuilder {
+	return &_BACnetServiceAckGetEventInformationBuilder{_BACnetServiceAckGetEventInformation: new(_BACnetServiceAckGetEventInformation)}
+}
+
+type _BACnetServiceAckGetEventInformationBuilder struct {
+	*_BACnetServiceAckGetEventInformation
+
+	parentBuilder *_BACnetServiceAckBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetServiceAckGetEventInformationBuilder) = (*_BACnetServiceAckGetEventInformationBuilder)(nil)
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) setParent(contract BACnetServiceAckContract) {
+	b.BACnetServiceAckContract = contract
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) WithMandatoryFields(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder {
+	return b.WithListOfEventSummaries(listOfEventSummaries).WithMoreEvents(moreEvents)
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) WithListOfEventSummaries(listOfEventSummaries BACnetEventSummariesList) BACnetServiceAckGetEventInformationBuilder {
+	b.ListOfEventSummaries = listOfEventSummaries
+	return b
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) WithListOfEventSummariesBuilder(builderSupplier func(BACnetEventSummariesListBuilder) BACnetEventSummariesListBuilder) BACnetServiceAckGetEventInformationBuilder {
+	builder := builderSupplier(b.ListOfEventSummaries.CreateBACnetEventSummariesListBuilder())
+	var err error
+	b.ListOfEventSummaries, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetEventSummariesListBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) WithMoreEvents(moreEvents BACnetContextTagBoolean) BACnetServiceAckGetEventInformationBuilder {
+	b.MoreEvents = moreEvents
+	return b
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) WithMoreEventsBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetServiceAckGetEventInformationBuilder {
+	builder := builderSupplier(b.MoreEvents.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.MoreEvents, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) Build() (BACnetServiceAckGetEventInformation, error) {
+	if b.ListOfEventSummaries == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'listOfEventSummaries' not set"))
+	}
+	if b.MoreEvents == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'moreEvents' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetServiceAckGetEventInformation.deepCopy(), nil
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) MustBuild() BACnetServiceAckGetEventInformation {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetServiceAckGetEventInformationBuilder) Done() BACnetServiceAckBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) buildForBACnetServiceAck() (BACnetServiceAck, error) {
+	return b.Build()
+}
+
+func (b *_BACnetServiceAckGetEventInformationBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetServiceAckGetEventInformationBuilder().(*_BACnetServiceAckGetEventInformationBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetServiceAckGetEventInformationBuilder creates a BACnetServiceAckGetEventInformationBuilder
+func (b *_BACnetServiceAckGetEventInformation) CreateBACnetServiceAckGetEventInformationBuilder() BACnetServiceAckGetEventInformationBuilder {
+	if b == nil {
+		return NewBACnetServiceAckGetEventInformationBuilder()
+	}
+	return &_BACnetServiceAckGetEventInformationBuilder{_BACnetServiceAckGetEventInformation: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -92,23 +252,6 @@ func (m *_BACnetServiceAckGetEventInformation) GetMoreEvents() BACnetContextTagB
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetServiceAckGetEventInformation factory function for _BACnetServiceAckGetEventInformation
-func NewBACnetServiceAckGetEventInformation(listOfEventSummaries BACnetEventSummariesList, moreEvents BACnetContextTagBoolean, serviceAckLength uint32) *_BACnetServiceAckGetEventInformation {
-	if listOfEventSummaries == nil {
-		panic("listOfEventSummaries of type BACnetEventSummariesList for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	if moreEvents == nil {
-		panic("moreEvents of type BACnetContextTagBoolean for BACnetServiceAckGetEventInformation must not be nil")
-	}
-	_result := &_BACnetServiceAckGetEventInformation{
-		BACnetServiceAckContract: NewBACnetServiceAck(serviceAckLength),
-		ListOfEventSummaries:     listOfEventSummaries,
-		MoreEvents:               moreEvents,
-	}
-	_result.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetServiceAckGetEventInformation(structType any) BACnetServiceAckGetEventInformation {
@@ -207,13 +350,34 @@ func (m *_BACnetServiceAckGetEventInformation) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetServiceAckGetEventInformation) IsBACnetServiceAckGetEventInformation() {}
 
+func (m *_BACnetServiceAckGetEventInformation) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetServiceAckGetEventInformation) deepCopy() *_BACnetServiceAckGetEventInformation {
+	if m == nil {
+		return nil
+	}
+	_BACnetServiceAckGetEventInformationCopy := &_BACnetServiceAckGetEventInformation{
+		m.BACnetServiceAckContract.(*_BACnetServiceAck).deepCopy(),
+		m.ListOfEventSummaries.DeepCopy().(BACnetEventSummariesList),
+		m.MoreEvents.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetServiceAckContract.(*_BACnetServiceAck)._SubType = m
+	return _BACnetServiceAckGetEventInformationCopy
+}
+
 func (m *_BACnetServiceAckGetEventInformation) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

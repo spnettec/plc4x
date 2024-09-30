@@ -38,11 +38,14 @@ type KnxGroupAddressFreeLevel interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	KnxGroupAddress
 	// GetSubGroup returns SubGroup (property field)
 	GetSubGroup() uint16
 	// IsKnxGroupAddressFreeLevel is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsKnxGroupAddressFreeLevel()
+	// CreateBuilder creates a KnxGroupAddressFreeLevelBuilder
+	CreateKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder
 }
 
 // _KnxGroupAddressFreeLevel is the data-structure of this message
@@ -53,6 +56,107 @@ type _KnxGroupAddressFreeLevel struct {
 
 var _ KnxGroupAddressFreeLevel = (*_KnxGroupAddressFreeLevel)(nil)
 var _ KnxGroupAddressRequirements = (*_KnxGroupAddressFreeLevel)(nil)
+
+// NewKnxGroupAddressFreeLevel factory function for _KnxGroupAddressFreeLevel
+func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
+	_result := &_KnxGroupAddressFreeLevel{
+		KnxGroupAddressContract: NewKnxGroupAddress(),
+		SubGroup:                subGroup,
+	}
+	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// KnxGroupAddressFreeLevelBuilder is a builder for KnxGroupAddressFreeLevel
+type KnxGroupAddressFreeLevelBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(subGroup uint16) KnxGroupAddressFreeLevelBuilder
+	// WithSubGroup adds SubGroup (property field)
+	WithSubGroup(uint16) KnxGroupAddressFreeLevelBuilder
+	// Build builds the KnxGroupAddressFreeLevel or returns an error if something is wrong
+	Build() (KnxGroupAddressFreeLevel, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() KnxGroupAddressFreeLevel
+}
+
+// NewKnxGroupAddressFreeLevelBuilder() creates a KnxGroupAddressFreeLevelBuilder
+func NewKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder {
+	return &_KnxGroupAddressFreeLevelBuilder{_KnxGroupAddressFreeLevel: new(_KnxGroupAddressFreeLevel)}
+}
+
+type _KnxGroupAddressFreeLevelBuilder struct {
+	*_KnxGroupAddressFreeLevel
+
+	parentBuilder *_KnxGroupAddressBuilder
+
+	err *utils.MultiError
+}
+
+var _ (KnxGroupAddressFreeLevelBuilder) = (*_KnxGroupAddressFreeLevelBuilder)(nil)
+
+func (b *_KnxGroupAddressFreeLevelBuilder) setParent(contract KnxGroupAddressContract) {
+	b.KnxGroupAddressContract = contract
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) WithMandatoryFields(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
+	return b.WithSubGroup(subGroup)
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) WithSubGroup(subGroup uint16) KnxGroupAddressFreeLevelBuilder {
+	b.SubGroup = subGroup
+	return b
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) Build() (KnxGroupAddressFreeLevel, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._KnxGroupAddressFreeLevel.deepCopy(), nil
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) MustBuild() KnxGroupAddressFreeLevel {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_KnxGroupAddressFreeLevelBuilder) Done() KnxGroupAddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) buildForKnxGroupAddress() (KnxGroupAddress, error) {
+	return b.Build()
+}
+
+func (b *_KnxGroupAddressFreeLevelBuilder) DeepCopy() any {
+	_copy := b.CreateKnxGroupAddressFreeLevelBuilder().(*_KnxGroupAddressFreeLevelBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateKnxGroupAddressFreeLevelBuilder creates a KnxGroupAddressFreeLevelBuilder
+func (b *_KnxGroupAddressFreeLevel) CreateKnxGroupAddressFreeLevelBuilder() KnxGroupAddressFreeLevelBuilder {
+	if b == nil {
+		return NewKnxGroupAddressFreeLevelBuilder()
+	}
+	return &_KnxGroupAddressFreeLevelBuilder{_KnxGroupAddressFreeLevel: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,16 +189,6 @@ func (m *_KnxGroupAddressFreeLevel) GetSubGroup() uint16 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewKnxGroupAddressFreeLevel factory function for _KnxGroupAddressFreeLevel
-func NewKnxGroupAddressFreeLevel(subGroup uint16) *_KnxGroupAddressFreeLevel {
-	_result := &_KnxGroupAddressFreeLevel{
-		KnxGroupAddressContract: NewKnxGroupAddress(),
-		SubGroup:                subGroup,
-	}
-	_result.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastKnxGroupAddressFreeLevel(structType any) KnxGroupAddressFreeLevel {
@@ -180,13 +274,33 @@ func (m *_KnxGroupAddressFreeLevel) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_KnxGroupAddressFreeLevel) IsKnxGroupAddressFreeLevel() {}
 
+func (m *_KnxGroupAddressFreeLevel) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_KnxGroupAddressFreeLevel) deepCopy() *_KnxGroupAddressFreeLevel {
+	if m == nil {
+		return nil
+	}
+	_KnxGroupAddressFreeLevelCopy := &_KnxGroupAddressFreeLevel{
+		m.KnxGroupAddressContract.(*_KnxGroupAddress).deepCopy(),
+		m.SubGroup,
+	}
+	m.KnxGroupAddressContract.(*_KnxGroupAddress)._SubType = m
+	return _KnxGroupAddressFreeLevelCopy
+}
+
 func (m *_KnxGroupAddressFreeLevel) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

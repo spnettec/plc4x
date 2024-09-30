@@ -38,11 +38,14 @@ type ConnectedAddressItem interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	TypeId
 	// GetConnectionId returns ConnectionId (property field)
 	GetConnectionId() uint32
 	// IsConnectedAddressItem is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsConnectedAddressItem()
+	// CreateBuilder creates a ConnectedAddressItemBuilder
+	CreateConnectedAddressItemBuilder() ConnectedAddressItemBuilder
 }
 
 // _ConnectedAddressItem is the data-structure of this message
@@ -55,6 +58,107 @@ type _ConnectedAddressItem struct {
 
 var _ ConnectedAddressItem = (*_ConnectedAddressItem)(nil)
 var _ TypeIdRequirements = (*_ConnectedAddressItem)(nil)
+
+// NewConnectedAddressItem factory function for _ConnectedAddressItem
+func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
+	_result := &_ConnectedAddressItem{
+		TypeIdContract: NewTypeId(),
+		ConnectionId:   connectionId,
+	}
+	_result.TypeIdContract.(*_TypeId)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ConnectedAddressItemBuilder is a builder for ConnectedAddressItem
+type ConnectedAddressItemBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder
+	// WithConnectionId adds ConnectionId (property field)
+	WithConnectionId(uint32) ConnectedAddressItemBuilder
+	// Build builds the ConnectedAddressItem or returns an error if something is wrong
+	Build() (ConnectedAddressItem, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ConnectedAddressItem
+}
+
+// NewConnectedAddressItemBuilder() creates a ConnectedAddressItemBuilder
+func NewConnectedAddressItemBuilder() ConnectedAddressItemBuilder {
+	return &_ConnectedAddressItemBuilder{_ConnectedAddressItem: new(_ConnectedAddressItem)}
+}
+
+type _ConnectedAddressItemBuilder struct {
+	*_ConnectedAddressItem
+
+	parentBuilder *_TypeIdBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ConnectedAddressItemBuilder) = (*_ConnectedAddressItemBuilder)(nil)
+
+func (b *_ConnectedAddressItemBuilder) setParent(contract TypeIdContract) {
+	b.TypeIdContract = contract
+}
+
+func (b *_ConnectedAddressItemBuilder) WithMandatoryFields(connectionId uint32) ConnectedAddressItemBuilder {
+	return b.WithConnectionId(connectionId)
+}
+
+func (b *_ConnectedAddressItemBuilder) WithConnectionId(connectionId uint32) ConnectedAddressItemBuilder {
+	b.ConnectionId = connectionId
+	return b
+}
+
+func (b *_ConnectedAddressItemBuilder) Build() (ConnectedAddressItem, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ConnectedAddressItem.deepCopy(), nil
+}
+
+func (b *_ConnectedAddressItemBuilder) MustBuild() ConnectedAddressItem {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ConnectedAddressItemBuilder) Done() TypeIdBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ConnectedAddressItemBuilder) buildForTypeId() (TypeId, error) {
+	return b.Build()
+}
+
+func (b *_ConnectedAddressItemBuilder) DeepCopy() any {
+	_copy := b.CreateConnectedAddressItemBuilder().(*_ConnectedAddressItemBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateConnectedAddressItemBuilder creates a ConnectedAddressItemBuilder
+func (b *_ConnectedAddressItem) CreateConnectedAddressItemBuilder() ConnectedAddressItemBuilder {
+	if b == nil {
+		return NewConnectedAddressItemBuilder()
+	}
+	return &_ConnectedAddressItemBuilder{_ConnectedAddressItem: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -87,16 +191,6 @@ func (m *_ConnectedAddressItem) GetConnectionId() uint32 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewConnectedAddressItem factory function for _ConnectedAddressItem
-func NewConnectedAddressItem(connectionId uint32) *_ConnectedAddressItem {
-	_result := &_ConnectedAddressItem{
-		TypeIdContract: NewTypeId(),
-		ConnectionId:   connectionId,
-	}
-	_result.TypeIdContract.(*_TypeId)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastConnectedAddressItem(structType any) ConnectedAddressItem {
@@ -195,13 +289,34 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_ConnectedAddressItem) IsConnectedAddressItem() {}
 
+func (m *_ConnectedAddressItem) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ConnectedAddressItem) deepCopy() *_ConnectedAddressItem {
+	if m == nil {
+		return nil
+	}
+	_ConnectedAddressItemCopy := &_ConnectedAddressItem{
+		m.TypeIdContract.(*_TypeId).deepCopy(),
+		m.ConnectionId,
+		m.reservedField0,
+	}
+	m.TypeIdContract.(*_TypeId)._SubType = m
+	return _ConnectedAddressItemCopy
+}
+
 func (m *_ConnectedAddressItem) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

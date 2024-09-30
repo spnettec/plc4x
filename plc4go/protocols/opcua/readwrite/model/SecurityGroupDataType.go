@@ -38,6 +38,7 @@ type SecurityGroupDataType interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetName returns Name (property field)
 	GetName() PascalString
@@ -65,6 +66,8 @@ type SecurityGroupDataType interface {
 	GetGroupProperties() []ExtensionObjectDefinition
 	// IsSecurityGroupDataType is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityGroupDataType()
+	// CreateBuilder creates a SecurityGroupDataTypeBuilder
+	CreateSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder
 }
 
 // _SecurityGroupDataType is the data-structure of this message
@@ -86,6 +89,267 @@ type _SecurityGroupDataType struct {
 
 var _ SecurityGroupDataType = (*_SecurityGroupDataType)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_SecurityGroupDataType)(nil)
+
+// NewSecurityGroupDataType factory function for _SecurityGroupDataType
+func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_SecurityGroupDataType {
+	if name == nil {
+		panic("name of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	if securityPolicyUri == nil {
+		panic("securityPolicyUri of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	if securityGroupId == nil {
+		panic("securityGroupId of type PascalString for SecurityGroupDataType must not be nil")
+	}
+	_result := &_SecurityGroupDataType{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		Name:                              name,
+		NoOfSecurityGroupFolder:           noOfSecurityGroupFolder,
+		SecurityGroupFolder:               securityGroupFolder,
+		KeyLifetime:                       keyLifetime,
+		SecurityPolicyUri:                 securityPolicyUri,
+		MaxFutureKeyCount:                 maxFutureKeyCount,
+		MaxPastKeyCount:                   maxPastKeyCount,
+		SecurityGroupId:                   securityGroupId,
+		NoOfRolePermissions:               noOfRolePermissions,
+		RolePermissions:                   rolePermissions,
+		NoOfGroupProperties:               noOfGroupProperties,
+		GroupProperties:                   groupProperties,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityGroupDataTypeBuilder is a builder for SecurityGroupDataType
+type SecurityGroupDataTypeBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// WithName adds Name (property field)
+	WithName(PascalString) SecurityGroupDataTypeBuilder
+	// WithNameBuilder adds Name (property field) which is build by the builder
+	WithNameBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithNoOfSecurityGroupFolder adds NoOfSecurityGroupFolder (property field)
+	WithNoOfSecurityGroupFolder(int32) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupFolder adds SecurityGroupFolder (property field)
+	WithSecurityGroupFolder(...PascalString) SecurityGroupDataTypeBuilder
+	// WithKeyLifetime adds KeyLifetime (property field)
+	WithKeyLifetime(float64) SecurityGroupDataTypeBuilder
+	// WithSecurityPolicyUri adds SecurityPolicyUri (property field)
+	WithSecurityPolicyUri(PascalString) SecurityGroupDataTypeBuilder
+	// WithSecurityPolicyUriBuilder adds SecurityPolicyUri (property field) which is build by the builder
+	WithSecurityPolicyUriBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithMaxFutureKeyCount adds MaxFutureKeyCount (property field)
+	WithMaxFutureKeyCount(uint32) SecurityGroupDataTypeBuilder
+	// WithMaxPastKeyCount adds MaxPastKeyCount (property field)
+	WithMaxPastKeyCount(uint32) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupId adds SecurityGroupId (property field)
+	WithSecurityGroupId(PascalString) SecurityGroupDataTypeBuilder
+	// WithSecurityGroupIdBuilder adds SecurityGroupId (property field) which is build by the builder
+	WithSecurityGroupIdBuilder(func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder
+	// WithNoOfRolePermissions adds NoOfRolePermissions (property field)
+	WithNoOfRolePermissions(int32) SecurityGroupDataTypeBuilder
+	// WithRolePermissions adds RolePermissions (property field)
+	WithRolePermissions(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// WithNoOfGroupProperties adds NoOfGroupProperties (property field)
+	WithNoOfGroupProperties(int32) SecurityGroupDataTypeBuilder
+	// WithGroupProperties adds GroupProperties (property field)
+	WithGroupProperties(...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder
+	// Build builds the SecurityGroupDataType or returns an error if something is wrong
+	Build() (SecurityGroupDataType, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityGroupDataType
+}
+
+// NewSecurityGroupDataTypeBuilder() creates a SecurityGroupDataTypeBuilder
+func NewSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder {
+	return &_SecurityGroupDataTypeBuilder{_SecurityGroupDataType: new(_SecurityGroupDataType)}
+}
+
+type _SecurityGroupDataTypeBuilder struct {
+	*_SecurityGroupDataType
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityGroupDataTypeBuilder) = (*_SecurityGroupDataTypeBuilder)(nil)
+
+func (b *_SecurityGroupDataTypeBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithMandatoryFields(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	return b.WithName(name).WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder).WithSecurityGroupFolder(securityGroupFolder...).WithKeyLifetime(keyLifetime).WithSecurityPolicyUri(securityPolicyUri).WithMaxFutureKeyCount(maxFutureKeyCount).WithMaxPastKeyCount(maxPastKeyCount).WithSecurityGroupId(securityGroupId).WithNoOfRolePermissions(noOfRolePermissions).WithRolePermissions(rolePermissions...).WithNoOfGroupProperties(noOfGroupProperties).WithGroupProperties(groupProperties...)
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithName(name PascalString) SecurityGroupDataTypeBuilder {
+	b.Name = name
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(b.Name.CreatePascalStringBuilder())
+	var err error
+	b.Name, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithNoOfSecurityGroupFolder(noOfSecurityGroupFolder int32) SecurityGroupDataTypeBuilder {
+	b.NoOfSecurityGroupFolder = noOfSecurityGroupFolder
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithSecurityGroupFolder(securityGroupFolder ...PascalString) SecurityGroupDataTypeBuilder {
+	b.SecurityGroupFolder = securityGroupFolder
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithKeyLifetime(keyLifetime float64) SecurityGroupDataTypeBuilder {
+	b.KeyLifetime = keyLifetime
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithSecurityPolicyUri(securityPolicyUri PascalString) SecurityGroupDataTypeBuilder {
+	b.SecurityPolicyUri = securityPolicyUri
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithSecurityPolicyUriBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(b.SecurityPolicyUri.CreatePascalStringBuilder())
+	var err error
+	b.SecurityPolicyUri, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithMaxFutureKeyCount(maxFutureKeyCount uint32) SecurityGroupDataTypeBuilder {
+	b.MaxFutureKeyCount = maxFutureKeyCount
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithMaxPastKeyCount(maxPastKeyCount uint32) SecurityGroupDataTypeBuilder {
+	b.MaxPastKeyCount = maxPastKeyCount
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithSecurityGroupId(securityGroupId PascalString) SecurityGroupDataTypeBuilder {
+	b.SecurityGroupId = securityGroupId
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithSecurityGroupIdBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) SecurityGroupDataTypeBuilder {
+	builder := builderSupplier(b.SecurityGroupId.CreatePascalStringBuilder())
+	var err error
+	b.SecurityGroupId, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithNoOfRolePermissions(noOfRolePermissions int32) SecurityGroupDataTypeBuilder {
+	b.NoOfRolePermissions = noOfRolePermissions
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithRolePermissions(rolePermissions ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	b.RolePermissions = rolePermissions
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithNoOfGroupProperties(noOfGroupProperties int32) SecurityGroupDataTypeBuilder {
+	b.NoOfGroupProperties = noOfGroupProperties
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) WithGroupProperties(groupProperties ...ExtensionObjectDefinition) SecurityGroupDataTypeBuilder {
+	b.GroupProperties = groupProperties
+	return b
+}
+
+func (b *_SecurityGroupDataTypeBuilder) Build() (SecurityGroupDataType, error) {
+	if b.Name == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'name' not set"))
+	}
+	if b.SecurityPolicyUri == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityPolicyUri' not set"))
+	}
+	if b.SecurityGroupId == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'securityGroupId' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityGroupDataType.deepCopy(), nil
+}
+
+func (b *_SecurityGroupDataTypeBuilder) MustBuild() SecurityGroupDataType {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityGroupDataTypeBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityGroupDataTypeBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_SecurityGroupDataTypeBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityGroupDataTypeBuilder().(*_SecurityGroupDataTypeBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityGroupDataTypeBuilder creates a SecurityGroupDataTypeBuilder
+func (b *_SecurityGroupDataType) CreateSecurityGroupDataTypeBuilder() SecurityGroupDataTypeBuilder {
+	if b == nil {
+		return NewSecurityGroupDataTypeBuilder()
+	}
+	return &_SecurityGroupDataTypeBuilder{_SecurityGroupDataType: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -162,36 +426,6 @@ func (m *_SecurityGroupDataType) GetGroupProperties() []ExtensionObjectDefinitio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSecurityGroupDataType factory function for _SecurityGroupDataType
-func NewSecurityGroupDataType(name PascalString, noOfSecurityGroupFolder int32, securityGroupFolder []PascalString, keyLifetime float64, securityPolicyUri PascalString, maxFutureKeyCount uint32, maxPastKeyCount uint32, securityGroupId PascalString, noOfRolePermissions int32, rolePermissions []ExtensionObjectDefinition, noOfGroupProperties int32, groupProperties []ExtensionObjectDefinition) *_SecurityGroupDataType {
-	if name == nil {
-		panic("name of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	if securityPolicyUri == nil {
-		panic("securityPolicyUri of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	if securityGroupId == nil {
-		panic("securityGroupId of type PascalString for SecurityGroupDataType must not be nil")
-	}
-	_result := &_SecurityGroupDataType{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		Name:                              name,
-		NoOfSecurityGroupFolder:           noOfSecurityGroupFolder,
-		SecurityGroupFolder:               securityGroupFolder,
-		KeyLifetime:                       keyLifetime,
-		SecurityPolicyUri:                 securityPolicyUri,
-		MaxFutureKeyCount:                 maxFutureKeyCount,
-		MaxPastKeyCount:                   maxPastKeyCount,
-		SecurityGroupId:                   securityGroupId,
-		NoOfRolePermissions:               noOfRolePermissions,
-		RolePermissions:                   rolePermissions,
-		NoOfGroupProperties:               noOfGroupProperties,
-		GroupProperties:                   groupProperties,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastSecurityGroupDataType(structType any) SecurityGroupDataType {
@@ -441,13 +675,44 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 func (m *_SecurityGroupDataType) IsSecurityGroupDataType() {}
 
+func (m *_SecurityGroupDataType) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityGroupDataType) deepCopy() *_SecurityGroupDataType {
+	if m == nil {
+		return nil
+	}
+	_SecurityGroupDataTypeCopy := &_SecurityGroupDataType{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.Name.DeepCopy().(PascalString),
+		m.NoOfSecurityGroupFolder,
+		utils.DeepCopySlice[PascalString, PascalString](m.SecurityGroupFolder),
+		m.KeyLifetime,
+		m.SecurityPolicyUri.DeepCopy().(PascalString),
+		m.MaxFutureKeyCount,
+		m.MaxPastKeyCount,
+		m.SecurityGroupId.DeepCopy().(PascalString),
+		m.NoOfRolePermissions,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.RolePermissions),
+		m.NoOfGroupProperties,
+		utils.DeepCopySlice[ExtensionObjectDefinition, ExtensionObjectDefinition](m.GroupProperties),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _SecurityGroupDataTypeCopy
+}
+
 func (m *_SecurityGroupDataType) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

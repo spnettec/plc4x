@@ -38,6 +38,7 @@ type DeviceConfigurationAckDataBlock interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetCommunicationChannelId returns CommunicationChannelId (property field)
 	GetCommunicationChannelId() uint8
 	// GetSequenceCounter returns SequenceCounter (property field)
@@ -46,6 +47,8 @@ type DeviceConfigurationAckDataBlock interface {
 	GetStatus() Status
 	// IsDeviceConfigurationAckDataBlock is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsDeviceConfigurationAckDataBlock()
+	// CreateBuilder creates a DeviceConfigurationAckDataBlockBuilder
+	CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder
 }
 
 // _DeviceConfigurationAckDataBlock is the data-structure of this message
@@ -56,6 +59,101 @@ type _DeviceConfigurationAckDataBlock struct {
 }
 
 var _ DeviceConfigurationAckDataBlock = (*_DeviceConfigurationAckDataBlock)(nil)
+
+// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
+func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
+	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// DeviceConfigurationAckDataBlockBuilder is a builder for DeviceConfigurationAckDataBlock
+type DeviceConfigurationAckDataBlockBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder
+	// WithCommunicationChannelId adds CommunicationChannelId (property field)
+	WithCommunicationChannelId(uint8) DeviceConfigurationAckDataBlockBuilder
+	// WithSequenceCounter adds SequenceCounter (property field)
+	WithSequenceCounter(uint8) DeviceConfigurationAckDataBlockBuilder
+	// WithStatus adds Status (property field)
+	WithStatus(Status) DeviceConfigurationAckDataBlockBuilder
+	// Build builds the DeviceConfigurationAckDataBlock or returns an error if something is wrong
+	Build() (DeviceConfigurationAckDataBlock, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() DeviceConfigurationAckDataBlock
+}
+
+// NewDeviceConfigurationAckDataBlockBuilder() creates a DeviceConfigurationAckDataBlockBuilder
+func NewDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
+	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: new(_DeviceConfigurationAckDataBlock)}
+}
+
+type _DeviceConfigurationAckDataBlockBuilder struct {
+	*_DeviceConfigurationAckDataBlock
+
+	err *utils.MultiError
+}
+
+var _ (DeviceConfigurationAckDataBlockBuilder) = (*_DeviceConfigurationAckDataBlockBuilder)(nil)
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithMandatoryFields(communicationChannelId uint8, sequenceCounter uint8, status Status) DeviceConfigurationAckDataBlockBuilder {
+	return b.WithCommunicationChannelId(communicationChannelId).WithSequenceCounter(sequenceCounter).WithStatus(status)
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithCommunicationChannelId(communicationChannelId uint8) DeviceConfigurationAckDataBlockBuilder {
+	b.CommunicationChannelId = communicationChannelId
+	return b
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithSequenceCounter(sequenceCounter uint8) DeviceConfigurationAckDataBlockBuilder {
+	b.SequenceCounter = sequenceCounter
+	return b
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) WithStatus(status Status) DeviceConfigurationAckDataBlockBuilder {
+	b.Status = status
+	return b
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) Build() (DeviceConfigurationAckDataBlock, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._DeviceConfigurationAckDataBlock.deepCopy(), nil
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) MustBuild() DeviceConfigurationAckDataBlock {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_DeviceConfigurationAckDataBlockBuilder) DeepCopy() any {
+	_copy := b.CreateDeviceConfigurationAckDataBlockBuilder().(*_DeviceConfigurationAckDataBlockBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateDeviceConfigurationAckDataBlockBuilder creates a DeviceConfigurationAckDataBlockBuilder
+func (b *_DeviceConfigurationAckDataBlock) CreateDeviceConfigurationAckDataBlockBuilder() DeviceConfigurationAckDataBlockBuilder {
+	if b == nil {
+		return NewDeviceConfigurationAckDataBlockBuilder()
+	}
+	return &_DeviceConfigurationAckDataBlockBuilder{_DeviceConfigurationAckDataBlock: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_DeviceConfigurationAckDataBlock) GetStatus() Status {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewDeviceConfigurationAckDataBlock factory function for _DeviceConfigurationAckDataBlock
-func NewDeviceConfigurationAckDataBlock(communicationChannelId uint8, sequenceCounter uint8, status Status) *_DeviceConfigurationAckDataBlock {
-	return &_DeviceConfigurationAckDataBlock{CommunicationChannelId: communicationChannelId, SequenceCounter: sequenceCounter, Status: status}
-}
 
 // Deprecated: use the interface for direct cast
 func CastDeviceConfigurationAckDataBlock(structType any) DeviceConfigurationAckDataBlock {
@@ -136,7 +229,7 @@ func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_DeviceConfigurationAckDataBlock) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__deviceConfigurationAckDataBlock DeviceConfigurationAckDataBlock, err error) {
@@ -220,13 +313,33 @@ func (m *_DeviceConfigurationAckDataBlock) SerializeWithWriteBuffer(ctx context.
 
 func (m *_DeviceConfigurationAckDataBlock) IsDeviceConfigurationAckDataBlock() {}
 
+func (m *_DeviceConfigurationAckDataBlock) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_DeviceConfigurationAckDataBlock) deepCopy() *_DeviceConfigurationAckDataBlock {
+	if m == nil {
+		return nil
+	}
+	_DeviceConfigurationAckDataBlockCopy := &_DeviceConfigurationAckDataBlock{
+		m.CommunicationChannelId,
+		m.SequenceCounter,
+		m.Status,
+	}
+	return _DeviceConfigurationAckDataBlockCopy
+}
+
 func (m *_DeviceConfigurationAckDataBlock) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

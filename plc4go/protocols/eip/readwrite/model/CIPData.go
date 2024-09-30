@@ -38,12 +38,15 @@ type CIPData interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataType returns DataType (property field)
 	GetDataType() CIPDataTypeCode
 	// GetData returns Data (property field)
 	GetData() []byte
 	// IsCIPData is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsCIPData()
+	// CreateBuilder creates a CIPDataBuilder
+	CreateCIPDataBuilder() CIPDataBuilder
 }
 
 // _CIPData is the data-structure of this message
@@ -56,6 +59,94 @@ type _CIPData struct {
 }
 
 var _ CIPData = (*_CIPData)(nil)
+
+// NewCIPData factory function for _CIPData
+func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
+	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// CIPDataBuilder is a builder for CIPData
+type CIPDataBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataType CIPDataTypeCode, data []byte) CIPDataBuilder
+	// WithDataType adds DataType (property field)
+	WithDataType(CIPDataTypeCode) CIPDataBuilder
+	// WithData adds Data (property field)
+	WithData(...byte) CIPDataBuilder
+	// Build builds the CIPData or returns an error if something is wrong
+	Build() (CIPData, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() CIPData
+}
+
+// NewCIPDataBuilder() creates a CIPDataBuilder
+func NewCIPDataBuilder() CIPDataBuilder {
+	return &_CIPDataBuilder{_CIPData: new(_CIPData)}
+}
+
+type _CIPDataBuilder struct {
+	*_CIPData
+
+	err *utils.MultiError
+}
+
+var _ (CIPDataBuilder) = (*_CIPDataBuilder)(nil)
+
+func (b *_CIPDataBuilder) WithMandatoryFields(dataType CIPDataTypeCode, data []byte) CIPDataBuilder {
+	return b.WithDataType(dataType).WithData(data...)
+}
+
+func (b *_CIPDataBuilder) WithDataType(dataType CIPDataTypeCode) CIPDataBuilder {
+	b.DataType = dataType
+	return b
+}
+
+func (b *_CIPDataBuilder) WithData(data ...byte) CIPDataBuilder {
+	b.Data = data
+	return b
+}
+
+func (b *_CIPDataBuilder) Build() (CIPData, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._CIPData.deepCopy(), nil
+}
+
+func (b *_CIPDataBuilder) MustBuild() CIPData {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_CIPDataBuilder) DeepCopy() any {
+	_copy := b.CreateCIPDataBuilder().(*_CIPDataBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateCIPDataBuilder creates a CIPDataBuilder
+func (b *_CIPData) CreateCIPDataBuilder() CIPDataBuilder {
+	if b == nil {
+		return NewCIPDataBuilder()
+	}
+	return &_CIPDataBuilder{_CIPData: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -74,11 +165,6 @@ func (m *_CIPData) GetData() []byte {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewCIPData factory function for _CIPData
-func NewCIPData(dataType CIPDataTypeCode, data []byte, packetLength uint16) *_CIPData {
-	return &_CIPData{DataType: dataType, Data: data, PacketLength: packetLength}
-}
 
 // Deprecated: use the interface for direct cast
 func CastCIPData(structType any) CIPData {
@@ -128,7 +214,7 @@ func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_CIPData) parse(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (__cIPData CIPData, err error) {
@@ -202,13 +288,33 @@ func (m *_CIPData) GetPacketLength() uint16 {
 
 func (m *_CIPData) IsCIPData() {}
 
+func (m *_CIPData) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_CIPData) deepCopy() *_CIPData {
+	if m == nil {
+		return nil
+	}
+	_CIPDataCopy := &_CIPData{
+		m.DataType,
+		utils.DeepCopySlice[byte, byte](m.Data),
+		m.PacketLength,
+	}
+	return _CIPDataCopy
+}
+
 func (m *_CIPData) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

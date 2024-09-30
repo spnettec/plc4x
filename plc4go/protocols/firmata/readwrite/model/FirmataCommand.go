@@ -40,8 +40,11 @@ type FirmataCommand interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommand()
+	// CreateBuilder creates a FirmataCommandBuilder
+	CreateFirmataCommandBuilder() FirmataCommandBuilder
 }
 
 // FirmataCommandContract provides a set of functions which can be overwritten by a sub struct
@@ -50,6 +53,8 @@ type FirmataCommandContract interface {
 	GetResponse() bool
 	// IsFirmataCommand is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsFirmataCommand()
+	// CreateBuilder creates a FirmataCommandBuilder
+	CreateFirmataCommandBuilder() FirmataCommandBuilder
 }
 
 // FirmataCommandRequirements provides a set of functions which need to be implemented by a sub struct
@@ -74,6 +79,214 @@ var _ FirmataCommandContract = (*_FirmataCommand)(nil)
 func NewFirmataCommand(response bool) *_FirmataCommand {
 	return &_FirmataCommand{Response: response}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// FirmataCommandBuilder is a builder for FirmataCommand
+type FirmataCommandBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() FirmataCommandBuilder
+	// AsFirmataCommandSysex converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSysex() interface {
+		FirmataCommandSysexBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSetPinMode converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSetPinMode() interface {
+		FirmataCommandSetPinModeBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSetDigitalPinValue converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSetDigitalPinValue() interface {
+		FirmataCommandSetDigitalPinValueBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandProtocolVersion converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandProtocolVersion() interface {
+		FirmataCommandProtocolVersionBuilder
+		Done() FirmataCommandBuilder
+	}
+	// AsFirmataCommandSystemReset converts this build to a subType of FirmataCommand. It is always possible to return to current builder using Done()
+	AsFirmataCommandSystemReset() interface {
+		FirmataCommandSystemResetBuilder
+		Done() FirmataCommandBuilder
+	}
+	// Build builds the FirmataCommand or returns an error if something is wrong
+	PartialBuild() (FirmataCommandContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() FirmataCommandContract
+	// Build builds the FirmataCommand or returns an error if something is wrong
+	Build() (FirmataCommand, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() FirmataCommand
+}
+
+// NewFirmataCommandBuilder() creates a FirmataCommandBuilder
+func NewFirmataCommandBuilder() FirmataCommandBuilder {
+	return &_FirmataCommandBuilder{_FirmataCommand: new(_FirmataCommand)}
+}
+
+type _FirmataCommandChildBuilder interface {
+	utils.Copyable
+	setParent(FirmataCommandContract)
+	buildForFirmataCommand() (FirmataCommand, error)
+}
+
+type _FirmataCommandBuilder struct {
+	*_FirmataCommand
+
+	childBuilder _FirmataCommandChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (FirmataCommandBuilder) = (*_FirmataCommandBuilder)(nil)
+
+func (b *_FirmataCommandBuilder) WithMandatoryFields() FirmataCommandBuilder {
+	return b
+}
+
+func (b *_FirmataCommandBuilder) PartialBuild() (FirmataCommandContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._FirmataCommand.deepCopy(), nil
+}
+
+func (b *_FirmataCommandBuilder) PartialMustBuild() FirmataCommandContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSysex() interface {
+	FirmataCommandSysexBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSysexBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSysexBuilder().(*_FirmataCommandSysexBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetPinMode() interface {
+	FirmataCommandSetPinModeBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSetPinModeBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSetPinModeBuilder().(*_FirmataCommandSetPinModeBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSetDigitalPinValue() interface {
+	FirmataCommandSetDigitalPinValueBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSetDigitalPinValueBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSetDigitalPinValueBuilder().(*_FirmataCommandSetDigitalPinValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandProtocolVersion() interface {
+	FirmataCommandProtocolVersionBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandProtocolVersionBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandProtocolVersionBuilder().(*_FirmataCommandProtocolVersionBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) AsFirmataCommandSystemReset() interface {
+	FirmataCommandSystemResetBuilder
+	Done() FirmataCommandBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		FirmataCommandSystemResetBuilder
+		Done() FirmataCommandBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewFirmataCommandSystemResetBuilder().(*_FirmataCommandSystemResetBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_FirmataCommandBuilder) Build() (FirmataCommand, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForFirmataCommand()
+}
+
+func (b *_FirmataCommandBuilder) MustBuild() FirmataCommand {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_FirmataCommandBuilder) DeepCopy() any {
+	_copy := b.CreateFirmataCommandBuilder().(*_FirmataCommandBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_FirmataCommandChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateFirmataCommandBuilder creates a FirmataCommandBuilder
+func (b *_FirmataCommand) CreateFirmataCommandBuilder() FirmataCommandBuilder {
+	if b == nil {
+		return NewFirmataCommandBuilder()
+	}
+	return &_FirmataCommandBuilder{_FirmataCommand: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastFirmataCommand(structType any) FirmataCommand {
@@ -113,7 +326,7 @@ func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -123,7 +336,12 @@ func FirmataCommandParseWithBuffer[T FirmataCommand](ctx context.Context, readBu
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_FirmataCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__firmataCommand FirmataCommand, err error) {
@@ -144,23 +362,23 @@ func (m *_FirmataCommand) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child FirmataCommand
 	switch {
 	case commandCode == 0x0: // FirmataCommandSysex
-		if _child, err = (&_FirmataCommandSysex{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSysex).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSysex for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x4: // FirmataCommandSetPinMode
-		if _child, err = (&_FirmataCommandSetPinMode{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSetPinMode).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetPinMode for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x5: // FirmataCommandSetDigitalPinValue
-		if _child, err = (&_FirmataCommandSetDigitalPinValue{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSetDigitalPinValue).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSetDigitalPinValue for type-switch of FirmataCommand")
 		}
 	case commandCode == 0x9: // FirmataCommandProtocolVersion
-		if _child, err = (&_FirmataCommandProtocolVersion{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandProtocolVersion).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandProtocolVersion for type-switch of FirmataCommand")
 		}
 	case commandCode == 0xF: // FirmataCommandSystemReset
-		if _child, err = (&_FirmataCommandSystemReset{}).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_FirmataCommandSystemReset).parse(ctx, readBuffer, m, response); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type FirmataCommandSystemReset for type-switch of FirmataCommand")
 		}
 	default:
@@ -212,3 +430,18 @@ func (m *_FirmataCommand) GetResponse() bool {
 ////
 
 func (m *_FirmataCommand) IsFirmataCommand() {}
+
+func (m *_FirmataCommand) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_FirmataCommand) deepCopy() *_FirmataCommand {
+	if m == nil {
+		return nil
+	}
+	_FirmataCommandCopy := &_FirmataCommand{
+		nil, // will be set by child
+		m.Response,
+	}
+	return _FirmataCommandCopy
+}

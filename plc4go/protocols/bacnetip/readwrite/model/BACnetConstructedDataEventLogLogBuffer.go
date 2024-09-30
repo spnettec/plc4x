@@ -38,11 +38,14 @@ type BACnetConstructedDataEventLogLogBuffer interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetFloorText returns FloorText (property field)
 	GetFloorText() []BACnetEventLogRecord
 	// IsBACnetConstructedDataEventLogLogBuffer is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataEventLogLogBuffer()
+	// CreateBuilder creates a BACnetConstructedDataEventLogLogBufferBuilder
+	CreateBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder
 }
 
 // _BACnetConstructedDataEventLogLogBuffer is the data-structure of this message
@@ -53,6 +56,107 @@ type _BACnetConstructedDataEventLogLogBuffer struct {
 
 var _ BACnetConstructedDataEventLogLogBuffer = (*_BACnetConstructedDataEventLogLogBuffer)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataEventLogLogBuffer)(nil)
+
+// NewBACnetConstructedDataEventLogLogBuffer factory function for _BACnetConstructedDataEventLogLogBuffer
+func NewBACnetConstructedDataEventLogLogBuffer(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, floorText []BACnetEventLogRecord, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventLogLogBuffer {
+	_result := &_BACnetConstructedDataEventLogLogBuffer{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		FloorText:                     floorText,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataEventLogLogBufferBuilder is a builder for BACnetConstructedDataEventLogLogBuffer
+type BACnetConstructedDataEventLogLogBufferBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(floorText []BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder
+	// WithFloorText adds FloorText (property field)
+	WithFloorText(...BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder
+	// Build builds the BACnetConstructedDataEventLogLogBuffer or returns an error if something is wrong
+	Build() (BACnetConstructedDataEventLogLogBuffer, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataEventLogLogBuffer
+}
+
+// NewBACnetConstructedDataEventLogLogBufferBuilder() creates a BACnetConstructedDataEventLogLogBufferBuilder
+func NewBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder {
+	return &_BACnetConstructedDataEventLogLogBufferBuilder{_BACnetConstructedDataEventLogLogBuffer: new(_BACnetConstructedDataEventLogLogBuffer)}
+}
+
+type _BACnetConstructedDataEventLogLogBufferBuilder struct {
+	*_BACnetConstructedDataEventLogLogBuffer
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataEventLogLogBufferBuilder) = (*_BACnetConstructedDataEventLogLogBufferBuilder)(nil)
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) WithMandatoryFields(floorText []BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder {
+	return b.WithFloorText(floorText...)
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) WithFloorText(floorText ...BACnetEventLogRecord) BACnetConstructedDataEventLogLogBufferBuilder {
+	b.FloorText = floorText
+	return b
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) Build() (BACnetConstructedDataEventLogLogBuffer, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataEventLogLogBuffer.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) MustBuild() BACnetConstructedDataEventLogLogBuffer {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataEventLogLogBufferBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataEventLogLogBufferBuilder().(*_BACnetConstructedDataEventLogLogBufferBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataEventLogLogBufferBuilder creates a BACnetConstructedDataEventLogLogBufferBuilder
+func (b *_BACnetConstructedDataEventLogLogBuffer) CreateBACnetConstructedDataEventLogLogBufferBuilder() BACnetConstructedDataEventLogLogBufferBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataEventLogLogBufferBuilder()
+	}
+	return &_BACnetConstructedDataEventLogLogBufferBuilder{_BACnetConstructedDataEventLogLogBuffer: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -89,16 +193,6 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) GetFloorText() []BACnetEventLo
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataEventLogLogBuffer factory function for _BACnetConstructedDataEventLogLogBuffer
-func NewBACnetConstructedDataEventLogLogBuffer(floorText []BACnetEventLogRecord, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataEventLogLogBuffer {
-	_result := &_BACnetConstructedDataEventLogLogBuffer{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		FloorText:                     floorText,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataEventLogLogBuffer(structType any) BACnetConstructedDataEventLogLogBuffer {
@@ -188,13 +282,33 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) SerializeWithWriteBuffer(ctx c
 
 func (m *_BACnetConstructedDataEventLogLogBuffer) IsBACnetConstructedDataEventLogLogBuffer() {}
 
+func (m *_BACnetConstructedDataEventLogLogBuffer) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataEventLogLogBuffer) deepCopy() *_BACnetConstructedDataEventLogLogBuffer {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataEventLogLogBufferCopy := &_BACnetConstructedDataEventLogLogBuffer{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		utils.DeepCopySlice[BACnetEventLogRecord, BACnetEventLogRecord](m.FloorText),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataEventLogLogBufferCopy
+}
+
 func (m *_BACnetConstructedDataEventLogLogBuffer) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

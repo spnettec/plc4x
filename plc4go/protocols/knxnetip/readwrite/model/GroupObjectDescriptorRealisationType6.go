@@ -36,8 +36,11 @@ type GroupObjectDescriptorRealisationType6 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsGroupObjectDescriptorRealisationType6 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGroupObjectDescriptorRealisationType6()
+	// CreateBuilder creates a GroupObjectDescriptorRealisationType6Builder
+	CreateGroupObjectDescriptorRealisationType6Builder() GroupObjectDescriptorRealisationType6Builder
 }
 
 // _GroupObjectDescriptorRealisationType6 is the data-structure of this message
@@ -50,6 +53,75 @@ var _ GroupObjectDescriptorRealisationType6 = (*_GroupObjectDescriptorRealisatio
 func NewGroupObjectDescriptorRealisationType6() *_GroupObjectDescriptorRealisationType6 {
 	return &_GroupObjectDescriptorRealisationType6{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GroupObjectDescriptorRealisationType6Builder is a builder for GroupObjectDescriptorRealisationType6
+type GroupObjectDescriptorRealisationType6Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() GroupObjectDescriptorRealisationType6Builder
+	// Build builds the GroupObjectDescriptorRealisationType6 or returns an error if something is wrong
+	Build() (GroupObjectDescriptorRealisationType6, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GroupObjectDescriptorRealisationType6
+}
+
+// NewGroupObjectDescriptorRealisationType6Builder() creates a GroupObjectDescriptorRealisationType6Builder
+func NewGroupObjectDescriptorRealisationType6Builder() GroupObjectDescriptorRealisationType6Builder {
+	return &_GroupObjectDescriptorRealisationType6Builder{_GroupObjectDescriptorRealisationType6: new(_GroupObjectDescriptorRealisationType6)}
+}
+
+type _GroupObjectDescriptorRealisationType6Builder struct {
+	*_GroupObjectDescriptorRealisationType6
+
+	err *utils.MultiError
+}
+
+var _ (GroupObjectDescriptorRealisationType6Builder) = (*_GroupObjectDescriptorRealisationType6Builder)(nil)
+
+func (b *_GroupObjectDescriptorRealisationType6Builder) WithMandatoryFields() GroupObjectDescriptorRealisationType6Builder {
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType6Builder) Build() (GroupObjectDescriptorRealisationType6, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GroupObjectDescriptorRealisationType6.deepCopy(), nil
+}
+
+func (b *_GroupObjectDescriptorRealisationType6Builder) MustBuild() GroupObjectDescriptorRealisationType6 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_GroupObjectDescriptorRealisationType6Builder) DeepCopy() any {
+	_copy := b.CreateGroupObjectDescriptorRealisationType6Builder().(*_GroupObjectDescriptorRealisationType6Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateGroupObjectDescriptorRealisationType6Builder creates a GroupObjectDescriptorRealisationType6Builder
+func (b *_GroupObjectDescriptorRealisationType6) CreateGroupObjectDescriptorRealisationType6Builder() GroupObjectDescriptorRealisationType6Builder {
+	if b == nil {
+		return NewGroupObjectDescriptorRealisationType6Builder()
+	}
+	return &_GroupObjectDescriptorRealisationType6Builder{_GroupObjectDescriptorRealisationType6: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastGroupObjectDescriptorRealisationType6(structType any) GroupObjectDescriptorRealisationType6 {
@@ -91,7 +163,7 @@ func GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx context.Context, r
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType6) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__groupObjectDescriptorRealisationType6 GroupObjectDescriptorRealisationType6, err error) {
@@ -135,13 +207,29 @@ func (m *_GroupObjectDescriptorRealisationType6) SerializeWithWriteBuffer(ctx co
 
 func (m *_GroupObjectDescriptorRealisationType6) IsGroupObjectDescriptorRealisationType6() {}
 
+func (m *_GroupObjectDescriptorRealisationType6) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType6) deepCopy() *_GroupObjectDescriptorRealisationType6 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType6Copy := &_GroupObjectDescriptorRealisationType6{}
+	return _GroupObjectDescriptorRealisationType6Copy
+}
+
 func (m *_GroupObjectDescriptorRealisationType6) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

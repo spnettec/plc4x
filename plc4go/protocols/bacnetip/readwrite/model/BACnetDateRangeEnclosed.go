@@ -38,6 +38,7 @@ type BACnetDateRangeEnclosed interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetOpeningTag returns OpeningTag (property field)
 	GetOpeningTag() BACnetOpeningTag
 	// GetDateRange returns DateRange (property field)
@@ -46,6 +47,8 @@ type BACnetDateRangeEnclosed interface {
 	GetClosingTag() BACnetClosingTag
 	// IsBACnetDateRangeEnclosed is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetDateRangeEnclosed()
+	// CreateBuilder creates a BACnetDateRangeEnclosedBuilder
+	CreateBACnetDateRangeEnclosedBuilder() BACnetDateRangeEnclosedBuilder
 }
 
 // _BACnetDateRangeEnclosed is the data-structure of this message
@@ -59,6 +62,173 @@ type _BACnetDateRangeEnclosed struct {
 }
 
 var _ BACnetDateRangeEnclosed = (*_BACnetDateRangeEnclosed)(nil)
+
+// NewBACnetDateRangeEnclosed factory function for _BACnetDateRangeEnclosed
+func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateRangeEnclosed {
+	if openingTag == nil {
+		panic("openingTag of type BACnetOpeningTag for BACnetDateRangeEnclosed must not be nil")
+	}
+	if dateRange == nil {
+		panic("dateRange of type BACnetDateRange for BACnetDateRangeEnclosed must not be nil")
+	}
+	if closingTag == nil {
+		panic("closingTag of type BACnetClosingTag for BACnetDateRangeEnclosed must not be nil")
+	}
+	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag, TagNumber: tagNumber}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetDateRangeEnclosedBuilder is a builder for BACnetDateRangeEnclosed
+type BACnetDateRangeEnclosedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag) BACnetDateRangeEnclosedBuilder
+	// WithOpeningTag adds OpeningTag (property field)
+	WithOpeningTag(BACnetOpeningTag) BACnetDateRangeEnclosedBuilder
+	// WithOpeningTagBuilder adds OpeningTag (property field) which is build by the builder
+	WithOpeningTagBuilder(func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateRangeEnclosedBuilder
+	// WithDateRange adds DateRange (property field)
+	WithDateRange(BACnetDateRange) BACnetDateRangeEnclosedBuilder
+	// WithDateRangeBuilder adds DateRange (property field) which is build by the builder
+	WithDateRangeBuilder(func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetDateRangeEnclosedBuilder
+	// WithClosingTag adds ClosingTag (property field)
+	WithClosingTag(BACnetClosingTag) BACnetDateRangeEnclosedBuilder
+	// WithClosingTagBuilder adds ClosingTag (property field) which is build by the builder
+	WithClosingTagBuilder(func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateRangeEnclosedBuilder
+	// Build builds the BACnetDateRangeEnclosed or returns an error if something is wrong
+	Build() (BACnetDateRangeEnclosed, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetDateRangeEnclosed
+}
+
+// NewBACnetDateRangeEnclosedBuilder() creates a BACnetDateRangeEnclosedBuilder
+func NewBACnetDateRangeEnclosedBuilder() BACnetDateRangeEnclosedBuilder {
+	return &_BACnetDateRangeEnclosedBuilder{_BACnetDateRangeEnclosed: new(_BACnetDateRangeEnclosed)}
+}
+
+type _BACnetDateRangeEnclosedBuilder struct {
+	*_BACnetDateRangeEnclosed
+
+	err *utils.MultiError
+}
+
+var _ (BACnetDateRangeEnclosedBuilder) = (*_BACnetDateRangeEnclosedBuilder)(nil)
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithMandatoryFields(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag) BACnetDateRangeEnclosedBuilder {
+	return b.WithOpeningTag(openingTag).WithDateRange(dateRange).WithClosingTag(closingTag)
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithOpeningTag(openingTag BACnetOpeningTag) BACnetDateRangeEnclosedBuilder {
+	b.OpeningTag = openingTag
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithOpeningTagBuilder(builderSupplier func(BACnetOpeningTagBuilder) BACnetOpeningTagBuilder) BACnetDateRangeEnclosedBuilder {
+	builder := builderSupplier(b.OpeningTag.CreateBACnetOpeningTagBuilder())
+	var err error
+	b.OpeningTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetOpeningTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithDateRange(dateRange BACnetDateRange) BACnetDateRangeEnclosedBuilder {
+	b.DateRange = dateRange
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithDateRangeBuilder(builderSupplier func(BACnetDateRangeBuilder) BACnetDateRangeBuilder) BACnetDateRangeEnclosedBuilder {
+	builder := builderSupplier(b.DateRange.CreateBACnetDateRangeBuilder())
+	var err error
+	b.DateRange, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetDateRangeBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithClosingTag(closingTag BACnetClosingTag) BACnetDateRangeEnclosedBuilder {
+	b.ClosingTag = closingTag
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) WithClosingTagBuilder(builderSupplier func(BACnetClosingTagBuilder) BACnetClosingTagBuilder) BACnetDateRangeEnclosedBuilder {
+	builder := builderSupplier(b.ClosingTag.CreateBACnetClosingTagBuilder())
+	var err error
+	b.ClosingTag, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetClosingTagBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) Build() (BACnetDateRangeEnclosed, error) {
+	if b.OpeningTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'openingTag' not set"))
+	}
+	if b.DateRange == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'dateRange' not set"))
+	}
+	if b.ClosingTag == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'closingTag' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetDateRangeEnclosed.deepCopy(), nil
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) MustBuild() BACnetDateRangeEnclosed {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetDateRangeEnclosedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetDateRangeEnclosedBuilder().(*_BACnetDateRangeEnclosedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetDateRangeEnclosedBuilder creates a BACnetDateRangeEnclosedBuilder
+func (b *_BACnetDateRangeEnclosed) CreateBACnetDateRangeEnclosedBuilder() BACnetDateRangeEnclosedBuilder {
+	if b == nil {
+		return NewBACnetDateRangeEnclosedBuilder()
+	}
+	return &_BACnetDateRangeEnclosedBuilder{_BACnetDateRangeEnclosed: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,20 +251,6 @@ func (m *_BACnetDateRangeEnclosed) GetClosingTag() BACnetClosingTag {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetDateRangeEnclosed factory function for _BACnetDateRangeEnclosed
-func NewBACnetDateRangeEnclosed(openingTag BACnetOpeningTag, dateRange BACnetDateRange, closingTag BACnetClosingTag, tagNumber uint8) *_BACnetDateRangeEnclosed {
-	if openingTag == nil {
-		panic("openingTag of type BACnetOpeningTag for BACnetDateRangeEnclosed must not be nil")
-	}
-	if dateRange == nil {
-		panic("dateRange of type BACnetDateRange for BACnetDateRangeEnclosed must not be nil")
-	}
-	if closingTag == nil {
-		panic("closingTag of type BACnetClosingTag for BACnetDateRangeEnclosed must not be nil")
-	}
-	return &_BACnetDateRangeEnclosed{OpeningTag: openingTag, DateRange: dateRange, ClosingTag: closingTag, TagNumber: tagNumber}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetDateRangeEnclosed(structType any) BACnetDateRangeEnclosed {
@@ -145,7 +301,7 @@ func BACnetDateRangeEnclosedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetDateRangeEnclosed) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (__bACnetDateRangeEnclosed BACnetDateRangeEnclosed, err error) {
@@ -229,13 +385,34 @@ func (m *_BACnetDateRangeEnclosed) GetTagNumber() uint8 {
 
 func (m *_BACnetDateRangeEnclosed) IsBACnetDateRangeEnclosed() {}
 
+func (m *_BACnetDateRangeEnclosed) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetDateRangeEnclosed) deepCopy() *_BACnetDateRangeEnclosed {
+	if m == nil {
+		return nil
+	}
+	_BACnetDateRangeEnclosedCopy := &_BACnetDateRangeEnclosed{
+		m.OpeningTag.DeepCopy().(BACnetOpeningTag),
+		m.DateRange.DeepCopy().(BACnetDateRange),
+		m.ClosingTag.DeepCopy().(BACnetClosingTag),
+		m.TagNumber,
+	}
+	return _BACnetDateRangeEnclosedCopy
+}
+
 func (m *_BACnetDateRangeEnclosed) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -38,6 +38,7 @@ type BACnetConstructedDataWindowInterval interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetWindowInterval returns WindowInterval (property field)
 	GetWindowInterval() BACnetApplicationTagUnsignedInteger
@@ -45,6 +46,8 @@ type BACnetConstructedDataWindowInterval interface {
 	GetActualValue() BACnetApplicationTagUnsignedInteger
 	// IsBACnetConstructedDataWindowInterval is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataWindowInterval()
+	// CreateBuilder creates a BACnetConstructedDataWindowIntervalBuilder
+	CreateBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindowIntervalBuilder
 }
 
 // _BACnetConstructedDataWindowInterval is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataWindowInterval struct {
 
 var _ BACnetConstructedDataWindowInterval = (*_BACnetConstructedDataWindowInterval)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataWindowInterval)(nil)
+
+// NewBACnetConstructedDataWindowInterval factory function for _BACnetConstructedDataWindowInterval
+func NewBACnetConstructedDataWindowInterval(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, windowInterval BACnetApplicationTagUnsignedInteger, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowInterval {
+	if windowInterval == nil {
+		panic("windowInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowInterval must not be nil")
+	}
+	_result := &_BACnetConstructedDataWindowInterval{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		WindowInterval:                windowInterval,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataWindowIntervalBuilder is a builder for BACnetConstructedDataWindowInterval
+type BACnetConstructedDataWindowIntervalBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder
+	// WithWindowInterval adds WindowInterval (property field)
+	WithWindowInterval(BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder
+	// WithWindowIntervalBuilder adds WindowInterval (property field) which is build by the builder
+	WithWindowIntervalBuilder(func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowIntervalBuilder
+	// Build builds the BACnetConstructedDataWindowInterval or returns an error if something is wrong
+	Build() (BACnetConstructedDataWindowInterval, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataWindowInterval
+}
+
+// NewBACnetConstructedDataWindowIntervalBuilder() creates a BACnetConstructedDataWindowIntervalBuilder
+func NewBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindowIntervalBuilder {
+	return &_BACnetConstructedDataWindowIntervalBuilder{_BACnetConstructedDataWindowInterval: new(_BACnetConstructedDataWindowInterval)}
+}
+
+type _BACnetConstructedDataWindowIntervalBuilder struct {
+	*_BACnetConstructedDataWindowInterval
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataWindowIntervalBuilder) = (*_BACnetConstructedDataWindowIntervalBuilder)(nil)
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithMandatoryFields(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
+	return b.WithWindowInterval(windowInterval)
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithWindowInterval(windowInterval BACnetApplicationTagUnsignedInteger) BACnetConstructedDataWindowIntervalBuilder {
+	b.WindowInterval = windowInterval
+	return b
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) WithWindowIntervalBuilder(builderSupplier func(BACnetApplicationTagUnsignedIntegerBuilder) BACnetApplicationTagUnsignedIntegerBuilder) BACnetConstructedDataWindowIntervalBuilder {
+	builder := builderSupplier(b.WindowInterval.CreateBACnetApplicationTagUnsignedIntegerBuilder())
+	var err error
+	b.WindowInterval, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetApplicationTagUnsignedIntegerBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) Build() (BACnetConstructedDataWindowInterval, error) {
+	if b.WindowInterval == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'windowInterval' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataWindowInterval.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) MustBuild() BACnetConstructedDataWindowInterval {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataWindowIntervalBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataWindowIntervalBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataWindowIntervalBuilder().(*_BACnetConstructedDataWindowIntervalBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataWindowIntervalBuilder creates a BACnetConstructedDataWindowIntervalBuilder
+func (b *_BACnetConstructedDataWindowInterval) CreateBACnetConstructedDataWindowIntervalBuilder() BACnetConstructedDataWindowIntervalBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataWindowIntervalBuilder()
+	}
+	return &_BACnetConstructedDataWindowIntervalBuilder{_BACnetConstructedDataWindowInterval: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataWindowInterval) GetActualValue() BACnetApplicatio
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataWindowInterval factory function for _BACnetConstructedDataWindowInterval
-func NewBACnetConstructedDataWindowInterval(windowInterval BACnetApplicationTagUnsignedInteger, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataWindowInterval {
-	if windowInterval == nil {
-		panic("windowInterval of type BACnetApplicationTagUnsignedInteger for BACnetConstructedDataWindowInterval must not be nil")
-	}
-	_result := &_BACnetConstructedDataWindowInterval{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		WindowInterval:                windowInterval,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataWindowInterval(structType any) BACnetConstructedDataWindowInterval {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataWindowInterval) SerializeWithWriteBuffer(ctx cont
 
 func (m *_BACnetConstructedDataWindowInterval) IsBACnetConstructedDataWindowInterval() {}
 
+func (m *_BACnetConstructedDataWindowInterval) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataWindowInterval) deepCopy() *_BACnetConstructedDataWindowInterval {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataWindowIntervalCopy := &_BACnetConstructedDataWindowInterval{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.WindowInterval.DeepCopy().(BACnetApplicationTagUnsignedInteger),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataWindowIntervalCopy
+}
+
 func (m *_BACnetConstructedDataWindowInterval) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

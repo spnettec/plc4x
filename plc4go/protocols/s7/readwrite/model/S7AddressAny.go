@@ -38,6 +38,7 @@ type S7AddressAny interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	S7Address
 	// GetTransportSize returns TransportSize (property field)
 	GetTransportSize() TransportSize
@@ -53,6 +54,8 @@ type S7AddressAny interface {
 	GetBitAddress() uint8
 	// IsS7AddressAny is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsS7AddressAny()
+	// CreateBuilder creates a S7AddressAnyBuilder
+	CreateS7AddressAnyBuilder() S7AddressAnyBuilder
 }
 
 // _S7AddressAny is the data-structure of this message
@@ -70,6 +73,147 @@ type _S7AddressAny struct {
 
 var _ S7AddressAny = (*_S7AddressAny)(nil)
 var _ S7AddressRequirements = (*_S7AddressAny)(nil)
+
+// NewS7AddressAny factory function for _S7AddressAny
+func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
+	_result := &_S7AddressAny{
+		S7AddressContract: NewS7Address(),
+		TransportSize:     transportSize,
+		NumberOfElements:  numberOfElements,
+		DbNumber:          dbNumber,
+		Area:              area,
+		ByteAddress:       byteAddress,
+		BitAddress:        bitAddress,
+	}
+	_result.S7AddressContract.(*_S7Address)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// S7AddressAnyBuilder is a builder for S7AddressAny
+type S7AddressAnyBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) S7AddressAnyBuilder
+	// WithTransportSize adds TransportSize (property field)
+	WithTransportSize(TransportSize) S7AddressAnyBuilder
+	// WithNumberOfElements adds NumberOfElements (property field)
+	WithNumberOfElements(uint16) S7AddressAnyBuilder
+	// WithDbNumber adds DbNumber (property field)
+	WithDbNumber(uint16) S7AddressAnyBuilder
+	// WithArea adds Area (property field)
+	WithArea(MemoryArea) S7AddressAnyBuilder
+	// WithByteAddress adds ByteAddress (property field)
+	WithByteAddress(uint16) S7AddressAnyBuilder
+	// WithBitAddress adds BitAddress (property field)
+	WithBitAddress(uint8) S7AddressAnyBuilder
+	// Build builds the S7AddressAny or returns an error if something is wrong
+	Build() (S7AddressAny, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() S7AddressAny
+}
+
+// NewS7AddressAnyBuilder() creates a S7AddressAnyBuilder
+func NewS7AddressAnyBuilder() S7AddressAnyBuilder {
+	return &_S7AddressAnyBuilder{_S7AddressAny: new(_S7AddressAny)}
+}
+
+type _S7AddressAnyBuilder struct {
+	*_S7AddressAny
+
+	parentBuilder *_S7AddressBuilder
+
+	err *utils.MultiError
+}
+
+var _ (S7AddressAnyBuilder) = (*_S7AddressAnyBuilder)(nil)
+
+func (b *_S7AddressAnyBuilder) setParent(contract S7AddressContract) {
+	b.S7AddressContract = contract
+}
+
+func (b *_S7AddressAnyBuilder) WithMandatoryFields(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) S7AddressAnyBuilder {
+	return b.WithTransportSize(transportSize).WithNumberOfElements(numberOfElements).WithDbNumber(dbNumber).WithArea(area).WithByteAddress(byteAddress).WithBitAddress(bitAddress)
+}
+
+func (b *_S7AddressAnyBuilder) WithTransportSize(transportSize TransportSize) S7AddressAnyBuilder {
+	b.TransportSize = transportSize
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) WithNumberOfElements(numberOfElements uint16) S7AddressAnyBuilder {
+	b.NumberOfElements = numberOfElements
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) WithDbNumber(dbNumber uint16) S7AddressAnyBuilder {
+	b.DbNumber = dbNumber
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) WithArea(area MemoryArea) S7AddressAnyBuilder {
+	b.Area = area
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) WithByteAddress(byteAddress uint16) S7AddressAnyBuilder {
+	b.ByteAddress = byteAddress
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) WithBitAddress(bitAddress uint8) S7AddressAnyBuilder {
+	b.BitAddress = bitAddress
+	return b
+}
+
+func (b *_S7AddressAnyBuilder) Build() (S7AddressAny, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._S7AddressAny.deepCopy(), nil
+}
+
+func (b *_S7AddressAnyBuilder) MustBuild() S7AddressAny {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_S7AddressAnyBuilder) Done() S7AddressBuilder {
+	return b.parentBuilder
+}
+
+func (b *_S7AddressAnyBuilder) buildForS7Address() (S7Address, error) {
+	return b.Build()
+}
+
+func (b *_S7AddressAnyBuilder) DeepCopy() any {
+	_copy := b.CreateS7AddressAnyBuilder().(*_S7AddressAnyBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateS7AddressAnyBuilder creates a S7AddressAnyBuilder
+func (b *_S7AddressAny) CreateS7AddressAnyBuilder() S7AddressAnyBuilder {
+	if b == nil {
+		return NewS7AddressAnyBuilder()
+	}
+	return &_S7AddressAnyBuilder{_S7AddressAny: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -122,21 +266,6 @@ func (m *_S7AddressAny) GetBitAddress() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewS7AddressAny factory function for _S7AddressAny
-func NewS7AddressAny(transportSize TransportSize, numberOfElements uint16, dbNumber uint16, area MemoryArea, byteAddress uint16, bitAddress uint8) *_S7AddressAny {
-	_result := &_S7AddressAny{
-		S7AddressContract: NewS7Address(),
-		TransportSize:     transportSize,
-		NumberOfElements:  numberOfElements,
-		DbNumber:          dbNumber,
-		Area:              area,
-		ByteAddress:       byteAddress,
-		BitAddress:        bitAddress,
-	}
-	_result.S7AddressContract.(*_S7Address)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastS7AddressAny(structType any) S7AddressAny {
@@ -300,13 +429,39 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 func (m *_S7AddressAny) IsS7AddressAny() {}
 
+func (m *_S7AddressAny) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_S7AddressAny) deepCopy() *_S7AddressAny {
+	if m == nil {
+		return nil
+	}
+	_S7AddressAnyCopy := &_S7AddressAny{
+		m.S7AddressContract.(*_S7Address).deepCopy(),
+		m.TransportSize,
+		m.NumberOfElements,
+		m.DbNumber,
+		m.Area,
+		m.ByteAddress,
+		m.BitAddress,
+		m.reservedField0,
+	}
+	m.S7AddressContract.(*_S7Address)._SubType = m
+	return _S7AddressAnyCopy
+}
+
 func (m *_S7AddressAny) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

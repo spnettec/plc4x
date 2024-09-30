@@ -38,14 +38,19 @@ type ComObjectTable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
+	// CreateBuilder creates a ComObjectTableBuilder
+	CreateComObjectTableBuilder() ComObjectTableBuilder
 }
 
 // ComObjectTableContract provides a set of functions which can be overwritten by a sub struct
 type ComObjectTableContract interface {
 	// IsComObjectTable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsComObjectTable()
+	// CreateBuilder creates a ComObjectTableBuilder
+	CreateComObjectTableBuilder() ComObjectTableBuilder
 }
 
 // ComObjectTableRequirements provides a set of functions which need to be implemented by a sub struct
@@ -67,6 +72,172 @@ var _ ComObjectTableContract = (*_ComObjectTable)(nil)
 func NewComObjectTable() *_ComObjectTable {
 	return &_ComObjectTable{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ComObjectTableBuilder is a builder for ComObjectTable
+type ComObjectTableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() ComObjectTableBuilder
+	// AsComObjectTableRealisationType1 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType1() interface {
+		ComObjectTableRealisationType1Builder
+		Done() ComObjectTableBuilder
+	}
+	// AsComObjectTableRealisationType2 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType2() interface {
+		ComObjectTableRealisationType2Builder
+		Done() ComObjectTableBuilder
+	}
+	// AsComObjectTableRealisationType6 converts this build to a subType of ComObjectTable. It is always possible to return to current builder using Done()
+	AsComObjectTableRealisationType6() interface {
+		ComObjectTableRealisationType6Builder
+		Done() ComObjectTableBuilder
+	}
+	// Build builds the ComObjectTable or returns an error if something is wrong
+	PartialBuild() (ComObjectTableContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() ComObjectTableContract
+	// Build builds the ComObjectTable or returns an error if something is wrong
+	Build() (ComObjectTable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ComObjectTable
+}
+
+// NewComObjectTableBuilder() creates a ComObjectTableBuilder
+func NewComObjectTableBuilder() ComObjectTableBuilder {
+	return &_ComObjectTableBuilder{_ComObjectTable: new(_ComObjectTable)}
+}
+
+type _ComObjectTableChildBuilder interface {
+	utils.Copyable
+	setParent(ComObjectTableContract)
+	buildForComObjectTable() (ComObjectTable, error)
+}
+
+type _ComObjectTableBuilder struct {
+	*_ComObjectTable
+
+	childBuilder _ComObjectTableChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ComObjectTableBuilder) = (*_ComObjectTableBuilder)(nil)
+
+func (b *_ComObjectTableBuilder) WithMandatoryFields() ComObjectTableBuilder {
+	return b
+}
+
+func (b *_ComObjectTableBuilder) PartialBuild() (ComObjectTableContract, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ComObjectTable.deepCopy(), nil
+}
+
+func (b *_ComObjectTableBuilder) PartialMustBuild() ComObjectTableContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType1() interface {
+	ComObjectTableRealisationType1Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType1Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType1Builder().(*_ComObjectTableRealisationType1Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType2() interface {
+	ComObjectTableRealisationType2Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType2Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType2Builder().(*_ComObjectTableRealisationType2Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) AsComObjectTableRealisationType6() interface {
+	ComObjectTableRealisationType6Builder
+	Done() ComObjectTableBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		ComObjectTableRealisationType6Builder
+		Done() ComObjectTableBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewComObjectTableRealisationType6Builder().(*_ComObjectTableRealisationType6Builder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_ComObjectTableBuilder) Build() (ComObjectTable, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForComObjectTable()
+}
+
+func (b *_ComObjectTableBuilder) MustBuild() ComObjectTable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_ComObjectTableBuilder) DeepCopy() any {
+	_copy := b.CreateComObjectTableBuilder().(*_ComObjectTableBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_ComObjectTableChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateComObjectTableBuilder creates a ComObjectTableBuilder
+func (b *_ComObjectTable) CreateComObjectTableBuilder() ComObjectTableBuilder {
+	if b == nil {
+		return NewComObjectTableBuilder()
+	}
+	return &_ComObjectTableBuilder{_ComObjectTable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastComObjectTable(structType any) ComObjectTable {
@@ -104,7 +275,7 @@ func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType Firmwa
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -114,7 +285,12 @@ func ComObjectTableParseWithBuffer[T ComObjectTable](ctx context.Context, readBu
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_ComObjectTable) parse(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (__comObjectTable ComObjectTable, err error) {
@@ -130,15 +306,15 @@ func (m *_ComObjectTable) parse(ctx context.Context, readBuffer utils.ReadBuffer
 	var _child ComObjectTable
 	switch {
 	case firmwareType == FirmwareType_SYSTEM_1: // ComObjectTableRealisationType1
-		if _child, err = (&_ComObjectTableRealisationType1{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType1).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType1 for type-switch of ComObjectTable")
 		}
 	case firmwareType == FirmwareType_SYSTEM_2: // ComObjectTableRealisationType2
-		if _child, err = (&_ComObjectTableRealisationType2{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType2).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType2 for type-switch of ComObjectTable")
 		}
 	case firmwareType == FirmwareType_SYSTEM_300: // ComObjectTableRealisationType6
-		if _child, err = (&_ComObjectTableRealisationType6{}).parse(ctx, readBuffer, m, firmwareType); err != nil {
+		if _child, err = new(_ComObjectTableRealisationType6).parse(ctx, readBuffer, m, firmwareType); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ComObjectTableRealisationType6 for type-switch of ComObjectTable")
 		}
 	default:
@@ -176,3 +352,17 @@ func (pm *_ComObjectTable) serializeParent(ctx context.Context, writeBuffer util
 }
 
 func (m *_ComObjectTable) IsComObjectTable() {}
+
+func (m *_ComObjectTable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ComObjectTable) deepCopy() *_ComObjectTable {
+	if m == nil {
+		return nil
+	}
+	_ComObjectTableCopy := &_ComObjectTable{
+		nil, // will be set by child
+	}
+	return _ComObjectTableCopy
+}

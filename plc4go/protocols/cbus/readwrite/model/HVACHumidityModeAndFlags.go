@@ -38,6 +38,7 @@ type HVACHumidityModeAndFlags interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetAuxiliaryLevel returns AuxiliaryLevel (property field)
 	GetAuxiliaryLevel() bool
 	// GetGuard returns Guard (property field)
@@ -66,6 +67,8 @@ type HVACHumidityModeAndFlags interface {
 	GetIsLevelRaw() bool
 	// IsHVACHumidityModeAndFlags is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsHVACHumidityModeAndFlags()
+	// CreateBuilder creates a HVACHumidityModeAndFlagsBuilder
+	CreateHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder
 }
 
 // _HVACHumidityModeAndFlags is the data-structure of this message
@@ -80,6 +83,115 @@ type _HVACHumidityModeAndFlags struct {
 }
 
 var _ HVACHumidityModeAndFlags = (*_HVACHumidityModeAndFlags)(nil)
+
+// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
+func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
+	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// HVACHumidityModeAndFlagsBuilder is a builder for HVACHumidityModeAndFlags
+type HVACHumidityModeAndFlagsBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder
+	// WithAuxiliaryLevel adds AuxiliaryLevel (property field)
+	WithAuxiliaryLevel(bool) HVACHumidityModeAndFlagsBuilder
+	// WithGuard adds Guard (property field)
+	WithGuard(bool) HVACHumidityModeAndFlagsBuilder
+	// WithSetback adds Setback (property field)
+	WithSetback(bool) HVACHumidityModeAndFlagsBuilder
+	// WithLevel adds Level (property field)
+	WithLevel(bool) HVACHumidityModeAndFlagsBuilder
+	// WithMode adds Mode (property field)
+	WithMode(HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder
+	// Build builds the HVACHumidityModeAndFlags or returns an error if something is wrong
+	Build() (HVACHumidityModeAndFlags, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() HVACHumidityModeAndFlags
+}
+
+// NewHVACHumidityModeAndFlagsBuilder() creates a HVACHumidityModeAndFlagsBuilder
+func NewHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder {
+	return &_HVACHumidityModeAndFlagsBuilder{_HVACHumidityModeAndFlags: new(_HVACHumidityModeAndFlags)}
+}
+
+type _HVACHumidityModeAndFlagsBuilder struct {
+	*_HVACHumidityModeAndFlags
+
+	err *utils.MultiError
+}
+
+var _ (HVACHumidityModeAndFlagsBuilder) = (*_HVACHumidityModeAndFlagsBuilder)(nil)
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithMandatoryFields(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
+	return b.WithAuxiliaryLevel(auxiliaryLevel).WithGuard(guard).WithSetback(setback).WithLevel(level).WithMode(mode)
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithAuxiliaryLevel(auxiliaryLevel bool) HVACHumidityModeAndFlagsBuilder {
+	b.AuxiliaryLevel = auxiliaryLevel
+	return b
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithGuard(guard bool) HVACHumidityModeAndFlagsBuilder {
+	b.Guard = guard
+	return b
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithSetback(setback bool) HVACHumidityModeAndFlagsBuilder {
+	b.Setback = setback
+	return b
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithLevel(level bool) HVACHumidityModeAndFlagsBuilder {
+	b.Level = level
+	return b
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) WithMode(mode HVACHumidityModeAndFlagsMode) HVACHumidityModeAndFlagsBuilder {
+	b.Mode = mode
+	return b
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) Build() (HVACHumidityModeAndFlags, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._HVACHumidityModeAndFlags.deepCopy(), nil
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) MustBuild() HVACHumidityModeAndFlags {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_HVACHumidityModeAndFlagsBuilder) DeepCopy() any {
+	_copy := b.CreateHVACHumidityModeAndFlagsBuilder().(*_HVACHumidityModeAndFlagsBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateHVACHumidityModeAndFlagsBuilder creates a HVACHumidityModeAndFlagsBuilder
+func (b *_HVACHumidityModeAndFlags) CreateHVACHumidityModeAndFlagsBuilder() HVACHumidityModeAndFlagsBuilder {
+	if b == nil {
+		return NewHVACHumidityModeAndFlagsBuilder()
+	}
+	return &_HVACHumidityModeAndFlagsBuilder{_HVACHumidityModeAndFlags: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -168,11 +280,6 @@ func (m *_HVACHumidityModeAndFlags) GetIsLevelRaw() bool {
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
-// NewHVACHumidityModeAndFlags factory function for _HVACHumidityModeAndFlags
-func NewHVACHumidityModeAndFlags(auxiliaryLevel bool, guard bool, setback bool, level bool, mode HVACHumidityModeAndFlagsMode) *_HVACHumidityModeAndFlags {
-	return &_HVACHumidityModeAndFlags{AuxiliaryLevel: auxiliaryLevel, Guard: guard, Setback: setback, Level: level, Mode: mode}
-}
-
 // Deprecated: use the interface for direct cast
 func CastHVACHumidityModeAndFlags(structType any) HVACHumidityModeAndFlags {
 	if casted, ok := structType.(HVACHumidityModeAndFlags); ok {
@@ -247,7 +354,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_HVACHumidityModeAndFlags) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__hVACHumidityModeAndFlags HVACHumidityModeAndFlags, err error) {
@@ -447,13 +554,36 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 
 func (m *_HVACHumidityModeAndFlags) IsHVACHumidityModeAndFlags() {}
 
+func (m *_HVACHumidityModeAndFlags) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_HVACHumidityModeAndFlags) deepCopy() *_HVACHumidityModeAndFlags {
+	if m == nil {
+		return nil
+	}
+	_HVACHumidityModeAndFlagsCopy := &_HVACHumidityModeAndFlags{
+		m.AuxiliaryLevel,
+		m.Guard,
+		m.Setback,
+		m.Level,
+		m.Mode,
+		m.reservedField0,
+	}
+	return _HVACHumidityModeAndFlagsCopy
+}
+
 func (m *_HVACHumidityModeAndFlags) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

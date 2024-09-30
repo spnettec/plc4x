@@ -38,11 +38,14 @@ type BACnetLogDataLogDataEntryBooleanValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetBooleanValue returns BooleanValue (property field)
 	GetBooleanValue() BACnetContextTagBoolean
 	// IsBACnetLogDataLogDataEntryBooleanValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntryBooleanValue()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryBooleanValueBuilder
+	CreateBACnetLogDataLogDataEntryBooleanValueBuilder() BACnetLogDataLogDataEntryBooleanValueBuilder
 }
 
 // _BACnetLogDataLogDataEntryBooleanValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogDataLogDataEntryBooleanValue struct {
 
 var _ BACnetLogDataLogDataEntryBooleanValue = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBooleanValue)(nil)
+
+// NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
+func NewBACnetLogDataLogDataEntryBooleanValue(peekedTagHeader BACnetTagHeader, booleanValue BACnetContextTagBoolean) *_BACnetLogDataLogDataEntryBooleanValue {
+	if booleanValue == nil {
+		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryBooleanValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BooleanValue:                      booleanValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryBooleanValueBuilder is a builder for BACnetLogDataLogDataEntryBooleanValue
+type BACnetLogDataLogDataEntryBooleanValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetLogDataLogDataEntryBooleanValueBuilder
+	// WithBooleanValue adds BooleanValue (property field)
+	WithBooleanValue(BACnetContextTagBoolean) BACnetLogDataLogDataEntryBooleanValueBuilder
+	// WithBooleanValueBuilder adds BooleanValue (property field) which is build by the builder
+	WithBooleanValueBuilder(func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetLogDataLogDataEntryBooleanValueBuilder
+	// Build builds the BACnetLogDataLogDataEntryBooleanValue or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryBooleanValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryBooleanValue
+}
+
+// NewBACnetLogDataLogDataEntryBooleanValueBuilder() creates a BACnetLogDataLogDataEntryBooleanValueBuilder
+func NewBACnetLogDataLogDataEntryBooleanValueBuilder() BACnetLogDataLogDataEntryBooleanValueBuilder {
+	return &_BACnetLogDataLogDataEntryBooleanValueBuilder{_BACnetLogDataLogDataEntryBooleanValue: new(_BACnetLogDataLogDataEntryBooleanValue)}
+}
+
+type _BACnetLogDataLogDataEntryBooleanValueBuilder struct {
+	*_BACnetLogDataLogDataEntryBooleanValue
+
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryBooleanValueBuilder) = (*_BACnetLogDataLogDataEntryBooleanValueBuilder)(nil)
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) WithMandatoryFields(booleanValue BACnetContextTagBoolean) BACnetLogDataLogDataEntryBooleanValueBuilder {
+	return b.WithBooleanValue(booleanValue)
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) WithBooleanValue(booleanValue BACnetContextTagBoolean) BACnetLogDataLogDataEntryBooleanValueBuilder {
+	b.BooleanValue = booleanValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) WithBooleanValueBuilder(builderSupplier func(BACnetContextTagBooleanBuilder) BACnetContextTagBooleanBuilder) BACnetLogDataLogDataEntryBooleanValueBuilder {
+	builder := builderSupplier(b.BooleanValue.CreateBACnetContextTagBooleanBuilder())
+	var err error
+	b.BooleanValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBooleanBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) Build() (BACnetLogDataLogDataEntryBooleanValue, error) {
+	if b.BooleanValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'booleanValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogDataEntryBooleanValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) MustBuild() BACnetLogDataLogDataEntryBooleanValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryBooleanValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryBooleanValueBuilder().(*_BACnetLogDataLogDataEntryBooleanValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataLogDataEntryBooleanValueBuilder creates a BACnetLogDataLogDataEntryBooleanValueBuilder
+func (b *_BACnetLogDataLogDataEntryBooleanValue) CreateBACnetLogDataLogDataEntryBooleanValueBuilder() BACnetLogDataLogDataEntryBooleanValueBuilder {
+	if b == nil {
+		return NewBACnetLogDataLogDataEntryBooleanValueBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryBooleanValueBuilder{_BACnetLogDataLogDataEntryBooleanValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) GetBooleanValue() BACnetContext
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryBooleanValue factory function for _BACnetLogDataLogDataEntryBooleanValue
-func NewBACnetLogDataLogDataEntryBooleanValue(booleanValue BACnetContextTagBoolean, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryBooleanValue {
-	if booleanValue == nil {
-		panic("booleanValue of type BACnetContextTagBoolean for BACnetLogDataLogDataEntryBooleanValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryBooleanValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		BooleanValue:                      booleanValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryBooleanValue(structType any) BACnetLogDataLogDataEntryBooleanValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogDataLogDataEntryBooleanValue) SerializeWithWriteBuffer(ctx co
 
 func (m *_BACnetLogDataLogDataEntryBooleanValue) IsBACnetLogDataLogDataEntryBooleanValue() {}
 
+func (m *_BACnetLogDataLogDataEntryBooleanValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryBooleanValue) deepCopy() *_BACnetLogDataLogDataEntryBooleanValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryBooleanValueCopy := &_BACnetLogDataLogDataEntryBooleanValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.BooleanValue.DeepCopy().(BACnetContextTagBoolean),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryBooleanValueCopy
+}
+
 func (m *_BACnetLogDataLogDataEntryBooleanValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

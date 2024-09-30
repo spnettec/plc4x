@@ -38,6 +38,7 @@ type GroupObjectDescriptorRealisationType1 interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetDataPointer returns DataPointer (property field)
 	GetDataPointer() uint8
 	// GetTransmitEnable returns TransmitEnable (property field)
@@ -56,6 +57,8 @@ type GroupObjectDescriptorRealisationType1 interface {
 	GetValueType() ComObjectValueType
 	// IsGroupObjectDescriptorRealisationType1 is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsGroupObjectDescriptorRealisationType1()
+	// CreateBuilder creates a GroupObjectDescriptorRealisationType1Builder
+	CreateGroupObjectDescriptorRealisationType1Builder() GroupObjectDescriptorRealisationType1Builder
 }
 
 // _GroupObjectDescriptorRealisationType1 is the data-structure of this message
@@ -73,6 +76,136 @@ type _GroupObjectDescriptorRealisationType1 struct {
 }
 
 var _ GroupObjectDescriptorRealisationType1 = (*_GroupObjectDescriptorRealisationType1)(nil)
+
+// NewGroupObjectDescriptorRealisationType1 factory function for _GroupObjectDescriptorRealisationType1
+func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType1 {
+	return &_GroupObjectDescriptorRealisationType1{DataPointer: dataPointer, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// GroupObjectDescriptorRealisationType1Builder is a builder for GroupObjectDescriptorRealisationType1
+type GroupObjectDescriptorRealisationType1Builder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType1Builder
+	// WithDataPointer adds DataPointer (property field)
+	WithDataPointer(uint8) GroupObjectDescriptorRealisationType1Builder
+	// WithTransmitEnable adds TransmitEnable (property field)
+	WithTransmitEnable(bool) GroupObjectDescriptorRealisationType1Builder
+	// WithSegmentSelectorEnable adds SegmentSelectorEnable (property field)
+	WithSegmentSelectorEnable(bool) GroupObjectDescriptorRealisationType1Builder
+	// WithWriteEnable adds WriteEnable (property field)
+	WithWriteEnable(bool) GroupObjectDescriptorRealisationType1Builder
+	// WithReadEnable adds ReadEnable (property field)
+	WithReadEnable(bool) GroupObjectDescriptorRealisationType1Builder
+	// WithCommunicationEnable adds CommunicationEnable (property field)
+	WithCommunicationEnable(bool) GroupObjectDescriptorRealisationType1Builder
+	// WithPriority adds Priority (property field)
+	WithPriority(CEMIPriority) GroupObjectDescriptorRealisationType1Builder
+	// WithValueType adds ValueType (property field)
+	WithValueType(ComObjectValueType) GroupObjectDescriptorRealisationType1Builder
+	// Build builds the GroupObjectDescriptorRealisationType1 or returns an error if something is wrong
+	Build() (GroupObjectDescriptorRealisationType1, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() GroupObjectDescriptorRealisationType1
+}
+
+// NewGroupObjectDescriptorRealisationType1Builder() creates a GroupObjectDescriptorRealisationType1Builder
+func NewGroupObjectDescriptorRealisationType1Builder() GroupObjectDescriptorRealisationType1Builder {
+	return &_GroupObjectDescriptorRealisationType1Builder{_GroupObjectDescriptorRealisationType1: new(_GroupObjectDescriptorRealisationType1)}
+}
+
+type _GroupObjectDescriptorRealisationType1Builder struct {
+	*_GroupObjectDescriptorRealisationType1
+
+	err *utils.MultiError
+}
+
+var _ (GroupObjectDescriptorRealisationType1Builder) = (*_GroupObjectDescriptorRealisationType1Builder)(nil)
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithMandatoryFields(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) GroupObjectDescriptorRealisationType1Builder {
+	return b.WithDataPointer(dataPointer).WithTransmitEnable(transmitEnable).WithSegmentSelectorEnable(segmentSelectorEnable).WithWriteEnable(writeEnable).WithReadEnable(readEnable).WithCommunicationEnable(communicationEnable).WithPriority(priority).WithValueType(valueType)
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithDataPointer(dataPointer uint8) GroupObjectDescriptorRealisationType1Builder {
+	b.DataPointer = dataPointer
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithTransmitEnable(transmitEnable bool) GroupObjectDescriptorRealisationType1Builder {
+	b.TransmitEnable = transmitEnable
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithSegmentSelectorEnable(segmentSelectorEnable bool) GroupObjectDescriptorRealisationType1Builder {
+	b.SegmentSelectorEnable = segmentSelectorEnable
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithWriteEnable(writeEnable bool) GroupObjectDescriptorRealisationType1Builder {
+	b.WriteEnable = writeEnable
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithReadEnable(readEnable bool) GroupObjectDescriptorRealisationType1Builder {
+	b.ReadEnable = readEnable
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithCommunicationEnable(communicationEnable bool) GroupObjectDescriptorRealisationType1Builder {
+	b.CommunicationEnable = communicationEnable
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithPriority(priority CEMIPriority) GroupObjectDescriptorRealisationType1Builder {
+	b.Priority = priority
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) WithValueType(valueType ComObjectValueType) GroupObjectDescriptorRealisationType1Builder {
+	b.ValueType = valueType
+	return b
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) Build() (GroupObjectDescriptorRealisationType1, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._GroupObjectDescriptorRealisationType1.deepCopy(), nil
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) MustBuild() GroupObjectDescriptorRealisationType1 {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_GroupObjectDescriptorRealisationType1Builder) DeepCopy() any {
+	_copy := b.CreateGroupObjectDescriptorRealisationType1Builder().(*_GroupObjectDescriptorRealisationType1Builder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateGroupObjectDescriptorRealisationType1Builder creates a GroupObjectDescriptorRealisationType1Builder
+func (b *_GroupObjectDescriptorRealisationType1) CreateGroupObjectDescriptorRealisationType1Builder() GroupObjectDescriptorRealisationType1Builder {
+	if b == nil {
+		return NewGroupObjectDescriptorRealisationType1Builder()
+	}
+	return &_GroupObjectDescriptorRealisationType1Builder{_GroupObjectDescriptorRealisationType1: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -115,11 +248,6 @@ func (m *_GroupObjectDescriptorRealisationType1) GetValueType() ComObjectValueTy
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewGroupObjectDescriptorRealisationType1 factory function for _GroupObjectDescriptorRealisationType1
-func NewGroupObjectDescriptorRealisationType1(dataPointer uint8, transmitEnable bool, segmentSelectorEnable bool, writeEnable bool, readEnable bool, communicationEnable bool, priority CEMIPriority, valueType ComObjectValueType) *_GroupObjectDescriptorRealisationType1 {
-	return &_GroupObjectDescriptorRealisationType1{DataPointer: dataPointer, TransmitEnable: transmitEnable, SegmentSelectorEnable: segmentSelectorEnable, WriteEnable: writeEnable, ReadEnable: readEnable, CommunicationEnable: communicationEnable, Priority: priority, ValueType: valueType}
-}
 
 // Deprecated: use the interface for direct cast
 func CastGroupObjectDescriptorRealisationType1(structType any) GroupObjectDescriptorRealisationType1 {
@@ -188,7 +316,7 @@ func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, r
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_GroupObjectDescriptorRealisationType1) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__groupObjectDescriptorRealisationType1 GroupObjectDescriptorRealisationType1, err error) {
@@ -322,13 +450,39 @@ func (m *_GroupObjectDescriptorRealisationType1) SerializeWithWriteBuffer(ctx co
 
 func (m *_GroupObjectDescriptorRealisationType1) IsGroupObjectDescriptorRealisationType1() {}
 
+func (m *_GroupObjectDescriptorRealisationType1) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_GroupObjectDescriptorRealisationType1) deepCopy() *_GroupObjectDescriptorRealisationType1 {
+	if m == nil {
+		return nil
+	}
+	_GroupObjectDescriptorRealisationType1Copy := &_GroupObjectDescriptorRealisationType1{
+		m.DataPointer,
+		m.TransmitEnable,
+		m.SegmentSelectorEnable,
+		m.WriteEnable,
+		m.ReadEnable,
+		m.CommunicationEnable,
+		m.Priority,
+		m.ValueType,
+		m.reservedField0,
+	}
+	return _GroupObjectDescriptorRealisationType1Copy
+}
+
 func (m *_GroupObjectDescriptorRealisationType1) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

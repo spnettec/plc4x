@@ -38,6 +38,7 @@ type ModificationInfo interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	ExtensionObjectDefinition
 	// GetModificationTime returns ModificationTime (property field)
 	GetModificationTime() int64
@@ -47,6 +48,8 @@ type ModificationInfo interface {
 	GetUserName() PascalString
 	// IsModificationInfo is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsModificationInfo()
+	// CreateBuilder creates a ModificationInfoBuilder
+	CreateModificationInfoBuilder() ModificationInfoBuilder
 }
 
 // _ModificationInfo is the data-structure of this message
@@ -59,6 +62,147 @@ type _ModificationInfo struct {
 
 var _ ModificationInfo = (*_ModificationInfo)(nil)
 var _ ExtensionObjectDefinitionRequirements = (*_ModificationInfo)(nil)
+
+// NewModificationInfo factory function for _ModificationInfo
+func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, userName PascalString) *_ModificationInfo {
+	if userName == nil {
+		panic("userName of type PascalString for ModificationInfo must not be nil")
+	}
+	_result := &_ModificationInfo{
+		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
+		ModificationTime:                  modificationTime,
+		UpdateType:                        updateType,
+		UserName:                          userName,
+	}
+	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// ModificationInfoBuilder is a builder for ModificationInfo
+type ModificationInfoBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(modificationTime int64, updateType HistoryUpdateType, userName PascalString) ModificationInfoBuilder
+	// WithModificationTime adds ModificationTime (property field)
+	WithModificationTime(int64) ModificationInfoBuilder
+	// WithUpdateType adds UpdateType (property field)
+	WithUpdateType(HistoryUpdateType) ModificationInfoBuilder
+	// WithUserName adds UserName (property field)
+	WithUserName(PascalString) ModificationInfoBuilder
+	// WithUserNameBuilder adds UserName (property field) which is build by the builder
+	WithUserNameBuilder(func(PascalStringBuilder) PascalStringBuilder) ModificationInfoBuilder
+	// Build builds the ModificationInfo or returns an error if something is wrong
+	Build() (ModificationInfo, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() ModificationInfo
+}
+
+// NewModificationInfoBuilder() creates a ModificationInfoBuilder
+func NewModificationInfoBuilder() ModificationInfoBuilder {
+	return &_ModificationInfoBuilder{_ModificationInfo: new(_ModificationInfo)}
+}
+
+type _ModificationInfoBuilder struct {
+	*_ModificationInfo
+
+	parentBuilder *_ExtensionObjectDefinitionBuilder
+
+	err *utils.MultiError
+}
+
+var _ (ModificationInfoBuilder) = (*_ModificationInfoBuilder)(nil)
+
+func (b *_ModificationInfoBuilder) setParent(contract ExtensionObjectDefinitionContract) {
+	b.ExtensionObjectDefinitionContract = contract
+}
+
+func (b *_ModificationInfoBuilder) WithMandatoryFields(modificationTime int64, updateType HistoryUpdateType, userName PascalString) ModificationInfoBuilder {
+	return b.WithModificationTime(modificationTime).WithUpdateType(updateType).WithUserName(userName)
+}
+
+func (b *_ModificationInfoBuilder) WithModificationTime(modificationTime int64) ModificationInfoBuilder {
+	b.ModificationTime = modificationTime
+	return b
+}
+
+func (b *_ModificationInfoBuilder) WithUpdateType(updateType HistoryUpdateType) ModificationInfoBuilder {
+	b.UpdateType = updateType
+	return b
+}
+
+func (b *_ModificationInfoBuilder) WithUserName(userName PascalString) ModificationInfoBuilder {
+	b.UserName = userName
+	return b
+}
+
+func (b *_ModificationInfoBuilder) WithUserNameBuilder(builderSupplier func(PascalStringBuilder) PascalStringBuilder) ModificationInfoBuilder {
+	builder := builderSupplier(b.UserName.CreatePascalStringBuilder())
+	var err error
+	b.UserName, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "PascalStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_ModificationInfoBuilder) Build() (ModificationInfo, error) {
+	if b.UserName == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'userName' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._ModificationInfo.deepCopy(), nil
+}
+
+func (b *_ModificationInfoBuilder) MustBuild() ModificationInfo {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_ModificationInfoBuilder) Done() ExtensionObjectDefinitionBuilder {
+	return b.parentBuilder
+}
+
+func (b *_ModificationInfoBuilder) buildForExtensionObjectDefinition() (ExtensionObjectDefinition, error) {
+	return b.Build()
+}
+
+func (b *_ModificationInfoBuilder) DeepCopy() any {
+	_copy := b.CreateModificationInfoBuilder().(*_ModificationInfoBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateModificationInfoBuilder creates a ModificationInfoBuilder
+func (b *_ModificationInfo) CreateModificationInfoBuilder() ModificationInfoBuilder {
+	if b == nil {
+		return NewModificationInfoBuilder()
+	}
+	return &_ModificationInfoBuilder{_ModificationInfo: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,21 +243,6 @@ func (m *_ModificationInfo) GetUserName() PascalString {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewModificationInfo factory function for _ModificationInfo
-func NewModificationInfo(modificationTime int64, updateType HistoryUpdateType, userName PascalString) *_ModificationInfo {
-	if userName == nil {
-		panic("userName of type PascalString for ModificationInfo must not be nil")
-	}
-	_result := &_ModificationInfo{
-		ExtensionObjectDefinitionContract: NewExtensionObjectDefinition(),
-		ModificationTime:                  modificationTime,
-		UpdateType:                        updateType,
-		UserName:                          userName,
-	}
-	_result.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastModificationInfo(structType any) ModificationInfo {
@@ -225,13 +354,35 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_ModificationInfo) IsModificationInfo() {}
 
+func (m *_ModificationInfo) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_ModificationInfo) deepCopy() *_ModificationInfo {
+	if m == nil {
+		return nil
+	}
+	_ModificationInfoCopy := &_ModificationInfo{
+		m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition).deepCopy(),
+		m.ModificationTime,
+		m.UpdateType,
+		m.UserName.DeepCopy().(PascalString),
+	}
+	m.ExtensionObjectDefinitionContract.(*_ExtensionObjectDefinition)._SubType = m
+	return _ModificationInfoCopy
+}
+
 func (m *_ModificationInfo) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

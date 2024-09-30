@@ -38,12 +38,15 @@ type BACnetSecurityLevelTagged interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetHeader returns Header (property field)
 	GetHeader() BACnetTagHeader
 	// GetValue returns Value (property field)
 	GetValue() BACnetSecurityLevel
 	// IsBACnetSecurityLevelTagged is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetSecurityLevelTagged()
+	// CreateBuilder creates a BACnetSecurityLevelTaggedBuilder
+	CreateBACnetSecurityLevelTaggedBuilder() BACnetSecurityLevelTaggedBuilder
 }
 
 // _BACnetSecurityLevelTagged is the data-structure of this message
@@ -57,6 +60,118 @@ type _BACnetSecurityLevelTagged struct {
 }
 
 var _ BACnetSecurityLevelTagged = (*_BACnetSecurityLevelTagged)(nil)
+
+// NewBACnetSecurityLevelTagged factory function for _BACnetSecurityLevelTagged
+func NewBACnetSecurityLevelTagged(header BACnetTagHeader, value BACnetSecurityLevel, tagNumber uint8, tagClass TagClass) *_BACnetSecurityLevelTagged {
+	if header == nil {
+		panic("header of type BACnetTagHeader for BACnetSecurityLevelTagged must not be nil")
+	}
+	return &_BACnetSecurityLevelTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetSecurityLevelTaggedBuilder is a builder for BACnetSecurityLevelTagged
+type BACnetSecurityLevelTaggedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder
+	// WithHeader adds Header (property field)
+	WithHeader(BACnetTagHeader) BACnetSecurityLevelTaggedBuilder
+	// WithHeaderBuilder adds Header (property field) which is build by the builder
+	WithHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityLevelTaggedBuilder
+	// WithValue adds Value (property field)
+	WithValue(BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder
+	// Build builds the BACnetSecurityLevelTagged or returns an error if something is wrong
+	Build() (BACnetSecurityLevelTagged, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetSecurityLevelTagged
+}
+
+// NewBACnetSecurityLevelTaggedBuilder() creates a BACnetSecurityLevelTaggedBuilder
+func NewBACnetSecurityLevelTaggedBuilder() BACnetSecurityLevelTaggedBuilder {
+	return &_BACnetSecurityLevelTaggedBuilder{_BACnetSecurityLevelTagged: new(_BACnetSecurityLevelTagged)}
+}
+
+type _BACnetSecurityLevelTaggedBuilder struct {
+	*_BACnetSecurityLevelTagged
+
+	err *utils.MultiError
+}
+
+var _ (BACnetSecurityLevelTaggedBuilder) = (*_BACnetSecurityLevelTaggedBuilder)(nil)
+
+func (b *_BACnetSecurityLevelTaggedBuilder) WithMandatoryFields(header BACnetTagHeader, value BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder {
+	return b.WithHeader(header).WithValue(value)
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) WithHeader(header BACnetTagHeader) BACnetSecurityLevelTaggedBuilder {
+	b.Header = header
+	return b
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) WithHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetSecurityLevelTaggedBuilder {
+	builder := builderSupplier(b.Header.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.Header, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) WithValue(value BACnetSecurityLevel) BACnetSecurityLevelTaggedBuilder {
+	b.Value = value
+	return b
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) Build() (BACnetSecurityLevelTagged, error) {
+	if b.Header == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'header' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetSecurityLevelTagged.deepCopy(), nil
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) MustBuild() BACnetSecurityLevelTagged {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetSecurityLevelTaggedBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetSecurityLevelTaggedBuilder().(*_BACnetSecurityLevelTaggedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetSecurityLevelTaggedBuilder creates a BACnetSecurityLevelTaggedBuilder
+func (b *_BACnetSecurityLevelTagged) CreateBACnetSecurityLevelTaggedBuilder() BACnetSecurityLevelTaggedBuilder {
+	if b == nil {
+		return NewBACnetSecurityLevelTaggedBuilder()
+	}
+	return &_BACnetSecurityLevelTaggedBuilder{_BACnetSecurityLevelTagged: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -75,14 +190,6 @@ func (m *_BACnetSecurityLevelTagged) GetValue() BACnetSecurityLevel {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetSecurityLevelTagged factory function for _BACnetSecurityLevelTagged
-func NewBACnetSecurityLevelTagged(header BACnetTagHeader, value BACnetSecurityLevel, tagNumber uint8, tagClass TagClass) *_BACnetSecurityLevelTagged {
-	if header == nil {
-		panic("header of type BACnetTagHeader for BACnetSecurityLevelTagged must not be nil")
-	}
-	return &_BACnetSecurityLevelTagged{Header: header, Value: value, TagNumber: tagNumber, TagClass: tagClass}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetSecurityLevelTagged(structType any) BACnetSecurityLevelTagged {
@@ -130,7 +237,7 @@ func BACnetSecurityLevelTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetSecurityLevelTagged) parse(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (__bACnetSecurityLevelTagged BACnetSecurityLevelTagged, err error) {
@@ -217,13 +324,34 @@ func (m *_BACnetSecurityLevelTagged) GetTagClass() TagClass {
 
 func (m *_BACnetSecurityLevelTagged) IsBACnetSecurityLevelTagged() {}
 
+func (m *_BACnetSecurityLevelTagged) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetSecurityLevelTagged) deepCopy() *_BACnetSecurityLevelTagged {
+	if m == nil {
+		return nil
+	}
+	_BACnetSecurityLevelTaggedCopy := &_BACnetSecurityLevelTagged{
+		m.Header.DeepCopy().(BACnetTagHeader),
+		m.Value,
+		m.TagNumber,
+		m.TagClass,
+	}
+	return _BACnetSecurityLevelTaggedCopy
+}
+
 func (m *_BACnetSecurityLevelTagged) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

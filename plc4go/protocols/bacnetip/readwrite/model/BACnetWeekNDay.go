@@ -36,8 +36,11 @@ type BACnetWeekNDay interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetWeekNDay is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetWeekNDay()
+	// CreateBuilder creates a BACnetWeekNDayBuilder
+	CreateBACnetWeekNDayBuilder() BACnetWeekNDayBuilder
 }
 
 // _BACnetWeekNDay is the data-structure of this message
@@ -50,6 +53,75 @@ var _ BACnetWeekNDay = (*_BACnetWeekNDay)(nil)
 func NewBACnetWeekNDay() *_BACnetWeekNDay {
 	return &_BACnetWeekNDay{}
 }
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetWeekNDayBuilder is a builder for BACnetWeekNDay
+type BACnetWeekNDayBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() BACnetWeekNDayBuilder
+	// Build builds the BACnetWeekNDay or returns an error if something is wrong
+	Build() (BACnetWeekNDay, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetWeekNDay
+}
+
+// NewBACnetWeekNDayBuilder() creates a BACnetWeekNDayBuilder
+func NewBACnetWeekNDayBuilder() BACnetWeekNDayBuilder {
+	return &_BACnetWeekNDayBuilder{_BACnetWeekNDay: new(_BACnetWeekNDay)}
+}
+
+type _BACnetWeekNDayBuilder struct {
+	*_BACnetWeekNDay
+
+	err *utils.MultiError
+}
+
+var _ (BACnetWeekNDayBuilder) = (*_BACnetWeekNDayBuilder)(nil)
+
+func (b *_BACnetWeekNDayBuilder) WithMandatoryFields() BACnetWeekNDayBuilder {
+	return b
+}
+
+func (b *_BACnetWeekNDayBuilder) Build() (BACnetWeekNDay, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetWeekNDay.deepCopy(), nil
+}
+
+func (b *_BACnetWeekNDayBuilder) MustBuild() BACnetWeekNDay {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetWeekNDayBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetWeekNDayBuilder().(*_BACnetWeekNDayBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetWeekNDayBuilder creates a BACnetWeekNDayBuilder
+func (b *_BACnetWeekNDay) CreateBACnetWeekNDayBuilder() BACnetWeekNDayBuilder {
+	if b == nil {
+		return NewBACnetWeekNDayBuilder()
+	}
+	return &_BACnetWeekNDayBuilder{_BACnetWeekNDay: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 // Deprecated: use the interface for direct cast
 func CastBACnetWeekNDay(structType any) BACnetWeekNDay {
@@ -91,7 +163,7 @@ func BACnetWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_BACnetWeekNDay) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetWeekNDay BACnetWeekNDay, err error) {
@@ -140,13 +212,29 @@ func (m *_BACnetWeekNDay) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 func (m *_BACnetWeekNDay) IsBACnetWeekNDay() {}
 
+func (m *_BACnetWeekNDay) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetWeekNDay) deepCopy() *_BACnetWeekNDay {
+	if m == nil {
+		return nil
+	}
+	_BACnetWeekNDayCopy := &_BACnetWeekNDay{}
+	return _BACnetWeekNDayCopy
+}
+
 func (m *_BACnetWeekNDay) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

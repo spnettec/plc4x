@@ -38,6 +38,7 @@ type BACnetConstructedDataLimitEnable interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetConstructedData
 	// GetLimitEnable returns LimitEnable (property field)
 	GetLimitEnable() BACnetLimitEnableTagged
@@ -45,6 +46,8 @@ type BACnetConstructedDataLimitEnable interface {
 	GetActualValue() BACnetLimitEnableTagged
 	// IsBACnetConstructedDataLimitEnable is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetConstructedDataLimitEnable()
+	// CreateBuilder creates a BACnetConstructedDataLimitEnableBuilder
+	CreateBACnetConstructedDataLimitEnableBuilder() BACnetConstructedDataLimitEnableBuilder
 }
 
 // _BACnetConstructedDataLimitEnable is the data-structure of this message
@@ -55,6 +58,131 @@ type _BACnetConstructedDataLimitEnable struct {
 
 var _ BACnetConstructedDataLimitEnable = (*_BACnetConstructedDataLimitEnable)(nil)
 var _ BACnetConstructedDataRequirements = (*_BACnetConstructedDataLimitEnable)(nil)
+
+// NewBACnetConstructedDataLimitEnable factory function for _BACnetConstructedDataLimitEnable
+func NewBACnetConstructedDataLimitEnable(openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, limitEnable BACnetLimitEnableTagged, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitEnable {
+	if limitEnable == nil {
+		panic("limitEnable of type BACnetLimitEnableTagged for BACnetConstructedDataLimitEnable must not be nil")
+	}
+	_result := &_BACnetConstructedDataLimitEnable{
+		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
+		LimitEnable:                   limitEnable,
+	}
+	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetConstructedDataLimitEnableBuilder is a builder for BACnetConstructedDataLimitEnable
+type BACnetConstructedDataLimitEnableBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(limitEnable BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder
+	// WithLimitEnable adds LimitEnable (property field)
+	WithLimitEnable(BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder
+	// WithLimitEnableBuilder adds LimitEnable (property field) which is build by the builder
+	WithLimitEnableBuilder(func(BACnetLimitEnableTaggedBuilder) BACnetLimitEnableTaggedBuilder) BACnetConstructedDataLimitEnableBuilder
+	// Build builds the BACnetConstructedDataLimitEnable or returns an error if something is wrong
+	Build() (BACnetConstructedDataLimitEnable, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetConstructedDataLimitEnable
+}
+
+// NewBACnetConstructedDataLimitEnableBuilder() creates a BACnetConstructedDataLimitEnableBuilder
+func NewBACnetConstructedDataLimitEnableBuilder() BACnetConstructedDataLimitEnableBuilder {
+	return &_BACnetConstructedDataLimitEnableBuilder{_BACnetConstructedDataLimitEnable: new(_BACnetConstructedDataLimitEnable)}
+}
+
+type _BACnetConstructedDataLimitEnableBuilder struct {
+	*_BACnetConstructedDataLimitEnable
+
+	parentBuilder *_BACnetConstructedDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetConstructedDataLimitEnableBuilder) = (*_BACnetConstructedDataLimitEnableBuilder)(nil)
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) setParent(contract BACnetConstructedDataContract) {
+	b.BACnetConstructedDataContract = contract
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) WithMandatoryFields(limitEnable BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder {
+	return b.WithLimitEnable(limitEnable)
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) WithLimitEnable(limitEnable BACnetLimitEnableTagged) BACnetConstructedDataLimitEnableBuilder {
+	b.LimitEnable = limitEnable
+	return b
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) WithLimitEnableBuilder(builderSupplier func(BACnetLimitEnableTaggedBuilder) BACnetLimitEnableTaggedBuilder) BACnetConstructedDataLimitEnableBuilder {
+	builder := builderSupplier(b.LimitEnable.CreateBACnetLimitEnableTaggedBuilder())
+	var err error
+	b.LimitEnable, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetLimitEnableTaggedBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) Build() (BACnetConstructedDataLimitEnable, error) {
+	if b.LimitEnable == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'limitEnable' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetConstructedDataLimitEnable.deepCopy(), nil
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) MustBuild() BACnetConstructedDataLimitEnable {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetConstructedDataLimitEnableBuilder) Done() BACnetConstructedDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) buildForBACnetConstructedData() (BACnetConstructedData, error) {
+	return b.Build()
+}
+
+func (b *_BACnetConstructedDataLimitEnableBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetConstructedDataLimitEnableBuilder().(*_BACnetConstructedDataLimitEnableBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetConstructedDataLimitEnableBuilder creates a BACnetConstructedDataLimitEnableBuilder
+func (b *_BACnetConstructedDataLimitEnable) CreateBACnetConstructedDataLimitEnableBuilder() BACnetConstructedDataLimitEnableBuilder {
+	if b == nil {
+		return NewBACnetConstructedDataLimitEnableBuilder()
+	}
+	return &_BACnetConstructedDataLimitEnableBuilder{_BACnetConstructedDataLimitEnable: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -106,19 +234,6 @@ func (m *_BACnetConstructedDataLimitEnable) GetActualValue() BACnetLimitEnableTa
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetConstructedDataLimitEnable factory function for _BACnetConstructedDataLimitEnable
-func NewBACnetConstructedDataLimitEnable(limitEnable BACnetLimitEnableTagged, openingTag BACnetOpeningTag, peekedTagHeader BACnetTagHeader, closingTag BACnetClosingTag, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) *_BACnetConstructedDataLimitEnable {
-	if limitEnable == nil {
-		panic("limitEnable of type BACnetLimitEnableTagged for BACnetConstructedDataLimitEnable must not be nil")
-	}
-	_result := &_BACnetConstructedDataLimitEnable{
-		BACnetConstructedDataContract: NewBACnetConstructedData(openingTag, peekedTagHeader, closingTag, tagNumber, arrayIndexArgument),
-		LimitEnable:                   limitEnable,
-	}
-	_result.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetConstructedDataLimitEnable(structType any) BACnetConstructedDataLimitEnable {
@@ -218,13 +333,33 @@ func (m *_BACnetConstructedDataLimitEnable) SerializeWithWriteBuffer(ctx context
 
 func (m *_BACnetConstructedDataLimitEnable) IsBACnetConstructedDataLimitEnable() {}
 
+func (m *_BACnetConstructedDataLimitEnable) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetConstructedDataLimitEnable) deepCopy() *_BACnetConstructedDataLimitEnable {
+	if m == nil {
+		return nil
+	}
+	_BACnetConstructedDataLimitEnableCopy := &_BACnetConstructedDataLimitEnable{
+		m.BACnetConstructedDataContract.(*_BACnetConstructedData).deepCopy(),
+		m.LimitEnable.DeepCopy().(BACnetLimitEnableTagged),
+	}
+	m.BACnetConstructedDataContract.(*_BACnetConstructedData)._SubType = m
+	return _BACnetConstructedDataLimitEnableCopy
+}
+
 func (m *_BACnetConstructedDataLimitEnable) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

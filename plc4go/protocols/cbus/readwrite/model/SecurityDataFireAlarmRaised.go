@@ -36,9 +36,12 @@ type SecurityDataFireAlarmRaised interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SecurityData
 	// IsSecurityDataFireAlarmRaised is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSecurityDataFireAlarmRaised()
+	// CreateBuilder creates a SecurityDataFireAlarmRaisedBuilder
+	CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder
 }
 
 // _SecurityDataFireAlarmRaised is the data-structure of this message
@@ -48,6 +51,99 @@ type _SecurityDataFireAlarmRaised struct {
 
 var _ SecurityDataFireAlarmRaised = (*_SecurityDataFireAlarmRaised)(nil)
 var _ SecurityDataRequirements = (*_SecurityDataFireAlarmRaised)(nil)
+
+// NewSecurityDataFireAlarmRaised factory function for _SecurityDataFireAlarmRaised
+func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmRaised {
+	_result := &_SecurityDataFireAlarmRaised{
+		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
+	}
+	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SecurityDataFireAlarmRaisedBuilder is a builder for SecurityDataFireAlarmRaised
+type SecurityDataFireAlarmRaisedBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder
+	// Build builds the SecurityDataFireAlarmRaised or returns an error if something is wrong
+	Build() (SecurityDataFireAlarmRaised, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SecurityDataFireAlarmRaised
+}
+
+// NewSecurityDataFireAlarmRaisedBuilder() creates a SecurityDataFireAlarmRaisedBuilder
+func NewSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
+	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: new(_SecurityDataFireAlarmRaised)}
+}
+
+type _SecurityDataFireAlarmRaisedBuilder struct {
+	*_SecurityDataFireAlarmRaised
+
+	parentBuilder *_SecurityDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SecurityDataFireAlarmRaisedBuilder) = (*_SecurityDataFireAlarmRaisedBuilder)(nil)
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) setParent(contract SecurityDataContract) {
+	b.SecurityDataContract = contract
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) WithMandatoryFields() SecurityDataFireAlarmRaisedBuilder {
+	return b
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) Build() (SecurityDataFireAlarmRaised, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SecurityDataFireAlarmRaised.deepCopy(), nil
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) MustBuild() SecurityDataFireAlarmRaised {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SecurityDataFireAlarmRaisedBuilder) Done() SecurityDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) buildForSecurityData() (SecurityData, error) {
+	return b.Build()
+}
+
+func (b *_SecurityDataFireAlarmRaisedBuilder) DeepCopy() any {
+	_copy := b.CreateSecurityDataFireAlarmRaisedBuilder().(*_SecurityDataFireAlarmRaisedBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSecurityDataFireAlarmRaisedBuilder creates a SecurityDataFireAlarmRaisedBuilder
+func (b *_SecurityDataFireAlarmRaised) CreateSecurityDataFireAlarmRaisedBuilder() SecurityDataFireAlarmRaisedBuilder {
+	if b == nil {
+		return NewSecurityDataFireAlarmRaisedBuilder()
+	}
+	return &_SecurityDataFireAlarmRaisedBuilder{_SecurityDataFireAlarmRaised: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -61,15 +157,6 @@ var _ SecurityDataRequirements = (*_SecurityDataFireAlarmRaised)(nil)
 
 func (m *_SecurityDataFireAlarmRaised) GetParent() SecurityDataContract {
 	return m.SecurityDataContract
-}
-
-// NewSecurityDataFireAlarmRaised factory function for _SecurityDataFireAlarmRaised
-func NewSecurityDataFireAlarmRaised(commandTypeContainer SecurityCommandTypeContainer, argument byte) *_SecurityDataFireAlarmRaised {
-	_result := &_SecurityDataFireAlarmRaised{
-		SecurityDataContract: NewSecurityData(commandTypeContainer, argument),
-	}
-	_result.SecurityDataContract.(*_SecurityData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -143,13 +230,32 @@ func (m *_SecurityDataFireAlarmRaised) SerializeWithWriteBuffer(ctx context.Cont
 
 func (m *_SecurityDataFireAlarmRaised) IsSecurityDataFireAlarmRaised() {}
 
+func (m *_SecurityDataFireAlarmRaised) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SecurityDataFireAlarmRaised) deepCopy() *_SecurityDataFireAlarmRaised {
+	if m == nil {
+		return nil
+	}
+	_SecurityDataFireAlarmRaisedCopy := &_SecurityDataFireAlarmRaised{
+		m.SecurityDataContract.(*_SecurityData).deepCopy(),
+	}
+	m.SecurityDataContract.(*_SecurityData)._SubType = m
+	return _SecurityDataFireAlarmRaisedCopy
+}
+
 func (m *_SecurityDataFireAlarmRaised) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

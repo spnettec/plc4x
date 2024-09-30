@@ -38,6 +38,7 @@ type SzlId interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// GetTypeClass returns TypeClass (property field)
 	GetTypeClass() SzlModuleTypeClass
 	// GetSublistExtract returns SublistExtract (property field)
@@ -46,6 +47,8 @@ type SzlId interface {
 	GetSublistList() SzlSublist
 	// IsSzlId is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSzlId()
+	// CreateBuilder creates a SzlIdBuilder
+	CreateSzlIdBuilder() SzlIdBuilder
 }
 
 // _SzlId is the data-structure of this message
@@ -56,6 +59,101 @@ type _SzlId struct {
 }
 
 var _ SzlId = (*_SzlId)(nil)
+
+// NewSzlId factory function for _SzlId
+func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
+	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SzlIdBuilder is a builder for SzlId
+type SzlIdBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder
+	// WithTypeClass adds TypeClass (property field)
+	WithTypeClass(SzlModuleTypeClass) SzlIdBuilder
+	// WithSublistExtract adds SublistExtract (property field)
+	WithSublistExtract(uint8) SzlIdBuilder
+	// WithSublistList adds SublistList (property field)
+	WithSublistList(SzlSublist) SzlIdBuilder
+	// Build builds the SzlId or returns an error if something is wrong
+	Build() (SzlId, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SzlId
+}
+
+// NewSzlIdBuilder() creates a SzlIdBuilder
+func NewSzlIdBuilder() SzlIdBuilder {
+	return &_SzlIdBuilder{_SzlId: new(_SzlId)}
+}
+
+type _SzlIdBuilder struct {
+	*_SzlId
+
+	err *utils.MultiError
+}
+
+var _ (SzlIdBuilder) = (*_SzlIdBuilder)(nil)
+
+func (b *_SzlIdBuilder) WithMandatoryFields(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) SzlIdBuilder {
+	return b.WithTypeClass(typeClass).WithSublistExtract(sublistExtract).WithSublistList(sublistList)
+}
+
+func (b *_SzlIdBuilder) WithTypeClass(typeClass SzlModuleTypeClass) SzlIdBuilder {
+	b.TypeClass = typeClass
+	return b
+}
+
+func (b *_SzlIdBuilder) WithSublistExtract(sublistExtract uint8) SzlIdBuilder {
+	b.SublistExtract = sublistExtract
+	return b
+}
+
+func (b *_SzlIdBuilder) WithSublistList(sublistList SzlSublist) SzlIdBuilder {
+	b.SublistList = sublistList
+	return b
+}
+
+func (b *_SzlIdBuilder) Build() (SzlId, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SzlId.deepCopy(), nil
+}
+
+func (b *_SzlIdBuilder) MustBuild() SzlId {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_SzlIdBuilder) DeepCopy() any {
+	_copy := b.CreateSzlIdBuilder().(*_SzlIdBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSzlIdBuilder creates a SzlIdBuilder
+func (b *_SzlId) CreateSzlIdBuilder() SzlIdBuilder {
+	if b == nil {
+		return NewSzlIdBuilder()
+	}
+	return &_SzlIdBuilder{_SzlId: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -78,11 +176,6 @@ func (m *_SzlId) GetSublistList() SzlSublist {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewSzlId factory function for _SzlId
-func NewSzlId(typeClass SzlModuleTypeClass, sublistExtract uint8, sublistList SzlSublist) *_SzlId {
-	return &_SzlId{TypeClass: typeClass, SublistExtract: sublistExtract, SublistList: sublistList}
-}
 
 // Deprecated: use the interface for direct cast
 func CastSzlId(structType any) SzlId {
@@ -133,7 +226,7 @@ func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Szl
 	if err != nil {
 		return nil, err
 	}
-	return v, err
+	return v, nil
 }
 
 func (m *_SzlId) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__szlId SzlId, err error) {
@@ -207,13 +300,33 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 func (m *_SzlId) IsSzlId() {}
 
+func (m *_SzlId) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SzlId) deepCopy() *_SzlId {
+	if m == nil {
+		return nil
+	}
+	_SzlIdCopy := &_SzlId{
+		m.TypeClass,
+		m.SublistExtract,
+		m.SublistList,
+	}
+	return _SzlIdCopy
+}
+
 func (m *_SzlId) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

@@ -40,8 +40,11 @@ type BACnetProcessIdSelection interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
+	// CreateBuilder creates a BACnetProcessIdSelectionBuilder
+	CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder
 }
 
 // BACnetProcessIdSelectionContract provides a set of functions which can be overwritten by a sub struct
@@ -52,6 +55,8 @@ type BACnetProcessIdSelectionContract interface {
 	GetPeekedTagNumber() uint8
 	// IsBACnetProcessIdSelection is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetProcessIdSelection()
+	// CreateBuilder creates a BACnetProcessIdSelectionBuilder
+	CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder
 }
 
 // BACnetProcessIdSelectionRequirements provides a set of functions which need to be implemented by a sub struct
@@ -69,6 +74,187 @@ type _BACnetProcessIdSelection struct {
 }
 
 var _ BACnetProcessIdSelectionContract = (*_BACnetProcessIdSelection)(nil)
+
+// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
+func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
+	if peekedTagHeader == nil {
+		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
+	}
+	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetProcessIdSelectionBuilder is a builder for BACnetProcessIdSelection
+type BACnetProcessIdSelectionBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder
+	// WithPeekedTagHeader adds PeekedTagHeader (property field)
+	WithPeekedTagHeader(BACnetTagHeader) BACnetProcessIdSelectionBuilder
+	// WithPeekedTagHeaderBuilder adds PeekedTagHeader (property field) which is build by the builder
+	WithPeekedTagHeaderBuilder(func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProcessIdSelectionBuilder
+	// AsBACnetProcessIdSelectionNull converts this build to a subType of BACnetProcessIdSelection. It is always possible to return to current builder using Done()
+	AsBACnetProcessIdSelectionNull() interface {
+		BACnetProcessIdSelectionNullBuilder
+		Done() BACnetProcessIdSelectionBuilder
+	}
+	// AsBACnetProcessIdSelectionValue converts this build to a subType of BACnetProcessIdSelection. It is always possible to return to current builder using Done()
+	AsBACnetProcessIdSelectionValue() interface {
+		BACnetProcessIdSelectionValueBuilder
+		Done() BACnetProcessIdSelectionBuilder
+	}
+	// Build builds the BACnetProcessIdSelection or returns an error if something is wrong
+	PartialBuild() (BACnetProcessIdSelectionContract, error)
+	// MustBuild does the same as Build but panics on error
+	PartialMustBuild() BACnetProcessIdSelectionContract
+	// Build builds the BACnetProcessIdSelection or returns an error if something is wrong
+	Build() (BACnetProcessIdSelection, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetProcessIdSelection
+}
+
+// NewBACnetProcessIdSelectionBuilder() creates a BACnetProcessIdSelectionBuilder
+func NewBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder {
+	return &_BACnetProcessIdSelectionBuilder{_BACnetProcessIdSelection: new(_BACnetProcessIdSelection)}
+}
+
+type _BACnetProcessIdSelectionChildBuilder interface {
+	utils.Copyable
+	setParent(BACnetProcessIdSelectionContract)
+	buildForBACnetProcessIdSelection() (BACnetProcessIdSelection, error)
+}
+
+type _BACnetProcessIdSelectionBuilder struct {
+	*_BACnetProcessIdSelection
+
+	childBuilder _BACnetProcessIdSelectionChildBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetProcessIdSelectionBuilder) = (*_BACnetProcessIdSelectionBuilder)(nil)
+
+func (b *_BACnetProcessIdSelectionBuilder) WithMandatoryFields(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder {
+	return b.WithPeekedTagHeader(peekedTagHeader)
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) WithPeekedTagHeader(peekedTagHeader BACnetTagHeader) BACnetProcessIdSelectionBuilder {
+	b.PeekedTagHeader = peekedTagHeader
+	return b
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) WithPeekedTagHeaderBuilder(builderSupplier func(BACnetTagHeaderBuilder) BACnetTagHeaderBuilder) BACnetProcessIdSelectionBuilder {
+	builder := builderSupplier(b.PeekedTagHeader.CreateBACnetTagHeaderBuilder())
+	var err error
+	b.PeekedTagHeader, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagHeaderBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) PartialBuild() (BACnetProcessIdSelectionContract, error) {
+	if b.PeekedTagHeader == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'peekedTagHeader' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetProcessIdSelection.deepCopy(), nil
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) PartialMustBuild() BACnetProcessIdSelectionContract {
+	build, err := b.PartialBuild()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionNull() interface {
+	BACnetProcessIdSelectionNullBuilder
+	Done() BACnetProcessIdSelectionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetProcessIdSelectionNullBuilder
+		Done() BACnetProcessIdSelectionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetProcessIdSelectionNullBuilder().(*_BACnetProcessIdSelectionNullBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) AsBACnetProcessIdSelectionValue() interface {
+	BACnetProcessIdSelectionValueBuilder
+	Done() BACnetProcessIdSelectionBuilder
+} {
+	if cb, ok := b.childBuilder.(interface {
+		BACnetProcessIdSelectionValueBuilder
+		Done() BACnetProcessIdSelectionBuilder
+	}); ok {
+		return cb
+	}
+	cb := NewBACnetProcessIdSelectionValueBuilder().(*_BACnetProcessIdSelectionValueBuilder)
+	cb.parentBuilder = b
+	b.childBuilder = cb
+	return cb
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) Build() (BACnetProcessIdSelection, error) {
+	v, err := b.PartialBuild()
+	if err != nil {
+		return nil, errors.Wrap(err, "error occurred during partial build")
+	}
+	if b.childBuilder == nil {
+		return nil, errors.New("no child builder present")
+	}
+	b.childBuilder.setParent(v)
+	return b.childBuilder.buildForBACnetProcessIdSelection()
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) MustBuild() BACnetProcessIdSelection {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+func (b *_BACnetProcessIdSelectionBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetProcessIdSelectionBuilder().(*_BACnetProcessIdSelectionBuilder)
+	_copy.childBuilder = b.childBuilder.DeepCopy().(_BACnetProcessIdSelectionChildBuilder)
+	_copy.childBuilder.setParent(_copy)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetProcessIdSelectionBuilder creates a BACnetProcessIdSelectionBuilder
+func (b *_BACnetProcessIdSelection) CreateBACnetProcessIdSelectionBuilder() BACnetProcessIdSelectionBuilder {
+	if b == nil {
+		return NewBACnetProcessIdSelectionBuilder()
+	}
+	return &_BACnetProcessIdSelectionBuilder{_BACnetProcessIdSelection: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -99,14 +285,6 @@ func (pm *_BACnetProcessIdSelection) GetPeekedTagNumber() uint8 {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetProcessIdSelection factory function for _BACnetProcessIdSelection
-func NewBACnetProcessIdSelection(peekedTagHeader BACnetTagHeader) *_BACnetProcessIdSelection {
-	if peekedTagHeader == nil {
-		panic("peekedTagHeader of type BACnetTagHeader for BACnetProcessIdSelection must not be nil")
-	}
-	return &_BACnetProcessIdSelection{PeekedTagHeader: peekedTagHeader}
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetProcessIdSelection(structType any) BACnetProcessIdSelection {
@@ -146,7 +324,7 @@ func BACnetProcessIdSelectionParseWithBufferProducer[T BACnetProcessIdSelection]
 			var zero T
 			return zero, err
 		}
-		return v, err
+		return v, nil
 	}
 }
 
@@ -156,7 +334,12 @@ func BACnetProcessIdSelectionParseWithBuffer[T BACnetProcessIdSelection](ctx con
 		var zero T
 		return zero, err
 	}
-	return v.(T), err
+	vc, ok := v.(T)
+	if !ok {
+		var zero T
+		return zero, errors.Errorf("Unexpected type %T. Expected type %T", v, *new(T))
+	}
+	return vc, nil
 }
 
 func (m *_BACnetProcessIdSelection) parse(ctx context.Context, readBuffer utils.ReadBuffer) (__bACnetProcessIdSelection BACnetProcessIdSelection, err error) {
@@ -184,11 +367,11 @@ func (m *_BACnetProcessIdSelection) parse(ctx context.Context, readBuffer utils.
 	var _child BACnetProcessIdSelection
 	switch {
 	case peekedTagNumber == uint8(0): // BACnetProcessIdSelectionNull
-		if _child, err = (&_BACnetProcessIdSelectionNull{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionNull).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionNull for type-switch of BACnetProcessIdSelection")
 		}
 	case 0 == 0: // BACnetProcessIdSelectionValue
-		if _child, err = (&_BACnetProcessIdSelectionValue{}).parse(ctx, readBuffer, m); err != nil {
+		if _child, err = new(_BACnetProcessIdSelectionValue).parse(ctx, readBuffer, m); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BACnetProcessIdSelectionValue for type-switch of BACnetProcessIdSelection")
 		}
 	default:
@@ -232,3 +415,18 @@ func (pm *_BACnetProcessIdSelection) serializeParent(ctx context.Context, writeB
 }
 
 func (m *_BACnetProcessIdSelection) IsBACnetProcessIdSelection() {}
+
+func (m *_BACnetProcessIdSelection) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetProcessIdSelection) deepCopy() *_BACnetProcessIdSelection {
+	if m == nil {
+		return nil
+	}
+	_BACnetProcessIdSelectionCopy := &_BACnetProcessIdSelection{
+		nil, // will be set by child
+		m.PeekedTagHeader.DeepCopy().(BACnetTagHeader),
+	}
+	return _BACnetProcessIdSelectionCopy
+}

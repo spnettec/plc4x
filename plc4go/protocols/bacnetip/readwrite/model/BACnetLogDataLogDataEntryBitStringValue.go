@@ -38,11 +38,14 @@ type BACnetLogDataLogDataEntryBitStringValue interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetLogDataLogDataEntry
 	// GetBitStringValue returns BitStringValue (property field)
 	GetBitStringValue() BACnetContextTagBitString
 	// IsBACnetLogDataLogDataEntryBitStringValue is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetLogDataLogDataEntryBitStringValue()
+	// CreateBuilder creates a BACnetLogDataLogDataEntryBitStringValueBuilder
+	CreateBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEntryBitStringValueBuilder
 }
 
 // _BACnetLogDataLogDataEntryBitStringValue is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetLogDataLogDataEntryBitStringValue struct {
 
 var _ BACnetLogDataLogDataEntryBitStringValue = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
 var _ BACnetLogDataLogDataEntryRequirements = (*_BACnetLogDataLogDataEntryBitStringValue)(nil)
+
+// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
+func NewBACnetLogDataLogDataEntryBitStringValue(peekedTagHeader BACnetTagHeader, bitStringValue BACnetContextTagBitString) *_BACnetLogDataLogDataEntryBitStringValue {
+	if bitStringValue == nil {
+		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
+	}
+	_result := &_BACnetLogDataLogDataEntryBitStringValue{
+		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
+		BitStringValue:                    bitStringValue,
+	}
+	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetLogDataLogDataEntryBitStringValueBuilder is a builder for BACnetLogDataLogDataEntryBitStringValue
+type BACnetLogDataLogDataEntryBitStringValueBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder
+	// WithBitStringValue adds BitStringValue (property field)
+	WithBitStringValue(BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder
+	// WithBitStringValueBuilder adds BitStringValue (property field) which is build by the builder
+	WithBitStringValueBuilder(func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogDataLogDataEntryBitStringValueBuilder
+	// Build builds the BACnetLogDataLogDataEntryBitStringValue or returns an error if something is wrong
+	Build() (BACnetLogDataLogDataEntryBitStringValue, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetLogDataLogDataEntryBitStringValue
+}
+
+// NewBACnetLogDataLogDataEntryBitStringValueBuilder() creates a BACnetLogDataLogDataEntryBitStringValueBuilder
+func NewBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEntryBitStringValueBuilder {
+	return &_BACnetLogDataLogDataEntryBitStringValueBuilder{_BACnetLogDataLogDataEntryBitStringValue: new(_BACnetLogDataLogDataEntryBitStringValue)}
+}
+
+type _BACnetLogDataLogDataEntryBitStringValueBuilder struct {
+	*_BACnetLogDataLogDataEntryBitStringValue
+
+	parentBuilder *_BACnetLogDataLogDataEntryBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetLogDataLogDataEntryBitStringValueBuilder) = (*_BACnetLogDataLogDataEntryBitStringValueBuilder)(nil)
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) setParent(contract BACnetLogDataLogDataEntryContract) {
+	b.BACnetLogDataLogDataEntryContract = contract
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithMandatoryFields(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	return b.WithBitStringValue(bitStringValue)
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValue(bitStringValue BACnetContextTagBitString) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	b.BitStringValue = bitStringValue
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) WithBitStringValueBuilder(builderSupplier func(BACnetContextTagBitStringBuilder) BACnetContextTagBitStringBuilder) BACnetLogDataLogDataEntryBitStringValueBuilder {
+	builder := builderSupplier(b.BitStringValue.CreateBACnetContextTagBitStringBuilder())
+	var err error
+	b.BitStringValue, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetContextTagBitStringBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) Build() (BACnetLogDataLogDataEntryBitStringValue, error) {
+	if b.BitStringValue == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'bitStringValue' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetLogDataLogDataEntryBitStringValue.deepCopy(), nil
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) MustBuild() BACnetLogDataLogDataEntryBitStringValue {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) Done() BACnetLogDataLogDataEntryBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) buildForBACnetLogDataLogDataEntry() (BACnetLogDataLogDataEntry, error) {
+	return b.Build()
+}
+
+func (b *_BACnetLogDataLogDataEntryBitStringValueBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetLogDataLogDataEntryBitStringValueBuilder().(*_BACnetLogDataLogDataEntryBitStringValueBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetLogDataLogDataEntryBitStringValueBuilder creates a BACnetLogDataLogDataEntryBitStringValueBuilder
+func (b *_BACnetLogDataLogDataEntryBitStringValue) CreateBACnetLogDataLogDataEntryBitStringValueBuilder() BACnetLogDataLogDataEntryBitStringValueBuilder {
+	if b == nil {
+		return NewBACnetLogDataLogDataEntryBitStringValueBuilder()
+	}
+	return &_BACnetLogDataLogDataEntryBitStringValueBuilder{_BACnetLogDataLogDataEntryBitStringValue: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -81,19 +209,6 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) GetBitStringValue() BACnetCon
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetLogDataLogDataEntryBitStringValue factory function for _BACnetLogDataLogDataEntryBitStringValue
-func NewBACnetLogDataLogDataEntryBitStringValue(bitStringValue BACnetContextTagBitString, peekedTagHeader BACnetTagHeader) *_BACnetLogDataLogDataEntryBitStringValue {
-	if bitStringValue == nil {
-		panic("bitStringValue of type BACnetContextTagBitString for BACnetLogDataLogDataEntryBitStringValue must not be nil")
-	}
-	_result := &_BACnetLogDataLogDataEntryBitStringValue{
-		BACnetLogDataLogDataEntryContract: NewBACnetLogDataLogDataEntry(peekedTagHeader),
-		BitStringValue:                    bitStringValue,
-	}
-	_result.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetLogDataLogDataEntryBitStringValue(structType any) BACnetLogDataLogDataEntryBitStringValue {
@@ -179,13 +294,33 @@ func (m *_BACnetLogDataLogDataEntryBitStringValue) SerializeWithWriteBuffer(ctx 
 
 func (m *_BACnetLogDataLogDataEntryBitStringValue) IsBACnetLogDataLogDataEntryBitStringValue() {}
 
+func (m *_BACnetLogDataLogDataEntryBitStringValue) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetLogDataLogDataEntryBitStringValue) deepCopy() *_BACnetLogDataLogDataEntryBitStringValue {
+	if m == nil {
+		return nil
+	}
+	_BACnetLogDataLogDataEntryBitStringValueCopy := &_BACnetLogDataLogDataEntryBitStringValue{
+		m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry).deepCopy(),
+		m.BitStringValue.DeepCopy().(BACnetContextTagBitString),
+	}
+	m.BACnetLogDataLogDataEntryContract.(*_BACnetLogDataLogDataEntry)._SubType = m
+	return _BACnetLogDataLogDataEntryBitStringValueCopy
+}
+
 func (m *_BACnetLogDataLogDataEntryBitStringValue) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

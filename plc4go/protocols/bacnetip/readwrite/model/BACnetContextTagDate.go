@@ -38,11 +38,14 @@ type BACnetContextTagDate interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	BACnetContextTag
 	// GetPayload returns Payload (property field)
 	GetPayload() BACnetTagPayloadDate
 	// IsBACnetContextTagDate is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsBACnetContextTagDate()
+	// CreateBuilder creates a BACnetContextTagDateBuilder
+	CreateBACnetContextTagDateBuilder() BACnetContextTagDateBuilder
 }
 
 // _BACnetContextTagDate is the data-structure of this message
@@ -53,6 +56,131 @@ type _BACnetContextTagDate struct {
 
 var _ BACnetContextTagDate = (*_BACnetContextTagDate)(nil)
 var _ BACnetContextTagRequirements = (*_BACnetContextTagDate)(nil)
+
+// NewBACnetContextTagDate factory function for _BACnetContextTagDate
+func NewBACnetContextTagDate(header BACnetTagHeader, payload BACnetTagPayloadDate, tagNumberArgument uint8) *_BACnetContextTagDate {
+	if payload == nil {
+		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
+	}
+	_result := &_BACnetContextTagDate{
+		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
+		Payload:                  payload,
+	}
+	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// BACnetContextTagDateBuilder is a builder for BACnetContextTagDate
+type BACnetContextTagDateBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder
+	// WithPayload adds Payload (property field)
+	WithPayload(BACnetTagPayloadDate) BACnetContextTagDateBuilder
+	// WithPayloadBuilder adds Payload (property field) which is build by the builder
+	WithPayloadBuilder(func(BACnetTagPayloadDateBuilder) BACnetTagPayloadDateBuilder) BACnetContextTagDateBuilder
+	// Build builds the BACnetContextTagDate or returns an error if something is wrong
+	Build() (BACnetContextTagDate, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() BACnetContextTagDate
+}
+
+// NewBACnetContextTagDateBuilder() creates a BACnetContextTagDateBuilder
+func NewBACnetContextTagDateBuilder() BACnetContextTagDateBuilder {
+	return &_BACnetContextTagDateBuilder{_BACnetContextTagDate: new(_BACnetContextTagDate)}
+}
+
+type _BACnetContextTagDateBuilder struct {
+	*_BACnetContextTagDate
+
+	parentBuilder *_BACnetContextTagBuilder
+
+	err *utils.MultiError
+}
+
+var _ (BACnetContextTagDateBuilder) = (*_BACnetContextTagDateBuilder)(nil)
+
+func (b *_BACnetContextTagDateBuilder) setParent(contract BACnetContextTagContract) {
+	b.BACnetContextTagContract = contract
+}
+
+func (b *_BACnetContextTagDateBuilder) WithMandatoryFields(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder {
+	return b.WithPayload(payload)
+}
+
+func (b *_BACnetContextTagDateBuilder) WithPayload(payload BACnetTagPayloadDate) BACnetContextTagDateBuilder {
+	b.Payload = payload
+	return b
+}
+
+func (b *_BACnetContextTagDateBuilder) WithPayloadBuilder(builderSupplier func(BACnetTagPayloadDateBuilder) BACnetTagPayloadDateBuilder) BACnetContextTagDateBuilder {
+	builder := builderSupplier(b.Payload.CreateBACnetTagPayloadDateBuilder())
+	var err error
+	b.Payload, err = builder.Build()
+	if err != nil {
+		if b.err == nil {
+			b.err = &utils.MultiError{MainError: errors.New("sub builder failed")}
+		}
+		b.err.Append(errors.Wrap(err, "BACnetTagPayloadDateBuilder failed"))
+	}
+	return b
+}
+
+func (b *_BACnetContextTagDateBuilder) Build() (BACnetContextTagDate, error) {
+	if b.Payload == nil {
+		if b.err == nil {
+			b.err = new(utils.MultiError)
+		}
+		b.err.Append(errors.New("mandatory field 'payload' not set"))
+	}
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._BACnetContextTagDate.deepCopy(), nil
+}
+
+func (b *_BACnetContextTagDateBuilder) MustBuild() BACnetContextTagDate {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_BACnetContextTagDateBuilder) Done() BACnetContextTagBuilder {
+	return b.parentBuilder
+}
+
+func (b *_BACnetContextTagDateBuilder) buildForBACnetContextTag() (BACnetContextTag, error) {
+	return b.Build()
+}
+
+func (b *_BACnetContextTagDateBuilder) DeepCopy() any {
+	_copy := b.CreateBACnetContextTagDateBuilder().(*_BACnetContextTagDateBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateBACnetContextTagDateBuilder creates a BACnetContextTagDateBuilder
+func (b *_BACnetContextTagDate) CreateBACnetContextTagDateBuilder() BACnetContextTagDateBuilder {
+	if b == nil {
+		return NewBACnetContextTagDateBuilder()
+	}
+	return &_BACnetContextTagDateBuilder{_BACnetContextTagDate: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -85,19 +213,6 @@ func (m *_BACnetContextTagDate) GetPayload() BACnetTagPayloadDate {
 ///////////////////////
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
-
-// NewBACnetContextTagDate factory function for _BACnetContextTagDate
-func NewBACnetContextTagDate(payload BACnetTagPayloadDate, header BACnetTagHeader, tagNumberArgument uint8) *_BACnetContextTagDate {
-	if payload == nil {
-		panic("payload of type BACnetTagPayloadDate for BACnetContextTagDate must not be nil")
-	}
-	_result := &_BACnetContextTagDate{
-		BACnetContextTagContract: NewBACnetContextTag(header, tagNumberArgument),
-		Payload:                  payload,
-	}
-	_result.BACnetContextTagContract.(*_BACnetContextTag)._SubType = _result
-	return _result
-}
 
 // Deprecated: use the interface for direct cast
 func CastBACnetContextTagDate(structType any) BACnetContextTagDate {
@@ -183,13 +298,33 @@ func (m *_BACnetContextTagDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 func (m *_BACnetContextTagDate) IsBACnetContextTagDate() {}
 
+func (m *_BACnetContextTagDate) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_BACnetContextTagDate) deepCopy() *_BACnetContextTagDate {
+	if m == nil {
+		return nil
+	}
+	_BACnetContextTagDateCopy := &_BACnetContextTagDate{
+		m.BACnetContextTagContract.(*_BACnetContextTag).deepCopy(),
+		m.Payload.DeepCopy().(BACnetTagPayloadDate),
+	}
+	m.BACnetContextTagContract.(*_BACnetContextTag)._SubType = m
+	return _BACnetContextTagDateCopy
+}
+
 func (m *_BACnetContextTagDate) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }

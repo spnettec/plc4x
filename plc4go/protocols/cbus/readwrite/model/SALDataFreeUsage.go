@@ -36,9 +36,12 @@ type SALDataFreeUsage interface {
 	fmt.Stringer
 	utils.LengthAware
 	utils.Serializable
+	utils.Copyable
 	SALData
 	// IsSALDataFreeUsage is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsSALDataFreeUsage()
+	// CreateBuilder creates a SALDataFreeUsageBuilder
+	CreateSALDataFreeUsageBuilder() SALDataFreeUsageBuilder
 }
 
 // _SALDataFreeUsage is the data-structure of this message
@@ -48,6 +51,99 @@ type _SALDataFreeUsage struct {
 
 var _ SALDataFreeUsage = (*_SALDataFreeUsage)(nil)
 var _ SALDataRequirements = (*_SALDataFreeUsage)(nil)
+
+// NewSALDataFreeUsage factory function for _SALDataFreeUsage
+func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
+	_result := &_SALDataFreeUsage{
+		SALDataContract: NewSALData(salData),
+	}
+	_result.SALDataContract.(*_SALData)._SubType = _result
+	return _result
+}
+
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
+/////////////////////// Builder
+///////////////////////
+
+// SALDataFreeUsageBuilder is a builder for SALDataFreeUsage
+type SALDataFreeUsageBuilder interface {
+	utils.Copyable
+	// WithMandatoryFields adds all mandatory fields (convenience for using multiple builder calls)
+	WithMandatoryFields() SALDataFreeUsageBuilder
+	// Build builds the SALDataFreeUsage or returns an error if something is wrong
+	Build() (SALDataFreeUsage, error)
+	// MustBuild does the same as Build but panics on error
+	MustBuild() SALDataFreeUsage
+}
+
+// NewSALDataFreeUsageBuilder() creates a SALDataFreeUsageBuilder
+func NewSALDataFreeUsageBuilder() SALDataFreeUsageBuilder {
+	return &_SALDataFreeUsageBuilder{_SALDataFreeUsage: new(_SALDataFreeUsage)}
+}
+
+type _SALDataFreeUsageBuilder struct {
+	*_SALDataFreeUsage
+
+	parentBuilder *_SALDataBuilder
+
+	err *utils.MultiError
+}
+
+var _ (SALDataFreeUsageBuilder) = (*_SALDataFreeUsageBuilder)(nil)
+
+func (b *_SALDataFreeUsageBuilder) setParent(contract SALDataContract) {
+	b.SALDataContract = contract
+}
+
+func (b *_SALDataFreeUsageBuilder) WithMandatoryFields() SALDataFreeUsageBuilder {
+	return b
+}
+
+func (b *_SALDataFreeUsageBuilder) Build() (SALDataFreeUsage, error) {
+	if b.err != nil {
+		return nil, errors.Wrap(b.err, "error occurred during build")
+	}
+	return b._SALDataFreeUsage.deepCopy(), nil
+}
+
+func (b *_SALDataFreeUsageBuilder) MustBuild() SALDataFreeUsage {
+	build, err := b.Build()
+	if err != nil {
+		panic(err)
+	}
+	return build
+}
+
+// Done is used to finish work on this child and return to the parent builder
+func (b *_SALDataFreeUsageBuilder) Done() SALDataBuilder {
+	return b.parentBuilder
+}
+
+func (b *_SALDataFreeUsageBuilder) buildForSALData() (SALData, error) {
+	return b.Build()
+}
+
+func (b *_SALDataFreeUsageBuilder) DeepCopy() any {
+	_copy := b.CreateSALDataFreeUsageBuilder().(*_SALDataFreeUsageBuilder)
+	if b.err != nil {
+		_copy.err = b.err.DeepCopy().(*utils.MultiError)
+	}
+	return _copy
+}
+
+// CreateSALDataFreeUsageBuilder creates a SALDataFreeUsageBuilder
+func (b *_SALDataFreeUsage) CreateSALDataFreeUsageBuilder() SALDataFreeUsageBuilder {
+	if b == nil {
+		return NewSALDataFreeUsageBuilder()
+	}
+	return &_SALDataFreeUsageBuilder{_SALDataFreeUsage: b.deepCopy()}
+}
+
+///////////////////////
+///////////////////////
+///////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -65,15 +161,6 @@ func (m *_SALDataFreeUsage) GetApplicationId() ApplicationId {
 
 func (m *_SALDataFreeUsage) GetParent() SALDataContract {
 	return m.SALDataContract
-}
-
-// NewSALDataFreeUsage factory function for _SALDataFreeUsage
-func NewSALDataFreeUsage(salData SALData) *_SALDataFreeUsage {
-	_result := &_SALDataFreeUsage{
-		SALDataContract: NewSALData(salData),
-	}
-	_result.SALDataContract.(*_SALData)._SubType = _result
-	return _result
 }
 
 // Deprecated: use the interface for direct cast
@@ -152,13 +239,32 @@ func (m *_SALDataFreeUsage) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 func (m *_SALDataFreeUsage) IsSALDataFreeUsage() {}
 
+func (m *_SALDataFreeUsage) DeepCopy() any {
+	return m.deepCopy()
+}
+
+func (m *_SALDataFreeUsage) deepCopy() *_SALDataFreeUsage {
+	if m == nil {
+		return nil
+	}
+	_SALDataFreeUsageCopy := &_SALDataFreeUsage{
+		m.SALDataContract.(*_SALData).deepCopy(),
+	}
+	m.SALDataContract.(*_SALData)._SubType = m
+	return _SALDataFreeUsageCopy
+}
+
 func (m *_SALDataFreeUsage) String() string {
 	if m == nil {
 		return "<nil>"
 	}
-	writeBuffer := utils.NewWriteBufferBoxBasedWithOptions(true, true)
-	if err := writeBuffer.WriteSerializable(context.Background(), m); err != nil {
+	wb := utils.NewWriteBufferBoxBased(
+		utils.WithWriteBufferBoxBasedMergeSingleBoxes(),
+		utils.WithWriteBufferBoxBasedOmitEmptyBoxes(),
+		utils.WithWriteBufferBoxBasedPrintPosLengthFooter(),
+	)
+	if err := wb.WriteSerializable(context.Background(), m); err != nil {
 		return err.Error()
 	}
-	return writeBuffer.GetBox().String()
+	return wb.GetBox().String()
 }
