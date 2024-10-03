@@ -22,21 +22,31 @@ import io.netty.util.AttributeKey;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.exceptions.PlcUnsupportedOperationException;
 import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.model.PlcConsumerRegistration;
 import org.apache.plc4x.java.api.model.PlcSubscriptionHandle;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.generation.Message;
 import org.apache.plc4x.java.spi.messages.*;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.PlcValueHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -57,36 +67,45 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
     private boolean canWrite = false;
     private boolean canSubscribe = false;
     private boolean canBrowse = false;
-    private PlcTagHandler tagHandler;
-    private PlcValueHandler valueHandler;
+    private final PlcValueHandler valueHandler;
+    private final BaseOptimizer optimizer;
+    private final PlcAuthentication authentication;
     private Plc4xProtocolBase<? extends Message> protocol;
-    private BaseOptimizer optimizer;
-    private PlcAuthentication authentication;
-
-    /**
-     * @deprecated only for compatibility reasons.
-     */
-    @Deprecated
-    protected AbstractPlcConnection() {
-    }
+    private PlcTagHandler tagHandler;
 
     protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
                                     boolean canSubscribe, boolean canBrowse,
-                                    PlcTagHandler tagHandler, PlcValueHandler valueHandler,
+                                    PlcValueHandler valueHandler,
                                     BaseOptimizer optimizer, PlcAuthentication authentication) {
         this.canPing = canPing;
         this.canRead = canRead;
         this.canWrite = canWrite;
         this.canSubscribe = canSubscribe;
         this.canBrowse = canBrowse;
-        this.tagHandler = tagHandler;
         this.valueHandler = valueHandler;
+        this.optimizer = optimizer;
+        this.authentication = authentication;
+    }
+
+    protected AbstractPlcConnection(boolean canPing, boolean canRead, boolean canWrite,
+                                    boolean canSubscribe, boolean canBrowse,
+                                    PlcValueHandler valueHandler,
+                                    PlcTagHandler tagHandler,
+                                    BaseOptimizer optimizer, PlcAuthentication authentication) {
+        this.canPing = canPing;
+        this.canRead = canRead;
+        this.canWrite = canWrite;
+        this.canSubscribe = canSubscribe;
+        this.canBrowse = canBrowse;
+        this.valueHandler = valueHandler;
+        this.tagHandler = tagHandler;
         this.optimizer = optimizer;
         this.authentication = authentication;
     }
 
     public void setProtocol(Plc4xProtocolBase<? extends Message> protocol) {
         this.protocol = protocol;
+        this.tagHandler = protocol.getTagHandler();
     }
 
     public Plc4xProtocolBase<? extends Message> getProtocol() {
@@ -104,6 +123,7 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         future.completeExceptionally(new PlcUnsupportedOperationException("The connection does not support pinging"));
         return future;
     }
+
 
     @Override
     public boolean isReadSupported() {
@@ -187,6 +207,30 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
+        PlcReadRequest filteredReadRequest = getFilteredReadRequest((DefaultPlcReadRequest) readRequest);
+        return internalRead(filteredReadRequest)
+            .thenApply(filteredReadResponse -> {
+                // Shortcut for the case that all tags were valid.
+                if(readRequest.getNumberOfTags() == filteredReadRequest.getNumberOfTags()) {
+                    return filteredReadResponse;
+                }
+
+                Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
+                for (String tagName : readRequest.getTagNames()) {
+                    // If the tag was correct, then we expect a response in the response.
+                    if(filteredReadRequest.getTagResponseCode(tagName) != null) {
+                        values.put(tagName, ((DefaultPlcReadResponse) filteredReadResponse).getPlcResponseItem(tagName));
+                    }
+                    // In all other cases forward the initial error to the final output.
+                    else {
+                        values.put(tagName, new DefaultPlcResponseItem<>(readRequest.getTagResponseCode(tagName), null));
+                    }
+                }
+                return new DefaultPlcReadResponse(readRequest, values);
+            });
+    }
+
+    protected CompletableFuture<PlcReadResponse> internalRead(PlcReadRequest readRequest) {
         if(optimizer != null) {
             return optimizer.optimizedRead(readRequest, protocol);
         }
@@ -195,6 +239,30 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
 
     @Override
     public CompletableFuture<PlcWriteResponse> write(PlcWriteRequest writeRequest) {
+        PlcWriteRequest filteredWriteRequest = getFilteredWriteRequest((DefaultPlcWriteRequest) writeRequest);
+        return internalWrite(filteredWriteRequest)
+            .thenApply(filteredWriteResponse -> {
+                // Shortcut for the case that all tags were valid.
+                if(writeRequest.getNumberOfTags() == filteredWriteRequest.getNumberOfTags()) {
+                    return filteredWriteResponse;
+                }
+
+                Map<String, PlcResponseCode> values = new HashMap<>();
+                for (String tagName : writeRequest.getTagNames()) {
+                    // If the tag was correct, then we expect a response in the response.
+                    if(filteredWriteRequest.getTagResponseCode(tagName) != null) {
+                        values.put(tagName, filteredWriteResponse.getResponseCode(tagName));
+                    }
+                    // In all other cases forward the initial error to the final output.
+                    else {
+                        values.put(tagName, writeRequest.getTagResponseCode(tagName));
+                    }
+                }
+                return new DefaultPlcWriteResponse(writeRequest, values);
+            });
+    }
+
+    protected CompletableFuture<PlcWriteResponse> internalWrite(PlcWriteRequest writeRequest) {
         if(optimizer != null) {
             return optimizer.optimizedWrite(writeRequest, protocol);
         }
@@ -243,9 +311,40 @@ public abstract class AbstractPlcConnection implements PlcConnection, PlcConnect
         try {
             plcTag = tagHandler.parseTag(tagAddress);
         } catch (Exception e) {
-            logger.error("Error parsing tag address {}", tagAddress);
-            return Optional.empty();
+            throw new PlcRuntimeException("Error parsing tag address: " + tagAddress, e);
         }
         return Optional.ofNullable(plcTag);
     }
+
+    @Override
+    public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
+        PlcValue plcValue;
+        try {
+            plcValue = valueHandler.newPlcValue(tag, values);
+        } catch (Exception e) {
+            throw new PlcRuntimeException("Error parsing tag value " + tag, e);
+        }
+        return Optional.of(plcValue);
+    }
+
+    protected PlcReadRequest getFilteredReadRequest(DefaultPlcReadRequest readRequest) {
+        LinkedHashMap<String, PlcTagItem> filteredTags = new LinkedHashMap<>();
+        for (String tagName : readRequest.getTagNames()) {
+            if(readRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                filteredTags.put(tagName, readRequest.getTagItem(tagName));
+            }
+        }
+        return new DefaultPlcReadRequest(readRequest.getReader(), filteredTags);
+    }
+
+    protected PlcWriteRequest getFilteredWriteRequest(DefaultPlcWriteRequest writeRequest) {
+        LinkedHashMap<String, PlcTagValueItem> filteredTags = new LinkedHashMap<>();
+        for (String tagName : writeRequest.getTagNames()) {
+            if(writeRequest.getTagResponseCode(tagName) == PlcResponseCode.OK) {
+                filteredTags.put(tagName, writeRequest.getTagValueItem(tagName));
+            }
+        }
+        return new DefaultPlcWriteRequest(writeRequest.getWriter(), filteredTags);
+    }
+
 }

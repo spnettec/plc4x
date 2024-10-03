@@ -25,14 +25,16 @@ import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.modbus.base.tag.ModbusTag;
 import org.apache.plc4x.java.modbus.base.protocol.ModbusProtocolLogic;
+import org.apache.plc4x.java.modbus.base.tag.ModbusTagHandler;
 import org.apache.plc4x.java.modbus.readwrite.*;
 import org.apache.plc4x.java.modbus.rtu.config.ModbusRtuConfiguration;
 import org.apache.plc4x.java.modbus.types.ModbusByteOrder;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
 import org.apache.plc4x.java.spi.transaction.TransactionTimeOutCallback;
@@ -56,6 +58,11 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
     }
 
     @Override
+    public PlcTagHandler getTagHandler() {
+        return new ModbusTagHandler();
+    }
+
+    @Override
     public void close(ConversationContext<ModbusRtuADU> context) {
         tm.shutdown();
     }
@@ -72,7 +79,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, readRequestPdu);
 
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-        transaction.submit(() -> context.sendRequest(modbusRtuADU)
+        transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
             .expectResponse(ModbusRtuADU.class, requestTimeout)
             .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
             .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
@@ -108,7 +115,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
 
             ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusRtuADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
                 .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
                 .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
@@ -137,7 +144,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
 
                     // Prepare the response.
                     PlcReadResponse response = new DefaultPlcReadResponse(request,
-                        Collections.singletonMap(tagName, new ResponseItem<>(responseCode, plcValue)));
+                        Collections.singletonMap(tagName, new DefaultPlcResponseItem<>(responseCode, plcValue)));
 
                     // Pass the response back to the application.
                     future.complete(response);
@@ -171,7 +178,7 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             final short unitId = getUnitId(tag);
             ModbusRtuADU modbusRtuADU = new ModbusRtuADU(unitId, requestPdu);
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-            transaction.submit(() -> context.sendRequest(modbusRtuADU)
+            transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
                 .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
                 .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))

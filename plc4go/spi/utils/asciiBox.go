@@ -20,10 +20,12 @@
 package utils
 
 import (
+	"fmt"
 	"math"
 	"regexp"
 	"strings"
 
+	"github.com/fatih/color"
 	"github.com/rs/zerolog"
 )
 
@@ -141,26 +143,40 @@ type AsciiBoxWriter interface {
 }
 
 func NewAsciiBoxWriter(opts ...func(writer *asciiBoxWriter)) AsciiBoxWriter {
-	a := &asciiBoxWriter{
-		newLine:      '\n',
-		emptyPadding: " ",
-		// the name gets prefixed with an extra symbol for indent
-		extraNameCharIndent: 1,
-		borderWidth:         1,
-		newLineCharWidth:    1,
-		defaultBoxSet:       DefaultBoxSet(),
-	}
-	for _, opt := range opts {
-		opt(a)
-	}
-	a.boxHeaderRegex = regexp.MustCompile(`^` + a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + `(?P<name>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + `(?P<header>[\w /]+)?` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.UpperRightCorner)
-	a.boxFooterRegex = regexp.MustCompile(`(?m)^` + a.defaultBoxSet.LowerLeftCorner + a.defaultBoxSet.HorizontalLine + `*` + `(?P<footer>[\w /]+)` + a.defaultBoxSet.HorizontalLine + `*` + a.defaultBoxSet.LowerRightCorner)
-	return a
+	return newAsciiBoxWriter(opts...)
 }
 
 func WithAsciiBoxWriterDefaultBoxSet(boxSet BoxSet) func(*asciiBoxWriter) {
 	return func(a *asciiBoxWriter) {
 		a.defaultBoxSet = boxSet
+	}
+}
+
+func WithAsciiBoxWriterDefaultColoredBoxes(nameColor, headerColor, footerColor *color.Color) func(*asciiBoxWriter) {
+	return func(a *asciiBoxWriter) {
+		if nameColor != nil {
+			a.namePrinter = nameColor.Sprint
+		} else {
+			a.namePrinter = fmt.Sprint
+		}
+		if headerColor != nil {
+			a.headerPrinter = headerColor.Sprint
+		} else {
+			a.headerPrinter = fmt.Sprint
+		}
+		if footerColor != nil {
+			a.footerPrinter = footerColor.Sprint
+		} else {
+			a.footerPrinter = fmt.Sprint
+		}
+	}
+}
+
+func WithAsciiBoxWriterDisableColoredBoxes() func(*asciiBoxWriter) {
+	return func(a *asciiBoxWriter) {
+		a.namePrinter = fmt.Sprint
+		a.headerPrinter = fmt.Sprint
+		a.footerPrinter = fmt.Sprint
 	}
 }
 
@@ -216,9 +232,34 @@ type asciiBoxWriter struct {
 	defaultBoxSet       BoxSet
 	boxHeaderRegex      *regexp.Regexp
 	boxFooterRegex      *regexp.Regexp
+	namePrinter         func(a ...any) string
+	headerPrinter       func(a ...any) string
+	footerPrinter       func(a ...any) string
 }
 
 var _ AsciiBoxWriter = (*asciiBoxWriter)(nil)
+
+func newAsciiBoxWriter(opts ...func(writer *asciiBoxWriter)) *asciiBoxWriter {
+	a := &asciiBoxWriter{
+		newLine:      '\n',
+		emptyPadding: " ",
+		// the name gets prefixed with an extra symbol for indent
+		extraNameCharIndent: 1,
+		borderWidth:         1,
+		newLineCharWidth:    1,
+		defaultBoxSet:       DefaultBoxSet(),
+		namePrinter:         color.New(color.FgGreen, color.Bold).Sprint,
+		headerPrinter:       color.New(color.FgBlue).Sprint,
+		footerPrinter:       color.New(color.FgRed, color.Italic).Sprint,
+	}
+	for _, opt := range opts {
+		opt(a)
+	}
+	hl := a.defaultBoxSet.HorizontalLine
+	a.boxHeaderRegex = regexp.MustCompile(`^` + a.defaultBoxSet.UpperLeftCorner + hl + `(?P<name>[^` + hl + `]+)` + hl + `*` + `(?P<header>[^` + hl + `]+)?` + hl + `*` + a.defaultBoxSet.UpperRightCorner)
+	a.boxFooterRegex = regexp.MustCompile(`(?m)^` + a.defaultBoxSet.LowerLeftCorner + hl + `*` + `(?P<footer>[^` + hl + `]+)` + hl + `*` + a.defaultBoxSet.LowerRightCorner)
+	return a
+}
 
 func (a *asciiBoxWriter) boxString(data string, options ...func(*BoxOptions)) AsciiBox {
 	var opts BoxOptions
@@ -228,16 +269,19 @@ func (a *asciiBoxWriter) boxString(data string, options ...func(*BoxOptions)) As
 	}
 	name := opts.Name
 	nameLength := countChars(name)
+	if name != "" {
+		name = a.namePrinter(name)
+	}
 
 	header := opts.Header
 	if name != "" && header != "" {
-		header = opts.BoxSet.HorizontalLine + opts.BoxSet.HorizontalLine + header + opts.BoxSet.HorizontalLine // Lazy manipulation to trick calculation below (adds a spacing between name and header)
+		header = opts.BoxSet.HorizontalLine + opts.BoxSet.HorizontalLine + a.headerPrinter(header) + opts.BoxSet.HorizontalLine // Lazy manipulation to trick calculation below (adds a spacing between name and header)
 	}
 	headerLength := countChars(header)
 
 	footer := opts.Footer
 	if footer != "" {
-		footer = footer + opts.BoxSet.HorizontalLine
+		footer = a.footerPrinter(footer) + opts.BoxSet.HorizontalLine
 	}
 	footerLength := countChars(footer)
 
@@ -291,7 +335,7 @@ func (a *asciiBoxWriter) getBoxName(box AsciiBox) string {
 	if index < 0 {
 		return ""
 	}
-	return subMatch[index]
+	return cleanString(subMatch[index])
 }
 
 func (a *asciiBoxWriter) getBoxHeader(box AsciiBox) string {
@@ -303,7 +347,7 @@ func (a *asciiBoxWriter) getBoxHeader(box AsciiBox) string {
 	if index < 0 {
 		return ""
 	}
-	return subMatch[index]
+	return cleanString(subMatch[index])
 }
 
 func (a *asciiBoxWriter) getBoxFooter(box AsciiBox) string {
@@ -315,28 +359,57 @@ func (a *asciiBoxWriter) getBoxFooter(box AsciiBox) string {
 	if index < 0 {
 		return ""
 	}
-	return subMatch[index]
+	return cleanString(subMatch[index])
 }
 
 func (a *asciiBoxWriter) changeBoxName(box AsciiBox, newName string) AsciiBox {
-	if !a.hasBorders(box) {
-		return a.boxString(box.String(), WithAsciiBoxName(newName))
-	}
+	return a.changeBoxAttributes(box, &newName, nil, nil)
+}
+
+func (a *asciiBoxWriter) changeBoxHeader(box AsciiBox, newHeader string) AsciiBox {
+	return a.changeBoxAttributes(box, nil, &newHeader, nil)
+
+}
+
+func (a *asciiBoxWriter) changeBoxFooter(box AsciiBox, newFooter string) AsciiBox {
+	return a.changeBoxAttributes(box, nil, nil, &newFooter)
+}
+
+func (a *asciiBoxWriter) changeBoxAttributes(box AsciiBox, newName, newHeader, newFooter *string) AsciiBox {
+	// Current data
+	name := box.asciiBoxWriter.getBoxName(box)
 	header := box.asciiBoxWriter.getBoxHeader(box)
 	footer := box.asciiBoxWriter.getBoxFooter(box)
-	minimumWidth := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + newName + a.defaultBoxSet.UpperRightCorner)
-	if header != "" {
-		minimumWidth += countChars(a.defaultBoxSet.HorizontalLine + header)
+	// set new metadata
+	if newName != nil {
+		name = *newName
 	}
-	boxContent := a.unwrap(box)
-	rawWidth := boxContent.Width()
-	minimumWidth = max(minimumWidth, rawWidth+2)
-	newBox := a.BoxString(
-		boxContent.String(),
-		WithAsciiBoxName(newName),
+	if newHeader != nil {
+		header = *newHeader
+	}
+	if newFooter != nil {
+		footer = *newFooter
+	}
+	var newOptions = []func(options *BoxOptions){
+		WithAsciiBoxName(name),
 		WithAsciiBoxHeader(header),
 		WithAsciiBoxFooter(footer),
-		WithAsciiBoxCharWidth(minimumWidth),
+	}
+
+	if !a.hasBorders(box) { // this means that this is a naked box.
+		return a.boxString(box.String(), newOptions...)
+	}
+	minimumWidth := countChars(a.defaultBoxSet.UpperLeftCorner + a.defaultBoxSet.HorizontalLine + name + a.defaultBoxSet.UpperRightCorner)
+	if header != "" { // if we have a header we need to extend that minimum width to make space for the header
+		minimumWidth += countChars(a.defaultBoxSet.HorizontalLine + header)
+	}
+	boxContent := a.unwrap(box)                            // get the content itself ...
+	rawWidth := boxContent.Width()                         // ... and look at the width.
+	minimumWidth = max(minimumWidth, rawWidth+2)           // check that we have enough space for the content.
+	minimumWidth = max(minimumWidth, countChars(footer)+2) // check that we have enough space for the footer.
+	newBox := a.BoxString(
+		boxContent.String(),
+		append(newOptions, WithAsciiBoxCharWidth(minimumWidth))...,
 	)
 	newBox.compressedBoxSet = a.defaultBoxSet.contributeToCompressedBoxSet(box)
 	return newBox
@@ -415,6 +488,12 @@ func countChars(s string) int {
 	return len([]rune(ANSI_PATTERN.ReplaceAllString(s, "")))
 }
 
+// cleanString returns the strings minus the control sequences
+func cleanString(s string) string {
+	regex, _ := regexp.Compile(`\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])`)
+	return regex.ReplaceAllString(s, "")
+}
+
 //
 // Internal section
 //
@@ -449,6 +528,14 @@ func (m AsciiBox) GetBoxName() string {
 
 func (m AsciiBox) ChangeBoxName(newName string) AsciiBox {
 	return m.asciiBoxWriter.changeBoxName(m, newName)
+}
+
+func (m AsciiBox) ChangeBoxHeader(newHeader string) AsciiBox {
+	return m.asciiBoxWriter.changeBoxHeader(m, newHeader)
+}
+
+func (m AsciiBox) ChangeBoxFooter(newFooter string) AsciiBox {
+	return m.asciiBoxWriter.changeBoxFooter(m, newFooter)
 }
 
 func (m AsciiBox) IsEmpty() bool {

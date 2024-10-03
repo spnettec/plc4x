@@ -20,17 +20,16 @@ package org.apache.plc4x.java.s7.readwrite.protocol;
 
 import org.apache.plc4x.java.api.PlcConnection;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
+import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
-import org.apache.plc4x.java.api.value.PlcValueHandler;
-import org.apache.plc4x.java.s7.readwrite.S7Driver;
 import org.apache.plc4x.java.s7.readwrite.TPKTPacket;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7Configuration;
 import org.apache.plc4x.java.s7.readwrite.configuration.S7TcpTransportConfiguration;
-import org.apache.plc4x.java.s7.readwrite.context.S7DriverContext;
 import org.apache.plc4x.java.spi.configuration.ConfigurationFactory;
-import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
-import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
-import org.apache.plc4x.java.spi.connection.*;
+import org.apache.plc4x.java.spi.connection.ChannelFactory;
+import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
+import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.transport.Transport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,10 +125,13 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
             secondaryChannelFactory = transport.createChannelFactory(transportConfig2);
             if (secondaryChannelFactory == null) {
                 logger.info("Unable to get channel factory from url " + transportConfig2);
-            } else {
-                configure(configuration, secondaryChannelFactory);
             }
         }
+
+        if (hmatcher.matches() && (secondaryChannelFactory != null)) {
+            configure(configuration, secondaryChannelFactory);
+        }
+
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
@@ -155,62 +157,23 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
         if (System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE) != null) {
             awaitDiscoverComplete = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_AWAIT_DISCOVER_COMPLETE));
         }
-        boolean fireDiscoverEvent = fireDiscoverEvent();
-        if(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT) != null) {
-            fireDiscoverEvent = Boolean.parseBoolean(System.getProperty(PROPERTY_PLC4X_FORCE_FIRE_DISCOVER_EVENT));
-        }
-        if (hmatcher.matches()) {
-            return new S7HPlcConnection(
-                    canPing(),
-                    canRead(), canWrite(), canSubscribe(), canBrowse(),
-                    getTagHandler(),
-                    getValueHandler(),
-                    configuration,
-                    channelFactory,
-                    secondaryChannelFactory,
-                    fireDiscoverEvent,
-                    awaitSetupComplete,
-                    awaitDisconnectComplete,
-                    awaitDiscoverComplete,
-                    getStackConfigurer(transport),
-                    getOptimizer(),
-                    getAuthentication());
-        }
 
-        return new DefaultNettyPlcConnection(
-                canPing(), canRead(), canWrite(), canSubscribe(), canBrowse(),
-                getTagHandler(),
-                getValueHandler(),
-                configuration,
-                channelFactory,
-                fireDiscoverEvent,
-                awaitSetupComplete,
-                awaitDisconnectComplete,
-                awaitDiscoverComplete,
-                getNonHStackConfigurer(),
-                getOptimizer(),
-                getAuthentication());
+        return new S7HPlcConnection(
+            canPing(),
+            canRead(), canWrite(), canSubscribe(), canBrowse(),
+            getValueHandler(),
+            configuration,
+            channelFactory,
+            secondaryChannelFactory,
+            false,
+            awaitSetupComplete,
+            awaitDisconnectComplete,
+            awaitDiscoverComplete,
+            getStackConfigurer(transport),
+            getOptimizer(),
+            getAuthentication());
     }
 
-    protected ProtocolStackConfigurer<TPKTPacket> getNonHStackConfigurer() {
-        return S7HSingleProtocolStackConfigurer.builder(TPKTPacket.class, TPKTPacket::staticParse)
-            .withProtocol(S7NonHProtocolLogic.class)
-            .withDriverContext(S7DriverContext.class)
-            .withPacketSizeEstimator(S7Driver.ByteLengthEstimator.class)
-            .withCorruptPacketRemover(S7Driver.CorruptPackageCleaner.class)
-            .build();
-    }
-
-
-    @Override
-    protected PlcTagHandler getTagHandler() {
-        throw new UnsupportedOperationException("getTagHandler, Not supported yet.");
-    }
-
-    @Override
-    protected PlcValueHandler getValueHandler() {
-        throw new UnsupportedOperationException("getValueHandler, Not supported yet.");
-    }
     @Override
     protected ProtocolStackConfigurer<TPKTPacket> getStackConfigurer() {
         throw new UnsupportedOperationException("getStackConfigurer, Not supported yet.");

@@ -18,20 +18,20 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.logging.SimpleFormatter;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -48,7 +48,14 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    private final ExecutorService executor;
+    //static final ExecutorService executor = Executors.newScheduledThreadPool(4);
+
+    final ExecutorService executor = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
+                                                    .namingPattern("plc4x-tm-thread-%d")
+                                                    .daemon(true)
+                                                    .priority(Thread.MAX_PRIORITY)
+                                                    .build());    
+    
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -57,28 +64,14 @@ public class RequestTransactionManager {
     /** Important, this is a FIFO Queue for Fairness! */
     private final Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
 
-    public RequestTransactionManager(int numberOfConcurrentRequests, String name) {
+    public RequestTransactionManager(int numberOfConcurrentRequests) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
-        executor = new ThreadPoolExecutor(numberOfConcurrentRequests, numberOfConcurrentRequests,
-            0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(10),
-            new BasicThreadFactory.Builder()
-                    .namingPattern("RequestTransactionManager-pool-" + (new SimpleDateFormat("yyMMddHHmmss")).format(new Date()) + (StringUtils.isEmpty(name)?"":"-" + name) + "-%d")
-                    .daemon(true)
-                    .priority(Thread.MAX_PRIORITY)
-                    .build(),
-            new ThreadPoolExecutor.AbortPolicy());
         runningRequests = ConcurrentHashMap.newKeySet();
-
     }
 
     public RequestTransactionManager() {
-        this(1,null);
-    }
-
-    public RequestTransactionManager(String name) {
-        this(1, name);
+        this(1);
     }
 
     public int getNumberOfConcurrentRequests() {
@@ -95,52 +88,40 @@ public class RequestTransactionManager {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
 
         // As we might have increased the number, try to send some more requests.
-        processWorklog();
+        processWorkLog();
     }
-
+    
     /*
     * It allows the sequential shutdown of the associated driver.
     */
-    public synchronized void shutdown(){
-        runningRequests.forEach(requestTransaction->requestTransaction.getCompletionFuture().cancel(true));
-        runningRequests.clear();
-        executor.shutdownNow();
-        processWorklog();
-    }
+    public void shutdown(){
+        executor.shutdown();
+    }    
 
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
         context.accept(transaction);
     }
 
-    synchronized void submit(RequestTransaction handle) {
+    void submit(RequestTransaction handle) {
         assert handle.operation != null;
-        if (!executor.isShutdown()) {
-            workLog.add(handle);
-            processWorklog();
-        } else {
-            if (getNumberOfActiveRequests()>0) {
-                runningRequests.forEach(requestTransaction -> requestTransaction.getCompletionFuture().cancel(true));
-            }
-            handle.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down. Can not submit")));
-        }
+        // Add this Request with this handle i the work-log
+        // Put Transaction into work-log
+        workLog.add(handle);
+        // Try to Process the work-log
+        processWorkLog();
     }
 
-    private synchronized void processWorklog() {
+    private void processWorkLog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
             RequestTransaction next = workLog.poll();
             if (next != null) {
-                if (executor.isShutdown()) {
-                    next.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down")));
-                } else {
-                    runningRequests.add(next);
-                    Future<?> completionFuture = executor.submit(next.operation);
-                    next.setCompletionFuture(completionFuture);
-                }
+                runningRequests.add(next);
+                Future<?> completionFuture = executor.submit(next.operation);
+                next.setCompletionFuture(completionFuture);
             }
         }
     }
-
 
     public RequestTransaction startRequest() {
         return new RequestTransaction(this, transactionId.getAndIncrement());
@@ -159,13 +140,11 @@ public class RequestTransactionManager {
 
     private void endRequest(RequestTransaction transaction) {
         if (!runningRequests.contains(transaction)) {
-            if (!executor.isShutdown()) {
-                throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
-            }
+            throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
         }
         runningRequests.remove(transaction);
-        // Process the worklog, a slot should be free now
-        processWorklog();
+        // Process the work-log, a slot should be free now
+        processWorkLog();
     }
 
     public static class RequestTransaction {
@@ -173,7 +152,7 @@ public class RequestTransactionManager {
         private final RequestTransactionManager parent;
         private final int transactionId;
 
-        /** The iniital operation to perform to kick off the request */
+        /** The initial operation to perform to kick off the request */
         private Runnable operation;
         private Future<?> completionFuture;
 
@@ -187,10 +166,6 @@ public class RequestTransactionManager {
         }
 
         public void failRequest(Throwable t) {
-            parent.failRequest(this);
-        }
-
-        public void failRequest() {
             parent.failRequest(this);
         }
 
@@ -241,16 +216,16 @@ public class RequestTransactionManager {
             this.delegate = delegate;
         }
 
-        //TODO: Check MDC used. Created exception in Hop application
+        //TODO: Check MDC used. Created exception in Hop application        
         @Override
         public void run() {
             //try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
-            try{
+            try{    
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
             }  catch (Exception ex) {
-                logger.error("execute traction error",ex);
+                logger.info(ex.getMessage());
             }
         }
     }

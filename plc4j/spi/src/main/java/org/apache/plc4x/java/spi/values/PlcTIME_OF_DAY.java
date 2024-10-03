@@ -18,40 +18,91 @@
  */
 package org.apache.plc4x.java.spi.values;
 
-import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalTime;
-import java.time.ZoneId;
 
-public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
+public class PlcTIME_OF_DAY extends PlcIECValue<LocalTime> {
 
     public static PlcTIME_OF_DAY of(Object value) {
-        if (value instanceof LocalTime) {
+        if (value instanceof PlcTIME_OF_DAY) {
+            return (PlcTIME_OF_DAY) value;
+        } else if (value instanceof LocalTime) {
             return new PlcTIME_OF_DAY((LocalTime) value);
-        } else if(value instanceof Long) {
+        } else if (value instanceof Byte) {
+            return new PlcTIME_OF_DAY((Byte) value);
+        } else if (value instanceof Short) {
+            return new PlcTIME_OF_DAY((Short) value);
+        } else if (value instanceof Integer) {
+            return new PlcTIME_OF_DAY((Integer) value);
+        } else if (value instanceof Long) {
             return new PlcTIME_OF_DAY((Long) value);
-        } else if (value instanceof Number) {
-            return new PlcTIME_OF_DAY(((Number) value).longValue());
+        } else if (value instanceof Float) {
+            return new PlcTIME_OF_DAY((Float) value);
+        } else if (value instanceof Double) {
+            return new PlcTIME_OF_DAY((Double) value);
+        } else if (value instanceof BigInteger) {
+            return new PlcTIME_OF_DAY((BigInteger) value);
+        } else if (value instanceof BigDecimal) {
+            return new PlcTIME_OF_DAY((BigDecimal) value);
+        } else {
+            return new PlcTIME_OF_DAY(LocalTime.parse(value.toString()));
         }
-        throw new PlcRuntimeException("Invalid value type");
     }
 
     public static PlcTIME_OF_DAY ofMillisecondsSinceMidnight(long millisecondsSinceMidnight) {
         return new PlcTIME_OF_DAY(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000));
     }
 
-    public PlcTIME_OF_DAY(LocalTime value) {
-        super(value, true);
+    public PlcTIME_OF_DAY(Byte secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight);
+        this.isNullable = false;
     }
 
-    public PlcTIME_OF_DAY(long millisecondsSinceMidnight) {
-        super(LocalTime.ofNanoOfDay(millisecondsSinceMidnight * 1000_000), true);
+    public PlcTIME_OF_DAY(Short secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight);
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(Integer secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight);
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(Long secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight);
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(Float secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(Double secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(BigInteger secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(BigDecimal secondsSinceMidnight) {
+        this.value = LocalTime.ofSecondOfDay(secondsSinceMidnight.longValue());
+        this.isNullable = false;
+    }
+
+    public PlcTIME_OF_DAY(LocalTime value) {
+        this.value = value;
+        this.isNullable = false;
     }
 
     @Override
@@ -105,13 +156,5 @@ public class PlcTIME_OF_DAY extends PlcSimpleValue<LocalTime> {
             valueString.getBytes(StandardCharsets.UTF_8).length*8,
             valueString, WithOption.WithEncoding(StandardCharsets.UTF_8.name()));
     }
-    @Override
-    public Object getPropertyByName(String property){
-        switch (property){
-        case "millisecondsSinceMidnight":
-            return this.getMillisecondsSinceMidnight();
-        default:
-            throw new PlcRuntimeException("Invalid property name");
-        }
-    }
+
 }

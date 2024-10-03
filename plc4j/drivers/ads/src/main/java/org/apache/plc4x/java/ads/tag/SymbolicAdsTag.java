@@ -26,6 +26,7 @@ import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -36,22 +37,18 @@ import java.util.regex.Pattern;
  */
 public class SymbolicAdsTag implements AdsTag {
 
-    // TODO: Model the end of this address to allow usage of multi-dimensional arrays.
-    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^(?<symbolicAddress>.+)(\\|(?<stringEncoding>[a-z0-9A-Z_-]+))?");
+    private static final Pattern SYMBOLIC_ADDRESS_PATTERN = Pattern.compile("^([\\w_]+)(\"[\"\\d*]\")*(\\.(\\w+)(\"[\"\\d*]\")*)*");
 
     private final String symbolicAddress;
-
-    private String stringEncoding;
 
     private final PlcValueType dataType;
 
     private final List<ArrayInfo> arrayInfo;
 
-    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo,String stringEncoding) {
+    public SymbolicAdsTag(String symbolicAddress, PlcValueType dataType, List<ArrayInfo> arrayInfo) {
         this.symbolicAddress = Objects.requireNonNull(symbolicAddress);
         this.dataType = dataType;
         this.arrayInfo = arrayInfo;
-        this.stringEncoding = stringEncoding;
     }
 
     public static SymbolicAdsTag of(String address) {
@@ -59,10 +56,7 @@ public class SymbolicAdsTag implements AdsTag {
         if (!matcher.matches()) {
             throw new PlcInvalidTagException(address, SYMBOLIC_ADDRESS_PATTERN, "{address}");
         }
-        String stringEncoding = matcher.group("stringEncoding");
-        String symbolicAddress = matcher.group("symbolicAddress");
-
-        return new SymbolicAdsTag(symbolicAddress, null, null,stringEncoding);
+        return new SymbolicAdsTag(address, null, Collections.emptyList());
     }
 
     public static boolean matches(String address) {
@@ -71,18 +65,6 @@ public class SymbolicAdsTag implements AdsTag {
 
     public String getSymbolicAddress() {
         return symbolicAddress;
-    }
-
-    public String getStringEncoding(String adsDataTypeName) {
-        if (stringEncoding == null || "".equals(stringEncoding))
-        {
-            stringEncoding = "AUTO";
-            if ("WSTRING".equalsIgnoreCase(adsDataTypeName) || "WCHAR".equalsIgnoreCase(adsDataTypeName))
-            {
-                stringEncoding = "UTF-16";
-            }
-        }
-        return stringEncoding;
     }
 
     @Override
@@ -135,4 +117,5 @@ public class SymbolicAdsTag implements AdsTag {
 
         writeBuffer.popContext(getClass().getSimpleName());
     }
+
 }
