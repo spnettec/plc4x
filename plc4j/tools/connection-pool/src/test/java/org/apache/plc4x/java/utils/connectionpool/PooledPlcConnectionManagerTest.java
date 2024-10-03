@@ -30,6 +30,7 @@ import org.apache.plc4x.java.api.messages.*;
 import org.apache.plc4x.java.api.metadata.PlcConnectionMetadata;
 import org.apache.plc4x.java.api.PlcDriver;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.value.PlcValue;
 import org.assertj.core.api.WithAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -342,6 +343,11 @@ class PooledPlcConnectionManagerTest implements WithAssertions {
 
         @Override
         public Optional<PlcTag> parseTagAddress(String tagAddress) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<PlcValue> parseTagValue(PlcTag tag, Object... values) {
             return Optional.empty();
         }
 

@@ -33,6 +33,9 @@ public class PlcLINT extends PlcIECValue<Long> {
     public static final Long MAX_VALUE = Long.MAX_VALUE;
 
     public static PlcLINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcLINT) {
             return (PlcLINT) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcLINT extends PlcIECValue<Long> {
             return new PlcLINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcLINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcLINT(((Number) value).intValue());
         } else {
             return new PlcLINT(value.toString());
         }

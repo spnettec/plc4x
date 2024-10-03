@@ -34,6 +34,9 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
     public static final BigInteger MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
     public static PlcLWORD of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcLWORD) {
             return (PlcLWORD) value;
         } else if (value instanceof Boolean) {
@@ -54,6 +57,8 @@ public class PlcLWORD extends PlcIECValue<BigInteger> {
             return new PlcLWORD((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcLWORD((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcLWORD(((Number) value).longValue());
         } else {
             return new PlcLWORD(value.toString());
         }

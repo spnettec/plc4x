@@ -18,6 +18,7 @@
  */
 package org.apache.plc4x.java.spi.values;
 
+import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;

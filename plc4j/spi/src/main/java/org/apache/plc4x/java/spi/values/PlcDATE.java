@@ -24,11 +24,10 @@ import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 
 public class PlcDATE extends PlcIECValue<LocalDate> {
 
@@ -143,6 +142,11 @@ public class PlcDATE extends PlcIECValue<LocalDate> {
 
     public int getDaysSinceEpoch() {
         return (int) (value.atStartOfDay(ZoneOffset.UTC).toEpochSecond() / 86400);
+    }
+
+    public int getDaysSinceSiemensEpoch() {
+        // For some reason we need to subtract one day less (guess because of the "start of day").
+        return ((int) (value.atStartOfDay(ZoneOffset.UTC).toEpochSecond() / 86400)) - 7304;
     }
 
     @Override

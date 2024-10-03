@@ -51,7 +51,10 @@ public class PlcTIME_OF_DAY extends PlcIECValue<LocalTime> {
             return new PlcTIME_OF_DAY((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcTIME_OF_DAY((BigDecimal) value);
-        } else {
+        } else if (value instanceof Number) {
+            return new PlcTIME_OF_DAY(((Number) value).longValue());
+        }
+        else {
             return new PlcTIME_OF_DAY(LocalTime.parse(value.toString()));
         }
     }

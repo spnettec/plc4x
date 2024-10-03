@@ -22,6 +22,8 @@ package org.apache.plc4x.java.s7.readwrite.optimizer;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -31,17 +33,17 @@ import java.util.concurrent.CompletableFuture;
 
 public class LargeTagPlcReadRequest implements PlcReadRequest {
     private final String tagName;
-    private final PlcTag tag;
-    public LargeTagPlcReadRequest(String tagName,PlcTag tag) {
+    private final PlcTagItem tagItem;
+    public LargeTagPlcReadRequest(String tagName, PlcTagItem tagItem) {
         this.tagName = tagName;
-        this.tag = tag;
+        this.tagItem = tagItem;
 
     }
     public String getTagName() {
         return tagName;
     }
     public PlcTag getTag() {
-        return tag;
+        return tagItem.getTag();
     }
 
     @Override
@@ -60,12 +62,17 @@ public class LargeTagPlcReadRequest implements PlcReadRequest {
     }
 
     @Override
+    public PlcResponseCode getTagResponseCode(String tagName) {
+        return tagItem.getResponseCode();
+    }
+
+    @Override
     public PlcTag getTag(String name) {
         throw new UnsupportedOperationException();
     }
 
     @Override
     public List<PlcTag> getTags() {
-        return new LinkedList<>(Collections.singletonList(tag));
+        return new LinkedList<>(Collections.singletonList(tagItem.getTag()));
     }
 }

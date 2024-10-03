@@ -33,6 +33,9 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
     public static final BigInteger MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE).multiply(BigInteger.valueOf(2)).add(BigInteger.valueOf(1));
 
     public static PlcULINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcULINT) {
             return (PlcULINT) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcULINT extends PlcIECValue<BigInteger> {
             return new PlcULINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcULINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcULINT(((Number) value).longValue());
         } else {
             return new PlcULINT(value.toString());
         }

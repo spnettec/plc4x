@@ -18,20 +18,20 @@
  */
 package org.apache.plc4x.java.spi.transaction;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import java.util.logging.SimpleFormatter;
 
 /**
  * This is a limited Queue of Requests, a Protocol can use.
@@ -48,14 +48,7 @@ public class RequestTransactionManager {
     private static final Logger logger = LoggerFactory.getLogger(RequestTransactionManager.class);
 
     /** Executor that performs all operations */
-    //static final ExecutorService executor = Executors.newScheduledThreadPool(4);
-
-    final ExecutorService executor = Executors.newFixedThreadPool(4, new BasicThreadFactory.Builder()
-                                                    .namingPattern("plc4x-tm-thread-%d")
-                                                    .daemon(true)
-                                                    .priority(Thread.MAX_PRIORITY)
-                                                    .build());    
-    
+    private final ExecutorService executor;
     private final Set<RequestTransaction> runningRequests;
     /** How many Transactions are allowed to run at the same time? */
     private int numberOfConcurrentRequests;
@@ -64,14 +57,28 @@ public class RequestTransactionManager {
     /** Important, this is a FIFO Queue for Fairness! */
     private final Queue<RequestTransaction> workLog = new ConcurrentLinkedQueue<>();
 
-    public RequestTransactionManager(int numberOfConcurrentRequests) {
+    public RequestTransactionManager(int numberOfConcurrentRequests, String name) {
         this.numberOfConcurrentRequests = numberOfConcurrentRequests;
         // Immutable Map
+        executor = new ThreadPoolExecutor(numberOfConcurrentRequests, numberOfConcurrentRequests,
+            0L, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<>(10),
+            new BasicThreadFactory.Builder()
+                    .namingPattern("RequestTransactionManager-pool-" + (new SimpleDateFormat("yyMMddHHmmss")).format(new Date()) + (StringUtils.isEmpty(name)?"":"-" + name) + "-%d")
+                    .daemon(true)
+                    .priority(Thread.MAX_PRIORITY)
+                    .build(),
+            new ThreadPoolExecutor.AbortPolicy());
         runningRequests = ConcurrentHashMap.newKeySet();
+
     }
 
     public RequestTransactionManager() {
-        this(1);
+        this(1,null);
+    }
+
+    public RequestTransactionManager(String name) {
+        this(1, name);
     }
 
     public int getNumberOfConcurrentRequests() {
@@ -90,35 +97,46 @@ public class RequestTransactionManager {
         // As we might have increased the number, try to send some more requests.
         processWorkLog();
     }
-    
+
     /*
     * It allows the sequential shutdown of the associated driver.
     */
-    public void shutdown(){
-        executor.shutdown();
-    }    
+    public synchronized void shutdown(){
+        runningRequests.forEach(requestTransaction->requestTransaction.getCompletionFuture().cancel(true));
+        runningRequests.clear();
+        executor.shutdownNow();
+        processWorkLog();
+    }
 
     public void submit(Consumer<RequestTransaction> context) {
         RequestTransaction transaction = startRequest();
         context.accept(transaction);
     }
 
-    void submit(RequestTransaction handle) {
+    synchronized void submit(RequestTransaction handle) {
         assert handle.operation != null;
-        // Add this Request with this handle i the work-log
-        // Put Transaction into work-log
-        workLog.add(handle);
-        // Try to Process the work-log
-        processWorkLog();
+        if (!executor.isShutdown()) {
+            workLog.add(handle);
+            processWorkLog();
+        } else {
+            if (getNumberOfActiveRequests()>0) {
+                runningRequests.forEach(requestTransaction -> requestTransaction.getCompletionFuture().cancel(true));
+            }
+            handle.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down. Can not submit")));
+        }
     }
 
-    private void processWorkLog() {
+    private synchronized void processWorkLog() {
         while (runningRequests.size() < getNumberOfConcurrentRequests() && !workLog.isEmpty()) {
             RequestTransaction next = workLog.poll();
             if (next != null) {
-                runningRequests.add(next);
-                Future<?> completionFuture = executor.submit(next.operation);
-                next.setCompletionFuture(completionFuture);
+                if (executor.isShutdown()) {
+                    next.setCompletionFuture(CompletableFuture.failedFuture(new IllegalStateException("Executor is shut down")));
+                } else {
+                    runningRequests.add(next);
+                    Future<?> completionFuture = executor.submit(next.operation);
+                    next.setCompletionFuture(completionFuture);
+                }
             }
         }
     }
@@ -220,12 +238,12 @@ public class RequestTransactionManager {
         @Override
         public void run() {
             //try (final MDC.MDCCloseable closeable = MDC.putCloseable("plc4x.transactionId", Integer.toString(transactionId))) {
-            try{    
+            try{
                 logger.trace("Start execution of transaction {}", transactionId);
                 delegate.run();
                 logger.trace("Completed execution of transaction {}", transactionId);
             }  catch (Exception ex) {
-                logger.info(ex.getMessage());
+                logger.error("execute traction error",ex);
             }
         }
     }

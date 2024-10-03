@@ -22,7 +22,9 @@ package org.apache.plc4x.java.s7.readwrite.optimizer;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
+import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -30,11 +32,11 @@ import java.util.concurrent.CompletableFuture;
 public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
     private final PlcValue plcValue;
-    private final PlcTag tag;
-    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTag tag) {
+    private final PlcTagItem tagItem;
+    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTagItem tagItem) {
         this.tagName = tagName;
         this.plcValue = plcValue;
-        this.tag = tag;
+        this.tagItem = tagItem;
     }
 
     private final String tagName;
@@ -58,13 +60,18 @@ public class LargeTagPlcWriteRequest implements PlcWriteRequest {
     }
 
     @Override
+    public PlcResponseCode getTagResponseCode(String tagName) {
+        return tagItem.getResponseCode();
+    }
+
+    @Override
     public PlcTag getTag(String name) {
-        return tag;
+        return tagItem.getTag();
     }
 
     @Override
     public List<PlcTag> getTags() {
-        return Collections.singletonList(tag);
+        return Collections.singletonList(tagItem.getTag());
     }
 
     @Override

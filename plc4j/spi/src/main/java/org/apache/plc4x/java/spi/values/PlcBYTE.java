@@ -36,7 +36,8 @@ public class PlcBYTE extends PlcIECValue<Short> {
     public static PlcBYTE of(Object value) {
         if(value == null) {
             value = 0;
-        } else if (value instanceof PlcBYTE) {
+        }
+        if (value instanceof PlcBYTE) {
             return (PlcBYTE) value;
         } else if (value instanceof Boolean) {
             return new PlcBYTE((Boolean) value);
@@ -72,9 +73,9 @@ public class PlcBYTE extends PlcIECValue<Short> {
     }
 
     public PlcBYTE(Byte value) {
-        if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
-        }
+        //if ((value < MIN_VALUE) || (value > MAX_VALUE)) {
+        //    throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
+        //}
         this.value = value.shortValue();
         this.isNullable = false;
     }

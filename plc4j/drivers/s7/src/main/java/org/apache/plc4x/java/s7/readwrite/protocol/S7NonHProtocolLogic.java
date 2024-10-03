@@ -42,10 +42,12 @@ import org.apache.plc4x.java.s7.utils.S7ParamErrorCode;
 import org.apache.plc4x.java.spi.ConversationContext;
 import org.apache.plc4x.java.spi.Plc4xProtocolBase;
 import org.apache.plc4x.java.spi.configuration.HasConfiguration;
+import org.apache.plc4x.java.spi.connection.PlcTagHandler;
 import org.apache.plc4x.java.spi.context.DriverContext;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.messages.*;
-import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.DefaultPlcResponseItem;
+import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.transaction.RequestTransactionManager;
 import org.apache.plc4x.java.spi.transaction.TransactionErrorCallback;
@@ -225,7 +227,12 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		tm.shutdown();
 	}
 
-	@Override
+    @Override
+    public PlcTagHandler getTagHandler() {
+        return new S7PlcTagHandler();
+    }
+
+    @Override
 	public CompletableFuture<PlcReadResponse> read(PlcReadRequest readRequest) {
 		// If we're not connected, just abort with an error.
 		if (!isConnected()) {
@@ -424,9 +431,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 			// Start a new request-transaction (Is ended in the response-handler)
 			RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-			transaction.submit(() -> context.sendRequest(tpktPacket)
-					.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-					.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+			transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
+					.onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+					.onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
 					.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 					.unwrap(TPKTPacket::getPayload)
 					.only(COTPPacketData.class)
@@ -455,7 +462,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			}
 
 			try {
-				HashMap<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+				HashMap<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
 				valuesResponse.forEach((s, p) -> {
 					if (p != null)
 						values.putAll(((DefaultPlcSubscriptionResponse) p).getValues());
@@ -486,9 +493,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			futures.add(future);
 			TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, message, true, (byte) message.getTpduReference()));
 			tm.submit(transaction -> transaction.submit(
-					() -> context.sendRequest(tpktPacket)
-							.onTimeout(new TransactionTimeOutCallback<>(future, transaction, context.getChannel()))
-							.onError(new TransactionErrorCallback<>(future, transaction, context.getChannel()))
+					() -> conversationContext.sendRequest(tpktPacket)
+							.onTimeout(new TransactionTimeOutCallback<>(future, transaction, conversationContext.getChannel()))
+							.onError(new TransactionErrorCallback<>(future, transaction, conversationContext.getChannel()))
 							.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 							.check(p -> p.getPayload() instanceof COTPPacketData).unwrap(p -> (COTPPacketData) p.getPayload())
 							.check(p -> p.getPayload() != null).unwrap(COTPPacket::getPayload)
@@ -602,9 +609,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		// Start a new request-transaction (Is ended in the response-handler)
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
-		transaction.submit(() -> context.sendRequest(tpktPacket)
-				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+		transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
+				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+				.onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.unwrap(TPKTPacket::getPayload)
 				.only(COTPPacketData.class)
@@ -692,7 +699,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			S7Message responseMessage)
 			throws PlcProtocolException {
 
-		Map<String, ResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
+		Map<String, PlcResponseItem<PlcSubscriptionHandle>> values = new HashMap<>();
 		short errorClass = 0;
 		short errorCode = 0;
 		if (responseMessage instanceof S7MessageUserData) {
@@ -785,12 +792,12 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			//String tagName = (String) plcSubscriptionRequest.getTagNames().toArray()[0];
 			//TODO: Chequear si tagName es el correcto
 			//logger.info("strTagName: " + strTagName);
-			values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, null));
+			values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
 			for (short s : items.getMessageObjects()) {
 				if (s == 0x0000) {
-					values.put(Integer.toHexString(s), new ResponseItem<>(PlcResponseCode.OK, null));
+					values.put(Integer.toHexString(s), new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
 				} else if (s == 0x000a) {
-					values.put(Integer.toHexString(s), new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+					values.put(Integer.toHexString(s), new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null));
 				}
 			}
 
@@ -802,7 +809,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			//        payloadItems.get(0);
 			//String fieldName = (String) S7PayloadUserDataItemCyclicServicesPush .getFieldNames().toArray()[0];
 			//logger.warn("Request field: " + strTagName + ": " + S7ParamErrorCode.valueOf(errorCode) + " " + S7ParamErrorCode.valueOf(errorCode).getEvent());
-			values.put(strTagName, new ResponseItem<>(PlcResponseCode.NOT_FOUND, null));
+			values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.NOT_FOUND, null));
 			return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
 		} else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCpuFunctionAlarmQueryResponse) {
@@ -874,7 +881,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			}
 
 			PlcResponseCode resCode = (items.getReturnCode() == DataTransportErrorCode.OK) ? PlcResponseCode.OK : PlcResponseCode.INTERNAL_ERROR;
-			values.put(strTagName, new ResponseItem<>(resCode, null));
+			values.put(strTagName, new DefaultPlcResponseItem<>(resCode, null));
 			return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 
 		} else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesErrorResponse) {
@@ -887,11 +894,11 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
             /*if (errorCode == 0x8104) {
                 values.put(strTagName, new ResponseItem(PlcResponseCode.UNSUPPORTED, null));
             } else {*/
-			values.put(strTagName, new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
+			values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, null));
 			// }
 			return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 		} else if (payloadItems.get(0) instanceof S7PayloadUserDataItemCyclicServicesUnsubscribeResponse) {
-			values.put(strTagName, new ResponseItem<>(PlcResponseCode.OK, null));
+			values.put(strTagName, new DefaultPlcResponseItem<>(PlcResponseCode.OK, null));
 			return new DefaultPlcSubscriptionResponse(plcSubscriptionRequest, values);
 		}
 
@@ -1329,9 +1336,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		// Start a new request-transaction (Is ended in the response-handler)
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
 		// Send the request.
-		transaction.submit(() -> context.sendRequest(tpktPacket)
-				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-				.onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+		transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
+				.onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+				.onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
 				.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
 				.unwrap(TPKTPacket::getPayload)
 				.only(COTPPacketData.class)
@@ -1547,7 +1554,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 	private PlcResponse decodeLargeReadResponse(List<S7Message> responseMessages, LargeTagPlcReadRequest plcReadRequest)
 			throws PlcProtocolException {
-		Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+		Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
 		short errorClass;
 		short errorCode;
 		S7ParameterUserDataItemCPUFunctions parameteritem;
@@ -1577,7 +1584,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				if ((errorClass == 129) && (errorCode == 4)) {
 					logger.warn("Got an error response from the PLC. This particular response code usually indicates "
 							+ "that PUT/GET is not enabled on the PLC.");
-					ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED,
+					PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED,
 							new PlcNull());
 					values.put(tagName, result);
 					return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1586,7 +1593,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 							+ "We probably need to implement explicit handling for this, so please file a bug-report "
 							+ "on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump "
 							+ "containing a capture of the communication.", errorClass, errorCode);
-					ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR,
+                    PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR,
 							new PlcNull());
 					values.put(tagName, result);
 					return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1608,13 +1615,13 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		} catch (Exception e) {
 			throw new PlcProtocolException("Error decoding PlcValue", e);
 		}
-		ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+        PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
 		values.put(tagName, result);
 		return new DefaultPlcReadResponse(plcReadRequest, values);
 	}
 
 	private PlcResponse decodeReadResponse(S7Message responseMessage, PlcReadRequest plcReadRequest) throws PlcProtocolException {
-		Map<String, ResponseItem<PlcValue>> values = new HashMap<>();
+		Map<String, PlcResponseItem<PlcValue>> values = new HashMap<>();
 		short errorClass;
 		short errorCode;
 
@@ -1643,7 +1650,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				logger.warn("Got an error response from the PLC. This particular response code usually indicates " +
 						"that PUT/GET is not enabled on the PLC.");
 				for (String tagName : plcReadRequest.getTagNames()) {
-					ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
+					PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.ACCESS_DENIED, new PlcNull());
 					values.put(tagName, result);
 				}
 				return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1654,7 +1661,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 								"containing a capture of the communication.",
 						errorClass, errorCode);
 				for (String tagName : plcReadRequest.getTagNames()) {
-					ResponseItem<PlcValue> result = new ResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
+					PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(PlcResponseCode.INTERNAL_ERROR, new PlcNull());
 					values.put(tagName, result);
 				}
 				return new DefaultPlcReadResponse(plcReadRequest, values);
@@ -1667,7 +1674,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				if (plcReadRequest.getTag(tagName) instanceof S7StringTag) {
 					PlcValue plcValue = null;
 					PlcResponseCode responseCode = PlcResponseCode.INTERNAL_ERROR;
-					ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+					PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
 					values.put(tagName, result);
 				}
 			}
@@ -1775,7 +1782,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 					plcValue = new PlcList(plcValues);
 				}
 
-				ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+				PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
 				values.put(tagName, result);
 				index++;
 			}
@@ -1814,7 +1821,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				}
 			}
 
-			ResponseItem<PlcValue> result = new ResponseItem<>(responseCode, plcValue);
+			PlcResponseItem<PlcValue> result = new DefaultPlcResponseItem<>(responseCode, plcValue);
 			values.put(tagName, result);
 			index++;
 		}
@@ -1940,7 +1947,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 					}
 					return null;
 				}).toArray(PlcValue[]::new);
-				return PlcValueHandler.of(resultItems);
+				return DefaultPlcValueHandler.of(resultItems);
 			}
 		} catch (ParseException e) {
 			logger.warn("Error parsing tag item of type: '{}'", tag.getDataType().name(), e);
@@ -2039,15 +2046,15 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 	}
 
 	private boolean isConnected() {
-		return context.getChannel().attr(IS_CONNECTED).get();
+		return conversationContext.getChannel().attr(IS_CONNECTED).get();
 		//return true;
 	}
 
 	private void setChannelFeatures() {
-		context.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
-		context.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
-		context.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
-		context.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
+		conversationContext.getChannel().attr(S7HMuxImpl.READ_TIME_OUT).set(s7DriverContext.getReadTimeout());
+        conversationContext.getChannel().attr(S7HMuxImpl.IS_PING_ACTIVE).set(s7DriverContext.getPing());
+        conversationContext.getChannel().attr(S7HMuxImpl.PING_TIME).set(s7DriverContext.getPingTime());
+        conversationContext.getChannel().attr(S7HMuxImpl.RETRY_TIME).set(s7DriverContext.getRetryTime());
 	}
 
 
@@ -2065,7 +2072,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		TPKTPacket request = createSzlReassembledRequest(tpduId, sequenceNumber);
 
-		context.sendRequest(request)
+        conversationContext.sendRequest(request)
 				.onTimeout(e -> {
 					logger.warn("Timeout during Connection establishing, closing channel...");
 					//context.getChannel().close();
@@ -2105,7 +2112,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		TPKTPacket request = createAlarmQueryReassembledRequest(tpduId, sequenceNumber);
 
-		context.sendRequest(request)
+        conversationContext.sendRequest(request)
 				.onTimeout(e -> {
 					logger.warn("Timeout during Connection establishing, closing channel...");
 					//context.getChannel().close();

@@ -30,6 +30,9 @@ import java.nio.charset.StandardCharsets;
 public class PlcSTRING extends PlcIECValue<String> {
 
     public static PlcSTRING of(Object value) {
+        if(value == null) {
+            value = "";
+        }
         if (value instanceof PlcSTRING) {
             return (PlcSTRING) value;
         } else if (value instanceof String) {

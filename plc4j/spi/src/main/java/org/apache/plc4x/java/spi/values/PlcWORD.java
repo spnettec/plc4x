@@ -34,6 +34,9 @@ public class PlcWORD extends PlcIECValue<Integer> {
     public static final Integer MAX_VALUE = Short.MAX_VALUE * 2 + 1;
 
     public static PlcWORD of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcWORD) {
             return (PlcWORD) value;
         } else if (value instanceof Boolean) {
@@ -54,6 +57,8 @@ public class PlcWORD extends PlcIECValue<Integer> {
             return new PlcWORD((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcWORD((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcWORD(((Number) value).longValue());
         } else {
             return new PlcWORD(value.toString());
         }

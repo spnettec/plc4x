@@ -130,8 +130,8 @@ public class ModbusTcpProtocolLogic extends ModbusProtocolLogic<ModbusTcpADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> conversationContext.sendRequest(modbusTcpADU)
                 .expectResponse(ModbusTcpADU.class, requestTimeout)
-                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
                 .check(p -> ((p.getTransactionIdentifier() == transactionIdentifier) &&
                     (p.getUnitIdentifier() == unitId)))
                 .unwrap(ModbusTcpADU::getPdu)

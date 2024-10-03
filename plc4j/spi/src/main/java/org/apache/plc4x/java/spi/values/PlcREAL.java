@@ -33,6 +33,9 @@ public class PlcREAL extends PlcIECValue<Float> {
     public static final Float MAX_VALUE = Float.MAX_VALUE;
 
     public static PlcREAL of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcREAL) {
             return (PlcREAL) value;
         } else if (value instanceof Boolean) {

@@ -34,7 +34,7 @@ public class PlcBOOL extends PlcIECValue<Boolean> {
         if(value == null) {
             value = 0;
         }
-        else if (value instanceof PlcBOOL) {
+        if (value instanceof PlcBOOL) {
             return (PlcBOOL) value;
         } else if (value instanceof Boolean) {
             return new PlcBOOL((Boolean) value);

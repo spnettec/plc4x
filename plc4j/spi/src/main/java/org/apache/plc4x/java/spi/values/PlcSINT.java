@@ -33,6 +33,9 @@ public class PlcSINT extends PlcIECValue<Byte> {
     public static final Byte MAX_VALUE = Byte.MAX_VALUE;
 
     public static PlcSINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcSINT) {
             return (PlcSINT) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcSINT extends PlcIECValue<Byte> {
             return new PlcSINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcSINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcSINT(((Number) value).longValue());
         } else {
             return new PlcSINT(value.toString());
         }

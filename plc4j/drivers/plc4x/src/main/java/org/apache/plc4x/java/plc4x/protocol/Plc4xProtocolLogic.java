@@ -109,7 +109,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             final Plc4xTag plc4xTag =
                 (Plc4xTag) apiReadRequest.getTag(tagName);
             Plc4xTagRequest plc4XTagRequest = new Plc4xTagRequest(
-                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() + ":" + plc4xTag.getPlcValueType().name()));
+                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString()));
             plc4xTags.add(plc4XTagRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();
@@ -153,7 +153,7 @@ public class Plc4xProtocolLogic extends Plc4xProtocolBase<Plc4xMessage> implemen
             final Plc4xValueType plc4xValueType = Plc4xValueType.valueOf(plc4xTag.getPlcValueType().name());
             final PlcValue plcValue = writeRequest.getPlcValue(tagName);
             Plc4xTagValueRequest tagRequest = new Plc4xTagValueRequest(
-                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() + ":" + plc4xTag.getPlcValueType().name()), plc4xValueType, plcValue);
+                new org.apache.plc4x.java.plc4x.readwrite.Plc4xTag(tagName, plc4xTag.getAddressString() ), plc4xValueType, plcValue);
             tags.add(tagRequest);
         }
         final int requestId = txIdGenerator.getAndIncrement();

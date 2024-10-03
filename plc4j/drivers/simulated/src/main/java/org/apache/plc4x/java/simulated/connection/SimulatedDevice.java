@@ -30,7 +30,7 @@ import org.apache.plc4x.java.simulated.readwrite.SimulatedDataTypeSizes;
 import org.apache.plc4x.java.simulated.tag.SimulatedTag;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
-import org.apache.plc4x.java.spi.values.PlcValueHandler;
+import org.apache.plc4x.java.spi.values.DefaultPlcValueHandler;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
 import org.slf4j.Logger;
@@ -86,7 +86,7 @@ public class SimulatedDevice {
                 s.setVersionsToKeep(0);
                 MVMap<String, String> client = s.openMap(configuration.getData());
                 String stringValue = client.get(tag.getAddressString());
-                PlcValue value = PlcValueHandler.of(tag,stringValue);
+                PlcValue value = DefaultPlcValueHandler.of(tag,stringValue);
                 state.put(tag,value);
                 return Optional.ofNullable(value);
             }

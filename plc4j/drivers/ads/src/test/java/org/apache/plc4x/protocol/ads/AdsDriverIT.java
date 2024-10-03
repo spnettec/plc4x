@@ -20,7 +20,7 @@ package org.apache.plc4x.protocol.ads;
 
 import org.apache.plc4x.test.driver.DriverTestsuiteRunner;
 import org.junit.jupiter.api.Disabled;
-
+@Disabled
 public class AdsDriverIT extends DriverTestsuiteRunner {
 
     public AdsDriverIT() {

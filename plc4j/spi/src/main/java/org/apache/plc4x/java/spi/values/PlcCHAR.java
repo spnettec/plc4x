@@ -37,7 +37,8 @@ public class PlcCHAR extends PlcIECValue<Short> {
     public static PlcCHAR of(Object value) {
         if(value == null) {
             value = "";
-        } else if (value instanceof PlcCHAR) {
+        }
+        if (value instanceof PlcCHAR) {
             return (PlcCHAR) value;
         } else if (value instanceof Boolean) {
             return new PlcCHAR((Boolean) value);
@@ -141,7 +142,7 @@ public class PlcCHAR extends PlcIECValue<Short> {
             this.value = val;
             this.isNullable = false;
         } catch (Exception e) {
-            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, minValue, maxValue, this.getClass().getSimpleName()));
+            throw new PlcInvalidTagException(String.format(VALUE_OUT_OF_RANGE, value, MIN_VALUE, MAX_VALUE, this.getClass().getSimpleName()));
         }
     }
 

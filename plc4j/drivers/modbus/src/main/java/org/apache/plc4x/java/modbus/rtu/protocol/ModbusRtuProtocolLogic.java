@@ -81,8 +81,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
             .expectResponse(ModbusRtuADU.class, requestTimeout)
-            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-            .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+            .onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
             .unwrap(ModbusRtuADU::getPdu)
             .handle(responsePdu -> {
                 transaction.endRequest();
@@ -117,8 +117,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
-                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
                 .unwrap(ModbusRtuADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.
@@ -180,8 +180,8 @@ public class ModbusRtuProtocolLogic extends ModbusProtocolLogic<ModbusRtuADU> im
             RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> conversationContext.sendRequest(modbusRtuADU)
                 .expectResponse(ModbusRtuADU.class, requestTimeout)
-                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,context.getChannel()))
-                .onError(new TransactionErrorCallback<>(future, transaction,context.getChannel()))
+                .onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+                .onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
                 .unwrap(ModbusRtuADU::getPdu)
                 .handle(responsePdu -> {
                     // Try to decode the response data based on the corresponding request.

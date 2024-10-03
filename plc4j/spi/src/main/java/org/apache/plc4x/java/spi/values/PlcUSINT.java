@@ -33,6 +33,9 @@ public class PlcUSINT extends PlcIECValue<Short> {
     public static final Short MAX_VALUE = (short) Byte.MAX_VALUE * 2 + 1;
 
     public static PlcUSINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcUSINT) {
             return (PlcUSINT) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcUSINT extends PlcIECValue<Short> {
             return new PlcUSINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcUSINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcUSINT(((Number) value).intValue());
         } else {
             return new PlcUSINT(value.toString());
         }

@@ -33,6 +33,9 @@ public class PlcUDINT extends PlcIECValue<Long> {
     public static final Long MAX_VALUE = (long) Integer.MAX_VALUE * 2 + 1;
 
     public static PlcUDINT of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcUDINT) {
             return (PlcUDINT) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcUDINT extends PlcIECValue<Long> {
             return new PlcUDINT((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcUDINT((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcUDINT(((Number) value).longValue());
         } else {
             return new PlcUDINT(value.toString());
         }

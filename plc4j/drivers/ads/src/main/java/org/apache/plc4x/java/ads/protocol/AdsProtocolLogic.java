@@ -23,10 +23,7 @@ import org.apache.plc4x.java.ads.discovery.readwrite.AmsNetId;
 import org.apache.plc4x.java.ads.discovery.readwrite.*;
 import org.apache.plc4x.java.ads.model.AdsSubscriptionHandle;
 import org.apache.plc4x.java.ads.readwrite.*;
-import org.apache.plc4x.java.ads.tag.AdsTag;
-import org.apache.plc4x.java.ads.tag.DirectAdsStringTag;
-import org.apache.plc4x.java.ads.tag.DirectAdsTag;
-import org.apache.plc4x.java.ads.tag.SymbolicAdsTag;
+import org.apache.plc4x.java.ads.tag.*;
 import org.apache.plc4x.java.api.authentication.PlcUsernamePasswordAuthentication;
 import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcException;
@@ -520,7 +517,7 @@ public class AdsProtocolLogic extends Plc4xProtocolBase<AmsTCPPacket> implements
                     itemArrayInfo.add(new DefaultPlcBrowseItemArrayInfo(
                         adsDataTypeArrayInfo.getLowerBound(), adsDataTypeArrayInfo.getUpperBound()));
                 }
-                DefaultPlcBrowseItemList item = new DefaultListPlcBrowseItem(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo, "AUTO"), symbol.getName(),
+                DefaultPlcBrowseItemList item = new DefaultPlcBrowseItemList(new SymbolicAdsTag(symbol.getName(), plc4xPlcValueType, arrayInfo, "AUTO"), symbol.getName(),
                     true, !symbol.getFlagReadOnly(), true, false, childMap, options, itemArrayInfo);
 
                 // Check if this item should be added to the result

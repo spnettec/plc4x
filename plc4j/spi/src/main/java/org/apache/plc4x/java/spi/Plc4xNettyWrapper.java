@@ -210,6 +210,8 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                     registration.confirmError();
                 }
                 return;
+            } else {
+                logger.info("");
             }
         }
         logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);

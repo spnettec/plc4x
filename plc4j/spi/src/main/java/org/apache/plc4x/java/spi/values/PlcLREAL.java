@@ -33,6 +33,9 @@ public class PlcLREAL extends PlcIECValue<Double> {
     public static final Double MAX_VALUE = Double.MAX_VALUE;
 
     public static PlcLREAL of(Object value) {
+        if(value == null) {
+            value = 0;
+        }
         if (value instanceof PlcLREAL) {
             return (PlcLREAL) value;
         } else if (value instanceof Boolean) {
@@ -53,6 +56,8 @@ public class PlcLREAL extends PlcIECValue<Double> {
             return new PlcLREAL((BigInteger) value);
         } else if (value instanceof BigDecimal) {
             return new PlcLREAL((BigDecimal) value);
+        } else if (value instanceof Number) {
+            return new PlcLREAL(((Number) value).doubleValue());
         } else {
             return new PlcLREAL(value.toString());
         }
