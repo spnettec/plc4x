@@ -27,16 +27,43 @@ import org.apache.plc4x.java.spi.generation.WriteBuffer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class PlcDATE_AND_TIME extends PlcIECValue<LocalDateTime> {
 
     public static PlcDATE_AND_TIME of(Object value) {
-        if (value instanceof PlcDATE_AND_TIME) {
+        if (value instanceof Instant) {
+            return new PlcDATE_AND_TIME(((Instant) value).toEpochMilli());
+        } else if (value instanceof LocalDate) {
+            return new PlcDATE_AND_TIME(((LocalDate) value).atStartOfDay(ZoneId.of("UTC")).toLocalDateTime());
+        } else if (value instanceof String) {
+            String strValue = (String) value;
+            LocalDateTime date;
+            try {
+                date = LocalDateTime.parse(strValue);
+            } catch (DateTimeParseException e) {
+                try {
+                    date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                } catch (DateTimeParseException e1) {
+                    try {
+                        date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss"));
+                    } catch (DateTimeParseException e2) {
+                        try {
+                            date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        } catch (DateTimeParseException e3) {
+                            try {
+                                date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                            } catch (DateTimeParseException e4) {
+                                date = LocalDateTime.parse(strValue, DateTimeFormatter.ofPattern("yyyyMMdd"));
+                            }
+                        }
+                    }
+                }
+            }
+            return new PlcDATE_AND_TIME(date);
+        } else if (value instanceof PlcDATE_AND_TIME) {
             return (PlcDATE_AND_TIME) value;
         } else if (value instanceof LocalDateTime) {
             return new PlcDATE_AND_TIME((LocalDateTime) value);
