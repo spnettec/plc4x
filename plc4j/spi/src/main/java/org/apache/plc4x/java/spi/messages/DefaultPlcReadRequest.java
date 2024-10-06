@@ -83,7 +83,7 @@ public class DefaultPlcReadRequest implements PlcReadRequest, PlcTagRequest, Ser
 
     @Override
     public PlcResponseCode getTagResponseCode(String tagName) {
-        return tags.get(tagName).getResponseCode();
+        return tags.get(tagName) == null?null:tags.get(tagName).getResponseCode();
     }
 
     @Override

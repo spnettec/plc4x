@@ -65,7 +65,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     protected boolean connected;
     protected boolean detectedClosed;
     protected boolean closeExcuted;
-    private final static TimeoutManager timeoutManager = new NettyHashTimerTimeoutManager();
+    //private final static TimeoutManager timeoutManager = new NettyHashTimerTimeoutManager();
 
     public DefaultNettyPlcConnection(boolean canPing,
                                      boolean canRead,
@@ -185,10 +185,9 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
     public synchronized void close() throws PlcConnectionException {
         if (closeExcuted)
         {
-            logger.warn("connection is already closed!");
+            logger.debug("connection is already closed!");
             return;
         }
-        // timeoutManager.stop();
         closeExcuted = true;
         logger.debug("Closing connection to PLC, await for disconnect = {}", awaitSessionDisconnectComplete);
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
@@ -316,7 +315,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
 
     private void setupProtocol(ChannelPipeline pipeline) {
         setProtocol(stackConfigurer.configurePipeline(configuration, pipeline, getAuthentication(),
-            channelFactory.isPassive(), listeners, timeoutManager));
+            channelFactory.isPassive(), listeners, new NettyHashTimerTimeoutManager()));
     }
 
     protected void sendChannelCreatedEvent() {

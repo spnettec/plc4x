@@ -78,7 +78,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     @Override
     public PlcResponseCode getTagResponseCode(String tagName) {
-        return tags.get(tagName).getResponseCode();
+        return tags.get(tagName)==null?null:tags.get(tagName).getResponseCode();
     }
 
     @Override
