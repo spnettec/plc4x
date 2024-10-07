@@ -20,7 +20,7 @@ package org.apache.plc4x.java.spi.netty;
 
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
-import io.netty.util.Timer;
+
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -42,7 +42,7 @@ public class NettyHashTimerTimeoutManager implements TimeoutManager {
      * @param tickInMilliseconds milliseconds between timeout checks.
      */
     public NettyHashTimerTimeoutManager(long tickInMilliseconds) {
-        timer = new HashedWheelTimer(tickInMilliseconds, TimeUnit.MILLISECONDS);
+        timer = new HashedWheelTimer(tickInMilliseconds, TimeUnit.MILLISECONDS,10);
         timer.start();
     }
 

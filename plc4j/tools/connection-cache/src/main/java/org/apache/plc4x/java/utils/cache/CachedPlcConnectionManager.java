@@ -43,7 +43,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
     private final PlcConnectionManager connectionManager;
     private final Duration maxLeaseTime;
     private final Duration maxWaitTime;
-    private final Duration maxIdleTime;
 
     private final Map<String, ConnectionContainer> connectionContainers;
 
@@ -57,31 +56,11 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         return new Builder(connectionManager);
     }
 
-    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime, Duration maxIdleTime) {
+    public CachedPlcConnectionManager(PlcConnectionManager connectionManager, Duration maxLeaseTime, Duration maxWaitTime) {
         this.connectionManager = connectionManager;
         this.maxLeaseTime = maxLeaseTime;
         this.maxWaitTime = maxWaitTime;
-        this.maxIdleTime = maxIdleTime;
         this.connectionContainers = new HashMap<>();
-    }
-
-    /**
-     * @return set of connection-urls the CachedPlcConnectionManager is currently managing.
-     */
-    public Set<String> getCachedConnections() {
-        synchronized (connectionContainers) {
-            return connectionContainers.keySet();
-        }
-    }
-
-    /**
-     * Removes a given connection from the cache (Should only be used in order to remove somehow broken connections).
-     * @param url url of the connection that should be removed.
-     */
-    public void removeCachedConnection(String url) {
-        synchronized (connectionContainers) {
-            connectionContainers.remove(url);
-        }
     }
 
     @Override
@@ -99,11 +78,7 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
                 LOG.debug("Creating new connection");
 
                 // Crate a connection container to manage handling this connection
-                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime, maxIdleTime,
-                    closeConnection -> {
-                        removeCachedConnection(closeConnection);
-                        return null;
-                    });
+                connectionContainer = new ConnectionContainer(connectionManager, url, maxLeaseTime);
                 connectionContainers.put(url, connectionContainer);
             } else {
                 LOG.debug("Reusing exising connection");
@@ -150,18 +125,16 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         private final PlcConnectionManager connectionManager;
         private Duration maxLeaseTime;
         private Duration maxWaitTime;
-        private Duration maxIdleTime;
 
         public Builder(PlcConnectionManager connectionManager) {
             this.connectionManager = connectionManager;
             this.maxLeaseTime = Duration.ofSeconds(4);
             this.maxWaitTime = Duration.ofSeconds(20);
-            this.maxIdleTime = Duration.ofMinutes(5);
         }
 
         public CachedPlcConnectionManager build() {
             return new CachedPlcConnectionManager(
-                this.connectionManager, this.maxLeaseTime, this.maxWaitTime, this.maxIdleTime);
+                this.connectionManager, this.maxLeaseTime, this.maxWaitTime);
         }
 
         public CachedPlcConnectionManager.Builder withMaxLeaseTime(Duration maxLeaseTime) {
@@ -172,12 +145,6 @@ public class CachedPlcConnectionManager implements PlcConnectionManager, AutoClo
         public CachedPlcConnectionManager.Builder withMaxWaitTime(Duration maxWaitTime) {
             this.maxWaitTime = maxWaitTime;
             return this;
-        }
-
-        public CachedPlcConnectionManager.Builder withMaxIdleTime(Duration maxIdleTime) {
-            this.maxIdleTime = maxIdleTime;
-            return this;
-        }
-    }
+        }}
 
 }

@@ -29,7 +29,7 @@ public class DatatypesTest {
     public static void main(String[] args) throws Exception {
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         while (true) {
-            try (PlcConnection connection = plcConnectionManager.getConnection("s7://192.168.2.22")) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://100.64.0.3:10102")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("value-1", "%DB53:2:3:BOOL");
                 builder.addTagAddress("value-2", "%DB15:18:3:BOOL");
@@ -136,6 +136,8 @@ public class DatatypesTest {
                 final PlcReadResponse readResponse = readRequest.execute().get();
 
                 System.out.println(readResponse.getAsPlcValue());
+            } catch (Exception e){
+                e.printStackTrace();
             }
         }
     }

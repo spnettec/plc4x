@@ -24,7 +24,6 @@ import org.apache.plc4x.java.api.exceptions.PlcConnectionException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.utils.cache.exceptions.PlcConnectionManagerClosedException;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -185,7 +184,7 @@ public class CachedPlcConnectionManagerTest {
     }
 
     @Test
-    @Disabled("This test fails quite regularly when run on github actions")
+    //@Disabled("This test fails quite regularly when run on github actions")
     public void testClosingConnectionCache() throws Exception {
         PlcConnection mockConnection = Mockito.mock(PlcConnection.class);
         PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
@@ -297,21 +296,4 @@ public class CachedPlcConnectionManagerTest {
             }
         }
     }
-
-    @Test
-    public void testCloseAfterIdleTime() throws Exception {
-        PlcConnectionManager mockConnectionManager = Mockito.mock(PlcConnectionManager.class);
-        Mockito.when(mockConnectionManager.getConnection("test")).thenReturn(Mockito.mock(PlcConnection.class));
-        CachedPlcConnectionManager connectionManager = CachedPlcConnectionManager.getBuilder(mockConnectionManager).withMaxWaitTime(Duration.ofMillis(50)).withMaxIdleTime(Duration.ofMillis(10)).build();
-
-        // Get a connection and directly return it.
-        PlcConnection connection = connectionManager.getConnection("test");
-        connection.close();
-
-        // Wait for longer than the max idle time.
-        Thread.sleep(200);
-
-        Assertions.assertEquals(0, connectionManager.getCachedConnections().size());
-    }
-
 }

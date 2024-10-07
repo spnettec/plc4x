@@ -158,7 +158,9 @@ public class RequestTransactionManager {
 
     private void endRequest(RequestTransaction transaction) {
         if (!runningRequests.contains(transaction)) {
-            throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
+            if (!executor.isShutdown()) {
+                throw new IllegalArgumentException("Unknown Transaction or Transaction already finished!");
+            }
         }
         runningRequests.remove(transaction);
         // Process the work-log, a slot should be free now
