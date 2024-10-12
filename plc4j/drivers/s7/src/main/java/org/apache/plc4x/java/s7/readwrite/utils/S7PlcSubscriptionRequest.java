@@ -198,6 +198,11 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
             return addCyclicTag(name, tag, pollingInterval, null);
         }
 
+        @Override
+        public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
+            return addChangeOfStateTagAddress(name,tagAddress,pollingInterval);
+        }
+
         /*
          * This method receives an S7Tag built by the user, he is responsible
          * for the construction of the object, so no additional verification

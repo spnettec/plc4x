@@ -402,6 +402,12 @@ public class LeasedPlcConnection implements EventPlcConnection {
             }
 
             @Override
+            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
+                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
+                return this;
+            }
+
+            @Override
             public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
                 innerBuilder.addCyclicTag(name, tag, pollingInterval, consumer);
                 return this;

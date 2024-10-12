@@ -22,6 +22,7 @@ import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.api.messages.PlcWriteRequest;
+import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
@@ -126,7 +127,7 @@ public class S7Optimizer extends BaseOptimizer {
                 // Create a new PlcReadRequest containing the current tag item.
                 if(!curTagItems.isEmpty()) {
                     processedRequests.add(new DefaultPlcReadRequest(
-                        ((DefaultPlcReadRequest) readRequest).getReader(), curTags));
+                        ((DefaultPlcReadRequest) readRequest).getReader(), curTagItems));
                 }
 
                 // Reset the size and item lists.
@@ -173,7 +174,7 @@ public class S7Optimizer extends BaseOptimizer {
         int curResponseSize = EMPTY_WRITE_RESPONSE_SIZE;
 
         // List of all items in the current request.
-        LinkedHashMap<String, PlcTagValueItem> curTags = new LinkedHashMap<>();
+        LinkedHashMap<String, PlcTagValueItem<PlcTag>> curTags = new LinkedHashMap<>();
 
         for (String tagName : writeRequest.getTagNames()) {
             S7Tag tag = (S7Tag) writeRequest.getTag(tagName);
