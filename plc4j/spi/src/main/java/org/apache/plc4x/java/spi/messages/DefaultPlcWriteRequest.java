@@ -23,7 +23,6 @@ import org.apache.plc4x.java.api.messages.PlcWriteRequest;
 import org.apache.plc4x.java.api.messages.PlcWriteResponse;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
-import org.apache.plc4x.java.api.types.PlcValueType;
 import org.apache.plc4x.java.api.value.PlcValue;
 import org.apache.plc4x.java.spi.codegen.WithOption;
 import org.apache.plc4x.java.spi.connection.PlcTagHandler;
@@ -48,10 +47,10 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
     private final PlcWriter writer;
 
-    private final LinkedHashMap<String, PlcTagValueItem> tags;
+    private final LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags;
 
     public DefaultPlcWriteRequest(PlcWriter writer,
-                                  LinkedHashMap<String, PlcTagValueItem> tags) {
+                                  LinkedHashMap<String, PlcTagValueItem<PlcTag>> tags) {
         this.writer = writer;
         this.tags = tags;
     }
@@ -72,13 +71,13 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         return new LinkedHashSet<>(tags.keySet());
     }
 
-    public PlcTagValueItem getTagValueItem(String tagName) {
+    public PlcTagValueItem<PlcTag> getTagValueItem(String tagName) {
         return tags.get(tagName);
     }
 
     @Override
     public PlcResponseCode getTagResponseCode(String tagName) {
-        return tags.get(tagName)==null?null:tags.get(tagName).getResponseCode();
+        return tags.get(tagName) == null? null: tags.get(tagName).getResponseCode();
     }
 
     @Override
@@ -119,10 +118,10 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
         writeBuffer.pushContext("PlcTagRequest");
         writeBuffer.pushContext("tags", WithRenderAsList(true));
-        for (Map.Entry<String, PlcTagValueItem> tagEntry : tags.entrySet()) {
+        for (Map.Entry<String, PlcTagValueItem<PlcTag>> tagEntry : tags.entrySet()) {
             String tagName = tagEntry.getKey();
             writeBuffer.pushContext(tagName);
-            PlcTagValueItem plcTagValueItem = tagEntry.getValue();
+            PlcTagValueItem<PlcTag> plcTagValueItem = tagEntry.getValue();
             if (!(plcTagValueItem instanceof Serializable)) {
                 throw new RuntimeException("Error serializing. PlcTagValueItem doesn't implement Serializable");
             }
@@ -152,7 +151,7 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
         private final PlcWriter writer;
         private final PlcTagHandler tagHandler;
         private final PlcValueHandler valueHandler;
-        private final Map<String, Supplier<PlcTagValueItem>> tagValues;
+        private final Map<String, Supplier<PlcTagValueItem<PlcTag>>> tagValues;
 
         public Builder(PlcWriter writer, PlcTagHandler tagHandler, PlcValueHandler valueHandler) {
             this.writer = Objects.requireNonNull(writer);
@@ -174,12 +173,12 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                         if(tag.getPlcValueType() == PlcValueType.NULL) {
                             tag.setPlcValueType(plcValue.getPlcValueType());
                         }
-                        return new DefaultPlcTagValueItem(tag, plcValue);
+                        return new DefaultPlcTagValueItem<>(tag, plcValue);
                     } catch (Exception e) {
-                        return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_DATA);
+                        return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
                     }
                 } catch (Exception e) {
-                    return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_ADDRESS);
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_ADDRESS);
                 }
             });
             return this;
@@ -196,9 +195,9 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
                     if(tag.getPlcValueType() == PlcValueType.NULL) {
                         tag.setPlcValueType(plcValue.getPlcValueType());
                     }
-                    return new DefaultPlcTagValueItem(tag, plcValue);
+                    return new DefaultPlcTagValueItem<>(tag, plcValue);
                 } catch (Exception e) {
-                    return new DefaultPlcTagErrorItem(PlcResponseCode.INVALID_DATA);
+                    return new DefaultPlcTagErrorItem<>(PlcResponseCode.INVALID_DATA);
                 }
             });
             return this;
@@ -210,9 +209,9 @@ public class DefaultPlcWriteRequest implements PlcWriteRequest, Serializable {
 
         @Override
         public PlcWriteRequest build() {
-            LinkedHashMap<String, PlcTagValueItem> parsedTags = new LinkedHashMap<>();
+            LinkedHashMap<String, PlcTagValueItem<PlcTag>> parsedTags = new LinkedHashMap<>();
             tagValues.forEach((name, tagValueItemSupplier) -> {
-                PlcTagValueItem plcTagValueItem = tagValueItemSupplier.get();
+                PlcTagValueItem<PlcTag> plcTagValueItem = tagValueItemSupplier.get();
                 parsedTags.put(name, plcTagValueItem);
             });
             return new DefaultPlcWriteRequest(writer, parsedTags);

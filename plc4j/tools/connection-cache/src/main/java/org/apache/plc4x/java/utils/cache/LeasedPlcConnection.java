@@ -31,17 +31,21 @@ import org.apache.plc4x.java.api.model.PlcSubscriptionTag;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.api.value.PlcValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 public class LeasedPlcConnection implements EventPlcConnection {
 
+    private static final Logger log = LoggerFactory.getLogger(LeasedPlcConnection.class);
     private ConnectionContainer connectionContainer;
     private final AtomicReference<PlcConnection> connection;
     private boolean invalidateConnection= false;
@@ -352,20 +356,42 @@ public class LeasedPlcConnection implements EventPlcConnection {
                     }
 
                     @Override
+                    public PlcResponseCode getTagResponseCode(String tagName) {
+                        return innerPlcSubscriptionRequest.getTagResponseCode(tagName);
+                    }
+
+                    @Override
                     public List<PlcSubscriptionTag> getTags() {
                         return innerPlcSubscriptionRequest.getTags();
                     }
 
                     @Override
-                    public Map<String, List<Consumer<PlcSubscriptionEvent>>> getPreRegisteredConsumers() {
-                        return innerPlcSubscriptionRequest.getPreRegisteredConsumers();
+                    public Consumer<PlcSubscriptionEvent> getConsumer() {
+                        return innerPlcSubscriptionRequest.getConsumer();
+                    }
+
+                    @Override
+                    public Consumer<PlcSubscriptionEvent> getTagConsumer(String name) {
+                        return innerPlcSubscriptionRequest.getTagConsumer(name);
                     }
                 };
             }
 
             @Override
+            public PlcSubscriptionRequest.Builder setConsumer(Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.setConsumer(consumer);
+                return this;
+            }
+
+            @Override
             public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval) {
                 innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval);
+                return this;
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addCyclicTagAddress(name, tagAddress, pollingInterval, consumer);
                 return this;
             }
 
@@ -376,14 +402,20 @@ public class LeasedPlcConnection implements EventPlcConnection {
             }
 
             @Override
+            public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addCyclicTag(name, tag, pollingInterval, consumer);
+                return this;
+            }
+
+            @Override
             public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress) {
                 innerBuilder.addChangeOfStateTagAddress(name, tagAddress);
                 return this;
             }
 
             @Override
-            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Duration pollingInterval) {
-                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, pollingInterval);
+            public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addChangeOfStateTagAddress(name, tagAddress, consumer);
                 return this;
             }
 
@@ -394,8 +426,20 @@ public class LeasedPlcConnection implements EventPlcConnection {
             }
 
             @Override
+            public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addChangeOfStateTag(name, tag, consumer);
+                return this;
+            }
+
+            @Override
             public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress) {
                 innerBuilder.addEventTagAddress(name, tagAddress);
+                return this;
+            }
+
+            @Override
+            public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addEventTagAddress(name, tagAddress, consumer);
                 return this;
             }
 
@@ -406,8 +450,8 @@ public class LeasedPlcConnection implements EventPlcConnection {
             }
 
             @Override
-            public PlcSubscriptionRequest.Builder addPreRegisteredConsumer(String name, Consumer<PlcSubscriptionEvent> preRegisteredConsumer) {
-                innerBuilder.addPreRegisteredConsumer(name, preRegisteredConsumer);
+            public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
+                innerBuilder.addEventTag(name, tag, consumer);
                 return this;
             }
         };

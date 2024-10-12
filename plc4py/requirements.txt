@@ -18,13 +18,13 @@
 #
 aenum==3.1.15
 annotated-types==0.7.0
-bitarray==2.9.2
+bitarray==2.9.3
 black==24.10.0
 build==1.2.2.post1
 cfgv==3.4.0
 click==8.1.7
-coverage==7.6.1
-distlib==0.3.8
+coverage==7.6.2
+distlib==0.3.9
 filelock==3.16.1
 flake8==7.1.1
 funkify==0.4.5
@@ -40,7 +40,7 @@ pathspec==0.12.1
 pip-tools==7.4.1
 platformdirs==4.3.6
 pluggy==1.5.0
-pre-commit==4.0.0
+pre-commit==4.0.1
 pycodestyle==2.12.1
 pyflakes==3.2.0
 pyproject_hooks==1.2.0
