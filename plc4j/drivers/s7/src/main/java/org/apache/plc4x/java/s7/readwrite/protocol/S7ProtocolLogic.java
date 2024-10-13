@@ -2079,6 +2079,7 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         try {
             int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
             if (tag.getNumberOfElements() == 1) {
+                // TODO: Pass the type of plc into the parse function ...
                 return DataItem.staticParse(readBuffer, tag.getDataType().getDataProtocolId(),
                         s7DriverContext.getControllerType(), stringLength, tag.getStringEncoding());
             } else {
