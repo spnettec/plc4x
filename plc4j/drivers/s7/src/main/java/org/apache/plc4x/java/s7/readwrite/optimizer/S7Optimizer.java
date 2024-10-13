@@ -134,7 +134,7 @@ public class S7Optimizer extends BaseOptimizer {
                 curRequestSize = EMPTY_READ_REQUEST_SIZE + readRequestItemSize;
                 curResponseSize = EMPTY_READ_RESPONSE_SIZE + readResponseItemSize;
                 curTagItems = new LinkedHashMap<>();
-                PlcTagItem tagItem = new DefaultPlcTagItem(tag);
+                PlcTagItem<PlcTag> tagItem = new DefaultPlcTagItem<>(tag);
                 // Splitting of huge tags not yet implemented, throw an exception instead.
                 if (((curRequestSize + readRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + readResponseItemSize) > s7DriverContext.getPduSize())) {
@@ -220,11 +220,11 @@ public class S7Optimizer extends BaseOptimizer {
                 // Splitting of huge tags not yet implemented, throw an exception instead.
                 if (((curRequestSize + writeRequestItemSize) > s7DriverContext.getPduSize()) ||
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
-                    processedRequests.add(new LargeTagPlcWriteRequest(tagName,value,new DefaultPlcTagItem(tag)));
+                    processedRequests.add(new LargeTagPlcWriteRequest(tagName,value,new DefaultPlcTagItem<>(tag)));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
                 }
             }
-            curTags.put(tagName, new DefaultPlcTagValueItem(tag, value) {
+            curTags.put(tagName, new DefaultPlcTagValueItem<>(tag, value) {
             });
         }
 

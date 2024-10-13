@@ -20,6 +20,7 @@ package org.apache.plc4x.java.s7.readwrite;
 
 import org.apache.plc4x.java.DefaultPlcDriverManager;
 import org.apache.plc4x.java.api.PlcConnection;
+import org.apache.plc4x.java.api.PlcConnectionManager;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
 import org.apache.plc4x.java.utils.cache.CachedPlcConnectionManager;
@@ -28,118 +29,135 @@ public class DatatypesTest {
 
     public static void main(String[] args) throws Exception {
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
-        while (true) {
-            try (PlcConnection connection = plcConnectionManager.getConnection("s7://100.64.0.3:10102")) {
+        //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
+        while(true) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://100.64.0.7")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
-                builder.addTagAddress("value-1", "%DB53:2:3:BOOL");
-                builder.addTagAddress("value-2", "%DB15:18:3:BOOL");
-                builder.addTagAddress("value-3", "%DB34:114:REAL");
-                builder.addTagAddress("value-4", "%DB34:118:REAL");
-                builder.addTagAddress("value-5", "%DB53:1:4:BOOL");
-                builder.addTagAddress("value-6", "%DB34:102:REAL");
-                builder.addTagAddress("value-7", "%DB34:98:REAL");
-                builder.addTagAddress("value-8", "%DB25:0:REAL");
-                builder.addTagAddress("value-9", "%DB25:4:REAL");
-                builder.addTagAddress("value-10", "%DB14:4:0:BOOL");
-                builder.addTagAddress("value-11", "%DB71:0:REAL");
-                builder.addTagAddress("value-12", "%DB71:4:REAL");
-                builder.addTagAddress("value-13", "%DB17:14:REAL");
-                builder.addTagAddress("value-14", "%DB17:38:REAL");
-                builder.addTagAddress("value-15", "%DB17:0:1:BOOL");
-                builder.addTagAddress("value-16", "%DB17:24:0:BOOL");
-                builder.addTagAddress("value-17", "%DB17:24:1:BOOL");
-                builder.addTagAddress("value-18", "%DB17:0:0:BOOL");
-                builder.addTagAddress("value-19", "%DB17:10:REAL");
-                builder.addTagAddress("value-20", "%DB17:34:REAL");
-                builder.addTagAddress("value-21", "%DB71:62:1:BOOL");
-                builder.addTagAddress("value-22", "%DB71:10:REAL");
-                builder.addTagAddress("value-23", "%DB1:8:0:BOOL");
-                builder.addTagAddress("value-24", "%DB1:116:0:BOOL");
-                builder.addTagAddress("value-25", "%DB34:42:REAL");
-                builder.addTagAddress("value-26", "%DB34:46:REAL");
-                builder.addTagAddress("value-27", "%DB34:50:REAL");
-                builder.addTagAddress("value-28", "%DB34:54:REAL");
-                builder.addTagAddress("value-29", "%DB1:0:REAL");
-                builder.addTagAddress("value-30", "%DB1:4:REAL");
-                builder.addTagAddress("value-31", "%DB1:92:REAL");
-                builder.addTagAddress("value-32", "%DB1:96:REAL");
-                builder.addTagAddress("value-33", "%DB34:66:REAL");
-                builder.addTagAddress("value-34", "%DB34:70:REAL");
-                builder.addTagAddress("value-35", "%DB34:74:REAL");
-                builder.addTagAddress("value-36", "%DB34:78:REAL");
-                builder.addTagAddress("value-37", "%DB42:30:5:BOOL");
-                builder.addTagAddress("value-38", "%DB53:1:6:BOOL");
-                builder.addTagAddress("value-39", "%DB34:82:REAL");
-                builder.addTagAddress("value-40", "%DB34:86:REAL");
-                builder.addTagAddress("value-41", "%DB18:0:1:BOOL");
-                builder.addTagAddress("value-42", "%DB18:2:REAL");
-                builder.addTagAddress("value-43", "%DB18:10:REAL");
-                builder.addTagAddress("value-44", "%DB53:2:2:BOOL");
-                builder.addTagAddress("value-45", "%DB34:106:REAL");
-                builder.addTagAddress("value-46", "%DB34:110:REAL");
-                builder.addTagAddress("value-47", "%DB15:14:REAL");
-                builder.addTagAddress("value-48", "%DB15:18:2:BOOL");
-                builder.addTagAddress("value-49", "%DB53:0:0:BOOL");
-                builder.addTagAddress("value-50", "%DB34:58:REAL");
-                builder.addTagAddress("value-51", "%DB34:62:REAL");
-                builder.addTagAddress("value-52", "%DB34:108:INT");
-                builder.addTagAddress("value-53", "%DB23:44:REAL");
-                builder.addTagAddress("value-54", "%DB34:0:0:BOOL");
-                builder.addTagAddress("value-55", "%DB34:0:1:BOOL");
-                builder.addTagAddress("value-56", "%DB53:2:1:BOOL");
-                builder.addTagAddress("value-57", "%DB23:8:REAL");
-                builder.addTagAddress("value-58", "%DB32:0:1:BOOL");
-                builder.addTagAddress("value-59", "%DB34:154:REAL");
-                builder.addTagAddress("value-60", "%DB34:158:REAL");
-                builder.addTagAddress("value-61", "%DB34:162:REAL");
-                builder.addTagAddress("value-62", "%DB34:166:REAL");
-                builder.addTagAddress("value-63", "%DB34:170:REAL");
-                builder.addTagAddress("value-64", "%DB34:174:REAL");
-                builder.addTagAddress("value-65", "%DB34:178:REAL");
-                builder.addTagAddress("value-66", "%DB34:182:REAL");
-                builder.addTagAddress("value-67", "%DB53:0:2:BOOL");
-                builder.addTagAddress("value-68", "%DB17:62:REAL");
-                builder.addTagAddress("value-69", "%DB17:48:1:BOOL");
-                builder.addTagAddress("value-70", "%DB17:48:0:BOOL");
-                builder.addTagAddress("value-71", "%DB17:58:REAL");
-                builder.addTagAddress("value-72", "%DB32:14:REAL");
-                builder.addTagAddress("value-73", "%DB32:6:REAL");
-                builder.addTagAddress("value-74", "%DB53:0:3:BOOL");
-                builder.addTagAddress("value-75", "%DB34:122:REAL");
-                builder.addTagAddress("value-76", "%DB34:126:REAL");
-                builder.addTagAddress("value-77", "%DB34:130:REAL");
-                builder.addTagAddress("value-78", "%DB34:134:REAL");
-                builder.addTagAddress("value-79", "%DB34:138:REAL");
-                builder.addTagAddress("value-80", "%DB34:142:REAL");
-                builder.addTagAddress("value-81", "%DB34:146:REAL");
-                builder.addTagAddress("value-82", "%DB34:150:REAL");
-                builder.addTagAddress("value-83", "%DB23:26:REAL");
-                builder.addTagAddress("value-84", "%DB53:1:7:BOOL");
-                builder.addTagAddress("value-85", "%DB34:90:REAL");
-                builder.addTagAddress("value-86", "%DB34:94:REAL");
-                builder.addTagAddress("value-87", "%DB53:0:1:BOOL");
-                builder.addTagAddress("value-88", "%DB34:2:REAL");
-                builder.addTagAddress("value-89", "%DB34:6:REAL");
-                builder.addTagAddress("value-90", "%DB34:10:REAL");
-                builder.addTagAddress("value-91", "%DB34:14:REAL");
-                builder.addTagAddress("value-92", "%DB34:18:REAL");
-                builder.addTagAddress("value-93", "%DB34:22:REAL");
-                builder.addTagAddress("value-94", "%DB34:26:REAL");
-                builder.addTagAddress("value-95", "%DB34:30:REAL");
-                builder.addTagAddress("value-96", "%DB34:34:REAL");
-                builder.addTagAddress("value-97", "%DB34:38:REAL");
-                builder.addTagAddress("value-98", "%DB16:20:0:BOOL");
-
-                //builder.addTagAddress("huge-array", "%DB2:0:UINT[4000]");
+                builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
+                builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false
+                // It seems S7 PLCs ignores the array notation for BOOL
+                builder.addTagAddress("bool-array", "%DB1:2:BOOL[16]");
+                builder.addTagAddress("byte-value", "%DB1:4:BYTE");
+                builder.addTagAddress("byte-array", "%DB1:6:BYTE[2]");
+                builder.addTagAddress("word-value", "%DB1:8:WORD");
+                builder.addTagAddress("word-array", "%DB1:10:WORD[2]");
+                builder.addTagAddress("dword-value", "%DB1:14:DWORD");
+                builder.addTagAddress("dword-array", "%DB1:18:DWORD[2]");
+                builder.addTagAddress("int-value", "%DB1:26:INT"); // 23
+                builder.addTagAddress("int-array", "%DB1:28:INT[2]"); // 123, -142
+                builder.addTagAddress("dint-value", "%DB1:32:DINT"); // 24
+                builder.addTagAddress("dint-array", "%DB1:36:DINT[2]"); // 1234, -2345
+                builder.addTagAddress("real-value", "%DB1:44:REAL"); // 3.14159
+                builder.addTagAddress("real-array", "%DB1:48:REAL[2]"); // 12.345, 12.345
+                builder.addTagAddress("string-value", "%DB1:56:STRING"); // "Hurz"
+                builder.addTagAddress("string-array", "%DB1:312:STRING[2]"); // "Wolf", "Lamm"
+                builder.addTagAddress("time-value", "%DB1:824:TIME"); // 1234ms
+                builder.addTagAddress("time-array", "%DB1:828:TIME[2]"); // 123ms, 234ms
+                builder.addTagAddress("date-value", "%DB1:836:DATE"); // D#2020-08-20
+                builder.addTagAddress("date-array", "%DB1:838:DATE[2]"); // D#1990-03-28, D#2020-10-25
+                builder.addTagAddress("time-of-day-value", "%DB1:842:TIME_OF_DAY"); // TOD#12:34:56
+                builder.addTagAddress("time-of-day-array", "%DB1:846:TIME_OF_DAY[2]"); // TOD#16:34:56, TOD#08:15:00
+                builder.addTagAddress("date-and-time-value", "%DB1:854:DTL"); // DTL#1978-03-28-12:34:56
+                builder.addTagAddress("date-and-time-array", "%DB1:866:DTL[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+                builder.addTagAddress("char-value", "%DB1:890:CHAR"); // "H"
+                builder.addTagAddress("char-array", "%DB1:892:CHAR[2]"); // "H", "u", "r", "z"
                 final PlcReadRequest readRequest = builder.build();
 
                 final PlcReadResponse readResponse = readRequest.execute().get();
 
                 System.out.println(readResponse.getAsPlcValue());
-            } catch (Exception e){
-                e.printStackTrace();
+
+            }
+
+
+        }
+
+        /*
+        while(true) {
+        try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.110.20.104?controller-type=S7_200&remote-rack=0&remote-slot=2")) {
+            final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+            builder.addTagAddress("string", "%DB1.DBD28:REAL"); // true
+            builder.addTagAddress("Caterpillar-ControllerFailure",	"%M81.3:BOOL");
+            builder.addTagAddress("Caterpillar-Current",	"%DB1.DBD28:REAL");
+            builder.addTagAddress("Caterpillar-DownStatus",	"%DB12.DBX32.1:BOOL");
+            builder.addTagAddress("Caterpillar-EmergencyStop",	"%M80.7:BOOL");
+            builder.addTagAddress("Caterpillar-HighSpeed-Selection",	"%M35.4:BOOL");
+            builder.addTagAddress("Caterpillar-LowSpeed-Selection",	"%M35.5:BOOL");
+            builder.addTagAddress("Caterpillar-Speed",	"%DB1.DBD20:REAL");
+            builder.addTagAddress("Caterpillar-Status",	"%M12.7:BOOL");
+            builder.addTagAddress("Charge-Mode","%M13.1:BOOL");
+            builder.addTagAddress("Clearance-Mode","%M13.0:BOOL");
+            builder.addTagAddress("Clearance-Switch","%M19.3:BOOL");
+            builder.addTagAddress("CoolingFan-Failure","%M81.7:BOOL");
+            builder.addTagAddress("Diameter-Setting","%DB1.DBD174:REAL");
+            builder.addTagAddress("DiameterAverage-Display","%DB66.DBD40:REAL");
+            builder.addTagAddress("DiameterDeviation-AlarmCount","%DB1.DBW244:INT");
+            builder.addTagAddress("DiameterDeviation-Value","%DB1.DBD306:REAL");
+            builder.addTagAddress("Extruder-Current","%DB1.DBD44:REAL");
+            builder.addTagAddress("Extruder-Failure","%M81.1:BOOL");
+            builder.addTagAddress("Extruder-Speed","%DB1.DBD36:REAL");
+            builder.addTagAddress("Extruder-Status","%M12.0:BOOL");
+            builder.addTagAddress("FuelSupply-Switch","%M19.4:BOOL");
+            builder.addTagAddress("Heat-Mode","%M100.0:BOOL");
+            builder.addTagAddress("Length-Product","%DB1.DBD224:REAL");
+            builder.addTagAddress("Lump-AlarmCount","%DB1.DBW246:INT");
+            builder.addTagAddress("MainCabinet-EmergencyStop","%M81.4:BOOL");
+            builder.addTagAddress("Neck-AlarmCount","%DB1.DBW248:INT");
+            builder.addTagAddress("PO-Alarm","%M80.6:BOOL");
+            builder.addTagAddress("PO-DanceAlarm","%M82.1:BOOL");
+            builder.addTagAddress("Separate-or-Sychrom","%M35.6:BOOL");
+            builder.addTagAddress("Spark-Alarm","%M80.2:BOOL");
+            builder.addTagAddress("Spark-AlarmCount","%DB1.DBW250:INT");
+            builder.addTagAddress("TU-Alarm","%M80.5:BOOL");
+            builder.addTagAddress("Temperature-Alarm","%M65.0:BOOL");
+            builder.addTagAddress("Vacuum-Failure","%M81.6:BOOL");
+            builder.addTagAddress("Vacuum-Switch","%M30.4:BOOL");
+            builder.addTagAddress("WaterPump-Failure","%M80.1:BOOL");
+            builder.addTagAddress("WaterPump-Switch","%M30.1:BOOL");
+            builder.addTagAddress("WaterTank-Temperature","%DB32.DBW74:INT");
+            builder.addTagAddress("Xaxis-Display","%DB66.DBD44:REAL");
+            builder.addTagAddress("Yaxis-Display","%DB66.DBD48:REAL");
+            builder.addTagAddress("Zone1-Temperature","%DB32.DBW56:INT");
+            builder.addTagAddress("Zone2-Temperature","%DB32.DBW58:INT");
+            builder.addTagAddress("Zone3-Temperature","%DB32.DBW60:INT");
+            builder.addTagAddress("Zone4-Temperature","%DB32.DBW62:INT");
+            builder.addTagAddress("Zone5-Temperature","%DB32.DBW64:INT");
+            builder.addTagAddress("Zone6-Temperature","%DB32.DBW66:INT");
+            builder.addTagAddress("Zone7-Temperature","%DB32.DBW68:INT");
+            builder.addTagAddress("Zone8-Temperature","%DB32.DBW70:INT");
+            builder.addTagAddress("Zone9-Temperature","%DB32.DBW72:INT");
+            builder.addTagAddress("sb_23_pv","%DB1.DBD20:REAL");
+            builder.addTagAddress("sb_25_pv","%DB1.DBD224:REAL");
+            builder.addTagAddress("sb_27_pv","%DB1.DBW244:INT");
+            builder.addTagAddress("sb_28_pv","%DB1.DBW246:INT");
+            builder.addTagAddress("sb_29_pv","%DB1.DBW248:INT");
+            builder.addTagAddress("sb_30_pv","%DB1.DBW250:INT");
+            final PlcReadRequest readRequest = builder.build();
+
+            final PlcReadResponse readResponse = readRequest.execute().get();
+
+            System.out.println(readResponse.getAsPlcValue());
+        } catch (Exception e){
+            System.out.println("error:"+e.getMessage());
+        }
+
+        }
+
+
+        while(true) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.47")) {
+                final PlcReadRequest.Builder builder = connection.readRequestBuilder();
+                builder.addTagAddress("string", "%DB4:340:STRING(256)"); // true
+
+                final PlcReadRequest readRequest = builder.build();
+
+                final PlcReadResponse readResponse = readRequest.execute().get();
+
+                System.out.println(readResponse.getAsPlcValue());
             }
         }
+
+         */
     }
 
 }

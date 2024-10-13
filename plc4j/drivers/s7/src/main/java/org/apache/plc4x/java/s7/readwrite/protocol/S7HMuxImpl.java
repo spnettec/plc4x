@@ -18,6 +18,8 @@
  */
 package org.apache.plc4x.java.s7.readwrite.protocol;
 
+import static org.apache.plc4x.java.spi.connection.AbstractPlcConnection.IS_CONNECTED;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -58,7 +60,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
      * both TCP channels are disconnected.
      * Default value: false
      */
-    final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
+    // final static AttributeKey<Boolean> IS_CONNECTED = AttributeKey.valueOf("IS_CONNECTED");
 
     /*
      * This attribute indicates to the other handlers that the channel is connected

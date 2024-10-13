@@ -32,8 +32,8 @@ import java.util.concurrent.CompletableFuture;
 public class LargeTagPlcWriteRequest implements PlcWriteRequest {
 
     private final PlcValue plcValue;
-    private final PlcTagItem tagItem;
-    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTagItem tagItem) {
+    private final PlcTagItem<PlcTag> tagItem;
+    public LargeTagPlcWriteRequest(String tagName, PlcValue plcValue, PlcTagItem<PlcTag> tagItem) {
         this.tagName = tagName;
         this.plcValue = plcValue;
         this.tagItem = tagItem;

@@ -33,8 +33,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class LargeTagPlcReadRequest implements PlcReadRequest {
     private final String tagName;
-    private final PlcTagItem tagItem;
-    public LargeTagPlcReadRequest(String tagName, PlcTagItem tagItem) {
+    private final PlcTagItem<PlcTag> tagItem;
+    public LargeTagPlcReadRequest(String tagName, PlcTagItem<PlcTag> tagItem) {
         this.tagName = tagName;
         this.tagItem = tagItem;
 

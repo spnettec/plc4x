@@ -545,7 +545,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 								address.getDbNumber(), address.getArea(), curByteAddress, (byte) 0));
 
 
-				subMessage = new S7MessageRequest((short) getTpduId(),
+				subMessage = new S7MessageRequest(getTpduId(),
 						new S7ParameterReadVarRequest(Collections.singletonList(subVarParameterItem)),
 						null);
 
@@ -564,7 +564,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			// Create a new sub message.
 			S7Message subMessage;
 
-			subMessage = new S7MessageRequest((short) getTpduId(),
+			subMessage = new S7MessageRequest(getTpduId(),
 					new S7ParameterReadVarRequest(
 							curRequestItems),
 					null);
@@ -1539,7 +1539,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		{
 			tpduId = 0;
 		}
-		COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) 0);
+		COTPPacketData cotpPacketData = new COTPPacketData(null, s7Message, true, (byte) tpduId);
 		return new TPKTPacket(cotpPacketData);
 	}
 
@@ -1611,7 +1611,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		}
 		PlcValue plcValue;
 		try {
-			plcValue = parsePlcValue(tag, data);
+			plcValue = parsePlcValue(tag, data.array());
 		} catch (Exception e) {
 			throw new PlcProtocolException("Error decoding PlcValue", e);
 		}
@@ -1812,10 +1812,9 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 			responseCode = decodeResponseCode(payloadItem.getReturnCode());
 			plcValue = null;
 
-			ByteBuf data = Unpooled.wrappedBuffer(payloadItem.getData());
 			if (responseCode == PlcResponseCode.OK) {
 				try {
-					plcValue = parsePlcValue(tag, data);
+					plcValue = parsePlcValue(tag, payloadItem.getData());
 				} catch (Exception e) {
 					throw new PlcProtocolException("Error decoding PlcValue", e);
 				}
@@ -1925,8 +1924,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		return null;
 	}
 
-	private PlcValue parsePlcValue(S7Tag tag, ByteBuf data) {
-		ReadBuffer readBuffer = new ReadBufferByteBased(data.array());
+	private PlcValue parsePlcValue(S7Tag tag, byte[] data) {
+		ReadBuffer readBuffer = new ReadBufferByteBased(data);
 		try {
 			int stringLength = (tag instanceof S7StringTag) ? ((S7StringTag) tag).getStringLength() : 254;
 			if (tag.getNumberOfElements() == 1) {
