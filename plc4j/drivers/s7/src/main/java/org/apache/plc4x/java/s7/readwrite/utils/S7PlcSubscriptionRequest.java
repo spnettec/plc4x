@@ -160,26 +160,26 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         * This method receives a String that describes an S7Tag and the
-         * interval required for its sampling.
-         * The value of the "pollingInterval" parameter is adapted to the
-         * cyclical subscription requirements of an S7-300/S7-400,
-         * for which multiples of the time base given by TimeBase
-         * must be handled. To say:
-         *
-         * . B01SEC -> 100, 200, 300, 400, 500, 600, 700, 800, 900 msec
-         * . B1SEC  ->   1,   2,   3,   4,   5,   6,   7,   8,   9 sec
-         * . B10SEC ->  10,  20,  30,  40,  50,  60,  70,  80,  90 sec
-         *
-         * As you can see there are no intermediate values, for example 513 msec,
-         * it will actually be 500 msec, or its nearest rounding.
-         *
-         * @param name Name of the subscription Tag.
-         * @param tagAddress String representing an S7Tag
-         * @param pollingInterval Required sampling rate based on the "TimeBase"
-         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
-         *
-         */
+        * This method receives a String that describes an S7Tag and the
+        * interval required for its sampling.
+        * The value of the "pollingInterval" parameter is adapted to the
+        * cyclical subscription requirements of an S7-300/S7-400,
+        * for which multiples of the time base given by TimeBase
+        * must be handled. To say:
+        *
+        * . B01SEC -> 100, 200, 300, 400, 500, 600, 700, 800, 900 msec
+        * . B1SEC  ->   1,   2,   3,   4,   5,   6,   7,   8,   9 sec
+        * . B10SEC ->  10,  20,  30,  40,  50,  60,  70,  80,  90 sec
+        *
+        * As you can see there are no intermediate values, for example 513 msec,
+        * it will actually be 500 msec, or its nearest rounding.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tagAddress String representing an S7Tag
+        * @param pollingInterval Required sampling rate based on the "TimeBase"
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        *
+        */
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTagAddress(String name, String tagAddress, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
@@ -204,15 +204,15 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         * This method receives an S7Tag built by the user, he is responsible
-         * for the construction of the object, so no additional verification
-         * is included.
-         *
-         * @param name Name of the subscription Tag.
-         * @param tag    Tag of S7SubscriptionTag type.
-         * @param pollingInterval Required sampling rate based on the "TimeBase"
-         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
-         */
+        * This method receives an S7Tag built by the user, he is responsible
+        * for the construction of the object, so no additional verification
+        * is included.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.
+        * @param pollingInterval Required sampling rate based on the "TimeBase"
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        */
         @Override
         public PlcSubscriptionRequest.Builder addCyclicTag(String name, PlcTag tag, Duration pollingInterval, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
@@ -231,8 +231,8 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         *
-         */
+        *
+        */
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
@@ -250,8 +250,8 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         *
-         */
+        *
+        */
         @Override
         public PlcSubscriptionRequest.Builder addChangeOfStateTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
@@ -270,33 +270,33 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         * This method is responsible for the subscription to Events associated
-         * with the PLC as well as the preliminary version of cyclical
-         * subscription of values.
-         *
-         * The type of function performed by the tag is given by the definition
-         * of the "tagAddress", for example:
-         *
-         * "ACK:16#12345678"
-         *
-         * Represents an acknowledgment of an alarm whose ID is 16#12345678.
-         * The following functions are defined:
-         *
-         * . MODE
-         * . SYS
-         * . USR
-         * . ALM
-         * . ACK
-         * . QUERY
-         * . CYC
-         * . CANCEL
-         *
-         * Go to the driver manual for a complete description.
-         *
-         * @param name Name of the subscription Tag.
-         * @param tag    Tag of S7SubscriptionTag type.
-         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
-         */
+        * This method is responsible for the subscription to Events associated
+        * with the PLC as well as the preliminary version of cyclical
+        * subscription of values.
+        *
+        * The type of function performed by the tag is given by the definition
+        * of the "tagAddress", for example:
+        *
+        * "ACK:16#12345678"
+        *
+        * Represents an acknowledgment of an alarm whose ID is 16#12345678.
+        * The following functions are defined:
+        *
+        * . MODE
+        * . SYS
+        * . USR
+        * . ALM
+        * . ACK
+        * . QUERY
+        * . CYC
+        * . CANCEL
+        *
+        * Go to the driver manual for a complete description.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        */
         @Override
         public PlcSubscriptionRequest.Builder addEventTagAddress(String name, String tagAddress, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {
@@ -316,14 +316,14 @@ public class S7PlcSubscriptionRequest implements PlcSubscriptionRequest, Seriali
         }
 
         /*
-         * This method receives an S7Tag built by the user, he is responsible
-         * for the construction of the object, so no additional verification
-         * is included.
-         *
-         * @param name Name of the subscription Tag.
-         * @param tag    Tag of S7SubscriptionTag type.
-         * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
-         */
+        * This method receives an S7Tag built by the user, he is responsible
+        * for the construction of the object, so no additional verification
+        * is included.
+        *
+        * @param name Name of the subscription Tag.
+        * @param tag    Tag of S7SubscriptionTag type.
+        * @return PlcSubscriptionRequest.Builder S7SubscriptonTag type constructor
+        */
         @Override
         public PlcSubscriptionRequest.Builder addEventTag(String name, PlcTag tag, Consumer<PlcSubscriptionEvent> consumer) {
             if (tags.containsKey(name)) {

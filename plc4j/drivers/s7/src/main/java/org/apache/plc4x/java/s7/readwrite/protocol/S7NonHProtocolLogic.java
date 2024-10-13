@@ -497,8 +497,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 							.onTimeout(new TransactionTimeOutCallback<>(future, transaction, conversationContext.getChannel()))
 							.onError(new TransactionErrorCallback<>(future, transaction, conversationContext.getChannel()))
 							.expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
-							.check(p -> p.getPayload() instanceof COTPPacketData).unwrap(p -> (COTPPacketData) p.getPayload())
-							.check(p -> p.getPayload() != null).unwrap(COTPPacket::getPayload)
+							.check(p -> p.getPayload() instanceof COTPPacketData)
+                            .unwrap(p -> (COTPPacketData) p.getPayload())
+							.check(p -> p.getPayload() != null)
+                            .unwrap(COTPPacket::getPayload)
 							.check(p -> p.getTpduReference() == message.getTpduReference()).handle(p -> {
 								future.complete(p);
 								transaction.endRequest();

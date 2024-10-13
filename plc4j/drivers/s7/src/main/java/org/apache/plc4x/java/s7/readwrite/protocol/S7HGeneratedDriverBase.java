@@ -129,6 +129,7 @@ public class S7HGeneratedDriverBase extends GeneratedDriverBase<TPKTPacket> {
                 configure(configuration, secondaryChannelFactory);
             }
         }
+
         // Give drivers the option to customize the channel.
         initializePipeline(channelFactory);
 
