@@ -352,7 +352,12 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		responseFuture.whenComplete((s7Message, throwable) -> {
 			if (throwable != null) {
-				clientFuture.completeExceptionally(new PlcProtocolException("Error writing", throwable));
+                Map<String, PlcResponseCode> responses = new HashMap<>();
+                for (String tagName : writeRequest.getTagNames()) {
+                    responses.put(tagName, PlcResponseCode.INTERNAL_ERROR);
+                }
+                clientFuture.complete(new DefaultPlcWriteResponse(writeRequest, responses));
+				//clientFuture.completeExceptionally(new PlcProtocolException("Error writing", throwable));
 			} else {
 				try {
 					PlcWriteResponse response = (PlcWriteResponse) decodeWriteResponse(s7Message, writeRequest);
@@ -1333,7 +1338,7 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 		// Get the tpduId from the S7 message.
 		int tpduId = request.getTpduReference();
 
-		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) 0));
+		TPKTPacket tpktPacket = new TPKTPacket(new COTPPacketData(null, request, true, (byte) tpduId));
 
 		// Start a new request-transaction (Is ended in the response-handler)
 		RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
@@ -1864,8 +1869,8 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 				logger.warn("Got an unknown error response from the PLC. Error Class: {}, Error Code {}. " +
 								"We probably need to implement explicit handling for this, so please file a bug-report " +
 								"on https://issues.apache.org/jira/projects/PLC4X and ideally attach a WireShark dump " +
-								"containing a capture of the communication.",
-						errorClass, errorCode);
+								"containing a capture of the communication.tags:{}",
+						errorClass, errorCode, plcWriteRequest.getTagNames());
 				for (String tagName : plcWriteRequest.getTagNames()) {
 					responses.put(tagName, PlcResponseCode.INTERNAL_ERROR);
 				}
@@ -1875,7 +1880,10 @@ public class S7NonHProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implement
 
 		// In all other cases all went well.
 		S7PayloadWriteVarResponse payload = (S7PayloadWriteVarResponse) responseMessage.getPayload();
-
+        if (payload==null) {
+            throw new PlcProtocolException(
+                "response null");
+        }
 		// If the numbers of items don't match, we're in big trouble as the only
 		// way to know how to interpret the responses is by aligning them with the
 		// items from the request as this information is not returned by the PLC.

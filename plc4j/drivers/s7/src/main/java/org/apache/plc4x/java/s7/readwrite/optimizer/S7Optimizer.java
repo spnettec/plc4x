@@ -204,13 +204,16 @@ public class S7Optimizer extends BaseOptimizer {
                 curRequestSize += writeRequestItemSize;
                 curResponseSize += writeResponseItemSize;
 
+                curTags.put(tagName, new DefaultPlcTagValueItem<>(tag, value));
                 // Add the item.
             }
             // If adding them would exceed, start a new request.
             else {
                 // Create a new PlcWriteRequest containing the current tag item.
-                processedRequests.add(new DefaultPlcWriteRequest(
-                    ((DefaultPlcWriteRequest) writeRequest).getWriter(), curTags));
+                if(!curTags.isEmpty()) {
+                    processedRequests.add(
+                        new DefaultPlcWriteRequest(((DefaultPlcWriteRequest) writeRequest).getWriter(), curTags));
+                }
 
                 // Reset the size and item lists.
                 curRequestSize = EMPTY_WRITE_REQUEST_SIZE + writeRequestItemSize;
@@ -222,10 +225,10 @@ public class S7Optimizer extends BaseOptimizer {
                     ((curResponseSize + writeResponseItemSize) > s7DriverContext.getPduSize())) {
                     processedRequests.add(new LargeTagPlcWriteRequest(tagName,value,new DefaultPlcTagItem<>(tag)));
                     //throw new PlcRuntimeException("Tag size exceeds maximum payload for one item.");
+                } else {
+                    curTags.put(tagName, new DefaultPlcTagValueItem<>(tag, value));
                 }
             }
-            curTags.put(tagName, new DefaultPlcTagValueItem<>(tag, value) {
-            });
         }
 
         // Create a new PlcWriteRequest from the remaining tag items.

@@ -36,7 +36,7 @@ import java.time.LocalTime;
 public class WriteDatatypesTest {
 
     public static void main(String[] args) throws Exception {
-        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://10.80.41.47")) {
+        try (PlcConnection connection = new DefaultPlcDriverManager().getConnection("s7://100.64.0.7")) {
             final PlcWriteRequest.Builder builder = connection.writeRequestBuilder();
             builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL",true); // true
             builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL",true); // false
@@ -73,6 +73,8 @@ public class WriteDatatypesTest {
                 System.out.println(name+":"+writeResponse.getResponseCode(name));
             });
 
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

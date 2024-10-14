@@ -29,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import org.apache.plc4x.java.api.authentication.PlcAuthentication;
+import org.apache.plc4x.java.api.exceptions.PlcException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.TimeoutManager.CompletionCallback;
@@ -144,6 +145,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
             this.protocolBase.close(new DefaultConversationContext<>(this::registerHandler, ctx, authentication, passive));
             closed = true;
         }
+        for(HandlerRegistration registration: registeredHandlers) {
+            BiConsumer biConsumer = registration.getErrorConsumer();
+            biConsumer.accept(null,new PlcException("connection closed and timeoutManager stopped"));
+        }
         timeoutManager.stop();
     }
 
@@ -196,7 +201,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                         }
                     }
                     logger.trace("Handler {} accepts element {}, calling handle method", registration, payload);
-                    this.registeredHandlers.remove(registration);
+                    iter.remove();
                     Consumer handler = registration.getPacketConsumer();
                     handler.accept(message);
                     // Confirm that it was handled!
@@ -211,7 +216,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 }
                 return;
             } else {
-                logger.info("");
+                logger.info("payload class type is incorrect");
             }
         }
         logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);

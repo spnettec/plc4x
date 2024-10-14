@@ -144,6 +144,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             channel = channelFactory.createChannel(getChannelHandler(sessionSetupCompleteFuture, sessionDisconnectCompleteFuture, sessionDiscoveredCompleteFuture));
             channel.closeFuture().addListener(future -> {
                 detectedClosed = true;
+                channel.attr(IS_CONNECTED).set(false);
                 try{
                     if (!sessionSetupCompleteFuture.isDone()) {
                         sessionSetupCompleteFuture.completeExceptionally(
@@ -213,7 +214,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
         } else {
             logger.warn("Channel already closed");
         }
-
+        channel.attr(IS_CONNECTED).set(false);
         if (!sessionDisconnectCompleteFuture.isDone()) {
             sessionDisconnectCompleteFuture.complete(null);
         }
