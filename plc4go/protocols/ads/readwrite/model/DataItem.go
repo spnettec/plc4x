@@ -303,8 +303,8 @@ func DataItemSerialize(value api.PlcValue, plcValueType api.PlcValueType, string
 }
 
 type _DataItem struct {
-	PlcValueType api.PlcValueType
-	StringLength int32
+	PlcValueType   api.PlcValueType
+	StringLength   int32
 	StringEncoding string
 }
 
