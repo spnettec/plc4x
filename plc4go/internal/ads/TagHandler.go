@@ -108,7 +108,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueTypeByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
@@ -216,7 +216,7 @@ func (m TagHandler) ParseTag(query string) (apiModel.PlcTag, error) {
 		if adsDataTypeName == "" {
 			return nil, errors.Errorf("Missing ads data type")
 		}
-		plcValueType, ok := apiValues.PlcValueByName(adsDataTypeName)
+		plcValueType, ok := apiValues.PlcValueTypeByName(adsDataTypeName)
 		if !ok {
 			return nil, fmt.Errorf("invalid ads data type")
 		}
