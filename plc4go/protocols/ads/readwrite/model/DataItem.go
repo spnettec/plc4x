@@ -200,7 +200,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == api.STRING: // STRING
-		// Simple Field (value)
+		// Manual Field (value)
 		value, _valueErr := ParseAmsString(ctx, readBuffer, stringLength, "UTF-8", stringEncoding)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
@@ -209,7 +209,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		readBuffer.CloseContext("DataItem")
 		return values.NewPlcSTRING(value), nil
 	case plcValueType == api.WSTRING: // WSTRING
-		// Simple Field (value)
+		// Manual Field (value)
 		value, _valueErr := ParseAmsString(ctx, readBuffer, stringLength, "UTF-16", stringEncoding)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
@@ -422,24 +422,16 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == api.STRING: // STRING
-		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("Windows-1252)")); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'value' field")
-		}
-
-		// Reserved Field (Just skip the bytes)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(uint8(0x00))); _err != nil {
-			return errors.Wrap(_err, "Error serializing reserved field")
+		// Manual Field (value)
+		_valueErr := SerializeAmsString(ctx, writeBuffer, value, stringLength, "UTF-8", m.GetStringEncoding())
+		if _valueErr != nil {
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case plcValueType == api.WSTRING: // WSTRING
-		// Simple Field (value)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), value.GetString(), utils.WithEncoding("UTF-16LE)")); _err != nil {
-			return errors.Wrap(_err, "Error serializing 'value' field")
-		}
-
-		// Reserved Field (Just skip the bytes)
-		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(uint16(0x0000))); _err != nil {
-			return errors.Wrap(_err, "Error serializing reserved field")
+		// Manual Field (value)
+		_valueErr := SerializeAmsString(ctx, writeBuffer, value, stringLength, "UTF-16", m.GetStringEncoding())
+		if _valueErr != nil {
+			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 	case plcValueType == api.TIME: // TIME
 		// Simple Field (milliseconds)
