@@ -166,6 +166,7 @@ public class DefaultNettyPlcConnection extends AbstractPlcConnection implements 
             }
 
             // Set the connection to "connected"
+            closeExcuted = false;
             connected = true;
             channel.attr(IS_CONNECTED).set(true);
         } catch (InterruptedException e) {
