@@ -22,6 +22,7 @@ import io.netty.buffer.ByteBuf;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.plc4x.java.modbus.ascii.context.ModbusAsciiContext;
+import org.apache.plc4x.java.modbus.base.optimizer.ModbusOptimizer;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
 import org.apache.plc4x.java.spi.configuration.PlcTransportConfiguration;
 import org.apache.plc4x.java.modbus.ascii.config.ModbusAsciiConfiguration;
@@ -115,7 +116,7 @@ public class ModbusAsciiDriver extends GeneratedDriverBase<ModbusAsciiADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+        return new /*SingleTagOptimizer();/*/ModbusOptimizer();
     }
 
     @Override

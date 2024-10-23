@@ -19,6 +19,7 @@
 package org.apache.plc4x.java.modbus.rtu;
 
 import io.netty.buffer.ByteBuf;
+import org.apache.plc4x.java.modbus.base.optimizer.ModbusOptimizer;
 import org.apache.plc4x.java.modbus.readwrite.ModbusADU;
 import org.apache.plc4x.java.modbus.rtu.context.ModbusRtuContext;
 import org.apache.plc4x.java.spi.configuration.PlcConnectionConfiguration;
@@ -35,7 +36,6 @@ import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
-import org.apache.plc4x.java.spi.optimizer.SingleTagOptimizer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -113,7 +113,7 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
     @Override
     protected BaseOptimizer getOptimizer() {
-        return new SingleTagOptimizer();
+        return new /*SingleTagOptimizer();/*/ModbusOptimizer();
     }
 
     @Override
