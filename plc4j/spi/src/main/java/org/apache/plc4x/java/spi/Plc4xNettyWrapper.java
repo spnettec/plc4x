@@ -147,7 +147,10 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
         }
         for(HandlerRegistration registration: registeredHandlers) {
             BiConsumer biConsumer = registration.getErrorConsumer();
-            biConsumer.accept(null,new PlcException("connection closed and timeoutManager stopped"));
+            if (biConsumer!=null) {
+                biConsumer.accept(null, new PlcException("connection closed and timeoutManager stopped"));
+            }
+            registration.confirmError();
         }
         timeoutManager.stop();
     }

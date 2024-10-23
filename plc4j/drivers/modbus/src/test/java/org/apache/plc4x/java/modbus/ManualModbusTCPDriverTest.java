@@ -35,7 +35,7 @@ public class ManualModbusTCPDriverTest  {
         //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
         while(true) {
             try (PlcConnection plcConnection = plcConnectionManager.getConnection(
-                    "modbus-rtu:tcp://10.110.20.56:6000?request-timeout=100")) {
+                    "modbus-rtu:tcp://10.110.20.56:6000?request-timeout=1000")) {
                 final PlcReadRequest readRequest = plcConnection.readRequestBuilder()
                         .addTagAddress("aa", "holding-register:1:UINT[11]").build();
 
