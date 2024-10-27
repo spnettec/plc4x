@@ -281,7 +281,7 @@ public class OpcuaProtocolLogic extends Plc4xProtocolBase<OpcuaAPU> implements H
         for (String tagName : tagMap.keySet()) {
             PlcTag tag = tagMap.get(tagName);
             PlcValue value = null;
-            if(results.size() <= count) {
+            if(results.size() <= index) {
                 LOGGER.error("response error");
                 return null;
             }

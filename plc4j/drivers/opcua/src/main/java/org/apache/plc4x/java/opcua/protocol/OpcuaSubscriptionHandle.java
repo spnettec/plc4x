@@ -37,7 +37,6 @@ import org.apache.plc4x.java.opcua.tag.OpcuaTag;
 import org.apache.plc4x.java.opcua.readwrite.*;
 import org.apache.plc4x.java.spi.messages.DefaultPlcSubscriptionEvent;
 import org.apache.plc4x.java.spi.messages.utils.PlcResponseItem;
-import org.apache.plc4x.java.spi.messages.utils.PlcTagItem;
 import org.apache.plc4x.java.spi.model.DefaultPlcConsumerRegistration;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionTag;
 import org.apache.plc4x.java.spi.model.DefaultPlcSubscriptionHandle;

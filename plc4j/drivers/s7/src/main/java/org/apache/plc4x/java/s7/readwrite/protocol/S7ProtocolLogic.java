@@ -1472,9 +1472,9 @@ public class S7ProtocolLogic extends Plc4xProtocolBase<TPKTPacket> implements Ha
         RequestTransactionManager.RequestTransaction transaction = tm.startRequest();
         // Send the request.
         transaction.submit(() -> conversationContext.sendRequest(tpktPacket)
-            .onTimeout(new TransactionErrorCallback<>(future, transaction))
-            .onError(new TransactionErrorCallback<>(future, transaction))
-            .expectResponse(TPKTPacket.class, REQUEST_TIMEOUT)
+            .onTimeout(new TransactionTimeOutCallback<>(future, transaction,conversationContext.getChannel()))
+            .onError(new TransactionErrorCallback<>(future, transaction,conversationContext.getChannel()))
+            .expectResponse(TPKTPacket.class, Duration.ofMillis(configuration.getTimeoutRequest()))
             .unwrap(TPKTPacket::getPayload)
             .only(COTPPacketData.class)
             .check(p -> p.getPayload() != null)

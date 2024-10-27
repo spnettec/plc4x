@@ -1243,6 +1243,18 @@
               </PlcResponseItem>
             </hurz>
           </values>
+          <metadata isList="true">
+            <hurz>
+              <entry>
+                <key dataType="string" bitLength="17" encoding="UTF-8">receive_timestamp</key>
+                <value dataType="string" bitLength="13" encoding="UTF-8" plc4x-skip-comparison="true">0</value>
+              </entry>
+              <entry>
+                <key dataType="string" bitLength="16" encoding="UTF-8">timestamp_source</key>
+                <value dataType="string" bitLength="10" encoding="UTF-8">ASSUMPTION</value>
+              </entry>
+            </hurz>
+          </metadata>
         </PlcReadResponse>
       </api-response>
     </steps>
