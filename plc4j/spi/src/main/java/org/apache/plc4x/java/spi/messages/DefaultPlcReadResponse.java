@@ -18,10 +18,13 @@
  */
 package org.apache.plc4x.java.spi.messages;
 
+import java.util.Map.Entry;
 import org.apache.plc4x.java.api.exceptions.PlcInvalidTagException;
 import org.apache.plc4x.java.api.exceptions.PlcRuntimeException;
 import org.apache.plc4x.java.api.messages.PlcReadRequest;
 import org.apache.plc4x.java.api.messages.PlcReadResponse;
+import org.apache.plc4x.java.api.metadata.Metadata;
+import org.apache.plc4x.java.spi.metadata.DefaultMetadata;
 import org.apache.plc4x.java.api.model.PlcTag;
 import org.apache.plc4x.java.api.types.PlcResponseCode;
 import org.apache.plc4x.java.spi.generation.SerializationException;
@@ -46,16 +49,29 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
 
     private final PlcReadRequest request;
     private final Map<String, PlcResponseItem<PlcValue>> values;
+    private final Map<String, Metadata> metadata;
 
     public DefaultPlcReadResponse(PlcReadRequest request,
                                   Map<String, PlcResponseItem<PlcValue>> values) {
+        this(request, values, Collections.emptyMap());
+    }
+
+    public DefaultPlcReadResponse(PlcReadRequest request,
+                                  Map<String, PlcResponseItem<PlcValue>> values,
+                                  Map<String, Metadata> metadata) {
         this.request = request;
         this.values = values;
+        this.metadata = Collections.unmodifiableMap(metadata);
     }
 
     @Override
     public PlcReadRequest getRequest() {
         return request;
+    }
+
+    @Override
+    public Metadata getTagMetadata(String tag) {
+        return metadata.getOrDefault(tag, DefaultMetadata.EMPTY);
     }
 
     @Override
@@ -668,6 +684,20 @@ public class DefaultPlcReadResponse implements PlcReadResponse, Serializable {
             writeBuffer.popContext(tagName);
         }
         writeBuffer.popContext("values");
+
+        if (metadata != null && !metadata.isEmpty()) {
+            writeBuffer.pushContext("metadata", WithRenderAsList(true));
+
+            for (Entry<String, Metadata> entry : metadata.entrySet()) {
+                if (entry.getValue() instanceof Serializable) {
+                    writeBuffer.pushContext(entry.getKey());
+                    ((Serializable) entry.getValue()).serialize(writeBuffer);
+                    writeBuffer.popContext(entry.getKey());
+                }
+            }
+
+            writeBuffer.popContext("metadata");
+        }
 
         writeBuffer.popContext("PlcReadResponse");
     }
