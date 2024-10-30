@@ -54,10 +54,10 @@ async def communicate_with_plc():
             builder.add_item("Random Tag", "4x00001[10]")
             request = builder.build()
             print(f"Request built")
-            print(f"Executing request")
-            response = await connection.execute(request)
-            print(f"Request executed")
-            print(f"Response code: {response.response_code}")
+        print(f"Executing request")
+        response = await connection.execute(request)
+        print(f"Request executed")
+        print(f"Response code: {response.response_code}")
 
 asyncio.run(communicate_with_plc())
 ----
@@ -69,11 +69,12 @@ The basic functions supported by PLCs and therefore supported by PLC4X are:
 * Discover Devices (Not yet available for PLC4Py)
 * List resources in the PLC
 * Read data
-* Write data (Not yet available for PLC4Py)
+* Write data
 * Subscribe for data (Not yet available for PLC4Py)
 
 In general, we will try to offer as many features as possible.
-So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background, so it is transparent for the users (This simulation feature hasn't been implemented yet though, but it's on our roadmap).
+So if a protocol doesn't support subscription based communication it is our goal to simulate this by polling in the background,
+so it is transparent for the users (This simulation feature hasn't been implemented yet though, but it's on our roadmap).
 
 But there are some cases in which we can't simulate or features are simply disabled intentionally:
 
@@ -86,7 +87,7 @@ Therefore, we use metadata to check programmatically, if a given feature is avai
 ----
 
 # Check if this connection support reading of data.
-if connection.is_read_supported():
+if not connection.is_read_supported():
     logger.error("This connection doesn't support reading.")
 
 ----
@@ -105,7 +106,8 @@ with connection.read_request_builder() as builder:
 
 So, as you can see, you prepare a request, by adding tag addresses to the request and in the end by calling the `build` method.
 
-If you are using the `BrowseApi` you might also have been provided with `Tag` objects. In that case simply use `addTag` and pass in the `Tag` object instead of the address string.
+If you are using the `BrowseApi` you might also have been provided with `Tag` objects. In that case simply use `add_tag` and
+pass in the `PlcTag` object instead of the address string.
 
 The request is sent to the PLC by issuing the `execute` method on the request object:
 
@@ -120,7 +122,8 @@ except ...
 ----
 
 In general, all requests are executed asynchronously.
-As soon as the request is fully processed, the callback gets called and will contain a `ReadResponse`, if everything went right or an excception  if there were problems.
+As soon as the request is fully processed, the callback gets called and will contain a `ReadResponse`, if everything went right or
+an excception if there were problems.
 
 
 The following example will demonstrate some of the options you have:
@@ -143,7 +146,8 @@ for tag_name in response.tag_names:
 ----
 
 In the for-loop, we are demonstrating how the user can iterate over the tag aliases in the response.
-In case of an ordinary read request, this will be predefined by the items in the request, however in case of a subscription response, the response might only contain some of the items that were subscribed.
+In case of an ordinary read request, this will be predefined by the items in the request, however in case of a subscription
+response, the response might only contain some of the items that were subscribed.
 
 Before accessing the data, it is advisable to check if an item was correctly returned.
 This is done by the `response_code` property for a given alias.
@@ -158,7 +162,8 @@ If this is `PlcResponseCode.OK`, everything is ok, however it could be one of th
 
 Assuming the return code was `OK`, we can continue accessing the data.
 
-As all PlcValue items support the len property, the user can check how many items of a given type are returned by calling len(response.tags[tag_name].value)
+As all PlcValue items support the len property, the user can check how many items of a given type are returned
+by calling len(response.tags[tag_name].value)
 
 You can then treat the values in the PlcList as a list using response.tags[tag_name].value.get_list()
 
@@ -173,7 +178,7 @@ So first it is advisable to check if this connection is even able to write data:
 // Check if this connection support writing of data.
 if not plc_connection.is_write_supported():
   logger.error("This connection doesn't support writing.")
-  return
+
 ----
 
 As soon as we are sure that we can write, we create a new `PlcWriteRequest.Builder`:
@@ -183,8 +188,8 @@ As soon as we are sure that we can write, we create a new `PlcWriteRequest.Build
 // - Give the single item requested an alias name
 // - Pass in the data you want to write (for arrays, pass in a list of values)
 with connection.write_request_builder() as builder:
-    builder.add_item("Random Tag 1", "4x00001[2]", [1, 2])
-    builder.add_item("Random Tag 2", "4x00011", 1)
+    builder.add_item("Random Tag 1", "4x00001[2]", PlcList([PlcINT(1), PlcINT(2)]))
+    builder.add_item("Random Tag 2", "4x00011", PlcINT(1))
     request = builder.build()
 ----
 

@@ -490,11 +490,13 @@ class ReadBufferByteBased(ReadBuffer):
 
     def read_str(self, bit_length: int = -1, logical_name: str = "", **kwargs) -> str:
         byte_order = kwargs.get("byte_order", self.byte_order)
-        result: str = struct.unpack(
+        encoding = kwargs.get("encoding", "utf-8")
+        result: bytes = struct.unpack(
             str(int(bit_length / 8)) + "s",
             self.bb[self.position : self.position + bit_length],
         )[0]
         self.position += bit_length
+        result = result.decode(encoding=encoding, errors="strict")
         return result
 
     def read_array_field(

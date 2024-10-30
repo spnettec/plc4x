@@ -18,6 +18,7 @@
 #
 import asyncio
 import logging
+import math
 from asyncio import Transport
 from dataclasses import dataclass, field
 from math import ceil
@@ -221,7 +222,7 @@ class ModbusDevice:
             )
         elif isinstance(tag, ModbusTagHoldingRegister):
             values = self._serialize_data_items(tag, values)
-            quantity = tag.quantity * (tag.data_type.data_type_size / 2)
+            quantity = math.ceil(tag.quantity * (tag.data_type.data_type_size / 2))
             pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
                 tag.address, quantity, values
             ).build()
@@ -259,15 +260,49 @@ class ModbusDevice:
         return write_response
 
     def _serialize_data_items(self, tag: ModbusTag, values: PlcValue) -> List[int]:
-        length = tag.quantity * tag.data_type.data_type_size
-        write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
-
-        DataItem.static_serialize(
-            write_buffer,
-            values,
-            tag.data_type,
-            tag.quantity,
-            True,
-            self._configuration.byte_order,
-        )
+        if (
+            isinstance(tag, ModbusTagCoil)
+            and (tag.data_type == ModbusDataType.BOOL)
+            and not isinstance(values, PlcList)
+        ):
+            # Booleans are writen different depending on what registers they are being written to
+            length = tag.quantity
+            write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
+            write_buffer.write_unsigned_short(int(0x0000), 7, "int0x0000")
+            # Simple Field (value)
+            value: bool = values.get_bool()
+            write_buffer.write_bit((value), "value")
+        elif (
+            isinstance(tag, ModbusTagCoil)
+            and (tag.data_type == ModbusDataType.BOOL)
+            and isinstance(values, PlcList)
+        ):
+            length = math.ceil(tag.quantity / 8)
+            write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
+            for i in range(length):
+                if i == length - 1:
+                    sub_length = tag.quantity % 8
+                else:
+                    sub_length = 8
+                sub_array = values.value[i * 8 : i * 8 + sub_length]
+                sub_array.reverse()
+                for j in range(8 - sub_length):
+                    write_buffer.write_bit(False, "value")
+                for item in sub_array:
+                    # Simple Field (value)
+                    value: bool = item.get_bool()
+                    write_buffer.write_bit(value, "value")
+        else:
+            length = tag.quantity * tag.data_type.data_type_size
+            if (length % 2) == 1:
+                length += 1
+            write_buffer = WriteBufferByteBased(length, self._configuration.byte_order)
+            DataItem.static_serialize(
+                write_buffer,
+                values,
+                tag.data_type,
+                tag.quantity,
+                True,
+                self._configuration.byte_order,
+            )
         return list(write_buffer.get_bytes().tobytes())

@@ -31,13 +31,11 @@ from plc4py.spi.values.PlcValues import PlcDWORD
 from plc4py.spi.values.PlcValues import PlcINT
 from plc4py.spi.values.PlcValues import PlcList
 from plc4py.spi.values.PlcValues import PlcREAL
-from plc4py.spi.values.PlcValues import PlcSINT
 from plc4py.spi.values.PlcValues import PlcSTRING
 from plc4py.spi.values.PlcValues import PlcTIME
 from plc4py.spi.values.PlcValues import PlcTIME_OF_DAY
 from plc4py.spi.values.PlcValues import PlcUDINT
 from plc4py.spi.values.PlcValues import PlcUINT
-from plc4py.spi.values.PlcValues import PlcULINT
 from plc4py.spi.values.PlcValues import PlcWORD
 from plc4py.utils.GenericTypes import ByteOrder
 from typing import List
@@ -98,7 +96,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(PlcBYTE(int(read_buffer.read_byte(""))))
+                value.append(read_buffer.read_byte(""))
 
             return PlcList(value)
         if data_type == UmasDataType.WORD:  # WORD
@@ -125,7 +123,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(PlcINT(int(read_buffer.read_short(16, logical_name=""))))
+                value.append(read_buffer.read_short(16, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.DINT and number_of_values == int(1):  # DINT
@@ -140,7 +138,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(PlcDINT(int(read_buffer.read_int(32, logical_name=""))))
+                value.append(read_buffer.read_int(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.UINT and number_of_values == int(1):  # UINT
@@ -155,9 +153,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcUDINT(int(read_buffer.read_unsigned_int(16, logical_name="")))
-                )
+                value.append(read_buffer.read_unsigned_int(16, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.UDINT and number_of_values == int(1):  # UDINT
@@ -172,9 +168,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
-                )
+                value.append(read_buffer.read_unsigned_long(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.REAL and number_of_values == int(1):  # REAL
@@ -189,9 +183,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcREAL(float(read_buffer.read_float(32, logical_name="")))
-                )
+                value.append(read_buffer.read_float(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.STRING and number_of_values == int(1):  # STRING
@@ -209,9 +201,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcREAL(float(read_buffer.read_float(32, logical_name="")))
-                )
+                value.append(read_buffer.read_float(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.TIME and number_of_values == int(1):  # TIME
@@ -226,9 +216,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
-                )
+                value.append(read_buffer.read_unsigned_long(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.DATE and number_of_values == int(1):  # DATE
@@ -262,9 +250,7 @@ class DataItem:
             item_count: int = int(number_of_values)
             value: List[PlcValue] = []
             for _ in range(item_count):
-                value.append(
-                    PlcULINT(int(read_buffer.read_unsigned_long(32, logical_name="")))
-                )
+                value.append(read_buffer.read_unsigned_long(32, logical_name=""))
 
             return PlcList(value)
         if data_type == UmasDataType.DATE_AND_TIME and number_of_values == int(
