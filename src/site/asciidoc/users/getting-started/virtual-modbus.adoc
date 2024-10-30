@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../images/
 
-== Playing around with Apache PLC4X with a virtual Modbus PLC
+= Playing around with Apache PLC4X with a virtual Modbus PLC
 
 If you want to get started with Apache PLC4X, but don't have any PLC at hand, this tutorial will demonstrate how you can use a virtual `Modbus Slave` software to simulate communication with `Modbus` enabled PLCs.
 
@@ -24,7 +24,7 @@ Such a fully open-source software is `ModbusPal` which is available from http://
 
 All you need, is to download the file called `ModbusPal.jar`.
 
-=== Setting up the virtual Modbus Slave
+== Setting up the virtual Modbus Slave
 
 In order to run the software, you just need to execute the following command in the same directory you downloaded the Jar to:
 

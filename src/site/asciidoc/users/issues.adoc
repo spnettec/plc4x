@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Bug & Issue Tracker
+= Bug & Issue Tracker
 
 Our bug & issue tracker is Github-Issues.
 

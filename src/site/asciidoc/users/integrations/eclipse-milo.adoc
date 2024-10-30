@@ -15,12 +15,12 @@
 //  limitations under the License.
 //
 
-== Introduction
+= Introduction
 
 The PLC4X OPC UA server integration is based around the Eclipse Milo OPC UA server. It uses PLC4X to communicate with
 industrial devices effectively acting as a industrial OPC UA gateway.
 
-== Building the server
+= Building the server
 
 The OPC UA server can be built using maven as part of the PLC4X build.
 ```
@@ -30,7 +30,7 @@ mvn install
 This creates a target directory within plc4x/plc4j/integrations/opcua-server containing a jar file which is the main java
 executable.
 
-== Configuration File
+= Configuration File
 
 The config.yml file is used to configure the server. The following root level settings should be configured.
 
@@ -93,7 +93,7 @@ tcpPort: 12687
 httpPort: 8445
 ```
 
-== Running
+= Running
 
 To run the java executable execute:-
 ```

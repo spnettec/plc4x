@@ -17,7 +17,7 @@
 :imagesdir: ../../images/
 :icons: font
 
-== SocketCAN
+= SocketCAN
 
 [cols="2,2a,5a"]
 |===

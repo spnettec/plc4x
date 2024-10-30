@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../images/
 
-== S7 Comm Plus (0x72)
+= S7 Comm Plus (0x72)
 
 The `S7 Comm Plus` protocol is a new version of the original `S7 Comm` protocol.
 While a `S7 Comm` packet is identified, by the magic byte `0x32`, the `S7 Comm Plus` packet uses the magic byte `0x72`.

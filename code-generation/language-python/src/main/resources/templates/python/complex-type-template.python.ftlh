@@ -565,7 +565,7 @@ class ${type.name}<#if type.isDiscriminatedParentTypeDefinition()></#if>(<#if ty
             <#if parserArgument.type.isEnumTypeReference()>
             ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}[${helper.camelCaseToSnakeCase(parserArgument.name)}]
             <#elseif helper.getLanguageTypeNameForTypeReference(parserArgument.type, false) = "bool">
-            <@emitImport import="from distutils.util import strtobool" />
+            <@emitImport import="from plc4py.utils.ConnectionStringHandling import strtobool" />
             ${helper.camelCaseToSnakeCase(parserArgument.name)} = bool(strtobool(${helper.camelCaseToSnakeCase(parserArgument.name)}))
             <#else>
             ${helper.camelCaseToSnakeCase(parserArgument.name)} = ${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)}(${helper.camelCaseToSnakeCase(parserArgument.name)})

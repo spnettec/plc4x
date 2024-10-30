@@ -15,12 +15,12 @@
 //  limitations under the License.
 //
 
-== Allen-Bradley Ethernet
+= Allen-Bradley Ethernet
 
 The Allen-Bradley Ethernet protocol encapsulates a DF1 protocol body to transfer data. The PLC4X driver currently only
 supports the protected typed logical read with a limited number of data types.
 
-=== Connection
+== Connection
 
 The connection string looks as follows: `ab-eth://<ip-address>/<station>`
 

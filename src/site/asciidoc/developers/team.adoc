@@ -17,12 +17,12 @@
 :imagesdir: ../images/
 :icons: font
 
-== Team
+= Team
 
 Sorted by first name:
 
 [width="100%",cols="2,4,1,1",options="header"]
-|=========================================================
+|===
 |Name |Bio | |
 | *Ben Hutcheson*
 
@@ -88,3 +88,4 @@ Engineer
 pragmatic industries GmbH
 
 Nürtingen |Electrical engineer (HW, SW and interface-stuff) from passion and very new to Apache projects. The more he is involved in open-source the more he likes it, focusing on PLC4X at first. | a|image::team/tmitsch.png[tmitsch, 240, 263]
+|===

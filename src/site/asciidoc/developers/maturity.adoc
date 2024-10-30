@@ -17,15 +17,15 @@
 
 :icons: font
 
-== Apache Maturity Model Assessment for PLC4X
+= Apache Maturity Model Assessment for PLC4X
 
-=== Overview
+== Overview
 
 This is an assessment of the PLC4X project's maturity, meant to help inform the decision (of the mentors, community, Incubator PMC and ASF Board of Directors) to graduate it as a top-level Apache project.
 
 It is based on the ASF project maturity model at https://community.apache.org/apache-way/apache-project-maturity-model.html
 
-=== Maturity model assessment
+== Maturity model assessment
 
 Community members are encouraged to contribute to this page and comment on it, the following table summarizes project’s self-assessment against the Apache Maturity Model.
 

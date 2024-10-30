@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../images/
 
-== Code Generation
+= Code Generation
 
 As hand-writing code for a lot of drivers in multiple languages would be quite a nightmare, we have invested a very large amount of time into finding a way to automate this.
 
@@ -120,7 +120,7 @@ So for example in case of generating a `Siemens S7` Driver for `Java` this would
 
 The dark blue parts are the ones released externally, the turquoise ones are part of the main PLC4X repo.
 
-=== Introduction
+== Introduction
 
 The maven plugin is built up very modular.
 
@@ -141,7 +141,7 @@ The downside was, that the PLC4X community regarded this XML format as pretty co
 
 In the end we came up with our own format which we called `MSpec` and is described in the link:protocol/mspec.html[MSpec Format description].
 
-=== Configuration
+== Configuration
 
 The `plc4x-maven-plugin` has a very limited set of configuration options.
 
@@ -295,11 +295,11 @@ and:
 
 The reason for why the dependencies are added as code-dependencies and why the scope is set the way it is, is described in the <<Why are the protocol and language dependencies done so strangely?>> section.
 
-=== Custom Modules
+== Custom Modules
 
 The plugin uses the https://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html[Java Serviceloader] mechanism to find modules.
 
-==== Protocol Modules
+=== Protocol Modules
 
 In order to provide a new protocol module, all that is required, it so create a module containing a `META-INF/services/org.apache.plc4x.plugins.codegenerator.protocol.Protocol` file referencing an implementation of the `org.apache.plc4x.plugins.codegenerator.protocol.Protocol` interface.
 
@@ -346,7 +346,7 @@ As mentioned before, we support multiple versions of a protocol, so if `getVersi
 
 The most important method for the actual code-generation however is the `getTypeContext()` method, which returns a `TypeContext` type which generally contains a list of all parsed types for this given protocol.
 
-==== Language Modules
+=== Language Modules
 
 Analog to the <<Protocol Modules>> the Language modules are constructed very similar.
 
@@ -394,9 +394,9 @@ The `name` being used by the plugin to find the language output module defined b
 
 `supportedOptions` provides a list of `options` that the current language module is able to use and which can be passed in to the maven configuration using the `options` settings.
 
-=== Problems with Maven
+== Problems with Maven
 
-==== Why are the 4 modules released separately?
+=== Why are the 4 modules released separately?
 
 We mentioned in the introduction, that the first 4 modules are maintained and released from outside the main PLC4X repository.
 
@@ -417,7 +417,7 @@ For this reason we have stripped down the plugin and its dependencies to an abso
 
 As soon as the tooling is released, the version is updated in the PLC4X build and the release version is used without any complications.
 
-==== Why are the protocol and language dependencies done so strangely?
+=== Why are the protocol and language dependencies done so strangely?
 
 It would certainly be a lot cleaner, if we provided the dependencies to protocol and language modules as plugin dependencies.
 

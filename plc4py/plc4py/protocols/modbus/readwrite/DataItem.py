@@ -425,7 +425,7 @@ class DataItem:
         if data_type == ModbusDataType.CHAR and number_of_values == int(1):  # CHAR
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(8, logical_name="", encoding="")
+            value: str = read_buffer.read_str(8, logical_name="", encoding='"UTF-8"')
 
             return PlcCHAR(value)
         if data_type == ModbusDataType.CHAR:  # List
@@ -436,7 +436,9 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(read_buffer.read_str(8, logical_name="", encoding=""))
+                        str(
+                            read_buffer.read_str(8, logical_name="", encoding='"UTF-8"')
+                        )
                     )
                 )
 
@@ -444,7 +446,7 @@ class DataItem:
         if data_type == ModbusDataType.WCHAR and number_of_values == int(1):  # WCHAR
 
             # Simple Field (value)
-            value: str = read_buffer.read_str(16, logical_name="", encoding="")
+            value: str = read_buffer.read_str(16, logical_name="", encoding='"UTF-16"')
 
             return PlcWCHAR(value)
         if data_type == ModbusDataType.WCHAR:  # List
@@ -455,7 +457,11 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(read_buffer.read_str(16, logical_name="", encoding=""))
+                        str(
+                            read_buffer.read_str(
+                                16, logical_name="", encoding='"UTF-16"'
+                            )
+                        )
                     )
                 )
 
@@ -691,24 +697,24 @@ class DataItem:
         elif data_type == ModbusDataType.CHAR and number_of_values == int(1):  # CHAR
             # Simple Field (value)
             value: str = _value.get_str()
-            write_buffer.write_str((value), 8, "UTF-8", "value")
+            write_buffer.write_str((value), 8, "value", "UTF-8")
 
         elif data_type == ModbusDataType.CHAR:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
                 value: str = val.get_str()
-                write_buffer.write_str((value), 8, "UTF-8", "value")
+                write_buffer.write_str((value), 8, "value", "UTF-8")
 
         elif data_type == ModbusDataType.WCHAR and number_of_values == int(1):  # WCHAR
             # Simple Field (value)
             value: str = _value.get_str()
-            write_buffer.write_str((value), 16, "UTF-16", "value")
+            write_buffer.write_str((value), 16, "value", "UTF-16")
 
         elif data_type == ModbusDataType.WCHAR:  # List
             values: PlcList = cast(PlcList, _value)
             for val in values.get_list():
                 value: str = val.get_str()
-                write_buffer.write_str((value), 16, "UTF-16", "value")
+                write_buffer.write_str((value), 16, "value", "UTF-16")
 
     @staticmethod
     def get_length_in_bytes(

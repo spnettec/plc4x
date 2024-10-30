@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../images/
 
-== Basic Building Blocs of a Driver / Protocol
+= Basic Building Blocs of a Driver / Protocol
 
 The general pipeline for a Protocol looks like the following:
 

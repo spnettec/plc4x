@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== CANopen
+= CANopen
 
 CANopen is communication protocol built on top of CAN.
 CAN is a popular link layer standard which allows exchanging data between nodes and build multi-node applications.
@@ -31,7 +31,7 @@ Please refer the official materials for more details on protocol and its constru
 Apache PLC4X is open source project.
 It is not a certified product.
 
-=== Links
+== Links
 
 - https://www.can-cia.org/canopen[CAN in Automation] organization managing specification.
 - Public materials published by CAN in Automation: https://www.can-cia.org/en/download/

@@ -15,9 +15,9 @@
 //  limitations under the License.
 //
 
-== Getting Started with Java
+= Getting Started with Java
 
-=== Using the PLC4J API directly
+== Using the PLC4J API directly
 
 In order to write a valid PLC4X Java application, all you need, is to add a dependency to the `api module`.
 When using Maven, all you need to do is add this dependency:
@@ -79,7 +79,7 @@ But there are some cases in which we can't simulate or features are simply disab
 
 Therefore, we use metadata to check programmatically, if a given feature is available.
 
-==== Reading Data
+=== Reading Data
 
 ----
 // Check if this connection support reading of data.
@@ -185,7 +185,7 @@ PLC4X provides getters and setters for a wide variety of Java types and automati
 However, when for example trying to get a long-value as a byte and the long-value exceeds the range supported by the smaller type, a `RuntimeException` of type `PlcIncompatibleDatatypeException`.
 In order to avoid causing this exception to be thrown, however there are `isValid{TypeName}` methods that you can use to check if the value is compatible.
 
-==== Writing Data
+=== Writing Data
 
 In general the structure of code for writing data is extremely similar to that of reading data.
 
@@ -241,7 +241,7 @@ for (String tagName : response.getTagNames()) {
 }
 ----
 
-==== Subscribing to Data
+=== Subscribing to Data
 
 Subscribing to data can be considered similar to reading data, at least the subscription itself if very similar to reading of data.
 

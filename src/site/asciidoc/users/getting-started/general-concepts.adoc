@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== General Concepts
+= General Concepts
 
 On this page we'll give a short introduction to the most important concepts that will help you understand Apache PLC4X better.
 
@@ -33,7 +33,7 @@ Both are pretty dependent on the type of device you are planning to communicate 
 
 If you are familiar with `JDBC` or `ODBC`, you will easily understand the concepts in PLC4X, as these were a great inspiration for the creation of Apache PLC4X.
 
-=== Connections
+== Connections
 
 In general a connection is a physical or logical connection between two endpoints.
 
@@ -65,7 +65,7 @@ From a driver point of view there is actually no difference between a `Raw Socke
 
 The `Test` transport is generally built for being used inside the PLC4X test framework as it allows fine-grained access to the input and output of the drivers. With the test transport we can explicitly control which data is passed into and retrieved from drivers and to validate this in unit- and integration-tests.
 
-==== Connection Strings
+=== Connection Strings
 
 A fully qualified PLC4X connection string would look like this:
 
@@ -103,7 +103,26 @@ The shortest version of a fully qualified connection string would look something
 
 For more information on the default settings for a given protocol or transport, please check the corresponding drivers documentation.
 
-=== Individual Resource Addresses (Tags)
+== Individual Resource Addresses (Tags)
 
 Addresses for individual tags on a PLC are extremely dependent on the used protocol.
 As we usually decided to stick to the address formats that are used in those particular environments, please check the `Protocol Documentation` on details about these address formats link:../protocols/index.html[here].
+
+The tag syntax is fairly generic and can be summarized as `type:address`.
+Some protocols might support tag attributes which are specified as key-value pairs after primary tag address.
+For example `coil:1{unit-id: 10}`.
+Tag attributes are additional elements which depend on actual protocol.
+
+== Tag metadata
+
+Starting from Apache PLC4X release 0.13 an experimental support for result set metadata is provided in plc4j.
+This metadata is dedicated to provide additional information which might be available at protocol (sample timestamp) or driver level (i.e. packet receive time).
+Consult again protocol documentation on specifics of this feature.
+
+The common metadata keys currently defined are:
+
+* timestamp - timestamp for tag value provided by other communication party.
+* timestamp_source - source of timestamp or receive_timestamp field, if any of these is provided.
+* receive_timestamp - timestamp assumed upon receiving of packet with data.
+
+

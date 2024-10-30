@@ -17,7 +17,7 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Apache Calcite
+= Apache Calcite
 
 https://calcite.apache.org/[Apache Calcite]
 Standard SQL

@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Code Analysis
+= Code Analysis
 
 We are using `SonarCloud` as the service for static code analysis.
 

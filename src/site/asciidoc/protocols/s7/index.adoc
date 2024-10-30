@@ -16,14 +16,14 @@
 //
 :imagesdir: ../../images/
 
-== S7 Communication
+= S7 Communication
 
 When communicating with S7 Devices there is a whole family of protocols, that can be used.
 In general you can divide them into `Profinet` protocols and `S7 Comm` protocols.
 The later are far simpler in structure, but also far less documented.
 The `S7 Comm` protocols are generally split up into two flavours: The classic `S7 Comm` and a newer version unofficially called `S7 Comm Plus`.
 
-=== Overview of the Protocols
+== Overview of the Protocols
 
 [ditaa,protocols-s7-osi]
 ....
@@ -83,7 +83,7 @@ The `S7 Comm` protocols are generally split up into two flavours: The classic `S
 - - - - - - - - - - +-------------------------------------------------------------------------------------------------+ - -
 ....
 
-=== Protocol Descriptions
+== Protocol Descriptions
 
 |===
 |Name |ISO |RFC |Link
@@ -96,7 +96,7 @@ The `S7 Comm` protocols are generally split up into two flavours: The classic `S
 |DCOM |- |- | https://msdn.microsoft.com/library/cc201989.aspx
 |===
 
-=== Interaction with an S7 PLC
+== Interaction with an S7 PLC
 
 Currently we are concentrating on implementing the TCP-based variants of the `S7 Comm` and `S7 Comm Plus` protocols.
 Both are transferred using `ISO TP` which is wrapped by `ISO on TCP`.
@@ -140,7 +140,7 @@ Each message is called a `TPDU` (Transport Protocol Data Unit):
 
 Notice: There is no `Disconnect Response` in `ISO TP: Class 0`.
 
-==== Connection Request TPDU
+=== Connection Request TPDU
 
 // len (length of bits - use instead of explicit byte count - requires "*" as first element)
 // label
@@ -198,11 +198,11 @@ Legend:
 - [protocolId]#Part of the packet that identifies the type of request#
 - [protocolParameter]#Variable Parts of the ISO Transport Protocol Packet Header#
 
-==== Connection Response TPDU
+=== Connection Response TPDU
 
 The `Connection Response` is identical to the `Connection Request` with the only difference that the `TPDU-Code` has a code of `0xD0`.
 
-==== Data TPDU
+=== Data TPDU
 
 // len (length of bits - use instead of explicit byte count - requires "*" as first element)
 // label

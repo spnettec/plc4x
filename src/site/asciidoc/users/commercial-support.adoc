@@ -17,7 +17,7 @@
 :imagesdir: ../images/
 :icons: font
 
-== Commercial support offerings for Apache PLC4X
+= Commercial support offerings for Apache PLC4X
 
 image::toddy-loves-apache.png[width=200,float=left]
 
@@ -40,11 +40,11 @@ a|image::users/companies/logo-timecho.png[timecho, 200, 200]  |https://www.timec
 
 |===
 
-=== Who can be added to this list?
+== Who can be added to this list?
 
 Anyone who provides `Apache PLC4X` related services can be added to this list (e.g. training, consulting, custom software development, support, installation or related services).
 
-=== How can I get added to this list?
+== How can I get added to this list?
 
 Please create a Pull-Request on GitHub as described https://plc4x.apache.org/developers/contributing.html[here]. The resource requiring editing can be found https://github.com/apache/plc4x/blob/develop/src/site/asciidoc/users/commercial-support.adoc[here]
 

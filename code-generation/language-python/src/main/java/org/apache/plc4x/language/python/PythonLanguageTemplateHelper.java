@@ -579,7 +579,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             case BYTE:
                 // Byte values are represented as signed integers in PLC4Py
                 emitRequiredImport("from plc4py.spi.values.PlcValues import PlcSINT");
-                return "PlcSINT";
+                return "PlcBYTE";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 4) {
@@ -807,10 +807,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
                 String bitType = "bit";
-                return "read_buffer.read_" + bitType + "(\"" + logicalName + "\")";
+                return "read_buffer.read_" + bitType + "(\"" + logicalName + "\"";
             case BYTE:
                 String byteType = "byte";
-                return "read_buffer.read_" + byteType + "(\"" + logicalName + "\")";
+                return "read_buffer.read_" + byteType + "(\"" + logicalName + "\"";
             case UINT:
                 String unsignedIntegerType;
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
@@ -825,7 +825,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     unsignedIntegerType = "unsigned_long";
                 }
-                return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
+                return "read_buffer.read_" + unsignedIntegerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\"";
             case INT:
                 String integerType;
                 if (simpleTypeReference.getSizeInBits() <= 8) {
@@ -839,10 +839,10 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 } else {
                     integerType = "long";
                 }
-                return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
+                return "read_buffer.read_" + integerType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\"";
             case FLOAT:
                 String floatType = (simpleTypeReference.getSizeInBits() <= 32) ? "float" : "double";
-                return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\")";
+                return "read_buffer.read_" + floatType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\"";
             case STRING:
             case VSTRING:
                 String stringType = "str";
@@ -856,7 +856,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
                     length = toParseExpression(field, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null);
                 }
-                return "read_buffer.read_" + stringType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\", encoding=" + "\"\")";
+                return "read_buffer.read_" + stringType + "(" + simpleTypeReference.getSizeInBits() + ", logical_name=\"" + logicalName + "\"";
 
             default:
                 return "";
@@ -895,7 +895,8 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
             case BIT:
                 return "write_buffer.write_bit(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case BYTE:
-                return "write_buffer.write_byte(" + fieldName + ", \"" + logicalName + "\"" + writerArgsString + ")";
+                ByteTypeReference byteTypeReference = (ByteTypeReference) simpleTypeReference;
+                return "write_buffer.write_byte(" + fieldName + ", " + byteTypeReference.getSizeInBits() + ", \"" + logicalName + "\"" + writerArgsString + ")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
@@ -945,7 +946,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                     .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "write_buffer.write_str(" + fieldName + ", " + length + ", \"" +
-                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
+                    logicalName + "\", \"" + encoding + "\"" + writerArgsString + ")";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -957,7 +958,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
                 String lengthExpression = toExpression(field, null, vstringTypeReference.getLengthExpression(), null, Collections.singletonList(new DefaultArgument("stringLength", new DefaultIntegerTypeReference(SimpleTypeReference.SimpleBaseType.INT, 32))), true, false);
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
                 return "write_buffer.write_str(" + fieldName + ", " + lengthExpression + ", \"" +
-                    encoding + "\", \"" + logicalName + "\"" + writerArgsString + ")";
+                    logicalName + "\", \"" + encoding + "\"" + writerArgsString + ")";
             }
             case DATE:
             case TIME:
@@ -1511,7 +1512,7 @@ public class PythonLanguageTemplateHelper extends BaseFreemarkerLanguageTemplate
         } else if ((serializerArguments != null) && serializerArguments.stream()
             .anyMatch(argument -> argument.getName().equals(variableLiteralName))) {
             tracer = tracer.dive("serialization argument");
-            return tracer + "self." + camelCaseToSnakeCase(variableLiteralName) +
+            return tracer + camelCaseToSnakeCase(variableLiteralName) +
                 variableLiteral.getChild()
                     .map(child -> "." + camelCaseToSnakeCase(toVariableExpression(field, typeReference, child, parserArguments, serializerArguments, serialize, suppressPointerAccess, true)))
                     .orElse("");

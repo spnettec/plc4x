@@ -16,14 +16,14 @@
 //
 :imagesdir: ../../images/
 
-== DeltaV Industrial Ethernet Communication
+= DeltaV Industrial Ethernet Communication
 
 The DeltaV protocol is used in the Emerson DeltaV system.
 In contrast to most other systems, this is a combination of PLC and Control System.
 As Emerson seems to insist on the devices not being PLCs, but controllers, well call them this way in this document.
 Same with the Control System, these seem to be called OS (Operator System).
 
-=== Disclaimer
+== Disclaimer
 
 As we had absolutely no information on the details of the protocol, we started by taking an existing DeltaV training system and replaced the network switch with a hub and used this to take network captures of the entire network traffic of the DeltaV network.
 
@@ -37,7 +37,7 @@ Due to this uncertainty we are only implementing a `promiscuous mode` driver, wh
 
 Read link:reverse-engineering.html[here] for a document on how we proceeded with reverse engineering this protocol.
 
-=== The Wrapper Protocol
+== The Wrapper Protocol
 
 All communication seems to be done using the `UDP` protocol on port `18507`.
 
@@ -98,11 +98,11 @@ However we currently have no idea on how this is calculated and we haven't inves
 UDP being connectionless the DeltaV network protocol seems to require acknowledging.
 This is done by sending a packet back to the originator, but with a length of `0x0000` and the same `type` and mesasge-id` as the packet that is acknowledged.
 
-=== High Level View of the Protocol
+== High Level View of the Protocol
 
 In this section we'll describe the general structure of how the communication looks like - which message types are sent when and in which sequence.
 
-==== Connecting an OS to a Controller
+=== Connecting an OS to a Controller
 
 [seqdiag,deltav-connect]
 ....
@@ -125,7 +125,7 @@ In this section we'll describe the general structure of how the communication lo
 }
 ....
 
-==== Regular sync
+=== Regular sync
 
 It seems that every 15 seconds two packets are exchanged.
 

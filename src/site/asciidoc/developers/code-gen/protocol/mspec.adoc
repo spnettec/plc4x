@@ -16,7 +16,7 @@
 //
 :imagesdir: ../../../images/
 
-== The MSpec format
+= The MSpec format
 
 The `MSpec` format (Message Specification) was a result of a brainstorming session after evaluating a lot of other options.
 
@@ -109,7 +109,7 @@ In general, we distinguish between two types of types used in field definitions:
 - simple types
 - complex types
 
-=== Simple Types
+== Simple Types
 
 Simple types are usually raw data the format is:
 
@@ -138,7 +138,7 @@ There is currently one special type, reserved for string values, whose length is
 
 - *vstring*: The input is treated as a variable length string and requires an expression tp provide the number of bits to read.
 
-=== Complex Types
+== Complex Types
 
 In contrast to simple types, complex types reference other complex types (Root elements of the spec document).
 
@@ -146,9 +146,9 @@ How the parser should interpret them is defined in the referenced types definiti
 
 In the example above, for example the `S7Parameter` is defined in another part of the spec.
 
-=== Field Types and their Syntax
+== Field Types and their Syntax
 
-==== array Field
+=== array Field
 
 An `array` field is exactly what you expect.
 It generates an field which is not a single-value element but an array or list of elements.
@@ -166,7 +166,7 @@ Possible values are:
 - `length`: In this case a given number of bytes are being read. So if an element has been parsed and there are still bytes left, another element is parsed.
 - `terminated`: In this case the parser will continue reading elements until it encounters a termination sequence.
 
-==== assert Field
+=== assert Field
 
 An assert field is pretty much identical to a `const` field.
 The main difference however it how the case is handled, if the parsed value does not match the expected value.
@@ -185,7 +185,7 @@ See also:
 - validation field: Similar to an `assert` field, however no parsing is done, and instead simply a condition is checked.
 - optional field: `optional` fields are aware of the types of parser errors produced by `assert` and `validation` fields
 
-==== checksum Field
+=== checksum Field
 
 A checksum field can only operate on simple types.
 
@@ -205,7 +205,7 @@ This field doesn't keep any data in memory.
 See also:
 - implicit field: A checksum field is similar to an implicit field, however the `checksum-expression` is evaluated are parsing time and throws an exception if the values don't match.
 
-==== const Field
+=== const Field
 
 A const field simply reads a given simple type and compares to a given reference value.
 
@@ -222,7 +222,7 @@ This field doesn't keep any data in memory.
 See also:
 - implicit field: A const field is similar to an implicit field, however it compares the parsed input to the reference value and throws an exception if the values don't match.
 
-==== discriminator Field
+=== discriminator Field
 
 Discriminator fields are only used in `discriminatedType`s.
 
@@ -239,7 +239,7 @@ See also:
 - implicit field: A discriminator field is similar to an implicit field, however doesn't provide a serialization expression as it uses the discrimination constants of the type it is.
 - discriminated types
 
-==== implicit Field
+=== implicit Field
 
 Implicit types are fields that get their value implicitly from the data they contain.
 
@@ -255,7 +255,7 @@ This type of field is generally used for fields that handle numbers of elements 
 
 This field doesn't keep any data in memory.
 
-==== manualArray Field
+=== manualArray Field
 
     [manualArray {bit|byte}           {name} {count|length|terminated} '{loop-expression}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
 
@@ -263,7 +263,7 @@ This field doesn't keep any data in memory.
 
     [manualArray {complex-type}       {name} {count|length|terminated} '{loop-expression}' '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
 
-==== manual Field
+=== manual Field
 
     [manual {bit|byte}           {name} '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
 
@@ -271,7 +271,7 @@ This field doesn't keep any data in memory.
 
     [manual {complex-type}       {name} '{serialization-expression}' '{deserialization-expression}' '{length-expression}']
 
-==== optional Field
+=== optional Field
 
 An optional field is a type of field that can also be `null`.
 
@@ -293,7 +293,7 @@ See also:
 - `assert`: Assert fields are similar to `const` fields, but can abort parsing of an `optional` filed.
 - `validation`: If a validation field in any of the subtypes fails, this aborts parsing of the `optional` field.
 
-==== padding Field
+=== padding Field
 
 A padding field allows aligning of data blocks.
 It outputs additional padding data, given amount of times specified by padding expression.
@@ -309,11 +309,11 @@ When serializing, the `times-padding` defines how often the `padding-value` shou
 
 This field doesn't keep any data in memory.
 
-===== peek Field
+==== peek Field
 
 // TODO: Implement
 
-==== reserved Field
+=== reserved Field
 
 Reserved fields are very similar to `const` fields, however they don't throw exceptions, but instead log messages if the values don't match.
 
@@ -334,7 +334,7 @@ This field doesn't keep any data in memory.
 See also:
 - `const` field
 
-==== simple Field
+=== simple Field
 
 Simple fields are the most common types of fields.
 
@@ -350,7 +350,7 @@ When parsing, the given type is parsed (can't be `null`) and saved in the corres
 
 When serializing it is serialized normally using either a simple type serializer or by delegating serialization to a complex type.
 
-==== typeSwitch Field
+=== typeSwitch Field
 
 // TODO: Finish this ...
 
@@ -393,7 +393,7 @@ These arguments are then available for expressions or passing on in the subtypes
 See also:
 - `discriminatedType`
 
-===== unknown Field
+==== unknown Field
 
 // TODO: Finish this ...
 
@@ -402,7 +402,7 @@ It allows parsing any type of information, storing and using it and serializing 
 
 In general, it's something similar to a `simple` field, just explicitly states, that we don't yet quite know how to handle the content.
 
-===== validation Field
+==== validation Field
 
 As mentioned before, a `validation` field is not really a field, it's a check that is added to the type parser.
 
@@ -414,7 +414,7 @@ If it finds one, it rewinds the parser to the position just before starting to p
 If there is no `optional` field up the stack, then parsing fails.
 
 
-==== virtual Field
+=== virtual Field
 
 Virtual fields have no impact on the input or output.
 They simply result in creating artificial get-methods in the generated model classes.
@@ -427,7 +427,7 @@ They simply result in creating artificial get-methods in the generated model cla
 
 Instead of being bound to a property, the return value of a `virtual` property is created by evaluating the `value-expression`.
 
-==== Parameters
+=== Parameters
 
 Sometimes it is necessary to pass along additional parameters.
 
@@ -459,13 +459,13 @@ Here comes an example of this in above snippet:
 
     [field S7Payload   'payload'   ['messageType', 'parameter']]
 
-==== Serializer and Parser-Arguments
+=== Serializer and Parser-Arguments
 
 Arguments influence the way the parser or serializer operates.
 
 Wherever an parser-argument is used, this should also be valid in all subtypes the parser processes.
 
-===== byteOrder
+==== byteOrder
 
 A `byteOrder` argument can set or change the byte-order used by the parser.
 
@@ -474,7 +474,7 @@ We currently support two variants:
 - BIG_ENDIAN
 - LITTLE_ENDIAN
 
-===== encoding
+==== encoding
 
 Each simple type has a default encoding, which is ok for a very high percentage of cases.
 

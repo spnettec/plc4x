@@ -86,7 +86,7 @@ class DefaultPlcWriter(PlcWriter):
             # Send the write request to the device and wait for a response
             logging.debug("Sending write request to Device")
             response = await asyncio.wait_for(
-                self._device.write(request, self._transport), 5
+                self._device.write(request, self._transport), 15
             )
             # Return the response
             return response

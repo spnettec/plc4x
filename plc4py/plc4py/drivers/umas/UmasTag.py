@@ -27,7 +27,7 @@ from plc4py.spi.messages.PlcRequest import TagBuilder
 
 class UmasTag(PlcTag):
     _ADDRESS_PATTERN: str = (
-        "^(?P<tag>[%a-zA-Z_.0-9]+\\[?[0-9]*]?):?(?P<dataType>[A-Z]*):?(?P<elementNb>[0-9]*)"
+        "^(?P<tag>[%a-zA-Z_.0-9]+):?(?P<dataType>[A-Z_]*)(\[(?P<elementNb>[0-9]*)\])?"
     )
 
     _ADDRESS_COMPILED: Pattern[AnyStr] = re.compile(_ADDRESS_PATTERN)
@@ -36,7 +36,7 @@ class UmasTag(PlcTag):
     def __init__(self, tag_name: str, quantity: int, data_type: UmasDataType):
         self.tag_name: str = tag_name
         self.quantity: int = quantity
-        self.data_type: UmasDataType = data_type
+        self.data_type: str = data_type
 
     @classmethod
     def matches(cls, address_string: str):
@@ -60,11 +60,11 @@ class UmasTag(PlcTag):
             else 1
         )
         data_type = (
-            UmasDataType[matcher.group("dataType")]
+            matcher.group("dataType")
             if "dataType" in matcher.groupdict()
             and matcher.group("dataType") is not None
             and len(matcher.group("dataType")) is not 0
-            else cls._DEFAULT_DATA_TYPE
+            else None
         )
         return cls(tag_name, quantity, data_type)
 

@@ -22,7 +22,7 @@ from typing import Dict, List, cast
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
-from plc4py.spi.messages.utils.ResponseItem import ResponseItem
+from plc4py.spi.messages.utils.ResponseItem import ResponseItem, PlcBrowseItem
 
 
 @dataclass
@@ -75,7 +75,7 @@ class PlcWriteResponse(PlcTagResponse):
 
 @dataclass
 class PlcQueryResponse(PlcResponse):
-    tags: Dict[str, List[ResponseItem[PlcTag]]]
+    tags: Dict[str, List[PlcBrowseItem[PlcTag]]]
 
     @property
     def tag_names(self):
@@ -84,5 +84,6 @@ class PlcQueryResponse(PlcResponse):
 
 @dataclass
 class PlcBrowseResponse(PlcQueryResponse):
-    def get_tags(self) -> Dict[str, List[ResponseItem[PlcTag]]]:
+
+    def get_tags(self) -> Dict[str, List[PlcBrowseItem[PlcTag]]]:
         return self.tags

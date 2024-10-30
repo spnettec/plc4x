@@ -137,4 +137,9 @@ def parse_terminated_string_bytes(read_buffer: ReadBuffer, string_length) -> str
 
 
 def serialize_terminated_string(write_buffer, value, string_length):
-    pass
+    terminated_char_position = len(value.value)
+    for i in range(len(value.value)):
+        if value.value[i] == "":
+            terminated_char_position = i
+            break
+    write_buffer.write_str(value.value, (terminated_char_position + 1) * 8)

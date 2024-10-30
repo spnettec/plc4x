@@ -17,7 +17,7 @@
 :imagesdir: ../images/
 :icons: font
 
-== Tools
+= Tools
 
 In order to be able to work on PLC4X some tools have kindly been made available to Apache PLC4X committers.
 

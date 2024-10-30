@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Building PLC4X
+= Building PLC4X
 
 PLC4X is built with `Apache Maven` and we have tried to make the build as simple as possible.
 
@@ -27,7 +27,7 @@ More about these later down in this manual.
 
 For your convenience we also have provided a `Maven-Wrapper`, that should allow building of PLC4X with only `Java 11` or greater as requirement.
 
-=== Requirements
+== Requirements
 
 The only requirements to building PLC4X should be:
 
@@ -35,7 +35,7 @@ The only requirements to building PLC4X should be:
 * Git (Even if you are building the source distribution, the Kafka plugin seems to require a `git` executable being available on the systems `PATH`)
 * Apache Maven (3.6.0 or newer) *(Optional)* (See next chapter)
 
-=== Using the Maven-Wrapper
+== Using the Maven-Wrapper
 
 The so-called `Maven-Wrapper` is used by calling the Maven-Wrapper scripts `mvnw` (Mac & Linux) or `mvnw.cmd` (Windows) instead of the default Maven commands `mvn` and `mvn.cmd`.
 
@@ -45,7 +45,7 @@ If no suitable version can be found, it is automatically downloaded and installe
 After the script has ensured a suitable Maven version is available, this is used and all arguments and parameters are transparently forwarded to this.
 So simply adding the additional `w` to each of the Maven commands, there should be no difference to using a pre-installed Maven version.
 
-=== Using Maven
+== Using Maven
 
 This document can't provide you with all the details needed to get started with `Maven` itself.
 But there is a lot of good documentation out there.
@@ -57,7 +57,7 @@ It should handle all the details needed to get a general understanding of Maven 
 .Recording of a Maven Training for Apache Flex from 2016
 https://vimeo.com/167857327
 
-=== Building PLC4X with Maven
+== Building PLC4X with Maven
 
 As especially building the C++, and C# drivers requires building of some third party artifacts and increases build-time dramatically and requires setting up some additional third party tools, we have excluded these parts form the default Maven build.
 
@@ -95,7 +95,7 @@ If you want to skip the running of tests (even if this is not encouraged) you ca
 
 This will not skip the compilation of tests, however.
 
-=== Building the PLC4X Website with Maven
+== Building the PLC4X Website with Maven
 
 The PLC4X Website is also part of the same GIT repository that contains the code and it is built by Maven as well.
 
@@ -105,13 +105,13 @@ In order to build the website the following command should be sufficient:
 
 This is just a quick-start version of the site generation, for a fully detailed documentation please read the https://plc4x.apache.org/developers/infrastructure/website.html[Website] documentation page.
 
-=== Some special Maven profiles
+== Some special Maven profiles
 
 Maven supports so-called `profiles` for customizing the build in special cases.
 We have tried to keep the number of profiles as low as possible.
 So far there is only one profile.
 
-==== `apache-release` profile
+=== `apache-release` profile
 
 This profile is automatically enabled on a release-build and it automatically creates some additional artifacts:
 
@@ -123,7 +123,7 @@ This profile is automatically enabled on a release-build and it automatically cr
 
 Generally it is not required to enable ths profile unless you are interested in these Artifacts.
 
-==== `debug-pom` profile
+=== `debug-pom` profile
 
 Especially for Maven beginners, it might be difficult to understand why a module builds the way it does.
 Maven contains a lot of concepts to inherit and override settings.
@@ -141,7 +141,7 @@ Some tests of the PLC4X project do require quite a bit of time to run.
 Therefore we decided to disable these for a normal build on developer machines.
 If you want to run them locally and not rely on them being run on the CI servers, enable the `enable-all-checks` profile.
 
-=== Use the compiled library with Gradle
+== Use the compiled library with Gradle
 
 Compiling the library as explained here add the new version in the local Maven repository (i.e. usually under `~/.m2/repository` on linux like systems), if you would like to use Gradle as Build Tool for your project you have just to use a local repository in your Gradle `build.gradle` file.
 

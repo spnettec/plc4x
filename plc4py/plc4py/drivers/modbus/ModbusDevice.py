@@ -209,6 +209,7 @@ class ModbusDevice:
         message_future = loop.create_future()
         values = request.values[request.tag_names[0]]
         if isinstance(tag, ModbusTagCoil):
+            values = self._serialize_data_items(tag, values)
             pdu = ModbusPDUWriteMultipleCoilsRequest(tag.address, tag.quantity, values)
         elif isinstance(tag, ModbusTagDiscreteInput):
             raise PlcRuntimeException(

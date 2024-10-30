@@ -15,11 +15,11 @@
 //  limitations under the License.
 //
 
-== EtherCAT
+= EtherCAT
 
 Introduction
 
-=== Links
+== Links
 
 https://www.ethercat.org/default.htm
 https://www.ethercat.org/download/documents/EtherCAT_EAP_EN.pdf

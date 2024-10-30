@@ -17,7 +17,7 @@
 :imagesdir: ../../images/
 :icons: font
 
-== Releasing PLC4X Build-Tools
+= Releasing PLC4X Build-Tools
 
 In contrast to the main project, the `plc4x-build-tools` repository contains a loose collection of sub-projects.
 
@@ -30,7 +30,7 @@ So please check link:release.html[here] (Chapters: `Preparing your system for be
 
 The rest of the steps are a lot simpler than those of the main project as there aren't any profiles involved.
 
-=== Creating a release branch (For the code-generation module)
+== Creating a release branch (For the code-generation module)
 
 According to SemVer, we have: Major, Minor and Bugfix releases.
 
@@ -68,7 +68,7 @@ This step now should perform quite quickly as no build and no tests are involved
 
 However in the end the versions of the `develop` branch are updated and a new `releases/code-generation/{code-generation-short-version}` branch is created.
 
-=== Preparing `develop` for the next iteration
+== Preparing `develop` for the next iteration
 
 Now is a good time to add a new section to the `RELEASE_NOTES` document for the new `SNAPSHOT` version.
 
@@ -99,7 +99,7 @@ Also be sure to do a quick full-text-search to check if the version was updated 
 
 WARNING: If you find anything here, you will need to pay attention during the release.
 
-=== Release stabilization phase
+== Release stabilization phase
 
 Now usually comes a phase in which last tests and checks should be performed.
 
@@ -107,7 +107,7 @@ If any problems are found they, have to be fixed in the release branch.
 
 Changes should either be re applied in `develop` or `cherry-picked`, however merging things back can cause a lot of problems, and we no longer have the same versions.
 
-=== Preparing a release
+== Preparing a release
 
 Before you start preparing the release, it is important to manually make the `RELEASE_NOTES` reflect the version we are planning on releasing.
 
@@ -180,7 +180,7 @@ And it will change the versions back and commit and push things.
 
 However, it will not delete the tag in GIT (locally and remotely). So you have to do that manually or use a different tag next time.
 
-=== Performing a release
+== Performing a release
 
 This is done by executing another goal of the `maven-release-plugin`:
 
@@ -217,7 +217,7 @@ This contains all sources of the project and will be what's actually the release
 
 This file will also be signed and `SHA512` hashes will be created.
 
-=== Staging a release
+== Staging a release
 
 Each new release and release-candidate has to be staged in the Apache SVN under:
 
@@ -257,7 +257,7 @@ The three `*-source-release.zip*` artifacts should be located in the directory: 
 
 So, after committing these files to SVN, you are ready to start the vote.
 
-=== Starting a vote on the mailing list
+== Starting a vote on the mailing list
 
 After staging the release candidate in the Apache SVN, it is time to actually call out the vote.
 
@@ -335,7 +335,7 @@ After the 72-our minimum wait period is over, and we have fulfilled the requirem
     Chris
 ----
 
-=== Releasing after a successful vote
+== Releasing after a successful vote
 
 As soon as the votes are finished, and the results were in favor of a release, the staged artifacts can be released.
 This is done by moving them inside the Apache SVN.
@@ -351,7 +351,7 @@ This will make the release artifacts available and will trigger them being copie
 
 This is also the reason why you should wait at least 24 hours before sending out the release notification emails.
 
-=== Cleaning up older release versions
+== Cleaning up older release versions
 
 As a lot of mirrors are serving our releases, it is the Apache policy to clean old releases from the repo if newer versions are released.
 
@@ -361,7 +361,7 @@ This can be done like this:
 
 After this, https://dist.apache.org/repos/dist/release/plc4x should only contain the latest release directory.
 
-=== Releasing the Maven artifacts
+== Releasing the Maven artifacts
 
 The probably simplest part is releasing the Maven artifacts.
 
@@ -371,7 +371,7 @@ This will move all artifacts into the Apache release repository and delete the s
 
 All release artifacts released to the Apache release repo, will automatically be synced to Maven central.
 
-=== Merge back release version to `release` branch
+== Merge back release version to `release` branch
 
 The `release branch should always point to the last released version.
 This has to be done with git

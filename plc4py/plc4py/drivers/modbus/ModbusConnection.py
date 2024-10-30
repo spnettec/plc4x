@@ -104,7 +104,7 @@ class ModbusConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
                     host=config.host,
                     port=config.port,
                 ),
-                10,
+                15,
             )
         except asyncio.TimeoutError:
             # If the creation times out, cancel the Future

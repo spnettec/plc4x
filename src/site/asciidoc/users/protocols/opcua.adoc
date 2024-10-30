@@ -17,9 +17,9 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== OPC UA
+= OPC UA
 
-=== Connection String Options
+== Connection String Options
 
 include::../../../plc4j/drivers/all/src/site/generated/opcua.adoc[]
 
@@ -34,7 +34,7 @@ include::../../../plc4j/drivers/all/src/site/generated/opcua.adoc[]
 
 |===
 
-=== Connection String
+== Connection String
 
 The OPC UA drivers uses the connection string
 
@@ -54,7 +54,7 @@ opcua:tcp://127.0.0.1:12686?discovery=true&username=admin&password=password
 
 Note the transport, port and options fields are optional.
 
-=== Secure communication
+== Secure communication
 The secure channel implementation within Apache PLC4X project have been tested against existing open source server implementations.
 This includes Eclipse Milo (all modes) as well as OPC Foundation .NET server (except `Basic128Rsa15`).
 Manual tests proven that driver is able to communicate with OPC UA server launched on PLCs as well as commercial simulators.
@@ -69,7 +69,7 @@ By default, this option is set to `SIGN_ENCRYPT` which imposes high security set
 In case when additional diagnostics is needed payloads has to be traced through TRACE level log entries.
 The `SIGN` mode gives possibility o browse packets in tools such wireshark.
 
-==== Certificate verification
+=== Certificate verification
 The OPC UA specification defines its own procedures for certificate validation.
 In order to simplify implementation by default server certificate validation is relaxed.
 Unless explicitly disabled through configuration of `trustStoreFile` all server certificates will be accepted without validation.
@@ -77,7 +77,7 @@ Unless explicitly disabled through configuration of `trustStoreFile` all server 
 In case when secure communication is enabled the `trustStoreFile` option might be used to point certificates which client should accept.
 The acceptance rely on regular TLS checks (expiry date, certificate path etc.), does not validate OPC UA specific parts such as application URI.
 
-==== Negotiation procedure
+=== Negotiation procedure
 Depending on settings driver might or might not attempt to discover endpoints from remote server.
 In case when `discovery` option is set to `true` driver will look up server certificate through connection attempt.
 The discovery option also enables checks of server endpoints for matching security settings.
@@ -94,7 +94,7 @@ Usual values of `sendBufferSize` and `receiveBufferSize` PLC devices remain at 8
 
 NOTE: Due to lack of complete implementation of negotiation and chunking logic the OPC UA driver prior Apache PLC4X 0.11 release could supply calls exceeding server limits.
 
-=== Address Format
+== Address Format
 To read, write and subscribe to data, the OPC UA driver uses the variable declaration string of the OPC UA server it is
 connecting to.
 It includes the namespace(`ns`) of the hierarchy tree followed by the type of identifier string(`s`), numeric(`i`),
@@ -107,7 +107,7 @@ ns={namespace-index};[s|i|g|b]={Identifier};{Data Type}
 
 ----
 
-==== Data Types
+=== Data Types
 
 The following data types are supported
 
@@ -132,7 +132,7 @@ The following data types are supported
 - WSTRING (utf-16)
 
 
-==== Example of a valid OPC UA address:
+=== Example of a valid OPC UA address:
 
 The following are examples of valid addresses
 
@@ -154,12 +154,12 @@ ns=2;g=09087e75-8e5e-499b-954f-f2a8624db28a;REAL
 
 Note the Identifiers `s`,`i`,`b` and `g` specify the format of the address not the data type of the returned value.
 
-=== Some useful tips
+== Some useful tips
 
 The namespace (e.g. `ns=2`) within the address is specific to the server you are connecting to.
 
 
-=== More details on OPC UA
+== More details on OPC UA
 
 https://opcfoundation.org/about/opc-technologies/opc-ua/[OPC UA]
 The OPC Unified Architecture (UA), released in 2008, is a platform independent service-oriented architecture that integrates all the functionality of the individual OPC Classic specifications into one extensible framework.

@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Protocols
+= Protocols
 
 - link:ab-eth/index.html[AB-Ethernet]
 - link:ads/index.html[DeltaV]
@@ -26,14 +26,14 @@
 - link:opc-ua/index.html[OPC-UA]
 - link:s7/index.html[S7]
 
-=== Links
+== Links
 
 Apache 2.0 licensed JNI library for accessing raw IPv4 and IPv6 sockets. Might be the ideal starting point for implementing protocols below TCP & UDP.
 https://www.savarese.org/software/rocksaw/
 
 Links to different WireShark captures: https://github.com/automayt/ICS-pcap
 
-==== BACNet
+=== BACNet
 
 Used in the building automation sector.
 http://www.bacnet.org/Addenda/Add-135-2008t.pdf
@@ -41,7 +41,7 @@ http://www.bacnet.org/Addenda/Add-135-2008t.pdf
 AKA: ISO 16484-5:
 The official specification can be purchased here: https://www.iso.org/standard/71935.html
 
-==== IEC 61850
+=== IEC 61850
 
 Used by the IDS SAS (station automation system)
 

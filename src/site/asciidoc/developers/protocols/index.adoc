@@ -15,9 +15,9 @@
 //  limitations under the License.
 //
 
-== Usage of protocols
+= Usage of protocols
 
-=== Currently documented are:
+== Currently documented are:
 
 - link:ads/protocol.html[Beckhoff/ ADS]
 - link:eip/protocol.html[EIP]

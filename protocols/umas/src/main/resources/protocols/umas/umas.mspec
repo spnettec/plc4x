@@ -196,19 +196,16 @@
     [simple     uint 4           isArray]
     [simple     uint 4           dataSizeIndex]
     [simple     uint 16          block]
-    [const      uint 8           unknown1 0x01]
     [simple     uint 16          baseOffset]
-    [simple     uint 8           offset]
+    [simple     uint 16          offset]
     [optional   uint 16          arrayLength 'isArray']
-    [array      byte       recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
+    [array      byte             recordData     length  'isArray == 1 ? dataSizeIndex * arrayLength : dataSizeIndex']
 ]
 
 [type UmasUnlocatedVariableReference
-    [simple     uint 8           dataType]
-    [simple     uint 8           unknown1]
+    [simple     uint 16          dataType]
     [simple     uint 16          block]
-    [simple     uint 8           offset]
-    [simple     uint 8           baseOffset]
+    [simple     uint 16          offset]
     [simple     uint 16          unknown4]
     [simple     uint 16          stringLength]
     [manual vstring value  'STATIC_CALL("parseTerminatedString", readBuffer, stringLength)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, stringLength)' '(stringLength * 8)']
@@ -238,24 +235,22 @@
     [simple uint 32 memoryLength]
 ]
 
-
 [dataIo DataItem(UmasDataType dataType, uint 16 numberOfValues)
     [typeSwitch dataType,numberOfValues
         ['BOOL','1'  BOOL
+            [reserved uint 7 '0x0000'                         ]
+            [simple   bit     value                           ]
+        ]
+        ['EBOOL','1'  BOOL
             // TODO: Possibly change the order of the bit and the reserved part.
             [reserved uint 7 '0x0000'                         ]
             [simple   bit     value                            ]
         ]
-        ['BOOL'      List
-            // TODO: Handle adding some reserved bits at the end to fill up the last word.
-            [array    bit     value count 'numberOfValues'     ]
-        ]
         ['BYTE','1'  BYTE
-            [simple uint 8 value]
+            [simple byte value]
         ]
         ['BYTE' List
-            // TODO: If the number of values is odd, add a reserved byte
-            [array    bit     value count 'numberOfValues * 8' ]
+            [array    byte     value count 'numberOfValues' ]
         ]
         ['WORD'      WORD
             [simple   uint 16 value]
@@ -294,40 +289,66 @@
             [array float 32 value count 'numberOfValues']
         ]
         ['STRING','1' STRING
-            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, value, numberOfValues)' '(numberOfValues * 8)']
+            [manual vstring value  'STATIC_CALL("parseTerminatedStringBytes", readBuffer, numberOfValues)' 'STATIC_CALL("serializeTerminatedString", writeBuffer, _value, numberOfValues)' '(numberOfValues * 8)']
         ]
         ['STRING' List
             [array float 32 value count 'numberOfValues']
         ]
+        ['TIME','1' TIME
+            [simple uint 32 value]
+        ]
+        ['TIME' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['DATE','1' DATE
+            [simple uint 8 day encoding='BCD']
+            [simple uint 8 month encoding='BCD']
+            [simple uint 16 year encoding='BCD']
+        ]
+        ['TOD','1' TIME_OF_DAY
+            [simple uint 32 value]
+        ]
+        ['TOD' List
+            [array uint 32 value count 'numberOfValues']
+        ]
+        ['DATE_AND_TIME','1' DATE_AND_TIME
+            [simple uint 8 unused]
+            [simple uint 8 seconds encoding='BCD']
+            [simple uint 8 minutes encoding='BCD']
+            [simple uint 8 hour encoding='BCD']
+            [simple uint 8 day encoding='BCD']
+            [simple uint 8 month encoding='BCD']
+            [simple uint 16 year encoding='BCD']
+        ]
     ]
 ]
 
-[enum uint 8 UmasDataType(uint 8 dataTypeSize, uint 8 requestSize)
-    ['1' BOOL ['1','1']]
-    ['2' UNKNOWN2 ['1','1']]
-    ['3' UNKNOWN3 ['1','1']]
-    ['4' INT ['2', '2']]
-    ['5' UINT ['2','2']]
-    ['6' DINT ['4','3']]
-    ['7' UDINT ['4','3']]
-    ['8' REAL ['4','3']]
-    ['9' STRING ['1','17']]
-    ['10' TIME ['4','3']]
-    ['11' UNKNOWN11 ['1','1']]
-    ['12' UNKNOWN12 ['1','1']]
-    ['13' UNKNOWN13 ['1','1']]
-    ['14' DATE ['4','3']]
-    ['15' TOD ['4','3']]
-    ['16' DT ['4','3']]
-    ['17' UNKNOWN17 ['1','1']]
-    ['18' UNKNOWN18 ['1','1']]
-    ['19' UNKNOWN19 ['1','1']]
-    ['20' UNKNOWN20 ['1','1']]
-    ['21' BYTE ['1','1']]
-    ['22' WORD ['2','2']]
-    ['23' DWORD ['4','3']]
-    ['24' UNKNOWN24 ['1','1']]
-    ['25' EBOOL ['1','1']]
+[enum uint 8 UmasDataType(uint 8 dataTypeSize, uint 8 requestSize, vstring data_type_conversion )
+    ['1' BOOL ['1','1','"BOOL"']]
+    ['2' UNKNOWN2 ['1','1','"BOOL"']]
+    ['3' UNKNOWN3 ['1','1','"BOOL"']]
+    ['4' INT ['2', '2','"INT"']]
+    ['5' UINT ['2','2','"UINT"']]
+    ['6' DINT ['4','3','"DINT"']]
+    ['7' UDINT ['4','3','"UDINT"']]
+    ['8' REAL ['4','3','"REAL"']]
+    ['9' STRING ['1','17','"STRING"']]
+    ['10' TIME ['4','3','"TIME"']]
+    ['11' UNKNOWN11 ['1','1','"BYTE"']]
+    ['12' UNKNOWN12 ['1','1','"BYTE"']]
+    ['13' UNKNOWN13 ['1','1','"BYTE"']]
+    ['14' DATE ['4','3','"DATE"']]
+    ['15' TOD ['4','3','"TIME_OF_DAY"']]
+    ['16' DATE_AND_TIME ['8','4','"DATE_AND_TIME"']]
+    ['17' UNKNOWN17 ['1','1','"BYTE"']]
+    ['18' UNKNOWN18 ['1','1','"BYTE"']]
+    ['19' UNKNOWN19 ['1','1','"BYTE"']]
+    ['20' UNKNOWN20 ['1','1','"BYTE"']]
+    ['21' BYTE ['1','1','"BYTE"']]
+    ['22' WORD ['2','2','"WORD"']]
+    ['23' DWORD ['4','3','"DWORD"']]
+    ['24' UNKNOWN24 ['1','1','"BYTE"']]
+    ['25' EBOOL ['1','1','"BOOL"']]
 ]
 
 [enum uint 8 ModbusErrorCode

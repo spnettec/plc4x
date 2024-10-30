@@ -21,7 +21,6 @@ from dataclasses import dataclass
 
 from abc import ABC
 from abc import abstractmethod
-from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import ParseException
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
@@ -29,6 +28,7 @@ from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
+from plc4py.utils.ConnectionStringHandling import strtobool
 import math
 
 

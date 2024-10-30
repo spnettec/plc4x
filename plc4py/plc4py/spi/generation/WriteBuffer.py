@@ -195,8 +195,10 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         self.bb[self.position] = value
         self.position += 1
 
-    def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
-        self.write_unsigned_byte(value, 8, logical_name, **kwargs)
+    def write_byte(
+        self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
+    ) -> None:
+        self.write_unsigned_byte(value, bit_length, logical_name, **kwargs)
 
     def write_byte_array(
         self, value: List[int], logical_name: str = "", **kwargs
@@ -346,6 +348,20 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Double can only contain max 64 bits")
         self._handle_numeric_encoding(value, bit_length, numeric_format="d", **kwargs)
 
+    def write_str(
+        self,
+        value: str,
+        bit_length: int = -1,
+        logical_name: str = "",
+        encoding: str = "UTF-8",
+        **kwargs,
+    ) -> None:
+        bit_order = kwargs.get("bit_order", ByteOrder.BIG_ENDIAN)
+        src = bitarray(endian=ByteOrder.get_short_name(bit_order))
+        src.frombytes(value.encode(encoding))
+        self.bb[self.position : self.position + bit_length] = src[:bit_length]
+        self.position += bit_length
+
     def write_complex_array(
         self, value: List[PlcMessage], logical_name: str = "", **kwargs
     ) -> None:
@@ -376,10 +392,12 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
                 endianness = "<"
             if not isinstance(value, int):
                 pass
+
             result: bytes = struct.pack(
                 endianness + numeric_format,
                 value,
             )
+
             src.frombytes(result)
             if (
                 byte_order == ByteOrder.BIG_ENDIAN_BYTE_SWAP

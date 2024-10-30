@@ -17,14 +17,14 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== KNXnet/IP
+= KNXnet/IP
 image::knx_banner.png[banner,512,167]
 
-=== Connection String Options
+== Connection String Options
 
 include::../../../plc4j/drivers/all/src/site/generated/knxnet-ip.adoc[]
 
-=== Individual Resource Address Format
+== Individual Resource Address Format
 
 KNX Addresses usually have one of the following structures:
 

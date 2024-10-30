@@ -53,7 +53,7 @@
                   <targetPath>.</targetPath>
                   <directory>${project.basedir}/../../../../../plc4py/</directory>
                   <includes>
-                    <include>setup.*</include>
+                    <include>pyproject.toml</include>
                   </includes>
                   <filtering>true</filtering>
                 </resource>
@@ -219,6 +219,21 @@
           </execution>
 
           <execution>
+            <id>python-test-compile</id>
+            <phase>process-sources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>${python.venv.bin}pip3</executable>
+              <arguments>
+                <argument>install</argument>
+                <argument>.[dev]</argument>
+              </arguments>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>python-black</id>
             <phase>process-sources</phase>
             <goals>
@@ -234,20 +249,6 @@
             </configuration>
           </execution>
 
-          <execution>
-            <id>python-test-compile</id>
-            <phase>test-compile</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>${python.venv.bin}pip3</executable>
-              <arguments>
-                <argument>install</argument>
-                <argument>.[dev]</argument>
-              </arguments>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
 

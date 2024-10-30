@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== WIKI
+= WIKI
 
 We use Apache's Confluence instance as Wiki, however most information is generally managed on this website.
 

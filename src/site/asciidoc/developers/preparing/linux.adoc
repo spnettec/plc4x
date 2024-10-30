@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Linux
+= Linux
 
 As tracking down issues which result from missing or outdated third party tools such as compilers are always hard do diagnose, we have extended the build of PLC4X with a `prerequisiteCheck` that automatically checks if required tools are installed and if a required minimum version is available.
 
@@ -26,7 +26,7 @@ So for example the availability and version of the C compiler is only checked if
 
 If the check is reporting any issues, please feel free to follow the corresponding steps in this guide to install the tools.
 
-=== Git
+== Git
 
 Checking:
 
@@ -42,7 +42,7 @@ Yum based systems:
 
  sudo yum install git
 
-=== Java
+== Java
 
 Checking:
 
@@ -54,11 +54,11 @@ Apt based systems:
 
  sudo apt install openjdk-21-jdk
 
-=== Optional and other language support
+== Optional and other language support
 
 Git an Java should be all you need for building the Java part of PLC4X.
 
-==== LibPCAP (For raw-ethernet support)
+=== LibPCAP (For raw-ethernet support)
 
 Apt-based systems:
 
@@ -81,7 +81,7 @@ Sometimes I had to set the uid to execute the java executable with the permissio
 
  sudo chmod 4755 /path/to/java
 
-==== gcc (For PLC4C)
+=== gcc (For PLC4C)
 
 NOTE: It seems that when running Linux on `aarch64` (Apple's Silicon Chips), that there are issues ... we're working on that. Feel free to watch https://github.com/apache/plc4x/issues/1582 on updates to this.
 
@@ -99,7 +99,7 @@ Yum based systems:
 
  sudo yum install gcc
 
-==== dotnet (For PLC4Net)
+=== dotnet (For PLC4Net)
 
 Checking:
 
@@ -125,7 +125,7 @@ If, when checking the version again after installing, you are getting an error:
 
 Then please have a look at this Stackoverflow post (the accepted solution) https://stackoverflow.com/questions/73753672/a-fatal-error-occurred-the-folder-usr-share-dotnet-host-fxr-does-not-exist
 
-==== python (For PLC4Py)
+=== python (For PLC4Py)
 
 Checking:
 
@@ -141,7 +141,7 @@ Yum based systems:
 
  yum intall python3
 
-==== Python venv (For PLC4Py)
+=== Python venv (For PLC4Py)
 
 Checking:
 

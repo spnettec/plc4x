@@ -15,9 +15,9 @@
 //  limitations under the License.
 //
 
-== Getting Started with Python
+= Getting Started with Python
 
-=== Using the PLC4PY API directly
+== Using the PLC4PY API directly
 
 Currently, you need to install PLC4Py from the GitHub repository instead of pypi.
 Once we have decided that PLC4Py is in a position to release we will publish to pypi.
@@ -81,7 +81,7 @@ But there are some cases in which we can't simulate or features are simply disab
 
 Therefore, we use metadata to check programmatically, if a given feature is available.
 
-==== Reading Data
+=== Reading Data
 
 ----
 
@@ -163,7 +163,7 @@ As all PlcValue items support the len property, the user can check how many item
 You can then treat the values in the PlcList as a list using response.tags[tag_name].value.get_list()
 
 
-==== Writing Data
+=== Writing Data
 
 In general the structure of code for writing data is extremely similar to that of reading data.
 
@@ -210,6 +210,6 @@ for tag_name in response.tag_names:
         logger.error("Error[" + tag_name + "]: " + response.tags[tag_name].name())
 ----
 
-==== Subscribing to Data
+=== Subscribing to Data
 
 Coming Soon

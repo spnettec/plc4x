@@ -30,3 +30,11 @@ def get_protocol_code(url: str) -> str:
     """
     parsed = urlparse(url)
     return parsed.scheme
+
+
+def strtobool(value: str) -> bool:
+    """Credit goes to https://danielms.site/zet/2023/pythons-distutil-strtobool-replacement/"""
+    value = value.lower()
+    if value in ("y", "yes", "on", "1", "true", "t"):
+        return True
+    return False

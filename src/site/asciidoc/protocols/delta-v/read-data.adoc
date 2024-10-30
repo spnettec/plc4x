@@ -16,6 +16,8 @@
 //
 :imagesdir: ../../images/
 
+= Data retrieval
+
 == 0x0403 (before registration)
 
 Before a subscription is done, regularly (about once a minute) the following packets come in.

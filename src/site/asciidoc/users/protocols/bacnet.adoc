@@ -17,13 +17,13 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== BACnet/IP
+= BACnet/IP
 
 image::bacnet_banner.png[banner,512,167]
 
-=== BACnet (Building Automation and Control Networks)
+== BACnet (Building Automation and Control Networks)
 
-=== Connection String Options
+== Connection String Options
 
 include::../../../plc4j/drivers/all/src/site/generated/bacnet-ip.adoc[]
 
@@ -47,6 +47,6 @@ include::../../../plc4j/drivers/all/src/site/generated/bacnet-ip.adoc[]
 
 |===
 
-=== More details on
+== More details on
 
 http://www.bacnet.org/[BACnet - A Data Communication Protocol for Building Automation and Control Networks]

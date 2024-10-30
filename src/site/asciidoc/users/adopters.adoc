@@ -17,7 +17,7 @@
 :imagesdir: ../images/
 :icons: font
 
-== Companies using Apache PLC4X
+= Companies using Apache PLC4X
 
 image::toddy-loves-apache.png[width=200,float=left]
 

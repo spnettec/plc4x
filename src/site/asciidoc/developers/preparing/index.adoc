@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Preparing your Computer
+= Preparing your Computer
 
 Building a project like Apache PLC4X on multiple target operating-systems is quite a challenge, but I think we managed to make it as simple as possible.
 

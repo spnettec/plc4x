@@ -16,13 +16,13 @@
 //
 :imagesdir: ../../images/
 
-== Reverse Engineering the DeltaV protocol
+= Reverse Engineering the DeltaV protocol
 
 This document should describe what we did in order to reverse-engineer the DeltaV protocol.
 
 The sole purpose of this document, is to write document our path in order to eventually protect ourselves against accusation of using illegal measures in gaining the information we got.
 
-=== Starting point
+== Starting point
 
 We kindly were provided with access to a DeltaV system used for training.
 
@@ -42,7 +42,7 @@ With this we let the system run and did a pretty long network capture.
 
 This 29MB WireShark capture was what we started working with.
 
-=== Identifying the protocol
+== Identifying the protocol
 
 As WireShark didn't have a DeltaV disector, we had to trace it down ourselves.
 
@@ -50,7 +50,7 @@ When looking at the capture, we very quickly filtered out the usual network prot
 
 Special with all of these was that they all started with a payload of `0xFACE`.
 
-=== First steps in understanding the protocol
+== First steps in understanding the protocol
 
 Here it appeared that `UDP` packets are sent with some sort of payload, which are obviously responded to by packets with a fixed and very small size (64 bytes).
 
@@ -68,7 +68,7 @@ When filtering only the `UDP` packets on port `18507` we could scroll though the
 
 In order to prove any assumption we made, we used little programs that used Pcap4J to programmatically check assumptions.
 
-=== Decoding the wrapper packet header
+== Decoding the wrapper packet header
 
 As mentioned before, it appeared obvious that for almost identical packets the first two short values were very similar too, which led us to the assumption that these are `type` and `sub-type'.
 So we wrote a little program, that scanned all the packets and counted how many types we had.
@@ -135,7 +135,7 @@ So we'll just keep that in mind an not worry about interpreting a meaning into t
 The last two bytes of the wrapper packet header are simply constantly `0x8000` in every packet.
 Here too, we'll just live with knowing that and not wondering what it could mean.
 
-=== Decoding the internal packet
+== Decoding the internal packet
 
 After having decoded what we think is the wrapper-protocol packet structure, we knew decoding the internal protocol would be a bigger challenge.
 
@@ -153,7 +153,7 @@ The first two bytes of the payload seem again to relate to a type as similar pac
 Especially we did a lot of separate captures for all sorts of different operations.
 During this we managed to reverse engineer the connection on the wrapper-protocol layer as well how the communication looks inside the internal protocol.
 
-==== Connecting
+=== Connecting
 
 When an OS is booted, the following communication could be observed:
 
@@ -172,7 +172,7 @@ So it seems that In these packets each participant compares it's software state 
 This does make sense.
 When connecting to a remote system, checking the version compatibility is surely an important thing to do.
 
-==== Normal operation
+=== Normal operation
 
 When just starting the system and not changing anything, we did notice those previously mentioned `0x0006` type messages we think are responsible for keeping the connections in sync.
 
@@ -183,7 +183,7 @@ It also appears that there is some upper bound for the size of packets.
 As when seeing a lot of alarms being sent in 0x0304 messages, sometimes these are split up into multiple messages sent in very short intervals.
 The last of these usually being smaller than the rest.
 
-==== Changing values
+=== Changing values
 
 So now we started changing values.
 First we started changing valid values into other valid values.
@@ -197,7 +197,7 @@ Also did we notice the `0x0403` packets seem to contain String constants that re
 
 We assume payload-types starting with `0x04` relate to normal data exchange and ones with `0x03` relating to events and alarms.
 
-==== Decoding value changes
+=== Decoding value changes
 
 After coming to the conclusion that wrapper-type `0x0002` messages with a payload-type `0x0403` seem to relate to value changes, we started filtering for exactly these packages.
 
@@ -242,7 +242,7 @@ Right now we are assuming that in one of the other `0x04` packets a subscription
 
 We will hopefully be able to decode this addressing problem in one of our next reverse-engineering sessions.
 
-==== Decoding Strings
+=== Decoding Strings
 
 As we mentioned before, that we could see content in the packages that were sometimes readable from just looking at the payload, we decided to have another look at these.
 

@@ -16,7 +16,7 @@
 //
 :imagesdir: ../images/
 
-== Continuous Integration
+= Continuous Integration
 
 We are currently using the following CI systems.
 
@@ -30,7 +30,7 @@ GitHub Actions on the other side responsible for doing the main part of the test
 It not only builds and runs the tests on a matrix of operating systems as well as with a number of java versions.
 It also is configured to run the tests on pull-requests.
 
-=== Structure of the Jenkins Pipeline build
+== Structure of the Jenkins Pipeline build
 
 We are using the Jenkins `multi-branch pipeline plugin` to automatically setup build for branches based upon the build definition in the `Jenkinsfile` in the root of the project.
 

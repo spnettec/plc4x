@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== EIP Protocol
+= EIP Protocol
 
 // https://plantuml.com/de/activity-diagram-legacy
 // https://deepu.js.org/svg-seq-diagram/Reference_Guide.pdf

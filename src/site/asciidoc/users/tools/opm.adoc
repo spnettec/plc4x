@@ -15,10 +15,10 @@
 //  limitations under the License.
 //
 
-== Object PLC Mapping
+= Object PLC Mapping
 
 
-=== What is Object PLC Mapping
+== What is Object PLC Mapping
 
 Object PLC Mapping (OPM) is heavily inspired by the Java Persistence API (JPA) [1].
 One of the main goal of the PLC4X Project is to make it easy to communicate with PLC devices to enable the development
@@ -29,7 +29,7 @@ This is exactly the reason why JPA was initialized many years ago to allow the i
 calling methods on POJOs (Plain old Java Object).
 This is exactly what the OPM Module is for, to enable PLC communication by simply interacting with a POJO.
 
-=== Simple Example
+== Simple Example
 
 The following short code snippet shows how to read one value from a PLC via OPM.
 First, a _PlcEntityManager_ is instantiated, then a *connected* entity is fetched for a given PLC connection address.
@@ -64,10 +64,10 @@ public class MyEntity {
 }
 ----
 
-=== Annotations
+== Annotations
 
-=== More details
+== More details
 
-=== References
+== References
 
 [1] https://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html

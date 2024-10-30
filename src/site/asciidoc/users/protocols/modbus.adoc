@@ -17,23 +17,23 @@
 :imagesdir: ../../images/users/protocols
 :icons: font
 
-== Modbus (TCP/UDP/Serial)
+= Modbus (TCP/UDP/Serial)
 
-=== Connection String Options
+== Connection String Options
 
-==== Modbus TCP
+=== Modbus TCP
 
 include::../../../plc4j/drivers/all/src/site/generated/modbus-tcp.adoc[]
 
-==== Modbus RTU
+=== Modbus RTU
 
 include::../../../plc4j/drivers/all/src/site/generated/modbus-rtu.adoc[]
 
-==== Modbus ASCII
+=== Modbus ASCII
 
 include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
 
-=== Supported Operations
+== Supported Operations
 
 [cols="2,2a,5a"]
 |===
@@ -48,9 +48,9 @@ include::../../../plc4j/drivers/all/src/site/generated/modbus-ascii.adoc[]
 2+| `write`
 |===
 
-=== Individual Resource Address Format
+== Individual Resource Address Format
 
-==== Connection String
+=== Connection String
 
 Modbus has the following connection string format:-
 ----
@@ -63,7 +63,7 @@ modbus-tcp:tcp://127.0.0.1:502
 Note the transport, port and option fields are optional.
 
 
-==== General Format
+=== General Format
 
 In general all Modbus addresses have this format:
 
@@ -86,7 +86,7 @@ Specifying this value overrides value of `default-unit-id` parameter specified a
 ----
 With this, can the default byte-order be overridden on a per-tag basis. If not provided the default-byte-order from the connection string is used, or BIG_ENDIAN, if this is also not provided.
 
-==== Memory Areas
+=== Memory Areas
 
 There are a number of memory areas defined in the Modbus specification.
 
@@ -120,7 +120,7 @@ Address 610000 is then the first address in the second file record and so on. It
 Using the extended-register: format you are able to reference all of these, if the shorter format is used then it is limited to 699999.
 This memory area starts at address 0.
 
-==== Data Types
+=== Data Types
 
 The following data types are supported
 
@@ -142,7 +142,7 @@ The following data types are supported
 - CHAR (char)
 - WCHAR (2 byte char)
 
-==== Some useful tips
+=== Some useful tips
 
 Most memory areas start at address 1, except for the extended register area which starts at 0. These are both mapped to 0x0000 when it is sent in the Modbus protocol.
 
@@ -161,7 +161,7 @@ The following Modbus function codes are supported:-
 - 0x14 (Read File Record)(Extended Register Read)
 - 0x15 (Write File Record)(Extended Register Write)
 
-==== Examples
+=== Examples
 
 To read 10 holding registers starting at address 20 and parse as Unsigned Integers the following examples are all valid.
 

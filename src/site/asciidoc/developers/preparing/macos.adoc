@@ -15,7 +15,7 @@
 //  limitations under the License.
 //
 
-== Mac OS
+= Mac OS
 
 As tracking down issues which result from missing or outdated third party tools such as compilers are always hard do diagnose, we have extended the build of PLC4X with a `prerequisiteCheck` that automatically checks if required tools are installed and if a required minimum version is available.
 
@@ -30,7 +30,7 @@ Make sure `Homebrew` ist installed in order to install most of these.
 
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-=== Git
+== Git
 
 Checking:
 
@@ -45,7 +45,7 @@ If you get a response that indicates that git needs to be installed, please exec
 
  brew install git
 
-=== Java
+== Java
 
 Checking:
 
@@ -57,11 +57,11 @@ Apt based systems:
 
  brew install openjdk
 
-=== Optional and other language support
+== Optional and other language support
 
 Git an Java should be all you need for building the Java part of PLC4X.
 
-==== LibPCAP (For raw-ethernet support)
+=== LibPCAP (For raw-ethernet support)
 
 The libpcap version bundled with macOS is currently 1.9.1.
 This version causes exceptions.
@@ -69,7 +69,7 @@ So it's best to update to a newer version using brew:
 
    brew install libpcap
 
-==== gcc (For PLC4C)
+=== gcc (For PLC4C)
 
 Checking:
 
@@ -79,7 +79,7 @@ If you get any successful output, you probably don't need to do anything.
 
 It seems macOS comes with a version of gcc which is good enough for our use cases.
 
-==== dotnet (For PLC4Net)
+=== dotnet (For PLC4Net)
 
 Checking:
 
@@ -93,7 +93,7 @@ Alternatively you can also install it via homebrew:
 
  brew install --cask dotnet-sdk
 
-==== python (For PLC4Py)
+=== python (For PLC4Py)
 
 Checking:
 
