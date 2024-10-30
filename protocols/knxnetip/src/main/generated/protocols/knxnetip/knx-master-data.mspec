@@ -836,7 +836,7 @@
     ['84' M_INNOTEAM ['123', '"Innoteam"']]
     ['85' M_ISE_GMBH ['124', '"ise GmbH"']]
     ['86' M_TEAM_FOR_TRONICS ['125', '"TEAM FOR TRONICS"']]
-    ['87' M_CIAT ['126', '"CIAT"']]
+    ['87' M_CARRIER_SAS ['126', '"CARRIER SAS"']]
     ['88' M_REMEHA_BV ['127', '"Remeha BV"']]
     ['89' M_ESYLUX ['128', '"ESYLUX"']]
     ['90' M_BASALTE ['129', '"BASALTE"']]
@@ -1441,8 +1441,10 @@
     ['689' M_XIAMEN_LEELEN_TECHNOLOGY_CO__LTD_ ['747', '"Xiamen Leelen Technology Co.,Ltd."']]
     ['690' M_LEDNX ['748', '"LedNX"']]
     ['691' M_EBELONG ['749', '"ebelong"']]
-    ['692' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['693' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['692' M_ASTRA_LED_AG ['750', '"Astra-LED AG"']]
+    ['693' M_WONDERFUL_HI_TECH_CO___LTD_ ['751', '"Wonderful Hi-Tech Co., Ltd."']]
+    ['694' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['695' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
