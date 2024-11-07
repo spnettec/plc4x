@@ -20,6 +20,7 @@
 package org.apache.plc4x.java.spi.tag;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,7 +40,7 @@ public class TagConfigParser {
     }
 
     public static Map<String, String> parse(String tagAddress) {
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new LinkedHashMap<>();
         Matcher matcher = TAG_CONFIG_PATTERN.matcher(tagAddress);
         if (matcher.find() && matcher.group("config") != null) {
             Matcher kv = KEY_VALUE_PATTERN.matcher(matcher.group("config"));

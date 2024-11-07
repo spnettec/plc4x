@@ -26,6 +26,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.plc4x.java.spi.generation.*;
 import org.apache.plc4x.test.dom4j.LocationAwareElement;
 import org.apache.plc4x.test.driver.exceptions.DriverTestsuiteException;
+import org.apache.plc4x.test.driver.xmlunit.SkipAttributeFilter;
+import org.apache.plc4x.test.driver.xmlunit.SkipDifferenceEvaluator;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +99,8 @@ public class MessageValidatorAndMigrator {
                 parsedOutput.serialize(writeBufferXmlBased);
                 String xmlString = writeBufferXmlBased.getXmlString();
                 final Diff diff = DiffBuilder.compare(referenceXmlString)
+                    .withAttributeFilter(new SkipAttributeFilter())
+                    .withDifferenceEvaluator(new SkipDifferenceEvaluator())
                     .withTest(xmlString).checkForSimilar().ignoreComments().ignoreWhitespace()
                     .build();
                 if (diff.hasDifferences()) {

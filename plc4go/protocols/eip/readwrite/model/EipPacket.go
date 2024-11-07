@@ -564,6 +564,10 @@ func (m *_EipPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_EipPacket) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_EipPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

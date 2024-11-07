@@ -482,6 +482,10 @@ func (m *_BACnetUnconfirmedServiceRequest) getLengthInBits(ctx context.Context) 
 	return lengthInBits
 }
 
+func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetUnconfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

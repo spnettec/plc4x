@@ -70,7 +70,7 @@ func (m *MessageCodec) Send(message spi.Message) error {
 	opcuaApu, ok := message.(readWriteModel.OpcuaAPU)
 	if !ok {
 		if message, ok := message.(readWriteModel.MessagePDU); ok {
-			opcuaApu = readWriteModel.NewOpcuaAPU(message, false)
+			opcuaApu = readWriteModel.NewOpcuaAPU(message, false, true)
 		} else {
 			return errors.Errorf("Invalid message type %T", message)
 		}
@@ -124,7 +124,7 @@ func (m *MessageCodec) Receive() (spi.Message, error) {
 	}
 	ctxForModel := options.GetLoggerContextForModel(context.Background(), m.log, options.WithPassLoggerToModel(m.passLogToModel))
 	rbbb := utils.NewReadBufferByteBased(readBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true)
+	opcuaAPU, err := readWriteModel.OpcuaAPUParseWithBuffer(ctxForModel, rbbb, true, true)
 	if err != nil {
 		return nil, errors.New("Could not parse pdu")
 	}

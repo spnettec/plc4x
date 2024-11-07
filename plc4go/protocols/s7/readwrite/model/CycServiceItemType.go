@@ -307,6 +307,10 @@ func (m *_CycServiceItemType) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_CycServiceItemType) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CycServiceItemType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

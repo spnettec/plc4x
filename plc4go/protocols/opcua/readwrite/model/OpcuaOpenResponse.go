@@ -64,7 +64,7 @@ var _ OpcuaOpenResponse = (*_OpcuaOpenResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaOpenResponse)(nil)
 
 // NewOpcuaOpenResponse factory function for _OpcuaOpenResponse
-func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, message Payload, totalLength uint32) *_OpcuaOpenResponse {
+func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, message Payload, totalLength uint32, binary bool) *_OpcuaOpenResponse {
 	if openResponse == nil {
 		panic("openResponse of type OpenChannelMessage for OpcuaOpenResponse must not be nil")
 	}
@@ -72,7 +72,7 @@ func NewOpcuaOpenResponse(chunk ChunkType, openResponse OpenChannelMessage, mess
 		panic("message of type Payload for OpcuaOpenResponse must not be nil")
 	}
 	_result := &_OpcuaOpenResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		OpenResponse:       openResponse,
 		Message:            message,
 	}
@@ -291,7 +291,7 @@ func (m *_OpcuaOpenResponse) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaOpenResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool) (__opcuaOpenResponse OpcuaOpenResponse, err error) {
+func (m *_OpcuaOpenResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool, binary bool) (__opcuaOpenResponse OpcuaOpenResponse, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -308,7 +308,7 @@ func (m *_OpcuaOpenResponse) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.OpenResponse = openResponse
 
-	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(openResponse.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(binary), (uint32)(uint32(uint32(totalLength)-uint32(openResponse.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}

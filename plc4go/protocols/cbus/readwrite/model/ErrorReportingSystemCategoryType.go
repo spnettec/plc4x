@@ -326,6 +326,10 @@ func (m *_ErrorReportingSystemCategoryType) getLengthInBits(ctx context.Context)
 	return lengthInBits
 }
 
+func (m *_ErrorReportingSystemCategoryType) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_ErrorReportingSystemCategoryType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

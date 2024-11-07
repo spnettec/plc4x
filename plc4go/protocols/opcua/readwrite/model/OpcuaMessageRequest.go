@@ -64,7 +64,7 @@ var _ OpcuaMessageRequest = (*_OpcuaMessageRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageRequest)(nil)
 
 // NewOpcuaMessageRequest factory function for _OpcuaMessageRequest
-func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32) *_OpcuaMessageRequest {
+func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, totalLength uint32, binary bool) *_OpcuaMessageRequest {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaMessageRequest must not be nil")
 	}
@@ -72,7 +72,7 @@ func NewOpcuaMessageRequest(chunk ChunkType, securityHeader SecurityHeader, mess
 		panic("message of type Payload for OpcuaMessageRequest must not be nil")
 	}
 	_result := &_OpcuaMessageRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
@@ -291,7 +291,7 @@ func (m *_OpcuaMessageRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaMessageRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool) (__opcuaMessageRequest OpcuaMessageRequest, err error) {
+func (m *_OpcuaMessageRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, totalLength uint32, response bool, binary bool) (__opcuaMessageRequest OpcuaMessageRequest, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -308,7 +308,7 @@ func (m *_OpcuaMessageRequest) parse(ctx context.Context, readBuffer utils.ReadB
 	}
 	m.SecurityHeader = securityHeader
 
-	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(binary), (uint32)(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}

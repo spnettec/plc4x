@@ -100,7 +100,8 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
   }
 
   public static MessagePDUBuilder staticParseMessagePDUBuilder(
-      ReadBuffer readBuffer, Long totalLength, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Long totalLength, Boolean response, Boolean binary)
+      throws ParseException {
     readBuffer.pullContext("OpcuaOpenResponse");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -119,7 +120,7 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
                 () ->
                     Payload.staticParse(
                         readBuffer,
-                        (boolean) (false),
+                        (boolean) (binary),
                         (long) (((totalLength) - (openResponse.getLengthInBytes())) - (16L))),
                 readBuffer));
 

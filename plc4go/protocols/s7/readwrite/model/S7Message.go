@@ -413,6 +413,10 @@ func (m *_S7Message) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_S7Message) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_S7Message) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

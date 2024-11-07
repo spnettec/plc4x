@@ -312,6 +312,10 @@ func (m *_BACnetSpecialEventPeriod) getLengthInBits(ctx context.Context) uint16 
 	return lengthInBits
 }
 
+func (m *_BACnetSpecialEventPeriod) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetSpecialEventPeriod) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -545,6 +545,10 @@ func (m *_ApduData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_ApduData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_ApduData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

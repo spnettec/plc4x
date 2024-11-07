@@ -902,6 +902,10 @@ func (m *_BACnetConfirmedServiceRequest) getLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
+func (m *_BACnetConfirmedServiceRequest) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetConfirmedServiceRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

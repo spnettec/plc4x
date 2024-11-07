@@ -648,6 +648,10 @@ func (m *_AirConditioningData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_AirConditioningData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_AirConditioningData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

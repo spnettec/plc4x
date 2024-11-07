@@ -568,6 +568,10 @@ func (m *_KnxNetIpMessage) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_KnxNetIpMessage) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_KnxNetIpMessage) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

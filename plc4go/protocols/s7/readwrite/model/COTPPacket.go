@@ -403,6 +403,10 @@ func (m *_COTPPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_COTPPacket) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_COTPPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

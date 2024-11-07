@@ -108,7 +108,7 @@ public abstract class MessagePDU implements Message {
     return lengthInBits;
   }
 
-  public static MessagePDU staticParse(ReadBuffer readBuffer, Boolean response)
+  public static MessagePDU staticParse(ReadBuffer readBuffer, Boolean response, Boolean binary)
       throws ParseException {
     readBuffer.pullContext("MessagePDU");
     PositionAware positionAware = readBuffer;
@@ -126,29 +126,34 @@ public abstract class MessagePDU implements Message {
     MessagePDUBuilder builder = null;
     if (EvaluationHelper.equals(messageType, (String) "HEL")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaHelloRequest.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaHelloRequest.staticParseMessagePDUBuilder(readBuffer, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "ACK")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaAcknowledgeResponse.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaAcknowledgeResponse.staticParseMessagePDUBuilder(readBuffer, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaOpenRequest.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
+      builder =
+          OpcuaOpenRequest.staticParseMessagePDUBuilder(readBuffer, totalLength, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "OPN")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaOpenResponse.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
+      builder =
+          OpcuaOpenResponse.staticParseMessagePDUBuilder(readBuffer, totalLength, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "CLO")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaCloseRequest.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaCloseRequest.staticParseMessagePDUBuilder(readBuffer, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) false)) {
-      builder = OpcuaMessageRequest.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
+      builder =
+          OpcuaMessageRequest.staticParseMessagePDUBuilder(
+              readBuffer, totalLength, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "MSG")
         && EvaluationHelper.equals(response, (boolean) true)) {
       builder =
-          OpcuaMessageResponse.staticParseMessagePDUBuilder(readBuffer, totalLength, response);
+          OpcuaMessageResponse.staticParseMessagePDUBuilder(
+              readBuffer, totalLength, response, binary);
     } else if (EvaluationHelper.equals(messageType, (String) "ERR")
         && EvaluationHelper.equals(response, (boolean) true)) {
-      builder = OpcuaMessageError.staticParseMessagePDUBuilder(readBuffer, response);
+      builder = OpcuaMessageError.staticParseMessagePDUBuilder(readBuffer, response, binary);
     }
     if (builder == null) {
       throw new ParseException(

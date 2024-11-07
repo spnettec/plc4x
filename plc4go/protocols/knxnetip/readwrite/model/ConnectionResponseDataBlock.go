@@ -249,6 +249,10 @@ func (m *_ConnectionResponseDataBlock) getLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
+func (m *_ConnectionResponseDataBlock) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_ConnectionResponseDataBlock) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

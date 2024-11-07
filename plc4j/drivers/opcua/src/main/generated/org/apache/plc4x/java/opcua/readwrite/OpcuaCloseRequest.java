@@ -100,7 +100,7 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
   }
 
   public static MessagePDUBuilder staticParseMessagePDUBuilder(
-      ReadBuffer readBuffer, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response, Boolean binary) throws ParseException {
     readBuffer.pullContext("OpcuaCloseRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -114,7 +114,8 @@ public class OpcuaCloseRequest extends MessagePDU implements Message {
         readSimpleField(
             "message",
             readComplex(
-                () -> Payload.staticParse(readBuffer, (boolean) (false), (long) (0L)), readBuffer));
+                () -> Payload.staticParse(readBuffer, (boolean) (binary), (long) (0L)),
+                readBuffer));
 
     readBuffer.closeContext("OpcuaCloseRequest");
     // Create the instance

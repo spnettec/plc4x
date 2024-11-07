@@ -38,7 +38,7 @@ import org.apache.plc4x.java.spi.generation.*;
 public abstract class Payload implements Message {
 
   // Abstract accessors for discriminator values.
-  public abstract Boolean getExtensible();
+  public abstract Boolean getBinary();
 
   // Properties.
   protected final SequenceHeader sequenceHeader;
@@ -88,7 +88,7 @@ public abstract class Payload implements Message {
     return lengthInBits;
   }
 
-  public static Payload staticParse(ReadBuffer readBuffer, Boolean extensible, Long byteCount)
+  public static Payload staticParse(ReadBuffer readBuffer, Boolean binary, Long byteCount)
       throws ParseException {
     readBuffer.pullContext("Payload");
     PositionAware positionAware = readBuffer;
@@ -101,18 +101,14 @@ public abstract class Payload implements Message {
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PayloadBuilder builder = null;
-    if (EvaluationHelper.equals(extensible, (boolean) true)) {
-      builder = ExtensiblePayload.staticParsePayloadBuilder(readBuffer, extensible, byteCount);
-    } else if (EvaluationHelper.equals(extensible, (boolean) false)) {
-      builder = BinaryPayload.staticParsePayloadBuilder(readBuffer, extensible, byteCount);
+    if (EvaluationHelper.equals(binary, (boolean) false)) {
+      builder = ExtensiblePayload.staticParsePayloadBuilder(readBuffer, binary, byteCount);
+    } else if (EvaluationHelper.equals(binary, (boolean) true)) {
+      builder = BinaryPayload.staticParsePayloadBuilder(readBuffer, binary, byteCount);
     }
     if (builder == null) {
       throw new ParseException(
-          "Unsupported case for discriminated type"
-              + " parameters ["
-              + "extensible="
-              + extensible
-              + "]");
+          "Unsupported case for discriminated type" + " parameters [" + "binary=" + binary + "]");
     }
 
     readBuffer.closeContext("Payload");

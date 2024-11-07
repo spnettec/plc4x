@@ -263,6 +263,10 @@ func (m *_KnxGroupAddress) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_KnxGroupAddress) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_KnxGroupAddress) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

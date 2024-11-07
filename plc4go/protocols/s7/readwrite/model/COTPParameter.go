@@ -317,6 +317,10 @@ func (m *_COTPParameter) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_COTPParameter) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_COTPParameter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

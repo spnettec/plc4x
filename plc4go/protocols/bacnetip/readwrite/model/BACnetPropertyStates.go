@@ -1509,6 +1509,10 @@ func (m *_BACnetPropertyStates) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_BACnetPropertyStates) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetPropertyStates) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -645,6 +645,10 @@ func (m *_BACnetTimerStateChangeValue) getLengthInBits(ctx context.Context) uint
 	return lengthInBits
 }
 
+func (m *_BACnetTimerStateChangeValue) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetTimerStateChangeValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -451,6 +451,10 @@ func (m *_AccessControlData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_AccessControlData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_AccessControlData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

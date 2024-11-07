@@ -334,6 +334,10 @@ func (m *_CBusPointToPointCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_CBusPointToPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CBusPointToPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

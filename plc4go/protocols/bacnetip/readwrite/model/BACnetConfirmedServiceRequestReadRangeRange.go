@@ -415,6 +415,10 @@ func (m *_BACnetConfirmedServiceRequestReadRangeRange) getLengthInBits(ctx conte
 	return lengthInBits
 }
 
+func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetConfirmedServiceRequestReadRangeRange) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

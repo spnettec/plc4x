@@ -1276,6 +1276,10 @@ func (m *_SecurityData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_SecurityData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_SecurityData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

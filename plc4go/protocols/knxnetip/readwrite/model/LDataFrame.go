@@ -366,6 +366,10 @@ func (m *_LDataFrame) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_LDataFrame) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_LDataFrame) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

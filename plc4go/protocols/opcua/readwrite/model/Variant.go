@@ -834,6 +834,10 @@ func (m *_Variant) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_Variant) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_Variant) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

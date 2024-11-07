@@ -113,7 +113,7 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
   }
 
   public static MessagePDUBuilder staticParseMessagePDUBuilder(
-      ReadBuffer readBuffer, Boolean response) throws ParseException {
+      ReadBuffer readBuffer, Boolean response, Boolean binary) throws ParseException {
     readBuffer.pullContext("OpcuaHelloRequest");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();

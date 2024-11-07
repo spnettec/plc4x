@@ -61,12 +61,12 @@ var _ OpcuaMessageError = (*_OpcuaMessageError)(nil)
 var _ MessagePDURequirements = (*_OpcuaMessageError)(nil)
 
 // NewOpcuaMessageError factory function for _OpcuaMessageError
-func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString) *_OpcuaMessageError {
+func NewOpcuaMessageError(chunk ChunkType, error OpcuaStatusCode, reason PascalString, binary bool) *_OpcuaMessageError {
 	if reason == nil {
 		panic("reason of type PascalString for OpcuaMessageError must not be nil")
 	}
 	_result := &_OpcuaMessageError{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		Error:              error,
 		Reason:             reason,
 	}
@@ -264,7 +264,7 @@ func (m *_OpcuaMessageError) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaMessageError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaMessageError OpcuaMessageError, err error) {
+func (m *_OpcuaMessageError) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool, binary bool) (__opcuaMessageError OpcuaMessageError, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

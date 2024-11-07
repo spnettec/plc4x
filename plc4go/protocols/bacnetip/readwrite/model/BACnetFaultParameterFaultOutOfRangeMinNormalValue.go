@@ -441,6 +441,10 @@ func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) getLengthInBits(ctx
 	return lengthInBits
 }
 
+func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetFaultParameterFaultOutOfRangeMinNormalValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

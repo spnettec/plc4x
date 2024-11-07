@@ -378,6 +378,10 @@ func (m *_CIPEncapsulationPacket) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_CIPEncapsulationPacket) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CIPEncapsulationPacket) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

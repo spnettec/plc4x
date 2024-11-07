@@ -780,6 +780,10 @@ func (m *_BACnetNotificationParameters) getLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
+func (m *_BACnetNotificationParameters) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetNotificationParameters) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

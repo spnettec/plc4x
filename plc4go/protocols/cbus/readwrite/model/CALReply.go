@@ -317,6 +317,10 @@ func (m *_CALReply) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_CALReply) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CALReply) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

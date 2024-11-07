@@ -333,6 +333,10 @@ func (m *_BACnetCalendarEntry) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_BACnetCalendarEntry) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetCalendarEntry) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

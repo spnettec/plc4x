@@ -61,12 +61,12 @@ var _ OpcuaAcknowledgeResponse = (*_OpcuaAcknowledgeResponse)(nil)
 var _ MessagePDURequirements = (*_OpcuaAcknowledgeResponse)(nil)
 
 // NewOpcuaAcknowledgeResponse factory function for _OpcuaAcknowledgeResponse
-func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits) *_OpcuaAcknowledgeResponse {
+func NewOpcuaAcknowledgeResponse(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, binary bool) *_OpcuaAcknowledgeResponse {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaAcknowledgeResponse must not be nil")
 	}
 	_result := &_OpcuaAcknowledgeResponse{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		Version:            version,
 		Limits:             limits,
 	}
@@ -264,7 +264,7 @@ func (m *_OpcuaAcknowledgeResponse) GetLengthInBytes(ctx context.Context) uint16
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaAcknowledgeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaAcknowledgeResponse OpcuaAcknowledgeResponse, err error) {
+func (m *_OpcuaAcknowledgeResponse) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool, binary bool) (__opcuaAcknowledgeResponse OpcuaAcknowledgeResponse, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

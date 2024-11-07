@@ -64,7 +64,7 @@ var _ OpcuaHelloRequest = (*_OpcuaHelloRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaHelloRequest)(nil)
 
 // NewOpcuaHelloRequest factory function for _OpcuaHelloRequest
-func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString) *_OpcuaHelloRequest {
+func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolLimits, endpoint PascalString, binary bool) *_OpcuaHelloRequest {
 	if limits == nil {
 		panic("limits of type OpcuaProtocolLimits for OpcuaHelloRequest must not be nil")
 	}
@@ -72,7 +72,7 @@ func NewOpcuaHelloRequest(chunk ChunkType, version uint32, limits OpcuaProtocolL
 		panic("endpoint of type PascalString for OpcuaHelloRequest must not be nil")
 	}
 	_result := &_OpcuaHelloRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		Version:            version,
 		Limits:             limits,
 		Endpoint:           endpoint,
@@ -306,7 +306,7 @@ func (m *_OpcuaHelloRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaHelloRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaHelloRequest OpcuaHelloRequest, err error) {
+func (m *_OpcuaHelloRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool, binary bool) (__opcuaHelloRequest OpcuaHelloRequest, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

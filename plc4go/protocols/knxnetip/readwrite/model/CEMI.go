@@ -692,6 +692,10 @@ func (m *_CEMI) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_CEMI) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CEMI) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

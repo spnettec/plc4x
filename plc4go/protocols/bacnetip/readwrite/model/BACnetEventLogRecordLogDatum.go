@@ -420,6 +420,10 @@ func (m *_BACnetEventLogRecordLogDatum) getLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
+func (m *_BACnetEventLogRecordLogDatum) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetEventLogRecordLogDatum) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

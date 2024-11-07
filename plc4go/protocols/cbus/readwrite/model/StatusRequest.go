@@ -289,6 +289,10 @@ func (m *_StatusRequest) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_StatusRequest) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_StatusRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -669,6 +669,10 @@ func (m *_BACnetEventParameter) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_BACnetEventParameter) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetEventParameter) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

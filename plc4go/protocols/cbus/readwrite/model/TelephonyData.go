@@ -520,6 +520,10 @@ func (m *_TelephonyData) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_TelephonyData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_TelephonyData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

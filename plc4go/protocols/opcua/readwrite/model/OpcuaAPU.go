@@ -54,17 +54,18 @@ type _OpcuaAPU struct {
 	Message MessagePDU
 
 	// Arguments.
-	Response bool
+	Response       bool
+	BinaryEncoding bool
 }
 
 var _ OpcuaAPU = (*_OpcuaAPU)(nil)
 
 // NewOpcuaAPU factory function for _OpcuaAPU
-func NewOpcuaAPU(message MessagePDU, response bool) *_OpcuaAPU {
+func NewOpcuaAPU(message MessagePDU, response bool, binaryEncoding bool) *_OpcuaAPU {
 	if message == nil {
 		panic("message of type MessagePDU for OpcuaAPU must not be nil")
 	}
-	return &_OpcuaAPU{Message: message, Response: response}
+	return &_OpcuaAPU{Message: message, Response: response, BinaryEncoding: binaryEncoding}
 }
 
 ///////////////////////////////////////////////////////////
@@ -206,25 +207,25 @@ func (m *_OpcuaAPU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func OpcuaAPUParse(ctx context.Context, theBytes []byte, response bool) (OpcuaAPU, error) {
-	return OpcuaAPUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), response)
+func OpcuaAPUParse(ctx context.Context, theBytes []byte, response bool, binaryEncoding bool) (OpcuaAPU, error) {
+	return OpcuaAPUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)), response, binaryEncoding)
 }
 
-func OpcuaAPUParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAPU, error) {
+func OpcuaAPUParseWithBufferProducer(response bool, binaryEncoding bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAPU, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAPU, error) {
-		return OpcuaAPUParseWithBuffer(ctx, readBuffer, response)
+		return OpcuaAPUParseWithBuffer(ctx, readBuffer, response, binaryEncoding)
 	}
 }
 
-func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAPU, error) {
-	v, err := (&_OpcuaAPU{Response: response}).parse(ctx, readBuffer, response)
+func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool, binaryEncoding bool) (OpcuaAPU, error) {
+	v, err := (&_OpcuaAPU{Response: response, BinaryEncoding: binaryEncoding}).parse(ctx, readBuffer, response, binaryEncoding)
 	if err != nil {
 		return nil, err
 	}
 	return v, nil
 }
 
-func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__opcuaAPU OpcuaAPU, err error) {
+func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool, binaryEncoding bool) (__opcuaAPU OpcuaAPU, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("OpcuaAPU"); pullErr != nil {
@@ -233,7 +234,7 @@ func (m *_OpcuaAPU) parse(ctx context.Context, readBuffer utils.ReadBuffer, resp
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	message, err := ReadSimpleField[MessagePDU](ctx, "message", ReadComplex[MessagePDU](MessagePDUParseWithBufferProducer[MessagePDU]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	message, err := ReadSimpleField[MessagePDU](ctx, "message", ReadComplex[MessagePDU](MessagePDUParseWithBufferProducer[MessagePDU]((bool)(response), (bool)(binaryEncoding)), readBuffer), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
@@ -279,6 +280,9 @@ func (m *_OpcuaAPU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 func (m *_OpcuaAPU) GetResponse() bool {
 	return m.Response
 }
+func (m *_OpcuaAPU) GetBinaryEncoding() bool {
+	return m.BinaryEncoding
+}
 
 //
 ////
@@ -296,6 +300,7 @@ func (m *_OpcuaAPU) deepCopy() *_OpcuaAPU {
 	_OpcuaAPUCopy := &_OpcuaAPU{
 		m.Message.DeepCopy().(MessagePDU),
 		m.Response,
+		m.BinaryEncoding,
 	}
 	return _OpcuaAPUCopy
 }

@@ -312,6 +312,10 @@ func (m *_BACnetOptionalCharacterString) getLengthInBits(ctx context.Context) ui
 	return lengthInBits
 }
 
+func (m *_BACnetOptionalCharacterString) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetOptionalCharacterString) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

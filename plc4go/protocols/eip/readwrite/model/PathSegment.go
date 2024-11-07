@@ -267,6 +267,10 @@ func (m *_PathSegment) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_PathSegment) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_PathSegment) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -289,6 +289,10 @@ func (m *_DF1Symbol) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_DF1Symbol) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_DF1Symbol) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

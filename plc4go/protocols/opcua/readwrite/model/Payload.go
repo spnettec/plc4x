@@ -63,8 +63,8 @@ type PayloadContract interface {
 type PayloadRequirements interface {
 	GetLengthInBits(ctx context.Context) uint16
 	GetLengthInBytes(ctx context.Context) uint16
-	// GetExtensible returns Extensible (discriminator field)
-	GetExtensible() bool
+	// GetBinary returns Binary (discriminator field)
+	GetBinary() bool
 }
 
 // _Payload is the data-structure of this message
@@ -300,17 +300,21 @@ func (m *_Payload) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_Payload) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_Payload) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func PayloadParse[T Payload](ctx context.Context, theBytes []byte, extensible bool, byteCount uint32) (T, error) {
-	return PayloadParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
+func PayloadParse[T Payload](ctx context.Context, theBytes []byte, binary bool, byteCount uint32) (T, error) {
+	return PayloadParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), binary, byteCount)
 }
 
-func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+func PayloadParseWithBufferProducer[T Payload](binary bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-		v, err := PayloadParseWithBuffer[T](ctx, readBuffer, extensible, byteCount)
+		v, err := PayloadParseWithBuffer[T](ctx, readBuffer, binary, byteCount)
 		if err != nil {
 			var zero T
 			return zero, err
@@ -319,8 +323,8 @@ func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32
 	}
 }
 
-func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (T, error) {
-	v, err := (&_Payload{ByteCount: byteCount}).parse(ctx, readBuffer, extensible, byteCount)
+func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.ReadBuffer, binary bool, byteCount uint32) (T, error) {
+	v, err := (&_Payload{ByteCount: byteCount}).parse(ctx, readBuffer, binary, byteCount)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -333,7 +337,7 @@ func PayloadParseWithBuffer[T Payload](ctx context.Context, readBuffer utils.Rea
 	return vc, nil
 }
 
-func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (__payload Payload, err error) {
+func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, binary bool, byteCount uint32) (__payload Payload, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("Payload"); pullErr != nil {
@@ -351,16 +355,16 @@ func (m *_Payload) parse(ctx context.Context, readBuffer utils.ReadBuffer, exten
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	var _child Payload
 	switch {
-	case extensible == bool(true): // ExtensiblePayload
-		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+	case binary == bool(false): // ExtensiblePayload
+		if _child, err = new(_ExtensiblePayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type ExtensiblePayload for type-switch of Payload")
 		}
-	case extensible == bool(false): // BinaryPayload
-		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, extensible, byteCount); err != nil {
+	case binary == bool(true): // BinaryPayload
+		if _child, err = new(_BinaryPayload).parse(ctx, readBuffer, m, binary, byteCount); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type BinaryPayload for type-switch of Payload")
 		}
 	default:
-		return nil, errors.Errorf("Unmapped type for parameters [extensible=%v]", extensible)
+		return nil, errors.Errorf("Unmapped type for parameters [binary=%v]", binary)
 	}
 
 	if closeErr := readBuffer.CloseContext("Payload"); closeErr != nil {

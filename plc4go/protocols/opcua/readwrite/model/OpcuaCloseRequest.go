@@ -61,7 +61,7 @@ var _ OpcuaCloseRequest = (*_OpcuaCloseRequest)(nil)
 var _ MessagePDURequirements = (*_OpcuaCloseRequest)(nil)
 
 // NewOpcuaCloseRequest factory function for _OpcuaCloseRequest
-func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload) *_OpcuaCloseRequest {
+func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, message Payload, binary bool) *_OpcuaCloseRequest {
 	if securityHeader == nil {
 		panic("securityHeader of type SecurityHeader for OpcuaCloseRequest must not be nil")
 	}
@@ -69,7 +69,7 @@ func NewOpcuaCloseRequest(chunk ChunkType, securityHeader SecurityHeader, messag
 		panic("message of type Payload for OpcuaCloseRequest must not be nil")
 	}
 	_result := &_OpcuaCloseRequest{
-		MessagePDUContract: NewMessagePDU(chunk),
+		MessagePDUContract: NewMessagePDU(chunk, binary),
 		SecurityHeader:     securityHeader,
 		Message:            message,
 	}
@@ -288,7 +288,7 @@ func (m *_OpcuaCloseRequest) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_OpcuaCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool) (__opcuaCloseRequest OpcuaCloseRequest, err error) {
+func (m *_OpcuaCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_MessagePDU, response bool, binary bool) (__opcuaCloseRequest OpcuaCloseRequest, err error) {
 	m.MessagePDUContract = parent
 	parent._SubType = m
 	positionAware := readBuffer
@@ -305,7 +305,7 @@ func (m *_OpcuaCloseRequest) parse(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	m.SecurityHeader = securityHeader
 
-	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(0))), readBuffer))
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(binary), (uint32)(uint32(0))), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}

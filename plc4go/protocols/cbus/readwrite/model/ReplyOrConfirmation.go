@@ -319,6 +319,10 @@ func (m *_ReplyOrConfirmation) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_ReplyOrConfirmation) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_ReplyOrConfirmation) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

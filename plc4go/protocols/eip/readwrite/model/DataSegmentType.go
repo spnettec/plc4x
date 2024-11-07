@@ -225,6 +225,10 @@ func (m *_DataSegmentType) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_DataSegmentType) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_DataSegmentType) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

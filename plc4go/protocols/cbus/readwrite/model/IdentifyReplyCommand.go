@@ -583,6 +583,10 @@ func (m *_IdentifyReplyCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_IdentifyReplyCommand) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_IdentifyReplyCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

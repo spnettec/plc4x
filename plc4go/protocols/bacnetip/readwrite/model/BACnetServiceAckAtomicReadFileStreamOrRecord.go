@@ -394,6 +394,10 @@ func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) getLengthInBits(ctx cont
 	return lengthInBits
 }
 
+func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetServiceAckAtomicReadFileStreamOrRecord) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

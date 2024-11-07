@@ -225,6 +225,10 @@ func (m *_S7VarRequestParameterItem) getLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
+func (m *_S7VarRequestParameterItem) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_S7VarRequestParameterItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

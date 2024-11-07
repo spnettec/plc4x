@@ -81,8 +81,8 @@ public class OpcuaAPU implements Message {
     return lengthInBits;
   }
 
-  public static OpcuaAPU staticParse(ReadBuffer readBuffer, Boolean response)
-      throws ParseException {
+  public static OpcuaAPU staticParse(
+      ReadBuffer readBuffer, Boolean response, Boolean binaryEncoding) throws ParseException {
     readBuffer.pullContext("OpcuaAPU");
     PositionAware positionAware = readBuffer;
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
@@ -90,7 +90,11 @@ public class OpcuaAPU implements Message {
     MessagePDU message =
         readSimpleField(
             "message",
-            readComplex(() -> MessagePDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
+            readComplex(
+                () ->
+                    MessagePDU.staticParse(
+                        readBuffer, (boolean) (response), (boolean) (binaryEncoding)),
+                readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("OpcuaAPU");

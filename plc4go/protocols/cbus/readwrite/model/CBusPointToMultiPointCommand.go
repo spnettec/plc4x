@@ -273,6 +273,10 @@ func (m *_CBusPointToMultiPointCommand) getLengthInBits(ctx context.Context) uin
 	return lengthInBits
 }
 
+func (m *_CBusPointToMultiPointCommand) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_CBusPointToMultiPointCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -580,6 +580,10 @@ func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) getLengthIn
 	return lengthInBits
 }
 
+func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetNotificationParametersChangeOfDiscreteValueNewValue) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

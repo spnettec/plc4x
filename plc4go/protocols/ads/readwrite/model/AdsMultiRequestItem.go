@@ -263,6 +263,10 @@ func (m *_AdsMultiRequestItem) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_AdsMultiRequestItem) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_AdsMultiRequestItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

@@ -1046,6 +1046,10 @@ func (m *_${type.name}) getLengthInBits(ctx context.Context) uint16 {
 
 	return lengthInBits
 }
+
+func (m *_${type.name}) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
 </#if>
 
 func (m *_${type.name}) GetLengthInBytes(ctx context.Context) uint16 {

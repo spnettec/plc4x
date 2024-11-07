@@ -393,6 +393,10 @@ func (m *_AdsDiscoveryBlock) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_AdsDiscoveryBlock) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_AdsDiscoveryBlock) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

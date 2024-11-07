@@ -707,6 +707,10 @@ func (m *_MediaTransportControlData) getLengthInBits(ctx context.Context) uint16
 	return lengthInBits
 }
 
+func (m *_MediaTransportControlData) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_MediaTransportControlData) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

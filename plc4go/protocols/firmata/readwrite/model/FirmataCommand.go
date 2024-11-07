@@ -314,6 +314,10 @@ func (m *_FirmataCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_FirmataCommand) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_FirmataCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

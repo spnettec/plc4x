@@ -163,8 +163,8 @@ func (b *_BinaryPayload) CreateBinaryPayloadBuilder() BinaryPayloadBuilder {
 /////////////////////// Accessors for discriminator values.
 ///////////////////////
 
-func (m *_BinaryPayload) GetExtensible() bool {
-	return bool(false)
+func (m *_BinaryPayload) GetBinary() bool {
+	return bool(true)
 }
 
 ///////////////////////
@@ -220,7 +220,7 @@ func (m *_BinaryPayload) GetLengthInBytes(ctx context.Context) uint16 {
 	return m.GetLengthInBits(ctx) / 8
 }
 
-func (m *_BinaryPayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Payload, extensible bool, byteCount uint32) (__binaryPayload BinaryPayload, err error) {
+func (m *_BinaryPayload) parse(ctx context.Context, readBuffer utils.ReadBuffer, parent *_Payload, binary bool, byteCount uint32) (__binaryPayload BinaryPayload, err error) {
 	m.PayloadContract = parent
 	parent._SubType = m
 	positionAware := readBuffer

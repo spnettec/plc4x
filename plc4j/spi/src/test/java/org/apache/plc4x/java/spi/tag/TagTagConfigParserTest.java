@@ -38,17 +38,20 @@ class TagTagConfigParserTest {
         parse("aaa:123{unit-id: true}", "unit-id", "true");
         parse("aaa:123{unit-id: false}", "unit-id", "false");
         parse("aaa:123{val1: 1, val2: 2}", "val1", "1", "val2", "2");
+        parse("aaa:123{x: '', y: '', z: ''}", "x", "", "y", "", "z", "");
     }
 
-    private void parse(String address, String key, String value) {
-        Map<String, String> config = TagConfigParser.parse(address);
-        verify(config, key, value);
-    }
+    private void parse(String address, String ... pairs) {
+        if ((pairs.length % 2) != 0) {
+            throw new IllegalArgumentException("Invalid number of pairs: " + pairs.length);
+        }
 
-    private void parse(String address, String key1, String value1, String key2, String value2) {
         Map<String, String> config = TagConfigParser.parse(address);
-        verify(config, key1, value1);
-        verify(config, key2, value2);
+        for (int i = 0; i < pairs.length; i += 2) {
+            String key = pairs[i];
+            String value = pairs[i + 1];
+            verify(config, key, value);
+        }
     }
 
     private void verify(Map<String, String> config, String key, String value) {

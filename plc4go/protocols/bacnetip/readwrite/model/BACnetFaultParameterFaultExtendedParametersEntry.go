@@ -577,6 +577,10 @@ func (m *_BACnetFaultParameterFaultExtendedParametersEntry) getLengthInBits(ctx 
 	return lengthInBits
 }
 
+func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetFaultParameterFaultExtendedParametersEntry) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

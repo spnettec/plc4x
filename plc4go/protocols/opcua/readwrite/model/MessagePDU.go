@@ -51,6 +51,8 @@ type MessagePDU interface {
 type MessagePDUContract interface {
 	// GetChunk returns Chunk (property field)
 	GetChunk() ChunkType
+	// GetBinary() returns a parser argument
+	GetBinary() bool
 	// IsMessagePDU is a marker method to prevent unintentional type checks (interfaces of same signature)
 	IsMessagePDU()
 	// CreateBuilder creates a MessagePDUBuilder
@@ -74,13 +76,16 @@ type _MessagePDU struct {
 		MessagePDURequirements
 	}
 	Chunk ChunkType
+
+	// Arguments.
+	Binary bool
 }
 
 var _ MessagePDUContract = (*_MessagePDU)(nil)
 
 // NewMessagePDU factory function for _MessagePDU
-func NewMessagePDU(chunk ChunkType) *_MessagePDU {
-	return &_MessagePDU{Chunk: chunk}
+func NewMessagePDU(chunk ChunkType, binary bool) *_MessagePDU {
+	return &_MessagePDU{Chunk: chunk, Binary: binary}
 }
 
 ///////////////////////////////////////////////////////////
@@ -404,17 +409,21 @@ func (m *_MessagePDU) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_MessagePDU) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_MessagePDU) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
 
-func MessagePDUParse[T MessagePDU](ctx context.Context, theBytes []byte, response bool) (T, error) {
-	return MessagePDUParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), response)
+func MessagePDUParse[T MessagePDU](ctx context.Context, theBytes []byte, response bool, binary bool) (T, error) {
+	return MessagePDUParseWithBuffer[T](ctx, utils.NewReadBufferByteBased(theBytes), response, binary)
 }
 
-func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+func MessagePDUParseWithBufferProducer[T MessagePDU](response bool, binary bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
 	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
-		v, err := MessagePDUParseWithBuffer[T](ctx, readBuffer, response)
+		v, err := MessagePDUParseWithBuffer[T](ctx, readBuffer, response, binary)
 		if err != nil {
 			var zero T
 			return zero, err
@@ -423,8 +432,8 @@ func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx con
 	}
 }
 
-func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool) (T, error) {
-	v, err := (&_MessagePDU{}).parse(ctx, readBuffer, response)
+func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer utils.ReadBuffer, response bool, binary bool) (T, error) {
+	v, err := (&_MessagePDU{Binary: binary}).parse(ctx, readBuffer, response, binary)
 	if err != nil {
 		var zero T
 		return zero, err
@@ -437,7 +446,7 @@ func MessagePDUParseWithBuffer[T MessagePDU](ctx context.Context, readBuffer uti
 	return vc, nil
 }
 
-func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (__messagePDU MessagePDU, err error) {
+func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, response bool, binary bool) (__messagePDU MessagePDU, err error) {
 	positionAware := readBuffer
 	_ = positionAware
 	if pullErr := readBuffer.PullContext("MessagePDU"); pullErr != nil {
@@ -467,35 +476,35 @@ func (m *_MessagePDU) parse(ctx context.Context, readBuffer utils.ReadBuffer, re
 	var _child MessagePDU
 	switch {
 	case messageType == "HEL" && response == bool(false): // OpcuaHelloRequest
-		if _child, err = new(_OpcuaHelloRequest).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpcuaHelloRequest).parse(ctx, readBuffer, m, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaHelloRequest for type-switch of MessagePDU")
 		}
 	case messageType == "ACK" && response == bool(true): // OpcuaAcknowledgeResponse
-		if _child, err = new(_OpcuaAcknowledgeResponse).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpcuaAcknowledgeResponse).parse(ctx, readBuffer, m, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaAcknowledgeResponse for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(false): // OpcuaOpenRequest
-		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+		if _child, err = new(_OpcuaOpenRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenRequest for type-switch of MessagePDU")
 		}
 	case messageType == "OPN" && response == bool(true): // OpcuaOpenResponse
-		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+		if _child, err = new(_OpcuaOpenResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaOpenResponse for type-switch of MessagePDU")
 		}
 	case messageType == "CLO" && response == bool(false): // OpcuaCloseRequest
-		if _child, err = new(_OpcuaCloseRequest).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpcuaCloseRequest).parse(ctx, readBuffer, m, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaCloseRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(false): // OpcuaMessageRequest
-		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+		if _child, err = new(_OpcuaMessageRequest).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageRequest for type-switch of MessagePDU")
 		}
 	case messageType == "MSG" && response == bool(true): // OpcuaMessageResponse
-		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, totalLength, response); err != nil {
+		if _child, err = new(_OpcuaMessageResponse).parse(ctx, readBuffer, m, totalLength, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageResponse for type-switch of MessagePDU")
 		}
 	case messageType == "ERR" && response == bool(true): // OpcuaMessageError
-		if _child, err = new(_OpcuaMessageError).parse(ctx, readBuffer, m, response); err != nil {
+		if _child, err = new(_OpcuaMessageError).parse(ctx, readBuffer, m, response, binary); err != nil {
 			return nil, errors.Wrap(err, "Error parsing sub-type OpcuaMessageError for type-switch of MessagePDU")
 		}
 	default:
@@ -544,6 +553,16 @@ func (pm *_MessagePDU) serializeParent(ctx context.Context, writeBuffer utils.Wr
 	return nil
 }
 
+////
+// Arguments Getter
+
+func (m *_MessagePDU) GetBinary() bool {
+	return m.Binary
+}
+
+//
+////
+
 func (m *_MessagePDU) IsMessagePDU() {}
 
 func (m *_MessagePDU) DeepCopy() any {
@@ -557,6 +576,7 @@ func (m *_MessagePDU) deepCopy() *_MessagePDU {
 	_MessagePDUCopy := &_MessagePDU{
 		nil, // will be set by child
 		m.Chunk,
+		m.Binary,
 	}
 	return _MessagePDUCopy
 }

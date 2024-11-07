@@ -62,6 +62,7 @@ import org.eclipse.milo.opcua.stack.core.util.SelfSignedCertificateGenerator;
 import org.eclipse.milo.opcua.stack.core.util.SelfSignedHttpsCertificateBuilder;
 import org.eclipse.milo.opcua.stack.server.EndpointConfiguration;
 import org.eclipse.milo.opcua.stack.server.security.DefaultServerCertificateValidator;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -72,6 +73,7 @@ public class TestMiloServer {
     private static final int TCP_BIND_PORT = 12686;
     private static final int HTTPS_BIND_PORT = 8443;
 
+    private final Logger logger = LoggerFactory.getLogger(TestMiloServer.class);
     private final OpcUaServer server;
     private final ExampleNamespace exampleNamespace;
 
@@ -86,6 +88,7 @@ public class TestMiloServer {
             System.exit(-1);
         }
     }
+
 
     public static void main(String[] args) throws Exception {
         TestMiloServer server = new TestMiloServer();
@@ -110,10 +113,8 @@ public class TestMiloServer {
 
         File pkiDir = securityTempDir.resolve("pki").toFile();
 
-        LoggerFactory.getLogger(getClass())
-            .info("security dir: {}", securityTempDir.toAbsolutePath());
-        LoggerFactory.getLogger(getClass())
-            .info("security pki dir: {}", pkiDir.getAbsolutePath());
+        logger.info("security dir: {}", securityTempDir.toAbsolutePath());
+        logger.info("security pki dir: {}", pkiDir.getAbsolutePath());
 
         KeyStoreLoader loader = new KeyStoreLoader().load(securityTempDir);
 
@@ -187,7 +188,10 @@ public class TestMiloServer {
 
         server = new OpcUaServer(serverConfig);
 
-        exampleNamespace = new ExampleNamespace(server);
+        exampleNamespace = new ExampleNamespace(server) {{
+            // Set the EventNotifier bit on Server Node for Events.
+            getLifecycleManager().addStartupTask(new EventNotifierTask(getServer()));
+        }};
         exampleNamespace.startup();
     }
 

@@ -78,7 +78,7 @@ func (h *EncryptionHandler) encodeMessage(ctx context.Context, pdu readWriteMode
 	numberOfBlocks := preEncryptedLength / PREENCRYPTED_BLOCK_LENGTH
 	encryptedLength := numberOfBlocks*256 + positionFirstBlock
 	buf := utils.NewWriteBufferByteBased(utils.WithByteOrderForByteBasedBuffer(binary.LittleEndian))
-	if err := readWriteModel.NewOpcuaAPU(pdu, false).SerializeWithWriteBuffer(ctx, buf); err != nil {
+	if err := readWriteModel.NewOpcuaAPU(pdu, false, true).SerializeWithWriteBuffer(ctx, buf); err != nil {
 		return nil, errors.Wrap(err, "error serializing")
 	}
 	paddingByte := byte(paddingSize)
@@ -168,7 +168,7 @@ func (h *EncryptionHandler) decodeMessage(ctx context.Context, pdu readWriteMode
 		}
 
 		readBuffer := utils.NewReadBufferByteBased(buf.GetBytes(), utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian))
-		return readWriteModel.OpcuaAPUParseWithBuffer(ctx, readBuffer, true)
+		return readWriteModel.OpcuaAPUParseWithBuffer(ctx, readBuffer, true, true)
 	default:
 		h.log.Trace().Msg("unmapped security policy")
 		return pdu, nil

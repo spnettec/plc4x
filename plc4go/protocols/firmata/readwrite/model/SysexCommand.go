@@ -521,6 +521,10 @@ func (m *_SysexCommand) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_SysexCommand) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_SysexCommand) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

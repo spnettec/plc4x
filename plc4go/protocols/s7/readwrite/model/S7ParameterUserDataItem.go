@@ -225,6 +225,10 @@ func (m *_S7ParameterUserDataItem) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_S7ParameterUserDataItem) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_S7ParameterUserDataItem) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

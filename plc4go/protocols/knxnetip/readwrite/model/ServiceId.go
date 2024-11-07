@@ -351,6 +351,10 @@ func (m *_ServiceId) getLengthInBits(ctx context.Context) uint16 {
 	return lengthInBits
 }
 
+func (m *_ServiceId) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_ServiceId) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }

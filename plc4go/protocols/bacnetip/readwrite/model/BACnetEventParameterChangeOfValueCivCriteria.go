@@ -399,6 +399,10 @@ func (m *_BACnetEventParameterChangeOfValueCivCriteria) getLengthInBits(ctx cont
 	return lengthInBits
 }
 
+func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBits(ctx context.Context) uint16 {
+	return m._SubType.GetLengthInBits(ctx)
+}
+
 func (m *_BACnetEventParameterChangeOfValueCivCriteria) GetLengthInBytes(ctx context.Context) uint16 {
 	return m._SubType.GetLengthInBits(ctx) / 8
 }
