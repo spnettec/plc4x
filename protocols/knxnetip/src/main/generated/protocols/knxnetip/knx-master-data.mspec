@@ -1443,8 +1443,9 @@
     ['691' M_EBELONG ['749', '"ebelong"']]
     ['692' M_ASTRA_LED_AG ['750', '"Astra-LED AG"']]
     ['693' M_WONDERFUL_HI_TECH_CO___LTD_ ['751', '"Wonderful Hi-Tech Co., Ltd."']]
-    ['694' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
-    ['695' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
+    ['694' M_REXLITE_AI_INTEGRATIONS_CO__LTD ['752', '"REXLiTE Ai Integrations CO.,LTD"']]
+    ['695' M_ABB___RESERVED ['43954', '"ABB - reserved"']]
+    ['696' M_BUSCH_JAEGER_ELEKTRO___RESERVED ['43959', '"Busch-Jaeger Elektro - reserved"']]
     
 ]
 
