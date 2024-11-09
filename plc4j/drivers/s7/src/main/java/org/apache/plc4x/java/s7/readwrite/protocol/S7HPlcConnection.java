@@ -152,7 +152,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
             }
 
             ((S7HMux) s7hmux).setEmbededhannel(channel, configuration);
-            //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO))); 
+            //channel.pipeline().addFirst((new LoggingHandler(LogLevel.INFO)));
             /*
             channel.closeFuture().addListener(future -> {
                 if (!sessionSetupCompleteFuture.isDone()) {
@@ -176,9 +176,9 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 }
             }
 
-            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS); 
-            
-            /*            
+            scf = executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.SECONDS);
+
+            /*
             primary_channel.closeFuture().addListener(future -> {/watch?v=TmENMZFUU_0&list=RDlBlx1JffMQ4&index=27
                 if (!sessionDiscoveredCompleteFuture.isDone()) {
                     //Do Nothing
@@ -189,7 +189,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     }
 
                 }
-            });            
+            });
             */
 
             // Send an event to the pipeline telling the Protocol filters what's going on.
@@ -351,7 +351,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
 
             if (primaryChannel != null) {
                 if (!primaryChannel.isActive()) {
-                    logger.info("Creating prymary connection.");
+                    logger.info("Creating primary connection.");
                     primaryChannel.eventLoop().shutdownGracefully();
                     doPrimaryTcpConnections();
                 } else if (null == secondaryChannel) {
@@ -364,7 +364,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                     }
                 }
             } else {
-                logger.info("Creating firts prymary connection.");
+                logger.info("Creating first primary connection.");
                 doPrimaryTcpConnections();
             }
 
@@ -384,7 +384,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
                 }
             } else {
                 if (secondaryChannelFactory != null) {
-                    logger.info("Creating firts secondary connection.");
+                    logger.info("Creating first secondary connection.");
                     doSecondaryTcpConnections();
                 }
             }
@@ -436,7 +436,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
         if (!isSubscribeSupported()) {
             throw new PlcUnsupportedOperationException("The connection does not support subscription");
         }
-        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());        
-    }        
+        return new S7PlcSubscriptionRequest.Builder(this, getPlcTagHandler());
+    }
 
 }

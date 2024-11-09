@@ -31,7 +31,7 @@ public class DatatypesTest {
         CachedPlcConnectionManager plcConnectionManager = CachedPlcConnectionManager.getBuilder().build();
         //PlcConnectionManager plcConnectionManager = new DefaultPlcDriverManager();
         while(true) {
-            try (PlcConnection connection = plcConnectionManager.getConnection("s7://100.64.0.7")) {
+            try (PlcConnection connection = plcConnectionManager.getConnection("s7://10.80.41.65")) {
                 final PlcReadRequest.Builder builder = connection.readRequestBuilder();
                 builder.addTagAddress("bool-value-1", "%DB1:0.0:BOOL"); // true
                 builder.addTagAddress("bool-value-2", "%DB1:0.1:BOOL"); // false
