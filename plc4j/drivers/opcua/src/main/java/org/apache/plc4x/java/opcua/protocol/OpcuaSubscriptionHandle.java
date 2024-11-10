@@ -193,48 +193,49 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * The server will respond at most once every cycle.
      */
     private void sendPublishRequest() {
-        List<Long> outstandingRequests = new LinkedList<>();
+        //List<Long> outstandingRequests = new LinkedList<>();
 
         //If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
-        if (outstandingRequests.size() <= 1) {
+        //if (outstandingRequests.size() <= 1) {
             RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
 
             //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
             List<SubscriptionAcknowledgement> acks = new ArrayList<>(outstandingAcknowledgements);
             // do not send -1 when requesting publish, the -1 value indicates NULL value
             // which might result in corruption of subscription for some servers
-            int ackLength = acks.size();
+            //int ackLength = acks.size();
             outstandingAcknowledgements.removeAll(acks);
 
             PublishRequest publishRequest = new PublishRequest(requestHeader, acks);
             // we work in external thread - we need to coordinate access to conversation pipeline
             RequestTransaction transaction = tm.startRequest();
             transaction.submit(() -> {
-                logger.trace("Sent publish request with {} acks", ackLength);
+                logger.trace("Sent publish request with {} acks", acks.size());
                 //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
                 conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
-                    outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
-
+                    //outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
                         outstandingAcknowledgements.add(new SubscriptionAcknowledgement(this.subscriptionId, availableSequenceNumber));
                     }
-
-                    for (ExtensionObject notificationMessage : responseMessage.getNotificationMessage().getNotificationData()) {
-                        ExtensionObjectDefinition notification = notificationMessage.getBody();
-                        if (notification instanceof DataChangeNotification) {
-                            logger.trace("Found a Data Change Notification");
-                            DataChangeNotification data = (DataChangeNotification) notification;
-                            if (!data.getMonitoredItems().isEmpty()) {
-                                onMonitoredValue(data.getMonitoredItems());
+                    if (responseMessage.getNotificationMessage().getNotificationData() != null) {
+                        for (ExtensionObject notificationMessage : responseMessage.getNotificationMessage()
+                                .getNotificationData()) {
+                            ExtensionObjectDefinition notification = notificationMessage.getBody();
+                            if (notification instanceof DataChangeNotification) {
+                                logger.trace("Found a Data Change Notification");
+                                DataChangeNotification data = (DataChangeNotification) notification;
+                                if (!data.getMonitoredItems().isEmpty()) {
+                                    onMonitoredValue(data.getMonitoredItems());
+                                }
+                            } else if (notification instanceof EventNotificationList) {
+                                logger.trace("Found a Event Notification");
+                                EventNotificationList data = (EventNotificationList) notification;
+                                if (!data.getEvents().isEmpty()) {
+                                    onEventNotification(data.getEvents());
+                                }
+                            } else {
+                                logger.warn("Unsupported Notification type {}", notification.getClass().getName());
                             }
-                        } else if (notification instanceof EventNotificationList) {
-                            logger.trace("Found a Event Notification");
-                            EventNotificationList data = (EventNotificationList) notification;
-                            if (!data.getEvents().isEmpty()) {
-                                onEventNotification(data.getEvents());
-                            }
-                        } else {
-                            logger.warn("Unsupported Notification type {}", notification.getClass().getName());
                         }
                     }
                 }).whenComplete((result, error) -> {
@@ -246,9 +247,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         transaction.endRequest();
                     }
                 });
-                outstandingRequests.add(requestHeader.getRequestHandle());
+                //outstandingRequests.add(requestHeader.getRequestHandle());
             });
-        }
+        //}
     }
 
 

@@ -87,7 +87,7 @@ public class ManualPLC4XOpcua {
                         e.printStackTrace();
                     }
                 }
-            }, 300000);
+            }, 3000000);
 
             new Timer("time2").schedule(new TimerTask() {
 

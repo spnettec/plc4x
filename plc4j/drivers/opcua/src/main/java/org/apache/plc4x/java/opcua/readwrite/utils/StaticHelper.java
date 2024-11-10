@@ -29,7 +29,11 @@ public class StaticHelper {
         if (stringValue == null) {
             return -1;
         }
-        return stringValue.getBytes(StandardCharsets.UTF_8).length;
+        int nBytes = stringValue.getBytes(StandardCharsets.UTF_8).length;
+        if (nBytes == 0) {
+            return -1;
+        }
+        return nBytes;
     }
 
     public static int pascalLengthToUtf8Length(int slength) {

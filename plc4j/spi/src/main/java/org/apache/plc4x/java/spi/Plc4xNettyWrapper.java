@@ -222,7 +222,7 @@ public class Plc4xNettyWrapper<T> extends MessageToMessageCodec<T, Object> {
                 logger.info("payload class type is incorrect");
             }
         }
-        logger.warn("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);
+        logger.trace("None of {} registered handlers could handle message {}, using default decode method", this.registeredHandlers.size(), payload);
         try {
             protocolBase.decode(new DefaultConversationContext<>(this::registerHandler, channelHandlerContext, authentication, passive), payload);
         }catch (Exception e) {
