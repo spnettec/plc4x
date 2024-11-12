@@ -301,7 +301,7 @@ public class S7HPlcConnection extends DefaultNettyPlcConnection implements Runna
      * The user application must take the measures to make the connection again.
      */
     protected void sendChannelDisconectEvent() {
-        logger.trace("Channels was not created, firing DisconnectEvent Event");
+        logger.trace("Channel was not created, firing DisconnectEvent Event");
         // Send an event to the pipeline telling the Protocol filters what's going on.
         channel.pipeline().fireUserEventTriggered(new DisconnectEvent());
     }

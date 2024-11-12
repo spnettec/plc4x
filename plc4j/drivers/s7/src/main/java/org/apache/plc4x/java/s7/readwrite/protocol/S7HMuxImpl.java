@@ -135,7 +135,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
             tcpChannel.writeAndFlush(outBB.copy());
         }
         list.add(outBB.copy());
-
     }
 
     /*
@@ -177,12 +176,14 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         logger.info(LocalTime.now() + " userEventTriggered: " + ctx.name() + " Event: " + evt);
+
         if (evt instanceof ConnectedEvent) {
             try {
                 ChannelHandler watchdog = tcpChannel.pipeline().get("watchdog");
                 if (watchdog != null) {
                     tcpChannel.pipeline().remove(watchdog);
                 }
+
             } catch (Exception ex) {
                 logger.info(ex.toString());
             }
@@ -204,6 +205,8 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
         if (evt instanceof DisconnectEvent) {
             logger.info("DisconnectEvent");
         }
+
+        // trigger other event handlers after IS_CONNECTED was set
         super.userEventTriggered(ctx, evt);
     }
 
@@ -255,7 +258,6 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
                         embededChannel.pipeline().fireUserEventTriggered(new ConnectEvent());
                     }
                 }
-        ;
 
 
         if ((tcpChannel == secondaryChannel) &&
@@ -270,9 +272,7 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
                         embededChannel.pipeline().fireUserEventTriggered(new ConnectEvent());
                     }
                 }
-
     }
-
 
     @Override
     public void setEmbededhannel(Channel embeded_channel, PlcConnectionConfiguration configuration) {
@@ -355,6 +355,5 @@ public class S7HMuxImpl extends MessageToMessageCodec<ByteBuf, ByteBuf> implemen
     public Channel getTCPChannel() {
         return tcpChannel;
     }
-
 
 }
