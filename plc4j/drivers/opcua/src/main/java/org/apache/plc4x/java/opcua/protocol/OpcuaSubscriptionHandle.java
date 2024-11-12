@@ -192,11 +192,12 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
      * Which includes a request for an update of the previously agreed upon list of tags.
      * The server will respond at most once every cycle.
      */
+    List<Long> outstandingRequests = new LinkedList<>();
     private void sendPublishRequest() {
         //List<Long> outstandingRequests = new LinkedList<>();
 
         //If we are waiting on a response and haven't received one, just wait until we do. A keep alive will be sent out eventually
-        //if (outstandingRequests.size() <= 1) {
+        if (outstandingRequests.size() <= 1) {
             RequestHeader requestHeader = conversation.createRequestHeader(this.revisedCycleTime * 10);
 
             //Make a copy of the outstanding requests, so it isn't modified while we are putting the ack list together.
@@ -213,7 +214,7 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                 logger.trace("Sent publish request with {} acks", acks.size());
                 //  Create Consumer for the response message, error and timeout to be sent to the Secure Channel
                 conversation.submit(publishRequest, PublishResponse.class).thenAccept(responseMessage -> {
-                    //outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
+                    outstandingRequests.remove(responseMessage.getResponseHeader().getRequestHandle());
                     for (long availableSequenceNumber : responseMessage.getAvailableSequenceNumbers()) {
                         outstandingAcknowledgements.add(new SubscriptionAcknowledgement(this.subscriptionId, availableSequenceNumber));
                     }
@@ -247,9 +248,9 @@ public class OpcuaSubscriptionHandle extends DefaultPlcSubscriptionHandle {
                         transaction.endRequest();
                     }
                 });
-                //outstandingRequests.add(requestHeader.getRequestHandle());
+                outstandingRequests.add(requestHeader.getRequestHandle());
             });
-        //}
+        }
     }
 
 
